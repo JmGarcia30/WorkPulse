@@ -1,0 +1,180 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  ORGANIZATION_ADMIN
+  HR_ADMIN
+  HIRING_MANAGER
+}
+
+enum JobStatus {
+  DRAFT
+  PUBLISHED
+  CLOSED
+  ARCHIVED
+}
+
+enum RequirementType {
+  SKILL
+  EDUCATION
+  EXPERIENCE
+  CERTIFICATION
+  OTHER
+}
+
+enum ApplicationStatus {
+  APPLIED
+  SCREENING
+  SHORTLISTED
+  INTERVIEW
+  ASSESSMENT
+  OFFER
+  HIRED
+  REJECTED
+  WITHDRAWN
+}
+
+model Organization {
+  id             String   @id @default(cuid())
+  name           String
+  slug           String   @unique
+  description    String?  @db.Text
+  logoUrl        String?
+  careersEnabled Boolean  @default(true)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  users User[]
+  jobs  Job[]
+}
+
+model User {
+  id             String   @id @default(cuid())
+  organizationId String
+  name           String
+  email          String   @unique
+  passwordHash   String
+  role           Role     @default(HR_ADMIN)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  organization   Organization               @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  statusChanges ApplicationStatusHistory[]
+
+  @@index([organizationId])
+}
+
+model Job {
+  id               String      @id @default(cuid())
+  organizationId   String
+  title            String
+  slug             String
+  department       String
+  employmentType   String
+  location         String
+  description      String      @db.Text
+  responsibilities String      @db.Text
+  qualifications   String      @db.Text
+  requirements     String      @db.Text
+  status           JobStatus   @default(DRAFT)
+  publishedAt      DateTime?
+  closingDate      DateTime?
+  createdAt        DateTime    @default(now())
+  updatedAt        DateTime    @updatedAt
+
+  organization Organization     @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  structuredReqs JobRequirement[]
+  applications Application[]
+
+  @@unique([organizationId, slug])
+  @@index([organizationId])
+  @@index([status])
+  @@index([publishedAt])
+}
+
+model JobRequirement {
+  id          String          @id @default(cuid())
+  jobId       String
+  name        String
+  type        RequirementType @default(SKILL)
+  description String?         @db.Text
+  isRequired  Boolean         @default(true)
+  createdAt   DateTime        @default(now())
+
+  job Job @relation(fields: [jobId], references: [id], onDelete: Cascade)
+
+  @@index([jobId])
+}
+
+model Applicant {
+  id        String   @id @default(cuid())
+  firstName String
+  lastName  String
+  email     String   @unique
+  phone     String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  applications Application[]
+  documents    Document[]
+
+  @@index([email])
+}
+
+model Application {
+  id          String            @id @default(cuid())
+  jobId       String
+  applicantId String
+  status      ApplicationStatus @default(APPLIED)
+  coverLetter String            @db.Text
+  appliedAt   DateTime          @default(now())
+  updatedAt   DateTime          @updatedAt
+
+  job       Job                        @relation(fields: [jobId], references: [id], onDelete: Cascade)
+  applicant Applicant                  @relation(fields: [applicantId], references: [id], onDelete: Cascade)
+  documents Document[]
+  history   ApplicationStatusHistory[]
+
+  @@unique([jobId, applicantId])
+  @@index([jobId])
+  @@index([applicantId])
+  @@index([status])
+  @@index([appliedAt])
+}
+
+model Document {
+  id            String   @id @default(cuid())
+  applicantId   String
+  applicationId String?
+  fileName      String
+  fileType      String
+  fileSize      Int
+  storageKey    String
+  createdAt     DateTime @default(now())
+
+  applicant   Applicant    @relation(fields: [applicantId], references: [id], onDelete: Cascade)
+  application Application? @relation(fields: [applicationId], references: [id], onDelete: SetNull)
+
+  @@index([applicantId])
+  @@index([applicationId])
+}
+
+model ApplicationStatusHistory {
+  id            String            @id @default(cuid())
+  applicationId String
+  fromStatus    ApplicationStatus
+  toStatus      ApplicationStatus
+  changedById   String
+  createdAt     DateTime          @default(now())
+
+  application Application @relation(fields: [applicationId], references: [id], onDelete: Cascade)
+  changedBy   User        @relation(fields: [changedById], references: [id])
+
+  @@index([applicationId])
+}
