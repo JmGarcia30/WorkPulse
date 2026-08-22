@@ -11,6 +11,9 @@ import {
   LogOut,
   ExternalLink,
   Kanban,
+  Calendar,
+  Award,
+  FileText,
 } from 'lucide-react';
 
 export default async function DashboardLayout({
@@ -87,6 +90,30 @@ export default async function DashboardLayout({
             >
               <Users className="h-4 w-4 text-indigo-600 dark:text-indigo-400" />
               <span>Applicants</span>
+            </Link>
+
+            <Link
+              href="/dashboard/hiring/interviews"
+              className="flex items-center gap-3 px-3 py-2.5 text-xs font-medium rounded-lg text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition"
+            >
+              <Calendar className="h-4 w-4 text-indigo-600 dark:text-indigo-400" />
+              <span>Interviews</span>
+            </Link>
+
+            <Link
+              href="/dashboard/hiring/assessments"
+              className="flex items-center gap-3 px-3 py-2.5 text-xs font-medium rounded-lg text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition"
+            >
+              <Award className="h-4 w-4 text-indigo-600 dark:text-indigo-400" />
+              <span>Assessments</span>
+            </Link>
+
+            <Link
+              href="/dashboard/hiring/offers"
+              className="flex items-center gap-3 px-3 py-2.5 text-xs font-medium rounded-lg text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition"
+            >
+              <FileText className="h-4 w-4 text-indigo-600 dark:text-indigo-400" />
+              <span>Offers</span>
             </Link>
 
             <div className="pt-3 pb-1 px-3">

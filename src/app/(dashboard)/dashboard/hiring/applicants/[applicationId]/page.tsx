@@ -1,11 +1,21 @@
-import { redirect, notFound } from 'next/navigation';
+import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import { getSession } from '@/lib/auth/session';
 import { prisma } from '@/lib/db/prisma';
-import { canUpdateApplicationStatus } from '@/lib/permissions/rbac';
+import {
+  canUpdateApplicationStatus,
+  canManageInterviews,
+  canManageAssessments,
+  canRecordAssessmentResult,
+  canManageOffers,
+  canApproveOffer,
+} from '@/lib/permissions/rbac';
 import { ApplicationStatus } from '@prisma/client';
 import { StatusChangeDialog } from '@/components/hiring/StatusChangeDialog';
 import { ApplicationTimeline } from '@/components/hiring/ApplicationTimeline';
+import { CandidateInterviewsSection } from '@/components/hiring/CandidateInterviewsSection';
+import { CandidateAssessmentsSection } from '@/components/hiring/CandidateAssessmentsSection';
+import { CandidateOffersSection } from '@/components/hiring/CandidateOffersSection';
 import {
   ArrowLeft,
   Mail,
@@ -26,35 +36,81 @@ export default async function CandidateProfilePage({ params }: CandidateProfileP
   const { applicationId } = await params;
 
   // Multi-tenant check: Verify application belongs to user's Organization via Job relationship
-  const application = await prisma.application.findFirst({
-    where: {
-      id: applicationId,
-      job: {
-        organizationId: user.organizationId,
-      },
-    },
-    include: {
-      applicant: true,
-      job: {
-        include: {
-          structuredReqs: true,
+  const [application, organizationUsers] = await Promise.all([
+    prisma.application.findFirst({
+      where: {
+        id: applicationId,
+        job: {
+          organizationId: user.organizationId,
         },
       },
-      documents: true,
-      history: {
-        orderBy: { createdAt: 'desc' },
-        include: {
-          changedBy: { select: { name: true, role: true } },
+      include: {
+        applicant: true,
+        job: {
+          include: {
+            structuredReqs: true,
+          },
+        },
+        documents: true,
+        history: {
+          orderBy: { createdAt: 'desc' },
+          include: {
+            changedBy: { select: { name: true, role: true } },
+          },
+        },
+        interviews: {
+          orderBy: { scheduledAt: 'desc' },
+          include: {
+            interviewer: {
+              select: { id: true, name: true, email: true, role: true },
+            },
+            evaluation: {
+              include: {
+                evaluatedBy: { select: { name: true, role: true } },
+              },
+            },
+          },
+        },
+        assessments: {
+          orderBy: { createdAt: 'desc' },
+          include: {
+            evaluator: {
+              select: { id: true, name: true, role: true },
+            },
+          },
+        },
+        offers: {
+          orderBy: { createdAt: 'desc' },
+          include: {
+            createdBy: {
+              select: { id: true, name: true, role: true },
+            },
+            approvedBy: {
+              select: { id: true, name: true, role: true },
+            },
+          },
         },
       },
-    },
-  });
+    }),
+    prisma.user.findMany({
+      where: { organizationId: user.organizationId },
+      select: { id: true, name: true, email: true, role: true },
+      orderBy: { name: 'asc' },
+    }),
+  ]);
 
   if (!application) {
     notFound();
   }
 
   const canEditStatus = canUpdateApplicationStatus(user);
+  const canManageIv = canManageInterviews(user);
+  const canManageAss = canManageAssessments(user);
+  const canRecordScore = canRecordAssessmentResult(user);
+  const canManageOff = canManageOffers(user);
+  const canApproveOff = canApproveOffer(user);
+
+  const candidateFullName = `${application.applicant.firstName} ${application.applicant.lastName}`;
 
   return (
     <div className="max-w-4xl mx-auto space-y-6">
@@ -68,7 +124,7 @@ export default async function CandidateProfilePage({ params }: CandidateProfileP
         </Link>
         <div>
           <h1 className="text-xl font-bold text-slate-900 dark:text-slate-100">
-            Candidate ATS Profile: {application.applicant.firstName} {application.applicant.lastName}
+            Candidate ATS Profile: {candidateFullName}
           </h1>
           <p className="text-xs text-slate-500 dark:text-slate-400">
             Application for position: {application.job.title}
@@ -78,7 +134,7 @@ export default async function CandidateProfilePage({ params }: CandidateProfileP
 
       {/* Main Grid */}
       <div className="grid gap-6 lg:grid-cols-3">
-        {/* Left Column: Candidate & Job Details */}
+        {/* Left Column: Candidate Details, Interviews, Assessments, Offers */}
         <div className="lg:col-span-2 space-y-6">
           {/* Candidate Card */}
           <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-xs dark:border-slate-800 dark:bg-slate-900 space-y-4">
@@ -90,7 +146,7 @@ export default async function CandidateProfilePage({ params }: CandidateProfileP
                 </div>
                 <div>
                   <h2 className="text-base font-bold text-slate-900 dark:text-slate-100">
-                    {application.applicant.firstName} {application.applicant.lastName}
+                    {candidateFullName}
                   </h2>
                   <p className="text-xs text-slate-500 dark:text-slate-400">
                     Applied on {new Date(application.appliedAt).toLocaleDateString()}
@@ -101,7 +157,15 @@ export default async function CandidateProfilePage({ params }: CandidateProfileP
               <span
                 className={`rounded-md px-2.5 py-1 text-xs font-bold ${
                   application.status === ApplicationStatus.SHORTLISTED
+                    ? 'bg-cyan-50 text-cyan-700 dark:bg-cyan-950/60 dark:text-cyan-300'
+                    : application.status === ApplicationStatus.INTERVIEW
+                    ? 'bg-amber-50 text-amber-700 dark:bg-amber-950/60 dark:text-amber-300'
+                    : application.status === ApplicationStatus.ASSESSMENT
+                    ? 'bg-purple-50 text-purple-700 dark:bg-purple-950/60 dark:text-purple-300'
+                    : application.status === ApplicationStatus.OFFER
                     ? 'bg-emerald-50 text-emerald-700 dark:bg-emerald-950/60 dark:text-emerald-300'
+                    : application.status === ApplicationStatus.HIRED
+                    ? 'bg-teal-50 text-teal-700 dark:bg-teal-950/60 dark:text-teal-300'
                     : application.status === ApplicationStatus.SCREENING
                     ? 'bg-blue-50 text-blue-700 dark:bg-blue-950/60 dark:text-blue-300'
                     : application.status === ApplicationStatus.APPLIED
@@ -162,6 +226,36 @@ export default async function CandidateProfilePage({ params }: CandidateProfileP
               </div>
             </div>
           )}
+
+          {/* Candidate Interview Management & Evaluation Section */}
+          <CandidateInterviewsSection
+            applicationId={application.id}
+            candidateName={candidateFullName}
+            jobTitle={application.job.title}
+            interviews={application.interviews}
+            canManage={canManageIv}
+          />
+
+          {/* Pre-Employment Assessments Section */}
+          <CandidateAssessmentsSection
+            applicationId={application.id}
+            candidateName={candidateFullName}
+            jobTitle={application.job.title}
+            assessments={application.assessments}
+            organizationEvaluators={organizationUsers}
+            canManage={canManageAss}
+            canRecordResult={canRecordScore}
+          />
+
+          {/* Employment Offers Section */}
+          <CandidateOffersSection
+            applicationId={application.id}
+            candidateName={candidateFullName}
+            jobTitle={application.job.title}
+            offers={application.offers}
+            canManage={canManageOff}
+            canApprove={canApproveOff}
+          />
         </div>
 
         {/* Right Column: Resume Download, Status Controls & History Timeline */}
@@ -213,11 +307,14 @@ export default async function CandidateProfilePage({ params }: CandidateProfileP
             )}
           </div>
 
-          {/* Reusable Application Status History Timeline */}
+          {/* Reusable Unified Activity & Status Timeline */}
           <ApplicationTimeline
             initialStatus={application.status}
             appliedAt={application.appliedAt}
             history={application.history}
+            interviews={application.interviews}
+            assessments={application.assessments}
+            offers={application.offers}
           />
         </div>
       </div>

@@ -40,6 +40,67 @@ enum ApplicationStatus {
   WITHDRAWN
 }
 
+enum InterviewType {
+  INITIAL_SCREENING
+  TECHNICAL
+  BEHAVIORAL
+  FINAL
+  OTHER
+}
+
+enum InterviewStatus {
+  SCHEDULED
+  COMPLETED
+  CANCELLED
+  NO_SHOW
+}
+
+enum EvaluationRecommendation {
+  STRONGLY_RECOMMEND
+  RECOMMEND
+  MAYBE
+  DO_NOT_RECOMMEND
+}
+
+enum AssessmentStatus {
+  ASSIGNED
+  IN_PROGRESS
+  SUBMITTED
+  UNDER_REVIEW
+  PASSED
+  FAILED
+  EXPIRED
+  CANCELLED
+}
+
+enum AssessmentType {
+  TECHNICAL
+  SKILLS
+  COGNITIVE
+  BEHAVIORAL
+  ROLE_SPECIFIC
+  OTHER
+}
+
+enum OfferStatus {
+  DRAFT
+  PENDING_APPROVAL
+  APPROVED
+  SENT
+  ACCEPTED
+  REJECTED
+  WITHDRAWN
+  EXPIRED
+}
+
+enum PayFrequency {
+  ANNUAL
+  MONTHLY
+  BIWEEKLY
+  WEEKLY
+  HOURLY
+}
+
 model Organization {
   id             String   @id @default(cuid())
   name           String
@@ -64,8 +125,13 @@ model User {
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
 
-  organization   Organization               @relation(fields: [organizationId], references: [id], onDelete: Cascade)
-  statusChanges ApplicationStatusHistory[]
+  organization        Organization               @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  statusChanges       ApplicationStatusHistory[]
+  interviews          Interview[]
+  evaluations         CandidateEvaluation[]
+  evaluationsAssessed Assessment[]
+  offersCreated       Offer[]                    @relation("OfferCreatedBy")
+  offersApproved      Offer[]                    @relation("OfferApprovedBy")
 
   @@index([organizationId])
 }
@@ -88,9 +154,9 @@ model Job {
   createdAt        DateTime    @default(now())
   updatedAt        DateTime    @updatedAt
 
-  organization Organization     @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  organization   Organization     @relation(fields: [organizationId], references: [id], onDelete: Cascade)
   structuredReqs JobRequirement[]
-  applications Application[]
+  applications   Application[]
 
   @@unique([organizationId, slug])
   @@index([organizationId])
@@ -136,10 +202,13 @@ model Application {
   appliedAt   DateTime          @default(now())
   updatedAt   DateTime          @updatedAt
 
-  job       Job                        @relation(fields: [jobId], references: [id], onDelete: Cascade)
-  applicant Applicant                  @relation(fields: [applicantId], references: [id], onDelete: Cascade)
-  documents Document[]
-  history   ApplicationStatusHistory[]
+  job         Job                        @relation(fields: [jobId], references: [id], onDelete: Cascade)
+  applicant   Applicant                  @relation(fields: [applicantId], references: [id], onDelete: Cascade)
+  documents   Document[]
+  history     ApplicationStatusHistory[]
+  interviews  Interview[]
+  assessments Assessment[]
+  offers      Offer[]
 
   @@unique([jobId, applicantId])
   @@index([jobId])
@@ -177,4 +246,104 @@ model ApplicationStatusHistory {
   changedBy   User        @relation(fields: [changedById], references: [id])
 
   @@index([applicationId])
+}
+
+model Interview {
+  id              String          @id @default(cuid())
+  applicationId   String
+  interviewerId   String
+  scheduledAt     DateTime
+  durationMinutes Int             @default(45)
+  type            InterviewType   @default(INITIAL_SCREENING)
+  location        String?
+  meetingUrl      String?
+  notes           String?         @db.Text
+  status          InterviewStatus @default(SCHEDULED)
+  createdAt       DateTime        @default(now())
+  updatedAt       DateTime        @updatedAt
+
+  application Application          @relation(fields: [applicationId], references: [id], onDelete: Cascade)
+  interviewer User                 @relation(fields: [interviewerId], references: [id])
+  evaluation  CandidateEvaluation?
+
+  @@index([applicationId])
+  @@index([interviewerId])
+  @@index([status])
+  @@index([scheduledAt])
+}
+
+model CandidateEvaluation {
+  id                  String                    @id @default(cuid())
+  interviewId         String                    @unique
+  communicationScore  Int
+  technicalScore      Int
+  problemSolvingScore Int
+  experienceScore     Int
+  cultureFitScore     Int
+  overallScore        Float
+  recommendation      EvaluationRecommendation
+  comments            String                    @db.Text
+  evaluatedById       String
+  createdAt           DateTime                  @default(now())
+  updatedAt           DateTime                  @updatedAt
+
+  interview   Interview @relation(fields: [interviewId], references: [id], onDelete: Cascade)
+  evaluatedBy User      @relation(fields: [evaluatedById], references: [id])
+
+  @@index([interviewId])
+  @@index([evaluatedById])
+}
+
+model Assessment {
+  id            String           @id @default(cuid())
+  applicationId String
+  title         String
+  type          AssessmentType   @default(TECHNICAL)
+  description   String?          @db.Text
+  dueDate       DateTime?
+  status        AssessmentStatus @default(ASSIGNED)
+  score         Float?
+  maxScore      Float?
+  passingScore  Float?
+  submittedAt   DateTime?
+  evaluatedAt   DateTime?
+  evaluatorId   String?
+  reviewerNotes String?          @db.Text
+  createdAt     DateTime         @default(now())
+  updatedAt     DateTime         @updatedAt
+
+  application Application @relation(fields: [applicationId], references: [id], onDelete: Cascade)
+  evaluator   User?       @relation(fields: [evaluatorId], references: [id])
+
+  @@index([applicationId])
+  @@index([status])
+  @@index([evaluatorId])
+}
+
+model Offer {
+  id              String       @id @default(cuid())
+  applicationId   String
+  salary          Float
+  payFrequency    PayFrequency @default(MONTHLY)
+  employmentType  String
+  startDate       DateTime
+  expirationDate  DateTime?
+  benefits        String?      @db.Text
+  allowances      String?      @db.Text
+  additionalTerms String?      @db.Text
+  notes           String?      @db.Text
+  status          OfferStatus  @default(DRAFT)
+  createdById     String
+  approvedById    String?
+  createdAt       DateTime     @default(now())
+  updatedAt       DateTime     @updatedAt
+
+  application Application @relation(fields: [applicationId], references: [id], onDelete: Cascade)
+  createdBy   User        @relation("OfferCreatedBy", fields: [createdById], references: [id])
+  approvedBy  User?       @relation("OfferApprovedBy", fields: [approvedById], references: [id])
+
+  @@index([applicationId])
+  @@index([status])
+  @@index([createdById])
+  @@index([approvedById])
 }

@@ -1,7 +1,13 @@
 import Link from 'next/link';
 import { getSession } from '@/lib/auth/session';
 import { prisma } from '@/lib/db/prisma';
-import { JobStatus, ApplicationStatus } from '@prisma/client';
+import {
+  JobStatus,
+  ApplicationStatus,
+  InterviewStatus,
+  AssessmentStatus,
+  OfferStatus,
+} from '@prisma/client';
 import {
   Briefcase,
   CheckCircle,
@@ -10,6 +16,10 @@ import {
   Plus,
   ArrowRight,
   History,
+  Calendar,
+  Award,
+  FileText,
+  FileCheck,
 } from 'lucide-react';
 
 export default async function DashboardPage() {
@@ -18,13 +28,85 @@ export default async function DashboardPage() {
 
   const orgId = user.organizationId;
 
-  // Real Database Metrics & Recent Activities
-  const [totalJobs, publishedJobs, totalApplications, awaitingReviewCount, recentJobs, recentApplications, statusHistoryEvents] = await Promise.all([
+  // Real Database Metrics & Recent Activities (Strictly Organization-Scoped)
+  const [
+    totalJobs,
+    publishedJobs,
+    totalApplications,
+    awaitingReviewCount,
+    upcomingInterviewsCount,
+    completedInterviewsCount,
+    awaitingEvaluationCount,
+    activeAssessmentsCount,
+    awaitingAssessmentReviewCount,
+    activeOffersCount,
+    pendingOfferApprovalCount,
+    recentJobs,
+    upcomingInterviews,
+    statusHistoryEvents,
+  ] = await Promise.all([
     prisma.job.count({ where: { organizationId: orgId } }),
     prisma.job.count({ where: { organizationId: orgId, status: JobStatus.PUBLISHED } }),
     prisma.application.count({ where: { job: { organizationId: orgId } } }),
     prisma.application.count({
       where: { job: { organizationId: orgId }, status: ApplicationStatus.APPLIED },
+    }),
+    prisma.interview.count({
+      where: {
+        application: { job: { organizationId: orgId } },
+        status: InterviewStatus.SCHEDULED,
+      },
+    }),
+    prisma.interview.count({
+      where: {
+        application: { job: { organizationId: orgId } },
+        status: InterviewStatus.COMPLETED,
+      },
+    }),
+    prisma.interview.count({
+      where: {
+        application: { job: { organizationId: orgId } },
+        status: InterviewStatus.COMPLETED,
+        evaluation: null,
+      },
+    }),
+    prisma.assessment.count({
+      where: {
+        application: { job: { organizationId: orgId } },
+        status: {
+          in: [
+            AssessmentStatus.ASSIGNED,
+            AssessmentStatus.IN_PROGRESS,
+            AssessmentStatus.SUBMITTED,
+            AssessmentStatus.UNDER_REVIEW,
+          ],
+        },
+      },
+    }),
+    prisma.assessment.count({
+      where: {
+        application: { job: { organizationId: orgId } },
+        status: AssessmentStatus.SUBMITTED,
+      },
+    }),
+    prisma.offer.count({
+      where: {
+        application: { job: { organizationId: orgId } },
+        status: {
+          in: [
+            OfferStatus.DRAFT,
+            OfferStatus.PENDING_APPROVAL,
+            OfferStatus.APPROVED,
+            OfferStatus.SENT,
+          ],
+        },
+      },
+    }),
+    prisma.offer.count({
+      where: {
+        application: { job: { organizationId: orgId } },
+        status: OfferStatus.PENDING_APPROVAL,
+      },
     }),
     prisma.job.findMany({
       where: { organizationId: orgId },
@@ -34,13 +116,21 @@ export default async function DashboardPage() {
         _count: { select: { applications: true } },
       },
     }),
-    prisma.application.findMany({
-      where: { job: { organizationId: orgId } },
-      orderBy: { appliedAt: 'desc' },
+    prisma.interview.findMany({
+      where: {
+        application: { job: { organizationId: orgId } },
+        status: InterviewStatus.SCHEDULED,
+      },
+      orderBy: { scheduledAt: 'asc' },
       take: 4,
       include: {
-        job: { select: { title: true } },
-        applicant: { select: { firstName: true, lastName: true, email: true } },
+        application: {
+          include: {
+            applicant: { select: { firstName: true, lastName: true, email: true } },
+            job: { select: { title: true } },
+          },
+        },
+        interviewer: { select: { name: true } },
       },
     }),
     prisma.applicationStatusHistory.findMany({
@@ -82,21 +172,8 @@ export default async function DashboardPage() {
         </Link>
       </div>
 
-      {/* Metrics Grid with Clear Helper Text & Hierarchy */}
+      {/* Metrics Grid */}
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-xs dark:border-slate-800 dark:bg-slate-900 space-y-2">
-          <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider dark:text-slate-400">Total Requisitions</span>
-            <div className="rounded-xl bg-indigo-50 p-2 text-indigo-600 dark:bg-indigo-950/60 dark:text-indigo-400">
-              <Briefcase className="h-5 w-5" />
-            </div>
-          </div>
-          <p className="text-3xl font-extrabold text-slate-900 dark:text-slate-100">{totalJobs}</p>
-          <p className="text-[11px] text-slate-500 dark:text-slate-400">
-            Total job postings created across all departments.
-          </p>
-        </div>
-
         <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-xs dark:border-slate-800 dark:bg-slate-900 space-y-2">
           <div className="flex items-center justify-between">
             <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider dark:text-slate-400">Active Openings</span>
@@ -106,7 +183,7 @@ export default async function DashboardPage() {
           </div>
           <p className="text-3xl font-extrabold text-slate-900 dark:text-slate-100">{publishedJobs}</p>
           <p className="text-[11px] text-emerald-600 dark:text-emerald-400 font-medium">
-            Published & receiving candidate submissions on public portal.
+            Published openings receiving submissions.
           </p>
         </div>
 
@@ -119,31 +196,44 @@ export default async function DashboardPage() {
           </div>
           <p className="text-3xl font-extrabold text-slate-900 dark:text-slate-100">{totalApplications}</p>
           <p className="text-[11px] text-slate-500 dark:text-slate-400">
-            Candidate profiles registered in tenant pipeline.
+            Candidate profiles in recruitment pipeline.
           </p>
         </div>
 
         <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-xs dark:border-slate-800 dark:bg-slate-900 space-y-2">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider dark:text-slate-400">Awaiting Review</span>
-            <div className="rounded-xl bg-amber-50 p-2 text-amber-600 dark:bg-amber-950/60 dark:text-amber-400">
-              <Clock className="h-5 w-5" />
+            <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider dark:text-slate-400">Active Assessments</span>
+            <div className="rounded-xl bg-purple-50 p-2 text-purple-600 dark:bg-purple-950/60 dark:text-purple-400">
+              <Award className="h-5 w-5" />
             </div>
           </div>
-          <p className="text-3xl font-extrabold text-slate-900 dark:text-slate-100">{awaitingReviewCount}</p>
+          <p className="text-3xl font-extrabold text-slate-900 dark:text-slate-100">{activeAssessmentsCount}</p>
+          <p className="text-[11px] text-purple-600 dark:text-purple-400 font-medium">
+            {awaitingAssessmentReviewCount} awaiting review.
+          </p>
+        </div>
+
+        <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-xs dark:border-slate-800 dark:bg-slate-900 space-y-2">
+          <div className="flex items-center justify-between">
+            <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider dark:text-slate-400">Active Offers</span>
+            <div className="rounded-xl bg-amber-50 p-2 text-amber-600 dark:bg-amber-950/60 dark:text-amber-400">
+              <FileCheck className="h-5 w-5" />
+            </div>
+          </div>
+          <p className="text-3xl font-extrabold text-slate-900 dark:text-slate-100">{activeOffersCount}</p>
           <p className="text-[11px] text-amber-600 dark:text-amber-400 font-medium">
-            New applications pending initial HR screening.
+            {pendingOfferApprovalCount} awaiting approval.
           </p>
         </div>
       </div>
 
       {/* Activity & Job Feed Section */}
-      <div className="grid gap-6 lg:grid-cols-2">
+      <div className="grid gap-6 lg:grid-cols-3">
         {/* Recent Job Openings */}
         <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-xs dark:border-slate-800 dark:bg-slate-900">
           <div className="flex items-center justify-between border-b border-slate-100 pb-3 dark:border-slate-800">
             <h3 className="text-sm font-bold text-slate-900 dark:text-slate-100">
-              Recent Job Openings
+              Job Postings
             </h3>
             <Link
               href="/dashboard/hiring/jobs"
@@ -172,7 +262,7 @@ export default async function DashboardPage() {
                     <div className="flex items-center gap-2 text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">
                       <span>{job.department}</span>
                       <span>•</span>
-                      <span>{job._count.applications} applications</span>
+                      <span>{job._count.applications} apps</span>
                     </div>
                   </div>
 
@@ -193,11 +283,62 @@ export default async function DashboardPage() {
           </div>
         </div>
 
+        {/* Upcoming Interviews Feed */}
+        <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-xs dark:border-slate-800 dark:bg-slate-900">
+          <div className="flex items-center justify-between border-b border-slate-100 pb-3 dark:border-slate-800">
+            <h3 className="text-sm font-bold text-slate-900 dark:text-slate-100 flex items-center gap-2">
+              <Calendar className="h-4 w-4 text-indigo-600 dark:text-indigo-400" /> Upcoming Interviews
+            </h3>
+            <Link
+              href="/dashboard/hiring/interviews"
+              className="text-xs font-semibold text-indigo-600 hover:text-indigo-500 flex items-center gap-1 dark:text-indigo-400"
+            >
+              All Interviews <ArrowRight className="h-3.5 w-3.5" />
+            </Link>
+          </div>
+
+          <div className="mt-4 space-y-3">
+            {upcomingInterviews.length === 0 ? (
+              <p className="text-xs text-slate-500 text-center py-6">
+                No upcoming interviews scheduled.
+              </p>
+            ) : (
+              upcomingInterviews.map((iv) => (
+                <div
+                  key={iv.id}
+                  className="rounded-xl border border-slate-100 bg-slate-50/60 p-3.5 dark:border-slate-800 dark:bg-slate-950/60 space-y-1.5"
+                >
+                  <div className="flex items-center justify-between">
+                    <Link
+                      href={`/dashboard/hiring/applicants/${iv.application.id}`}
+                      className="text-xs font-bold text-slate-900 hover:text-indigo-600 dark:text-slate-100 dark:hover:text-indigo-400"
+                    >
+                      {iv.application.applicant.firstName} {iv.application.applicant.lastName}
+                    </Link>
+                    <span className="rounded-md bg-blue-50 px-2 py-0.5 text-[9px] font-bold text-blue-700 dark:bg-blue-950 dark:text-blue-300">
+                      {iv.type.replace('_', ' ')}
+                    </span>
+                  </div>
+                  <p className="text-[11px] text-slate-500 dark:text-slate-400 flex items-center gap-1">
+                    <Clock className="h-3 w-3 text-slate-400" />
+                    {new Date(iv.scheduledAt).toLocaleDateString(undefined, {
+                      month: 'short',
+                      day: 'numeric',
+                    })}{' '}
+                    at {new Date(iv.scheduledAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}{' '}
+                    • with {iv.interviewer.name}
+                  </p>
+                </div>
+              ))
+            )}
+          </div>
+        </div>
+
         {/* Meaningful Hiring Activity Stream */}
         <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-xs dark:border-slate-800 dark:bg-slate-900">
           <div className="flex items-center justify-between border-b border-slate-100 pb-3 dark:border-slate-800">
             <h3 className="text-sm font-bold text-slate-900 dark:text-slate-100 flex items-center gap-2">
-              <History className="h-4 w-4 text-indigo-600 dark:text-indigo-400" /> Recent Hiring Audit Activity
+              <History className="h-4 w-4 text-indigo-600 dark:text-indigo-400" /> Recent Audit Activity
             </h3>
             <Link
               href="/dashboard/hiring/applicants"

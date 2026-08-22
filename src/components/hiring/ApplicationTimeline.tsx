@@ -1,5 +1,27 @@
-import { History, UserCheck, Clock } from 'lucide-react';
-import { ApplicationStatus } from '@prisma/client';
+import {
+  History,
+  UserCheck,
+  Clock,
+  Calendar,
+  CheckCircle2,
+  XCircle,
+  Award,
+  AlertTriangle,
+  FileText,
+  DollarSign,
+  ShieldCheck,
+} from 'lucide-react';
+import {
+  ApplicationStatus,
+  InterviewType,
+  InterviewStatus,
+  EvaluationRecommendation,
+  AssessmentStatus,
+  AssessmentType,
+  OfferStatus,
+  PayFrequency,
+} from '@prisma/client';
+import { PAY_FREQUENCY_CONFIG } from '@/features/hiring/offer-pipeline';
 
 export interface TimelineHistoryItem {
   id: string;
@@ -12,61 +34,458 @@ export interface TimelineHistoryItem {
   };
 }
 
+export interface TimelineInterviewItem {
+  id: string;
+  type: InterviewType;
+  status: InterviewStatus;
+  scheduledAt: Date | string;
+  createdAt: Date | string;
+  updatedAt: Date | string;
+  interviewer: {
+    name: string;
+    role: string;
+  };
+  evaluation?: {
+    overallScore: number;
+    recommendation: EvaluationRecommendation;
+    createdAt: Date | string;
+    evaluatedBy: {
+      name: string;
+    };
+  } | null;
+}
+
+export interface TimelineAssessmentItem {
+  id: string;
+  title: string;
+  type: AssessmentType;
+  status: AssessmentStatus;
+  score: number | null;
+  maxScore: number | null;
+  passingScore: number | null;
+  createdAt: Date | string;
+  evaluatedAt: Date | string | null;
+  evaluator?: {
+    name: string;
+  } | null;
+}
+
+export interface TimelineOfferItem {
+  id: string;
+  salary: number;
+  payFrequency: PayFrequency;
+  employmentType: string;
+  status: OfferStatus;
+  createdAt: Date | string;
+  updatedAt: Date | string;
+  createdBy: {
+    name: string;
+  };
+  approvedBy?: {
+    name: string;
+  } | null;
+}
+
 interface ApplicationTimelineProps {
   initialStatus: ApplicationStatus;
   appliedAt: Date | string;
   history: TimelineHistoryItem[];
+  interviews?: TimelineInterviewItem[];
+  assessments?: TimelineAssessmentItem[];
+  offers?: TimelineOfferItem[];
 }
+
+type UnifiedTimelineEvent =
+  | {
+      kind: 'INITIAL_APPLIED';
+      timestamp: Date;
+      status: ApplicationStatus;
+    }
+  | {
+      kind: 'STATUS_TRANSITION';
+      id: string;
+      timestamp: Date;
+      fromStatus: ApplicationStatus;
+      toStatus: ApplicationStatus;
+      changedBy: { name: string; role: string };
+    }
+  | {
+      kind: 'INTERVIEW_SCHEDULED';
+      id: string;
+      timestamp: Date;
+      scheduledAt: Date;
+      type: InterviewType;
+      interviewer: { name: string; role: string };
+    }
+  | {
+      kind: 'INTERVIEW_STATUS';
+      id: string;
+      timestamp: Date;
+      status: InterviewStatus;
+      type: InterviewType;
+      interviewer: { name: string; role: string };
+    }
+  | {
+      kind: 'EVALUATION_SUBMITTED';
+      id: string;
+      timestamp: Date;
+      overallScore: number;
+      recommendation: EvaluationRecommendation;
+      evaluatedBy: { name: string };
+    }
+  | {
+      kind: 'ASSESSMENT_ASSIGNED';
+      id: string;
+      timestamp: Date;
+      title: string;
+      type: AssessmentType;
+      evaluatorName?: string;
+    }
+  | {
+      kind: 'ASSESSMENT_RESULT';
+      id: string;
+      timestamp: Date;
+      title: string;
+      status: AssessmentStatus;
+      score: number;
+      maxScore: number;
+      evaluatorName?: string;
+    }
+  | {
+      kind: 'OFFER_CREATED';
+      id: string;
+      timestamp: Date;
+      salary: number;
+      payFrequency: PayFrequency;
+      status: OfferStatus;
+      createdByName: string;
+    }
+  | {
+      kind: 'OFFER_STATUS';
+      id: string;
+      timestamp: Date;
+      status: OfferStatus;
+      approvedByName?: string;
+    };
 
 export function ApplicationTimeline({
   initialStatus,
   appliedAt,
   history,
+  interviews = [],
+  assessments = [],
+  offers = [],
 }: ApplicationTimelineProps) {
+  // Assemble presentation-only unified timeline
+  const events: UnifiedTimelineEvent[] = [
+    {
+      kind: 'INITIAL_APPLIED',
+      timestamp: new Date(appliedAt),
+      status: initialStatus,
+    },
+  ];
+
+  for (const h of history) {
+    events.push({
+      kind: 'STATUS_TRANSITION',
+      id: h.id,
+      timestamp: new Date(h.createdAt),
+      fromStatus: h.fromStatus,
+      toStatus: h.toStatus,
+      changedBy: h.changedBy,
+    });
+  }
+
+  for (const iv of interviews) {
+    events.push({
+      kind: 'INTERVIEW_SCHEDULED',
+      id: `sched-${iv.id}`,
+      timestamp: new Date(iv.createdAt),
+      scheduledAt: new Date(iv.scheduledAt),
+      type: iv.type,
+      interviewer: iv.interviewer,
+    });
+
+    if (
+      iv.status === InterviewStatus.COMPLETED ||
+      iv.status === InterviewStatus.CANCELLED ||
+      iv.status === InterviewStatus.NO_SHOW
+    ) {
+      events.push({
+        kind: 'INTERVIEW_STATUS',
+        id: `status-${iv.id}`,
+        timestamp: new Date(iv.updatedAt),
+        status: iv.status,
+        type: iv.type,
+        interviewer: iv.interviewer,
+      });
+    }
+
+    if (iv.evaluation) {
+      events.push({
+        kind: 'EVALUATION_SUBMITTED',
+        id: `eval-${iv.id}`,
+        timestamp: new Date(iv.evaluation.createdAt),
+        overallScore: iv.evaluation.overallScore,
+        recommendation: iv.evaluation.recommendation,
+        evaluatedBy: iv.evaluation.evaluatedBy,
+      });
+    }
+  }
+
+  for (const a of assessments) {
+    events.push({
+      kind: 'ASSESSMENT_ASSIGNED',
+      id: `ass-assign-${a.id}`,
+      timestamp: new Date(a.createdAt),
+      title: a.title,
+      type: a.type,
+      evaluatorName: a.evaluator?.name,
+    });
+
+    if (
+      (a.status === AssessmentStatus.PASSED || a.status === AssessmentStatus.FAILED) &&
+      a.score !== null &&
+      a.evaluatedAt
+    ) {
+      events.push({
+        kind: 'ASSESSMENT_RESULT',
+        id: `ass-result-${a.id}`,
+        timestamp: new Date(a.evaluatedAt),
+        title: a.title,
+        status: a.status,
+        score: a.score,
+        maxScore: a.maxScore ?? 100,
+        evaluatorName: a.evaluator?.name,
+      });
+    }
+  }
+
+  for (const off of offers) {
+    events.push({
+      kind: 'OFFER_CREATED',
+      id: `off-create-${off.id}`,
+      timestamp: new Date(off.createdAt),
+      salary: off.salary,
+      payFrequency: off.payFrequency,
+      status: off.status,
+      createdByName: off.createdBy.name,
+    });
+
+    if (off.status !== OfferStatus.DRAFT && new Date(off.updatedAt) > new Date(off.createdAt)) {
+      events.push({
+        kind: 'OFFER_STATUS',
+        id: `off-status-${off.id}`,
+        timestamp: new Date(off.updatedAt),
+        status: off.status,
+        approvedByName: off.approvedBy?.name,
+      });
+    }
+  }
+
+  // Sort chronologically ascending
+  events.sort((a, b) => a.timestamp.getTime() - b.timestamp.getTime());
+
   return (
     <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-xs dark:border-slate-800 dark:bg-slate-900 space-y-4">
       <div className="flex items-center justify-between border-b border-slate-100 pb-3 dark:border-slate-800">
         <h3 className="text-xs font-semibold text-slate-500 uppercase tracking-wider dark:text-slate-400 flex items-center gap-2">
-          <History className="h-4 w-4 text-indigo-600 dark:text-indigo-400" /> Candidate Status Audit Timeline
+          <History className="h-4 w-4 text-indigo-600 dark:text-indigo-400" /> Candidate Activity & Audit Timeline
         </h3>
         <span className="text-[10px] font-semibold text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-950 px-2 py-0.5 rounded-md">
-          {history.length + 1} State Events
+          {events.length} Timeline Events
         </span>
       </div>
 
       <div className="relative pl-5 space-y-5 border-l-2 border-slate-200 dark:border-slate-800 ml-2">
-        {/* Initial Submission Node */}
-        <div className="relative space-y-1">
-          <div className="absolute -left-[27px] top-0.5 h-3.5 w-3.5 rounded-full border-2 border-white bg-indigo-600 shadow-xs dark:border-slate-900 dark:bg-indigo-400" />
-          <div className="flex items-center gap-2">
-            <span className="text-xs font-bold text-slate-900 dark:text-slate-100">
-              Application Created ({ApplicationStatus.APPLIED})
-            </span>
-            <span className="rounded-md bg-indigo-50 px-1.5 py-0.5 text-[9px] font-semibold text-indigo-700 dark:bg-indigo-950 dark:text-indigo-300">
-              Initial Submission
-            </span>
-          </div>
-          <p className="text-[11px] text-slate-500 dark:text-slate-400 flex items-center gap-1">
-            <Clock className="h-3 w-3" /> Submitted by candidate on {new Date(appliedAt).toLocaleString()}
-          </p>
-        </div>
+        {events.map((event) => {
+          if (event.kind === 'INITIAL_APPLIED') {
+            return (
+              <div key="initial" className="relative space-y-1">
+                <div className="absolute -left-[27px] top-0.5 h-3.5 w-3.5 rounded-full border-2 border-white bg-indigo-600 shadow-xs dark:border-slate-900 dark:bg-indigo-400" />
+                <div className="flex items-center gap-2">
+                  <span className="text-xs font-bold text-slate-900 dark:text-slate-100">
+                    Application Created ({ApplicationStatus.APPLIED})
+                  </span>
+                  <span className="rounded-md bg-indigo-50 px-1.5 py-0.5 text-[9px] font-semibold text-indigo-700 dark:bg-indigo-950 dark:text-indigo-300">
+                    Initial Submission
+                  </span>
+                </div>
+                <p className="text-[11px] text-slate-500 dark:text-slate-400 flex items-center gap-1">
+                  <Clock className="h-3 w-3" /> Submitted by candidate on {event.timestamp.toLocaleString()}
+                </p>
+              </div>
+            );
+          }
 
-        {/* Chronological History Transitions */}
-        {history.map((hist) => (
-          <div key={hist.id} className="relative space-y-1">
-            <div className="absolute -left-[27px] top-0.5 h-3.5 w-3.5 rounded-full border-2 border-white bg-emerald-600 shadow-xs dark:border-slate-900 dark:bg-emerald-400" />
-            <div className="flex items-center gap-2">
-              <span className="text-xs font-bold text-slate-900 dark:text-slate-100">
-                Status Transition: <span className="text-slate-500 line-through">{hist.fromStatus}</span> →{' '}
-                <span className="text-emerald-600 dark:text-emerald-400 font-extrabold">{hist.toStatus}</span>
-              </span>
-            </div>
-            <p className="text-[11px] text-slate-500 dark:text-slate-400 flex items-center gap-1">
-              <UserCheck className="h-3 w-3 text-slate-400" /> Updated by {hist.changedBy.name} ({hist.changedBy.role}) on{' '}
-              {new Date(hist.createdAt).toLocaleString()}
-            </p>
-          </div>
-        ))}
+          if (event.kind === 'STATUS_TRANSITION') {
+            return (
+              <div key={event.id} className="relative space-y-1">
+                <div className="absolute -left-[27px] top-0.5 h-3.5 w-3.5 rounded-full border-2 border-white bg-emerald-600 shadow-xs dark:border-slate-900 dark:bg-emerald-400" />
+                <div className="flex items-center gap-2">
+                  <span className="text-xs font-bold text-slate-900 dark:text-slate-100">
+                    ATS Stage Transition: <span className="text-slate-500 line-through">{event.fromStatus}</span> →{' '}
+                    <span className="text-emerald-600 dark:text-emerald-400 font-extrabold">{event.toStatus}</span>
+                  </span>
+                </div>
+                <p className="text-[11px] text-slate-500 dark:text-slate-400 flex items-center gap-1">
+                  <UserCheck className="h-3 w-3 text-slate-400" /> Updated by {event.changedBy.name} ({event.changedBy.role.replace('_', ' ')}) on{' '}
+                  {event.timestamp.toLocaleString()}
+                </p>
+              </div>
+            );
+          }
+
+          if (event.kind === 'INTERVIEW_SCHEDULED') {
+            return (
+              <div key={event.id} className="relative space-y-1">
+                <div className="absolute -left-[27px] top-0.5 h-3.5 w-3.5 rounded-full border-2 border-white bg-blue-600 shadow-xs dark:border-slate-900 dark:bg-blue-400" />
+                <div className="flex items-center gap-2">
+                  <span className="text-xs font-bold text-slate-900 dark:text-slate-100">
+                    Interview Scheduled: {event.type.replace('_', ' ')}
+                  </span>
+                </div>
+                <p className="text-[11px] text-slate-500 dark:text-slate-400 flex items-center gap-1">
+                  <Calendar className="h-3 w-3 text-blue-500" /> Scheduled for {event.scheduledAt.toLocaleString()} with {event.interviewer.name}
+                </p>
+              </div>
+            );
+          }
+
+          if (event.kind === 'INTERVIEW_STATUS') {
+            const isCompleted = event.status === InterviewStatus.COMPLETED;
+            const isCancelled = event.status === InterviewStatus.CANCELLED;
+            return (
+              <div key={event.id} className="relative space-y-1">
+                <div
+                  className={`absolute -left-[27px] top-0.5 h-3.5 w-3.5 rounded-full border-2 border-white shadow-xs dark:border-slate-900 ${
+                    isCompleted
+                      ? 'bg-emerald-600 dark:bg-emerald-400'
+                      : isCancelled
+                      ? 'bg-slate-400'
+                      : 'bg-rose-500'
+                  }`}
+                />
+                <div className="flex items-center gap-2">
+                  <span className="text-xs font-bold text-slate-900 dark:text-slate-100">
+                    Interview {event.status.replace('_', ' ')}: {event.type.replace('_', ' ')}
+                  </span>
+                </div>
+                <p className="text-[11px] text-slate-500 dark:text-slate-400 flex items-center gap-1">
+                  {isCompleted ? (
+                    <CheckCircle2 className="h-3 w-3 text-emerald-500" />
+                  ) : isCancelled ? (
+                    <XCircle className="h-3 w-3 text-slate-400" />
+                  ) : (
+                    <AlertTriangle className="h-3 w-3 text-rose-500" />
+                  )}
+                  Interview with {event.interviewer.name} recorded as {event.status} on {event.timestamp.toLocaleString()}
+                </p>
+              </div>
+            );
+          }
+
+          if (event.kind === 'EVALUATION_SUBMITTED') {
+            return (
+              <div key={event.id} className="relative space-y-1">
+                <div className="absolute -left-[27px] top-0.5 h-3.5 w-3.5 rounded-full border-2 border-white bg-purple-600 shadow-xs dark:border-slate-900 dark:bg-purple-400" />
+                <div className="flex items-center gap-2">
+                  <span className="text-xs font-bold text-slate-900 dark:text-slate-100">
+                    Interview Evaluation Submitted: {event.overallScore.toFixed(1)} / 5.0 ({event.recommendation.replace('_', ' ')})
+                  </span>
+                </div>
+                <p className="text-[11px] text-slate-500 dark:text-slate-400 flex items-center gap-1">
+                  <Award className="h-3 w-3 text-purple-500" /> Evaluated by {event.evaluatedBy.name} on {event.timestamp.toLocaleString()}
+                </p>
+              </div>
+            );
+          }
+
+          if (event.kind === 'ASSESSMENT_ASSIGNED') {
+            return (
+              <div key={event.id} className="relative space-y-1">
+                <div className="absolute -left-[27px] top-0.5 h-3.5 w-3.5 rounded-full border-2 border-white bg-cyan-600 shadow-xs dark:border-slate-900 dark:bg-cyan-400" />
+                <div className="flex items-center gap-2">
+                  <span className="text-xs font-bold text-slate-900 dark:text-slate-100">
+                    Assessment Assigned: {event.title} ({event.type})
+                  </span>
+                </div>
+                <p className="text-[11px] text-slate-500 dark:text-slate-400 flex items-center gap-1">
+                  <Award className="h-3 w-3 text-cyan-500" /> Assigned on {event.timestamp.toLocaleString()}
+                  {event.evaluatorName ? ` • Reviewer: ${event.evaluatorName}` : ''}
+                </p>
+              </div>
+            );
+          }
+
+          if (event.kind === 'ASSESSMENT_RESULT') {
+            const isPassed = event.status === AssessmentStatus.PASSED;
+            return (
+              <div key={event.id} className="relative space-y-1">
+                <div
+                  className={`absolute -left-[27px] top-0.5 h-3.5 w-3.5 rounded-full border-2 border-white shadow-xs dark:border-slate-900 ${
+                    isPassed ? 'bg-emerald-600' : 'bg-rose-500'
+                  }`}
+                />
+                <div className="flex items-center gap-2">
+                  <span className="text-xs font-bold text-slate-900 dark:text-slate-100">
+                    Assessment Outcome: {event.status} ({event.score} / {event.maxScore} pts)
+                  </span>
+                </div>
+                <p className="text-[11px] text-slate-500 dark:text-slate-400 flex items-center gap-1">
+                  {isPassed ? (
+                    <CheckCircle2 className="h-3 w-3 text-emerald-500" />
+                  ) : (
+                    <XCircle className="h-3 w-3 text-rose-500" />
+                  )}
+                  {event.title} result finalized on {event.timestamp.toLocaleString()}
+                  {event.evaluatorName ? ` by ${event.evaluatorName}` : ''}
+                </p>
+              </div>
+            );
+          }
+
+          if (event.kind === 'OFFER_CREATED') {
+            const freqCfg = PAY_FREQUENCY_CONFIG[event.payFrequency];
+            return (
+              <div key={event.id} className="relative space-y-1">
+                <div className="absolute -left-[27px] top-0.5 h-3.5 w-3.5 rounded-full border-2 border-white bg-indigo-600 shadow-xs dark:border-slate-900 dark:bg-indigo-400" />
+                <div className="flex items-center gap-2">
+                  <span className="text-xs font-bold text-slate-900 dark:text-slate-100">
+                    Offer Package Prepared: ₱{event.salary.toLocaleString()}{freqCfg.suffix} ({event.status})
+                  </span>
+                </div>
+                <p className="text-[11px] text-slate-500 dark:text-slate-400 flex items-center gap-1">
+                  <DollarSign className="h-3 w-3 text-indigo-500" /> Created by {event.createdByName} on {event.timestamp.toLocaleString()}
+                </p>
+              </div>
+            );
+          }
+
+          if (event.kind === 'OFFER_STATUS') {
+            const isAccepted = event.status === OfferStatus.ACCEPTED;
+            return (
+              <div key={event.id} className="relative space-y-1">
+                <div
+                  className={`absolute -left-[27px] top-0.5 h-3.5 w-3.5 rounded-full border-2 border-white shadow-xs dark:border-slate-900 ${
+                    isAccepted ? 'bg-emerald-600' : 'bg-blue-600'
+                  }`}
+                />
+                <div className="flex items-center gap-2">
+                  <span className="text-xs font-bold text-slate-900 dark:text-slate-100">
+                    Offer Stage Updated: {event.status}
+                  </span>
+                </div>
+                <p className="text-[11px] text-slate-500 dark:text-slate-400 flex items-center gap-1">
+                  <FileText className="h-3 w-3 text-blue-500" /> Status modified on {event.timestamp.toLocaleString()}
+                  {event.approvedByName ? ` • Approved by ${event.approvedByName}` : ''}
+                </p>
+              </div>
+            );
+          }
+
+          return null;
+        })}
       </div>
     </div>
   );

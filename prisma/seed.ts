@@ -1,4 +1,17 @@
-import { PrismaClient, Role, JobStatus, RequirementType, ApplicationStatus } from '@prisma/client';
+import {
+  PrismaClient,
+  Role,
+  JobStatus,
+  RequirementType,
+  ApplicationStatus,
+  InterviewType,
+  InterviewStatus,
+  EvaluationRecommendation,
+  AssessmentStatus,
+  AssessmentType,
+  OfferStatus,
+  PayFrequency,
+} from '@prisma/client';
 import { hash } from 'bcryptjs';
 
 const prisma = new PrismaClient();
@@ -601,7 +614,510 @@ async function main() {
     },
   });
 
-  console.log(`✓ Applicants & Applications created.`);
+  // 5. Create Interviews & Evaluations (Sprint 2.2)
+  console.log('Seeding Interviews & Candidate Evaluations for both tenants...');
+
+  // 5a. St. Aloysius Interview Seed: Grace Santos (Senior STEM Educator)
+  const graceApp = await prisma.application.findUnique({
+    where: {
+      jobId_applicantId: {
+        jobId: stemJob.id,
+        applicantId: applicant4.id,
+      },
+    },
+  });
+
+  if (graceApp) {
+    // Grace Santos: Completed Technical Interview
+    let graceTechnicalInterview = await prisma.interview.findFirst({
+      where: {
+        applicationId: graceApp.id,
+        type: InterviewType.TECHNICAL,
+      },
+    });
+
+    if (!graceTechnicalInterview) {
+      graceTechnicalInterview = await prisma.interview.create({
+        data: {
+          applicationId: graceApp.id,
+          interviewerId: hrUser.id,
+          type: InterviewType.TECHNICAL,
+          status: InterviewStatus.COMPLETED,
+          scheduledAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000), // 2 days ago
+          durationMinutes: 45,
+          location: 'STEM Lab 102 - Science Building',
+          meetingUrl: 'https://meet.google.com/sta-stem-tech-eval',
+          notes: 'Detailed demonstration of advanced physics and calculus lesson plan.',
+        },
+      });
+    }
+
+    // Evaluation for Grace's Technical Interview
+    await prisma.candidateEvaluation.upsert({
+      where: {
+        interviewId: graceTechnicalInterview.id,
+      },
+      update: {
+        communicationScore: 5,
+        technicalScore: 5,
+        problemSolvingScore: 4,
+        experienceScore: 4,
+        cultureFitScore: 5,
+        overallScore: 4.6,
+        recommendation: EvaluationRecommendation.STRONGLY_RECOMMEND,
+        comments:
+          'Candidate demonstrated exceptional mastery of Physics and Mathematics curricula, clear pedagogical articulation, and deep alignment with Ignatian educational values.',
+        evaluatedById: hrUser.id,
+      },
+      create: {
+        interviewId: graceTechnicalInterview.id,
+        communicationScore: 5,
+        technicalScore: 5,
+        problemSolvingScore: 4,
+        experienceScore: 4,
+        cultureFitScore: 5,
+        overallScore: 4.6,
+        recommendation: EvaluationRecommendation.STRONGLY_RECOMMEND,
+        comments:
+          'Candidate demonstrated exceptional mastery of Physics and Mathematics curricula, clear pedagogical articulation, and deep alignment with Ignatian educational values.',
+        evaluatedById: hrUser.id,
+      },
+    });
+
+    // Grace Santos: Scheduled Final Interview
+    const existingGraceFinal = await prisma.interview.findFirst({
+      where: {
+        applicationId: graceApp.id,
+        type: InterviewType.FINAL,
+      },
+    });
+
+    if (!existingGraceFinal) {
+      await prisma.interview.create({
+        data: {
+          applicationId: graceApp.id,
+          interviewerId: managerUser.id,
+          type: InterviewType.FINAL,
+          status: InterviewStatus.SCHEDULED,
+          scheduledAt: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000), // 3 days in future
+          durationMinutes: 60,
+          location: 'Executive Boardroom, Gonzaga Hall',
+          notes: 'Final panel interview with Department Head and Hiring Committee.',
+        },
+      });
+    }
+  }
+
+  // 5b. Test Academy Interview Seed: John Smith (Automated Test Engineer)
+  const testJohnApp = await prisma.application.findUnique({
+    where: {
+      jobId_applicantId: {
+        jobId: testJob1.id,
+        applicantId: testApplicant2.id,
+      },
+    },
+  });
+
+  if (testJohnApp) {
+    // Advance John Smith to INTERVIEW stage if not already
+    if (testJohnApp.status !== ApplicationStatus.INTERVIEW) {
+      await prisma.application.update({
+        where: { id: testJohnApp.id },
+        data: { status: ApplicationStatus.INTERVIEW },
+      });
+
+      await prisma.applicationStatusHistory.create({
+        data: {
+          applicationId: testJohnApp.id,
+          fromStatus: ApplicationStatus.SCREENING,
+          toStatus: ApplicationStatus.INTERVIEW,
+          changedById: testHrUser.id,
+        },
+      });
+    }
+
+    // John Smith: Completed Initial Screening Interview
+    let johnScreeningInterview = await prisma.interview.findFirst({
+      where: {
+        applicationId: testJohnApp.id,
+        type: InterviewType.INITIAL_SCREENING,
+      },
+    });
+
+    if (!johnScreeningInterview) {
+      johnScreeningInterview = await prisma.interview.create({
+        data: {
+          applicationId: testJohnApp.id,
+          interviewerId: testHrUser.id,
+          type: InterviewType.INITIAL_SCREENING,
+          status: InterviewStatus.COMPLETED,
+          scheduledAt: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000), // 1 day ago
+          durationMinutes: 30,
+          meetingUrl: 'https://meet.google.com/test-academy-screening-john',
+          notes: 'Initial background screening and verification of QA automated testing tools.',
+        },
+      });
+    }
+
+    // Evaluation for John Smith's Initial Screening
+    await prisma.candidateEvaluation.upsert({
+      where: {
+        interviewId: johnScreeningInterview.id,
+      },
+      update: {
+        communicationScore: 4,
+        technicalScore: 4,
+        problemSolvingScore: 4,
+        experienceScore: 3,
+        cultureFitScore: 4,
+        overallScore: 3.8,
+        recommendation: EvaluationRecommendation.RECOMMEND,
+        comments:
+          'Solid automated testing background with Playwright and Cypress. Recommended to proceed to technical hands-on assessment round.',
+        evaluatedById: testHrUser.id,
+      },
+      create: {
+        interviewId: johnScreeningInterview.id,
+        communicationScore: 4,
+        technicalScore: 4,
+        problemSolvingScore: 4,
+        experienceScore: 3,
+        cultureFitScore: 4,
+        overallScore: 3.8,
+        recommendation: EvaluationRecommendation.RECOMMEND,
+        comments:
+          'Solid automated testing background with Playwright and Cypress. Recommended to proceed to technical hands-on assessment round.',
+        evaluatedById: testHrUser.id,
+      },
+    });
+
+    // John Smith: Scheduled Technical Interview
+    const existingJohnTech = await prisma.interview.findFirst({
+      where: {
+        applicationId: testJohnApp.id,
+        type: InterviewType.TECHNICAL,
+      },
+    });
+
+    if (!existingJohnTech) {
+      await prisma.interview.create({
+        data: {
+          applicationId: testJohnApp.id,
+          interviewerId: testHrUser.id,
+          type: InterviewType.TECHNICAL,
+          status: InterviewStatus.SCHEDULED,
+          scheduledAt: new Date(Date.now() + 4 * 24 * 60 * 60 * 1000), // 4 days in future
+          durationMinutes: 60,
+          meetingUrl: 'https://meet.google.com/test-academy-tech-round-john',
+          notes: 'Live coding assessment covering integration testing with Prisma and Next.js.',
+        },
+      });
+    }
+  }
+
+  console.log(`✓ Interviews and candidate evaluations seeded.`);
+
+  // 6. Create Pre-Employment Assessments & Offers (Sprint 2.3)
+  console.log('Seeding Pre-Employment Assessments & Offers for both tenants...');
+
+  // 6a. St. Aloysius Candidate A: Grace Santos (Senior STEM Educator)
+  // State: INTERVIEW -> Assessment ASSIGNED
+  if (graceApp) {
+    const existingGraceAss = await prisma.assessment.findFirst({
+      where: {
+        applicationId: graceApp.id,
+        title: 'Senior STEM Pedagogy & Physics Laboratory Demonstration',
+      },
+    });
+
+    if (!existingGraceAss) {
+      await prisma.assessment.create({
+        data: {
+          applicationId: graceApp.id,
+          title: 'Senior STEM Pedagogy & Physics Laboratory Demonstration',
+          type: AssessmentType.TECHNICAL,
+          description:
+            'Conduct a 30-minute demonstration of a senior high school laboratory experiment on electromagnetism and submit a comprehensive lesson syllabus.',
+          dueDate: new Date(Date.now() + 5 * 24 * 60 * 60 * 1000),
+          maxScore: 100,
+          passingScore: 80,
+          status: AssessmentStatus.ASSIGNED,
+          evaluatorId: hrUser.id,
+        },
+      });
+    }
+  }
+
+  // 6b. St. Aloysius Candidate B: Mark Tan (Senior STEM Educator)
+  // State: ASSESSMENT -> Assessment PASSED
+  const markApp = await prisma.application.findUnique({
+    where: {
+      jobId_applicantId: {
+        jobId: stemJob.id,
+        applicantId: applicant3.id,
+      },
+    },
+  });
+
+  if (markApp) {
+    if (markApp.status !== ApplicationStatus.ASSESSMENT) {
+      await prisma.application.update({
+        where: { id: markApp.id },
+        data: { status: ApplicationStatus.ASSESSMENT },
+      });
+    }
+
+    const existingMarkAss = await prisma.assessment.findFirst({
+      where: {
+        applicationId: markApp.id,
+        title: 'Advanced Calculus & Mathematics Curriculum Design Challenge',
+      },
+    });
+
+    if (!existingMarkAss) {
+      await prisma.assessment.create({
+        data: {
+          applicationId: markApp.id,
+          title: 'Advanced Calculus & Mathematics Curriculum Design Challenge',
+          type: AssessmentType.SKILLS,
+          description:
+            'Design a 4-week modular syllabus for Senior High School AP Calculus AB including problem sets and rubric matrices.',
+          dueDate: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000),
+          score: 92.5,
+          maxScore: 100,
+          passingScore: 75,
+          status: AssessmentStatus.PASSED,
+          submittedAt: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000),
+          evaluatedAt: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000),
+          evaluatorId: hrUser.id,
+          reviewerNotes:
+            'Exceptional curriculum design with rigorous mathematical derivations and clear student-centered learning goals. Scored 92.5% (PASSED).',
+        },
+      });
+    }
+  }
+
+  // 6c. St. Aloysius Candidate C: Carlos Mendoza (Senior STEM Educator)
+  // State: OFFER -> Offer PENDING_APPROVAL
+  const carlosApp = await prisma.application.findUnique({
+    where: {
+      jobId_applicantId: {
+        jobId: stemJob.id,
+        applicantId: applicant1.id,
+      },
+    },
+  });
+
+  if (carlosApp) {
+    if (carlosApp.status !== ApplicationStatus.OFFER) {
+      await prisma.application.update({
+        where: { id: carlosApp.id },
+        data: { status: ApplicationStatus.OFFER },
+      });
+    }
+
+    // Assessment for Carlos
+    const existingCarlosAss = await prisma.assessment.findFirst({
+      where: {
+        applicationId: carlosApp.id,
+        title: 'Physics Problem Solving & Classroom Simulation',
+      },
+    });
+
+    if (!existingCarlosAss) {
+      await prisma.assessment.create({
+        data: {
+          applicationId: carlosApp.id,
+          title: 'Physics Problem Solving & Classroom Simulation',
+          type: AssessmentType.TECHNICAL,
+          description: 'Problem-solving assessment and interactive classroom simulation.',
+          score: 88,
+          maxScore: 100,
+          passingScore: 75,
+          status: AssessmentStatus.PASSED,
+          submittedAt: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000),
+          evaluatedAt: new Date(Date.now() - 4 * 24 * 60 * 60 * 1000),
+          evaluatorId: hrUser.id,
+          reviewerNotes: 'Strong analytical skills demonstrated in kinematics and dynamics.',
+        },
+      });
+    }
+
+    // Offer for Carlos (PENDING_APPROVAL)
+    const existingCarlosOffer = await prisma.offer.findFirst({
+      where: {
+        applicationId: carlosApp.id,
+      },
+    });
+
+    if (!existingCarlosOffer) {
+      await prisma.offer.create({
+        data: {
+          applicationId: carlosApp.id,
+          salary: 65000,
+          payFrequency: PayFrequency.MONTHLY,
+          employmentType: 'Full-time Permanent',
+          startDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
+          expirationDate: new Date(Date.now() + 45 * 24 * 60 * 60 * 1000),
+          benefits:
+            'Comprehensive HMO coverage with 2 dependents, 15 days Vacation Leave, 15 days Sick Leave, 13th month pay, and Retirement Fund.',
+          allowances: '₱3,000 monthly teaching supply and technology stipend.',
+          additionalTerms:
+            'Contingent on background check clearance and verification of PRC License credentials.',
+          notes: 'Submitted for Executive Board approval by HR Committee.',
+          status: OfferStatus.PENDING_APPROVAL,
+          createdById: hrUser.id,
+        },
+      });
+    }
+  }
+
+  // 6d. St. Aloysius Candidate D: Ana Reyes (Senior STEM Educator)
+  // State: OFFER -> Offer SENT
+  const anaApp = await prisma.application.findUnique({
+    where: {
+      jobId_applicantId: {
+        jobId: stemJob.id,
+        applicantId: applicant2.id,
+      },
+    },
+  });
+
+  if (anaApp) {
+    if (anaApp.status !== ApplicationStatus.OFFER) {
+      await prisma.application.update({
+        where: { id: anaApp.id },
+        data: { status: ApplicationStatus.OFFER },
+      });
+    }
+
+    // Assessment for Ana
+    const existingAnaAss = await prisma.assessment.findFirst({
+      where: {
+        applicationId: anaApp.id,
+        title: 'STEM Foundational Knowledge & Logic Assessment',
+      },
+    });
+
+    if (!existingAnaAss) {
+      await prisma.assessment.create({
+        data: {
+          applicationId: anaApp.id,
+          title: 'STEM Foundational Knowledge & Logic Assessment',
+          type: AssessmentType.COGNITIVE,
+          description: 'Cognitive reasoning and pedagogical fundamentals test.',
+          score: 85,
+          maxScore: 100,
+          passingScore: 75,
+          status: AssessmentStatus.PASSED,
+          submittedAt: new Date(Date.now() - 4 * 24 * 60 * 60 * 1000),
+          evaluatedAt: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000),
+          evaluatorId: hrUser.id,
+        },
+      });
+    }
+
+    // Offer for Ana (SENT)
+    const existingAnaOffer = await prisma.offer.findFirst({
+      where: {
+        applicationId: anaApp.id,
+      },
+    });
+
+    if (!existingAnaOffer) {
+      await prisma.offer.create({
+        data: {
+          applicationId: anaApp.id,
+          salary: 62000,
+          payFrequency: PayFrequency.MONTHLY,
+          employmentType: 'Full-time',
+          startDate: new Date(Date.now() + 20 * 24 * 60 * 60 * 1000),
+          expirationDate: new Date(Date.now() + 35 * 24 * 60 * 60 * 1000),
+          benefits: 'Standard faculty HMO, 13th month pay, 15 days annual paid leaves.',
+          allowances: '₱2,500 monthly connectivity and research allowance.',
+          notes: 'Approved by Fr. Jose Rizal on committee review and transmitted to candidate.',
+          status: OfferStatus.SENT,
+          createdById: hrUser.id,
+          approvedById: adminUser.id,
+        },
+      });
+    }
+  }
+
+  // 6e. Test Academy Candidate E: Jane Doe (Automated Test Engineer)
+  // State: HIRED -> Offer ACCEPTED
+  const testJaneApp = await prisma.application.findUnique({
+    where: {
+      jobId_applicantId: {
+        jobId: testJob1.id,
+        applicantId: testApplicant1.id,
+      },
+    },
+  });
+
+  if (testJaneApp) {
+    if (testJaneApp.status !== ApplicationStatus.HIRED) {
+      await prisma.application.update({
+        where: { id: testJaneApp.id },
+        data: { status: ApplicationStatus.HIRED },
+      });
+    }
+
+    // Assessment for Jane Doe
+    const existingJaneAss = await prisma.assessment.findFirst({
+      where: {
+        applicationId: testJaneApp.id,
+        title: 'Playwright & Next.js End-to-End Test Automation Challenge',
+      },
+    });
+
+    if (!existingJaneAss) {
+      await prisma.assessment.create({
+        data: {
+          applicationId: testJaneApp.id,
+          title: 'Playwright & Next.js End-to-End Test Automation Challenge',
+          type: AssessmentType.TECHNICAL,
+          description: 'Construct end-to-end integration and regression suite for multi-tenant portal.',
+          score: 96,
+          maxScore: 100,
+          passingScore: 80,
+          status: AssessmentStatus.PASSED,
+          submittedAt: new Date(Date.now() - 15 * 24 * 60 * 60 * 1000),
+          evaluatedAt: new Date(Date.now() - 14 * 24 * 60 * 60 * 1000),
+          evaluatorId: testHrUser.id,
+          reviewerNotes: 'Mastery of Playwright and TypeScript testing patterns. Scored 96%.',
+        },
+      });
+    }
+
+    // Offer for Jane Doe (ACCEPTED)
+    const existingJaneOffer = await prisma.offer.findFirst({
+      where: {
+        applicationId: testJaneApp.id,
+      },
+    });
+
+    if (!existingJaneOffer) {
+      await prisma.offer.create({
+        data: {
+          applicationId: testJaneApp.id,
+          salary: 95000,
+          payFrequency: PayFrequency.MONTHLY,
+          employmentType: 'Full-time Remote',
+          startDate: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000),
+          expirationDate: new Date(Date.now() + 10 * 24 * 60 * 60 * 1000),
+          benefits: 'Comprehensive health coverage, annual education budget, flexitime.',
+          allowances: '₱5,000 monthly home-office and high-speed internet stipend.',
+          notes: 'Candidate accepted offer terms and completed onboarding.',
+          status: OfferStatus.ACCEPTED,
+          createdById: testHrUser.id,
+          approvedById: testHrUser.id,
+        },
+      });
+    }
+  }
+
+  console.log(`✓ Pre-employment assessments and offers seeded.`);
   console.log('✅ Seed completed successfully!');
 }
 
