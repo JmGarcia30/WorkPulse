@@ -9,6 +9,7 @@ import {
   canRecordAssessmentResult,
   canManageOffers,
   canApproveOffer,
+  canManageOnboarding,
 } from '@/lib/permissions/rbac';
 import { ApplicationStatus } from '@prisma/client';
 import { StatusChangeDialog } from '@/components/hiring/StatusChangeDialog';
@@ -16,6 +17,7 @@ import { ApplicationTimeline } from '@/components/hiring/ApplicationTimeline';
 import { CandidateInterviewsSection } from '@/components/hiring/CandidateInterviewsSection';
 import { CandidateAssessmentsSection } from '@/components/hiring/CandidateAssessmentsSection';
 import { CandidateOffersSection } from '@/components/hiring/CandidateOffersSection';
+import { CandidateOnboardingSection } from '@/components/hiring/CandidateOnboardingSection';
 import {
   ArrowLeft,
   Mail,
@@ -90,6 +92,16 @@ export default async function CandidateProfilePage({ params }: CandidateProfileP
             },
           },
         },
+        onboarding: {
+          include: {
+            tasks: {
+              orderBy: { createdAt: 'asc' },
+              include: {
+                verifiedBy: { select: { name: true } },
+              },
+            },
+          },
+        },
       },
     }),
     prisma.user.findMany({
@@ -109,6 +121,7 @@ export default async function CandidateProfilePage({ params }: CandidateProfileP
   const canRecordScore = canRecordAssessmentResult(user);
   const canManageOff = canManageOffers(user);
   const canApproveOff = canApproveOffer(user);
+  const canManageOnb = canManageOnboarding(user);
 
   const candidateFullName = `${application.applicant.firstName} ${application.applicant.lastName}`;
 
@@ -256,6 +269,15 @@ export default async function CandidateProfilePage({ params }: CandidateProfileP
             canManage={canManageOff}
             canApprove={canApproveOff}
           />
+
+          {/* Pre-Employment Onboarding Checklist Section */}
+          <CandidateOnboardingSection
+            applicationId={application.id}
+            candidateName={candidateFullName}
+            offers={application.offers}
+            onboarding={application.onboarding}
+            canManage={canManageOnb}
+          />
         </div>
 
         {/* Right Column: Resume Download, Status Controls & History Timeline */}
@@ -315,6 +337,7 @@ export default async function CandidateProfilePage({ params }: CandidateProfileP
             interviews={application.interviews}
             assessments={application.assessments}
             offers={application.offers}
+            onboarding={application.onboarding}
           />
         </div>
       </div>

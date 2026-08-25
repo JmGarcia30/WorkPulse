@@ -5,8 +5,16 @@ import { redirect } from 'next/navigation';
 import { prisma } from '@/lib/db/prisma';
 import { getSession } from '@/lib/auth/session';
 import { canManageJobs, canUpdateApplicationStatus } from '@/lib/permissions/rbac';
-import { JobStatus, ApplicationStatus, RequirementType } from '@prisma/client';
+import {
+  JobStatus,
+  ApplicationStatus,
+  RequirementType,
+  OfferStatus,
+  OnboardingStatus,
+  OnboardingTaskStatus,
+} from '@prisma/client';
 import { isValidStatusTransition } from './pipeline';
+import { DEFAULT_INSTITUTIONAL_ONBOARDING_TASKS } from './onboarding-pipeline';
 
 function slugify(text: string): string {
   return text
@@ -256,6 +264,8 @@ export async function updateApplicationStatusAction(
     },
     include: {
       job: true,
+      offers: true,
+      onboarding: true,
     },
   });
 
@@ -275,24 +285,79 @@ export async function updateApplicationStatusAction(
     };
   }
 
-  // Update status and record in history table
-  await prisma.$transaction([
-    prisma.application.update({
+  // Critical Business Rule: Candidate may only transition to HIRED if they have an ACCEPTED offer
+  let acceptedOffer = null;
+  if (newStatus === ApplicationStatus.HIRED) {
+    acceptedOffer = application.offers.find(
+      (offer) => offer.status === OfferStatus.ACCEPTED
+    );
+
+    if (!acceptedOffer) {
+      return {
+        error:
+          'Candidate cannot be marked as Hired without an accepted offer. Please verify that a formal offer has been issued and marked as Accepted.',
+      };
+    }
+  }
+
+  // Atomic Hire + Onboarding Transaction
+  await prisma.$transaction(async (tx) => {
+    // 1. Update Application status
+    await tx.application.update({
       where: { id: applicationId },
       data: { status: newStatus },
-    }),
-    prisma.applicationStatusHistory.create({
+    });
+
+    // 2. Record ApplicationStatusHistory
+    await tx.applicationStatusHistory.create({
       data: {
         applicationId,
         fromStatus: previousStatus,
         toStatus: newStatus,
         changedById: user.userId,
       },
-    }),
-  ]);
+    });
+
+    // 3. Atomically initialize OnboardingProcess if moving to HIRED and not already created
+    if (newStatus === ApplicationStatus.HIRED && acceptedOffer) {
+      const existingProcess = await tx.onboardingProcess.findUnique({
+        where: { applicationId },
+      });
+
+      if (!existingProcess) {
+        const onboardingProcess = await tx.onboardingProcess.create({
+          data: {
+            applicationId,
+            status: OnboardingStatus.IN_PROGRESS,
+            startDate: acceptedOffer.startDate,
+            targetCompletionDate: new Date(
+              acceptedOffer.startDate.getTime() + 14 * 24 * 60 * 60 * 1000
+            ),
+            notes: `Onboarding initialized automatically upon hire confirmation with accepted offer (${acceptedOffer.employmentType}).`,
+          },
+        });
+
+        // Initialize default institutional tasks
+        for (const taskTemplate of DEFAULT_INSTITUTIONAL_ONBOARDING_TASKS) {
+          await tx.onboardingTask.create({
+            data: {
+              onboardingProcessId: onboardingProcess.id,
+              title: taskTemplate.title,
+              description: taskTemplate.description,
+              type: taskTemplate.type,
+              status: OnboardingTaskStatus.PENDING,
+              isRequired: taskTemplate.isRequired,
+              dueDate: acceptedOffer.startDate,
+            },
+          });
+        }
+      }
+    }
+  });
 
   revalidatePath('/dashboard/hiring/pipeline');
   revalidatePath('/dashboard/hiring/applicants');
+  revalidatePath('/dashboard/hiring/onboarding');
   revalidatePath(`/dashboard/hiring/applicants/${applicationId}`);
   return { success: true };
 }

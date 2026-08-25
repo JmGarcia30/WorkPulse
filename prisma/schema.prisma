@@ -101,6 +101,30 @@ enum PayFrequency {
   HOURLY
 }
 
+enum OnboardingStatus {
+  NOT_STARTED
+  IN_PROGRESS
+  COMPLETED
+  CANCELLED
+}
+
+enum OnboardingTaskType {
+  DOCUMENT
+  EQUIPMENT
+  ADMIN
+  ORIENTATION
+  OTHER
+}
+
+enum OnboardingTaskStatus {
+  PENDING
+  IN_PROGRESS
+  SUBMITTED
+  VERIFIED
+  REJECTED
+  WAIVED
+}
+
 model Organization {
   id             String   @id @default(cuid())
   name           String
@@ -125,13 +149,14 @@ model User {
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
 
-  organization        Organization               @relation(fields: [organizationId], references: [id], onDelete: Cascade)
-  statusChanges       ApplicationStatusHistory[]
-  interviews          Interview[]
-  evaluations         CandidateEvaluation[]
-  evaluationsAssessed Assessment[]
-  offersCreated       Offer[]                    @relation("OfferCreatedBy")
-  offersApproved      Offer[]                    @relation("OfferApprovedBy")
+  organization            Organization               @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  statusChanges           ApplicationStatusHistory[]
+  interviews              Interview[]
+  evaluations             CandidateEvaluation[]
+  evaluationsAssessed     Assessment[]
+  offersCreated           Offer[]                    @relation("OfferCreatedBy")
+  offersApproved          Offer[]                    @relation("OfferApprovedBy")
+  verifiedOnboardingTasks OnboardingTask[]
 
   @@index([organizationId])
 }
@@ -209,6 +234,7 @@ model Application {
   interviews  Interview[]
   assessments Assessment[]
   offers      Offer[]
+  onboarding  OnboardingProcess?
 
   @@unique([jobId, applicantId])
   @@index([jobId])
@@ -347,3 +373,51 @@ model Offer {
   @@index([createdById])
   @@index([approvedById])
 }
+
+model OnboardingProcess {
+  id                   String           @id @default(cuid())
+  applicationId        String           @unique
+  status               OnboardingStatus @default(NOT_STARTED)
+  startDate            DateTime
+  targetCompletionDate DateTime?
+  completedAt          DateTime?
+  notes                String?          @db.Text
+  createdAt            DateTime         @default(now())
+  updatedAt            DateTime         @updatedAt
+
+  application Application      @relation(fields: [applicationId], references: [id], onDelete: Cascade)
+  tasks       OnboardingTask[]
+
+  @@index([status])
+  @@index([startDate])
+}
+
+model OnboardingTask {
+  id                  String               @id @default(cuid())
+  onboardingProcessId String
+  title               String
+  description         String?              @db.Text
+  type                OnboardingTaskType   @default(DOCUMENT)
+  status              OnboardingTaskStatus @default(PENDING)
+  isRequired          Boolean              @default(true)
+  dueDate             DateTime?
+  submittedAt         DateTime?
+  verifiedAt          DateTime?
+  verifiedById        String?
+  reviewerNotes       String?              @db.Text
+  fileName            String?
+  fileType            String?
+  fileSize            Int?
+  storageKey          String?
+  createdAt           DateTime             @default(now())
+  updatedAt           DateTime             @updatedAt
+
+  onboardingProcess OnboardingProcess @relation(fields: [onboardingProcessId], references: [id], onDelete: Cascade)
+  verifiedBy        User?             @relation(fields: [verifiedById], references: [id])
+
+  @@index([onboardingProcessId])
+  @@index([status])
+  @@index([type])
+  @@index([verifiedById])
+}
+

@@ -86,6 +86,14 @@ export interface TimelineOfferItem {
   } | null;
 }
 
+export interface TimelineOnboardingItem {
+  id: string;
+  status: string;
+  startDate: Date | string;
+  completedAt?: Date | string | null;
+  createdAt: Date | string;
+}
+
 interface ApplicationTimelineProps {
   initialStatus: ApplicationStatus;
   appliedAt: Date | string;
@@ -93,6 +101,7 @@ interface ApplicationTimelineProps {
   interviews?: TimelineInterviewItem[];
   assessments?: TimelineAssessmentItem[];
   offers?: TimelineOfferItem[];
+  onboarding?: TimelineOnboardingItem | null;
 }
 
 type UnifiedTimelineEvent =
@@ -166,6 +175,17 @@ type UnifiedTimelineEvent =
       timestamp: Date;
       status: OfferStatus;
       approvedByName?: string;
+    }
+  | {
+      kind: 'ONBOARDING_INITIALIZED';
+      id: string;
+      timestamp: Date;
+      startDate: Date;
+    }
+  | {
+      kind: 'ONBOARDING_COMPLETED';
+      id: string;
+      timestamp: Date;
     };
 
 export function ApplicationTimeline({
@@ -175,6 +195,7 @@ export function ApplicationTimeline({
   interviews = [],
   assessments = [],
   offers = [],
+  onboarding = null,
 }: ApplicationTimelineProps) {
   // Assemble presentation-only unified timeline
   const events: UnifiedTimelineEvent[] = [
@@ -279,6 +300,23 @@ export function ApplicationTimeline({
         timestamp: new Date(off.updatedAt),
         status: off.status,
         approvedByName: off.approvedBy?.name,
+      });
+    }
+  }
+
+  if (onboarding) {
+    events.push({
+      kind: 'ONBOARDING_INITIALIZED',
+      id: `onb-init-${onboarding.id}`,
+      timestamp: new Date(onboarding.createdAt),
+      startDate: new Date(onboarding.startDate),
+    });
+
+    if (onboarding.status === 'COMPLETED' && onboarding.completedAt) {
+      events.push({
+        kind: 'ONBOARDING_COMPLETED',
+        id: `onb-done-${onboarding.id}`,
+        timestamp: new Date(onboarding.completedAt),
       });
     }
   }
@@ -484,9 +522,42 @@ export function ApplicationTimeline({
             );
           }
 
+          if (event.kind === 'ONBOARDING_INITIALIZED') {
+            return (
+              <div key={event.id} className="relative space-y-1">
+                <div className="absolute -left-[27px] top-0.5 h-3.5 w-3.5 rounded-full border-2 border-white bg-indigo-600 shadow-xs dark:border-slate-900 dark:bg-indigo-400" />
+                <div className="flex items-center gap-2">
+                  <span className="text-xs font-bold text-slate-900 dark:text-slate-100">
+                    Employee Onboarding Checklist Initialized
+                  </span>
+                </div>
+                <p className="text-[11px] text-slate-500 dark:text-slate-400 flex items-center gap-1">
+                  <UserCheck className="h-3 w-3 text-indigo-500" /> Checklist generated for start date on {event.startDate.toLocaleDateString()}
+                </p>
+              </div>
+            );
+          }
+
+          if (event.kind === 'ONBOARDING_COMPLETED') {
+            return (
+              <div key={event.id} className="relative space-y-1">
+                <div className="absolute -left-[27px] top-0.5 h-3.5 w-3.5 rounded-full border-2 border-white bg-emerald-600 shadow-xs dark:border-slate-900 dark:bg-emerald-400" />
+                <div className="flex items-center gap-2">
+                  <span className="text-xs font-bold text-emerald-600 dark:text-emerald-400">
+                    Onboarding 100% Completed & Verified
+                  </span>
+                </div>
+                <p className="text-[11px] text-slate-500 dark:text-slate-400 flex items-center gap-1">
+                  <CheckCircle2 className="h-3 w-3 text-emerald-500" /> All required pre-employment documents verified on {event.timestamp.toLocaleString()}
+                </p>
+              </div>
+            );
+          }
+
           return null;
         })}
       </div>
     </div>
   );
 }
+

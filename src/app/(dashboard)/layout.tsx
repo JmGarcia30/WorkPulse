@@ -14,6 +14,7 @@ import {
   Calendar,
   Award,
   FileText,
+  UserCheck,
 } from 'lucide-react';
 
 export default async function DashboardLayout({
@@ -114,6 +115,14 @@ export default async function DashboardLayout({
             >
               <FileText className="h-4 w-4 text-indigo-600 dark:text-indigo-400" />
               <span>Offers</span>
+            </Link>
+
+            <Link
+              href="/dashboard/hiring/onboarding"
+              className="flex items-center gap-3 px-3 py-2.5 text-xs font-medium rounded-lg text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition"
+            >
+              <UserCheck className="h-4 w-4 text-indigo-600 dark:text-indigo-400" />
+              <span>Onboarding</span>
             </Link>
 
             <div className="pt-3 pb-1 px-3">

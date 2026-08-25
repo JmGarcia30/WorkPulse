@@ -7,6 +7,8 @@ import {
   InterviewStatus,
   AssessmentStatus,
   OfferStatus,
+  OnboardingStatus,
+  OnboardingTaskStatus,
 } from '@prisma/client';
 import {
   Briefcase,
@@ -20,6 +22,7 @@ import {
   Award,
   FileText,
   FileCheck,
+  UserCheck,
 } from 'lucide-react';
 
 export default async function DashboardPage() {
@@ -41,6 +44,8 @@ export default async function DashboardPage() {
     awaitingAssessmentReviewCount,
     activeOffersCount,
     pendingOfferApprovalCount,
+    activeOnboardingCount,
+    pendingOnboardingReviewCount,
     recentJobs,
     upcomingInterviews,
     statusHistoryEvents,
@@ -108,6 +113,20 @@ export default async function DashboardPage() {
         status: OfferStatus.PENDING_APPROVAL,
       },
     }),
+    prisma.onboardingProcess.count({
+      where: {
+        application: { job: { organizationId: orgId } },
+        status: OnboardingStatus.IN_PROGRESS,
+      },
+    }),
+    prisma.onboardingTask.count({
+      where: {
+        onboardingProcess: {
+          application: { job: { organizationId: orgId } },
+        },
+        status: OnboardingTaskStatus.SUBMITTED,
+      },
+    }),
     prisma.job.findMany({
       where: { organizationId: orgId },
       orderBy: { createdAt: 'desc' },
@@ -173,7 +192,7 @@ export default async function DashboardPage() {
       </div>
 
       {/* Metrics Grid */}
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
         <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-xs dark:border-slate-800 dark:bg-slate-900 space-y-2">
           <div className="flex items-center justify-between">
             <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider dark:text-slate-400">Active Openings</span>
@@ -223,6 +242,19 @@ export default async function DashboardPage() {
           <p className="text-3xl font-extrabold text-slate-900 dark:text-slate-100">{activeOffersCount}</p>
           <p className="text-[11px] text-amber-600 dark:text-amber-400 font-medium">
             {pendingOfferApprovalCount} awaiting approval.
+          </p>
+        </div>
+
+        <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-xs dark:border-slate-800 dark:bg-slate-900 space-y-2">
+          <div className="flex items-center justify-between">
+            <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider dark:text-slate-400">New Hire Onboarding</span>
+            <div className="rounded-xl bg-indigo-50 p-2 text-indigo-600 dark:bg-indigo-950/60 dark:text-indigo-400">
+              <UserCheck className="h-5 w-5" />
+            </div>
+          </div>
+          <p className="text-3xl font-extrabold text-slate-900 dark:text-slate-100">{activeOnboardingCount}</p>
+          <p className="text-[11px] text-indigo-600 dark:text-indigo-400 font-medium">
+            {pendingOnboardingReviewCount} document reviews pending.
           </p>
         </div>
       </div>

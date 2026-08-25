@@ -66,4 +66,15 @@ export function canApproveOffer(user: UserSessionPayload | null): boolean {
   return user.role === Role.ORGANIZATION_ADMIN || user.role === Role.HR_ADMIN;
 }
 
+export function canManageOnboarding(user: UserSessionPayload | null): boolean {
+  if (!user) return false;
+  return user.role === Role.ORGANIZATION_ADMIN || user.role === Role.HR_ADMIN;
+}
+
+export function canVerifyOnboardingTasks(user: UserSessionPayload | null): boolean {
+  if (!user) return false;
+  return user.role === Role.ORGANIZATION_ADMIN || user.role === Role.HR_ADMIN;
+}
+
+
 

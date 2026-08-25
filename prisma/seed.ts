@@ -11,6 +11,9 @@ import {
   AssessmentType,
   OfferStatus,
   PayFrequency,
+  OnboardingStatus,
+  OnboardingTaskType,
+  OnboardingTaskStatus,
 } from '@prisma/client';
 import { hash } from 'bcryptjs';
 
@@ -1118,6 +1121,109 @@ async function main() {
   }
 
   console.log(`✓ Pre-employment assessments and offers seeded.`);
+
+  // 7. Create Employee Onboarding (Sprint 2.4)
+  console.log('Seeding Employee Onboarding for hired candidates...');
+
+  if (testJaneApp) {
+    let janeOnboarding = await prisma.onboardingProcess.findUnique({
+      where: { applicationId: testJaneApp.id },
+      include: { tasks: true },
+    });
+
+    if (!janeOnboarding) {
+      janeOnboarding = await prisma.onboardingProcess.create({
+        data: {
+          applicationId: testJaneApp.id,
+          status: OnboardingStatus.IN_PROGRESS,
+          startDate: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000),
+          targetCompletionDate: new Date(Date.now() + 9 * 24 * 60 * 60 * 1000),
+          notes:
+            'Onboarding initiated for Automated Test Engineer (Full-time Remote). Standard tech onboarding checklist active.',
+          tasks: {
+            create: [
+              {
+                title: 'Government Identification (SSS, PhilHealth, Pag-IBIG, TIN)',
+                description:
+                  'Upload scanned copies or verified government member numbers for SSS, PhilHealth, Pag-IBIG, and TIN.',
+                type: OnboardingTaskType.DOCUMENT,
+                status: OnboardingTaskStatus.VERIFIED,
+                isRequired: true,
+                dueDate: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000),
+                submittedAt: new Date(Date.now() - 4 * 24 * 60 * 60 * 1000),
+                verifiedAt: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000),
+                verifiedById: testHrUser.id,
+                reviewerNotes: 'Verified all 4 government numbers against official databases.',
+              },
+              {
+                title: 'Medical Fitness & Fit-to-Work Clearance',
+                description:
+                  'Submit comprehensive medical examination results including chest X-ray and physician Fit-to-Work certificate.',
+                type: OnboardingTaskType.DOCUMENT,
+                status: OnboardingTaskStatus.VERIFIED,
+                isRequired: true,
+                dueDate: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000),
+                submittedAt: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000),
+                verifiedAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000),
+                verifiedById: testHrUser.id,
+                reviewerNotes: 'Medical certificate accepted. Fit-to-work confirmed.',
+              },
+              {
+                title: 'NBI / Police Clearance Certificate',
+                description: 'Submit a valid, unexpired NBI clearance or police clearance certificate.',
+                type: OnboardingTaskType.DOCUMENT,
+                status: OnboardingTaskStatus.SUBMITTED,
+                isRequired: true,
+                dueDate: new Date(Date.now() + 2 * 24 * 60 * 60 * 1000),
+                submittedAt: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000),
+              },
+              {
+                title: 'Official Transcript of Records (TOR) & Diploma',
+                description:
+                  'Submit authenticated copies of official transcript of records and college/graduate diploma.',
+                type: OnboardingTaskType.DOCUMENT,
+                status: OnboardingTaskStatus.PENDING,
+                isRequired: true,
+                dueDate: new Date(Date.now() + 5 * 24 * 60 * 60 * 1000),
+              },
+              {
+                title: 'Institutional Email & System Portal Access Provisioning',
+                description:
+                  'Set up official institutional work email account, faculty/staff portal access, and institutional system credentials.',
+                type: OnboardingTaskType.ADMIN,
+                status: OnboardingTaskStatus.IN_PROGRESS,
+                isRequired: true,
+                dueDate: new Date(Date.now() + 1 * 24 * 60 * 60 * 1000),
+              },
+              {
+                title: 'Workstation & Remote Development Environment Setup',
+                description:
+                  'Provision MacBook Pro, GitHub enterprise organization invite, and VPN credentials.',
+                type: OnboardingTaskType.EQUIPMENT,
+                status: OnboardingTaskStatus.IN_PROGRESS,
+                isRequired: true,
+                dueDate: new Date(Date.now() + 2 * 24 * 60 * 60 * 1000),
+              },
+              {
+                title: 'New Hire Institutional Orientation & Department Induction',
+                description:
+                  'Attend mandatory welcome orientation, department briefing, and institutional policy overview session.',
+                type: OnboardingTaskType.ORIENTATION,
+                status: OnboardingTaskStatus.PENDING,
+                isRequired: true,
+                dueDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+              },
+            ],
+          },
+        },
+        include: {
+          tasks: true,
+        },
+      });
+    }
+  }
+
+  console.log(`✓ Employee onboarding seeded.`);
   console.log('✅ Seed completed successfully!');
 }
 
