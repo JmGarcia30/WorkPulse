@@ -1,0 +1,9 @@
+⨯ Another next dev server is already running.
+
+- Local:        http://localhost:48673
+- PID:          8656
+- Dir:          G:\CAPSTONE\WorkPulse
+- Log:          .next\dev\logs\next-development.log
+
+You can access the existing server at http://localhost:48673,
+or run taskkill /PID 8656 /F to stop it and start a new one.

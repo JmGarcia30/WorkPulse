@@ -1,0 +1,51 @@
+%PDF-1.4
+1 0 obj
+<< /Type /Catalog /Pages 2 0 R >>
+endobj
+2 0 obj
+<< /Type /Pages /Kids [3 0 R] /Count 1 >>
+endobj
+3 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Contents 4 0 R /Resources << /Font << /F1 5 0 R >> >> >>
+endobj
+4 0 obj
+<< /Length 1733 >>
+stream
+BT /F1 16 Tf 50 730 Td (Alex Rivera - Senior Full-Stack Engineer) Tj ET
+BT /F1 10 Tf 50 715 Td (Email: alex.rivera@example.com   Phone: +1-555-234-5678   San Francisco, CA) Tj ET
+BT /F1 12 Tf 50 700 Td (--- Professional Summary ---) Tj ET
+BT /F1 10 Tf 50 685 Td (Senior Full-Stack Engineer with 6 years of experience building scalable web apps.) Tj ET
+BT /F1 10 Tf 50 670 Td (Expert in TypeScript, React, Next.js, Node.js, PostgreSQL, Prisma, Docker, and AWS.) Tj ET
+BT /F1 12 Tf 50 655 Td (--- Technical Skills ---) Tj ET
+BT /F1 10 Tf 50 640 Td (Languages: TypeScript, JavaScript, Python, SQL, HTML5, CSS3) Tj ET
+BT /F1 10 Tf 50 625 Td (Frameworks: React.js, Next.js, Node.js, Express.js, TailwindCSS, GraphQL) Tj ET
+BT /F1 10 Tf 50 610 Td (Databases   DevOps: PostgreSQL, Redis, Docker, Kubernetes, AWS, CI CD Pipelines) Tj ET
+BT /F1 12 Tf 50 595 Td (--- Work Experience ---) Tj ET
+BT /F1 10 Tf 50 580 Td (Lead Full-Stack Developer - NovaTech Solutions  2022-03 to Present ) Tj ET
+BT /F1 10 Tf 50 565 Td (Architected Next.js microservices serving 2M users with 99.99 percent uptime.) Tj ET
+BT /F1 10 Tf 50 550 Td (Senior Software Engineer - Apex Cloud Labs  2019-06 to 2022-02 ) Tj ET
+BT /F1 10 Tf 50 535 Td (Engineered React dashboards and Node.js REST APIs reducing latency by 35 percent.) Tj ET
+BT /F1 12 Tf 50 520 Td (--- Education ---) Tj ET
+BT /F1 10 Tf 50 505 Td (Bachelor of Science in Computer Science - UC Berkeley  2015 to 2019 ) Tj ET
+BT /F1 12 Tf 50 490 Td (--- Certifications ---) Tj ET
+BT /F1 10 Tf 50 475 Td (AWS Certified Solutions Architect Associate   Certified Kubernetes Administrator) Tj ET
+BT /F1 12 Tf 50 460 Td (--- Languages ---) Tj ET
+BT /F1 10 Tf 50 445 Td (English Fluent, Spanish Conversational) Tj ET
+endstream
+endobj
+5 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>
+endobj
+xref
+0 6
+0000000000 65535 f 
+0000000009 00000 n 
+0000000058 00000 n 
+0000000115 00000 n 
+0000000241 00000 n 
+0000002026 00000 n 
+trailer
+<< /Size 6 /Root 1 0 R >>
+startxref
+2096
+%%EOF

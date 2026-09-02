@@ -10,6 +10,7 @@ import {
   canManageOffers,
   canApproveOffer,
   canManageOnboarding,
+  canManageJobs,
 } from '@/lib/permissions/rbac';
 import { ApplicationStatus } from '@prisma/client';
 import { StatusChangeDialog } from '@/components/hiring/StatusChangeDialog';
@@ -18,6 +19,7 @@ import { CandidateInterviewsSection } from '@/components/hiring/CandidateIntervi
 import { CandidateAssessmentsSection } from '@/components/hiring/CandidateAssessmentsSection';
 import { CandidateOffersSection } from '@/components/hiring/CandidateOffersSection';
 import { CandidateOnboardingSection } from '@/components/hiring/CandidateOnboardingSection';
+import { ParsedResumeSection } from '@/components/hiring/ParsedResumeSection';
 import {
   ArrowLeft,
   Mail,
@@ -53,7 +55,11 @@ export default async function CandidateProfilePage({ params }: CandidateProfileP
             structuredReqs: true,
           },
         },
-        documents: true,
+        documents: {
+          include: {
+            parsedResume: true,
+          },
+        },
         history: {
           orderBy: { createdAt: 'desc' },
           include: {
@@ -204,6 +210,38 @@ export default async function CandidateProfilePage({ params }: CandidateProfileP
               </div>
             </div>
           </div>
+
+          {/* AI Resume Analysis */}
+          {application.documents.some((doc) => doc.fileType === 'application/pdf' || doc.fileType.includes('wordprocessingml')) && (
+            <ParsedResumeSection
+              documentId={application.documents.find((doc) => doc.fileType === 'application/pdf' || doc.fileType.includes('wordprocessingml'))!.id}
+              parsedResume={(() => {
+                const doc = application.documents.find((d) => d.parsedResume);
+                if (!doc?.parsedResume) return null;
+                const pr = doc.parsedResume;
+                return {
+                  summary: pr.summary,
+                  skills: pr.skills as unknown as string[],
+                  education: pr.education as unknown as Array<{institution: string; degree: string; fieldOfStudy: string; startDate: string; endDate: string}>,
+                  workExperience: pr.workExperience as unknown as Array<{company: string; position: string; startDate: string; endDate: string; description: string}>,
+                  certifications: pr.certifications as unknown as string[],
+                  languages: pr.languages as unknown as string[],
+                  totalExperienceYears: pr.totalExperienceYears,
+                  matchScore: pr.matchScore,
+                  matchDetails: pr.matchDetails as unknown as Array<{requirementId: string; requirementName: string; requirementType: string; isRequired: boolean; matched: boolean; confidence: 'high' | 'medium' | 'low'; evidence: string}> | null,
+                  parsedAt: pr.parsedAt.toISOString(),
+                  parseError: pr.parseError,
+                };
+              })()}
+              jobRequirements={application.job.structuredReqs.map((req) => ({
+                id: req.id,
+                name: req.name,
+                type: req.type,
+                isRequired: req.isRequired,
+              }))}
+              canManage={canManageJobs(user)}
+            />
+          )}
 
           {/* Cover Letter */}
           <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-xs dark:border-slate-800 dark:bg-slate-900 space-y-3">

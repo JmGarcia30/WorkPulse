@@ -253,8 +253,9 @@ model Document {
   storageKey    String
   createdAt     DateTime @default(now())
 
-  applicant   Applicant    @relation(fields: [applicantId], references: [id], onDelete: Cascade)
-  application Application? @relation(fields: [applicationId], references: [id], onDelete: SetNull)
+  applicant     Applicant    @relation(fields: [applicantId], references: [id], onDelete: Cascade)
+  application   Application? @relation(fields: [applicationId], references: [id], onDelete: SetNull)
+  parsedResume  ParsedResume?
 
   @@index([applicantId])
   @@index([applicationId])
@@ -372,6 +373,27 @@ model Offer {
   @@index([status])
   @@index([createdById])
   @@index([approvedById])
+}
+
+model ParsedResume {
+  id                      String   @id @default(cuid())
+  documentId              String   @unique
+  rawText                 String   @db.Text
+  summary                 String?  @db.Text
+  skills                  Json     @default("[]")
+  education               Json     @default("[]")
+  workExperience          Json     @default("[]")
+  certifications          Json     @default("[]")
+  languages               Json     @default("[]")
+  totalExperienceYears    Float?
+  matchScore              Float?
+  matchDetails            Json?
+  parsedAt                DateTime @default(now())
+  parseError              String?  @db.Text
+
+  document Document @relation(fields: [documentId], references: [id], onDelete: Cascade)
+
+  @@index([documentId])
 }
 
 model OnboardingProcess {

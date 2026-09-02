@@ -1,0 +1,11 @@
+
+> workpulse@0.1.0 dev
+> next dev
+
+▲ Next.js 16.3.0 (Turbopack)
+- Local:         http://localhost:23769
+- Network:       http://169.254.136.206:23769
+- Environments: .env
+✓ Ready in 610ms
+✓ Running next.config.ts took 49ms
+[?25h

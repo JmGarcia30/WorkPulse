@@ -1,0 +1,51 @@
+%PDF-1.4
+1 0 obj
+<< /Type /Catalog /Pages 2 0 R >>
+endobj
+2 0 obj
+<< /Type /Pages /Kids [3 0 R] /Count 1 >>
+endobj
+3 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Contents 4 0 R /Resources << /Font << /F1 5 0 R >> >> >>
+endobj
+4 0 obj
+<< /Length 1755 >>
+stream
+BT /F1 16 Tf 50 730 Td (Marcus Vance - IT Operations Lead) Tj ET
+BT /F1 10 Tf 50 715 Td (Email: marcus.vance@example.com   Phone: +1-555-789-0123   Austin, TX) Tj ET
+BT /F1 12 Tf 50 700 Td (--- Professional Summary ---) Tj ET
+BT /F1 10 Tf 50 685 Td (Dedicated IT Operations Lead with 7 years of experience managing enterprise IT systems.) Tj ET
+BT /F1 10 Tf 50 670 Td (Expert in Linux and Windows server administration, network security, and cloud operations.) Tj ET
+BT /F1 12 Tf 50 655 Td (--- Technical Skills ---) Tj ET
+BT /F1 10 Tf 50 640 Td (Systems: Linux Ubuntu, RHEL, Windows Server, Active Directory, LDAP, VMware vSphere) Tj ET
+BT /F1 10 Tf 50 625 Td (Networking: Cisco Routers, Switches, Firewalls, VPN, DNS, DHCP, SIEM, SOC Compliance) Tj ET
+BT /F1 10 Tf 50 610 Td (DevOps   Automation: Bash, Python, Terraform, AWS, Docker, Ansible, ITIL v4) Tj ET
+BT /F1 12 Tf 50 595 Td (--- Work Experience ---) Tj ET
+BT /F1 10 Tf 50 580 Td (IT Operations Lead - Nexus Enterprise Systems  2021-01 to Present ) Tj ET
+BT /F1 10 Tf 50 565 Td (Maintained 99.98 percent uptime across 1200 endpoints, data centers, and AWS cloud.) Tj ET
+BT /F1 10 Tf 50 550 Td (Systems Administrator - Vanguard Tech Group  2018-05 to 2020-12 ) Tj ET
+BT /F1 10 Tf 50 535 Td (Managed Active Directory domain controllers, firewall policies, and disaster recovery.) Tj ET
+BT /F1 12 Tf 50 520 Td (--- Education ---) Tj ET
+BT /F1 10 Tf 50 505 Td (Bachelor of Science in Information Technology - Texas A M University  2014 to 2018 ) Tj ET
+BT /F1 12 Tf 50 490 Td (--- Certifications ---) Tj ET
+BT /F1 10 Tf 50 475 Td (CompTIA Security+ SY0-601   Cisco CCNA   ITIL 4 Foundation Certified) Tj ET
+BT /F1 12 Tf 50 460 Td (--- Languages ---) Tj ET
+BT /F1 10 Tf 50 445 Td (English Native) Tj ET
+endstream
+endobj
+5 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>
+endobj
+xref
+0 6
+0000000000 65535 f 
+0000000009 00000 n 
+0000000058 00000 n 
+0000000115 00000 n 
+0000000241 00000 n 
+0000002048 00000 n 
+trailer
+<< /Size 6 /Root 1 0 R >>
+startxref
+2118
+%%EOF
