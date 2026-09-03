@@ -1,31 +1,35 @@
 import { GoogleGenerativeAI } from '@google/generative-ai';
 
-const API_KEY = process.env.GOOGLE_AI_API_KEY;
+let genAIInstance: GoogleGenerativeAI | null = null;
 
-if (!API_KEY) {
-  console.warn(
-    'GOOGLE_AI_API_KEY is not set. Resume parsing will not work until it is configured.'
-  );
-}
-
-const genAI = API_KEY ? new GoogleGenerativeAI(API_KEY) : null;
-
-/**
- * Get a configured Gemini model instance for resume parsing.
- * Uses gemini-3.6-flash for fast, cost-effective structured extraction.
- */
-export function getGeminiModel() {
-  if (!genAI) {
+function getGenAI(): GoogleGenerativeAI {
+  const apiKey = process.env.GOOGLE_AI_API_KEY;
+  if (!apiKey) {
     throw new Error(
       'Google Gemini API is not configured. Please set GOOGLE_AI_API_KEY in your .env file.'
     );
   }
+  if (!genAIInstance) {
+    genAIInstance = new GoogleGenerativeAI(apiKey);
+  }
+  return genAIInstance;
+}
 
-  return genAI.getGenerativeModel({
-    model: 'gemini-1.5-flash',
+/**
+ * Get a configured Gemini model instance for resume parsing.
+ * Uses gemini-3.5-flash-lite for low-latency, cost-effective structured extraction.
+ */
+export function getGeminiModel() {
+  const ai = getGenAI();
+
+  return ai.getGenerativeModel({
+    model: 'gemini-3.5-flash-lite',
     generationConfig: {
       temperature: 0.1,
       responseMimeType: 'application/json',
     },
   });
 }
+
+
+

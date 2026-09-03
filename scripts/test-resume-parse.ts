@@ -23,11 +23,12 @@ async function main() {
     return;
   }
   const buffer = fs.readFileSync(filePath);
-  const text = await extractResumeText(buffer, 'application/pdf');
-  console.log(`✓ Text extracted successfully! (${text.length} characters)\n`);
+  const extraction = await extractResumeText(buffer, 'application/pdf');
+  console.log(`✓ Text extracted successfully! (${extraction.charCount} characters, status: ${extraction.extractionStatus})\n`);
 
-  console.log('Step 3: Sending extracted text to Gemini AI model (gemini-1.5-flash)...');
-  const parsed = await parseResumeWithAI(text);
+  console.log('Step 3: Sending extracted text to Gemini AI model (gemini-3.6-flash)...');
+  const parsed = await parseResumeWithAI(extraction.text);
+
 
   console.log('\n=============================================');
   console.log('✅ SUCCESS! Resume parsed by Gemini:');

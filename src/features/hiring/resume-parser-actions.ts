@@ -5,8 +5,8 @@ import { prisma } from '@/lib/db/prisma';
 import { getSession } from '@/lib/auth/session';
 import { canManageJobs } from '@/lib/permissions/rbac';
 import { localStorageProvider } from '@/lib/storage';
-import { extractResumeText } from '@/lib/ai/extract-text';
-import { parseResumeWithAI } from '@/lib/ai/parse-resume';
+import { extractResumeText, type ExtractionResult } from '@/lib/ai/extract-text';
+import { parseResumeWithAI, ResumeParserError } from '@/lib/ai/parse-resume';
 import { scoreCandidateMatch } from '@/lib/ai/match-candidate';
 import type { RequirementType } from '@prisma/client';
 
@@ -62,29 +62,65 @@ export async function parseResumeAction(
   }
 
   // 3. Extract text
-  let rawText: string;
+  let extractionResult: ExtractionResult;
   try {
-    rawText = await extractResumeText(fileBuffer, document.fileType);
+    extractionResult = await extractResumeText(fileBuffer, document.fileType);
   } catch (err) {
     const message =
       err instanceof Error ? err.message : 'Unknown extraction error';
     return { error: `Failed to extract text from resume: ${message}` };
   }
 
-  if (!rawText || rawText.length < 20) {
-    return {
-      error:
-        'Could not extract meaningful text from the resume. The file may be image-based or empty.',
-    };
+  // CRITICAL: NEVER call Gemini if extraction did not succeed with usable text
+  if (extractionResult.extractionStatus !== 'SUCCESS') {
+    const errorCode = `TEXT_EXTRACTION_${extractionResult.extractionStatus}`;
+    const userMessage =
+      extractionResult.warning ||
+      'Could not extract readable text from the resume.';
+
+    // Store error in ParsedResume for audit/debugging
+    await prisma.parsedResume.upsert({
+      where: { documentId },
+      create: {
+        documentId,
+        rawText: '',
+        parseError: `${errorCode}: ${userMessage}`,
+        skills: [],
+        education: [],
+        workExperience: [],
+        certifications: [],
+        languages: [],
+      },
+      update: {
+        rawText: '',
+        parseError: `${errorCode}: ${userMessage}`,
+      },
+    });
+
+    return { error: userMessage };
   }
+
+  const rawText = extractionResult.text;
 
   // 4. Parse with AI
   let parsedData;
   try {
     parsedData = await parseResumeWithAI(rawText);
   } catch (err) {
-    const message =
-      err instanceof Error ? err.message : 'Unknown AI parsing error';
+    let errorCode = 'RESUME_PARSE_ERROR';
+    let errorMessage = 'AI parsing failed. Please try again.';
+
+    if (err instanceof ResumeParserError) {
+      errorCode = err.code;
+      errorMessage =
+        err.code === 'GEMINI_API_ERROR'
+          ? 'AI service is currently busy or experiencing high demand. Please try again in a moment.'
+          : err.message;
+    } else if (err instanceof Error) {
+      errorMessage = err.message;
+    }
+
+    const logMessage = `${errorCode}: ${err instanceof Error ? err.message : String(err)}`;
 
     // Store the error for debugging
     await prisma.parsedResume.upsert({
@@ -92,7 +128,7 @@ export async function parseResumeAction(
       create: {
         documentId,
         rawText,
-        parseError: message,
+        parseError: logMessage,
         skills: [],
         education: [],
         workExperience: [],
@@ -101,11 +137,11 @@ export async function parseResumeAction(
       },
       update: {
         rawText,
-        parseError: message,
+        parseError: logMessage,
       },
     });
 
-    return { error: `AI parsing failed: ${message}` };
+    return { error: errorMessage };
   }
 
   // 5. Score against job requirements
@@ -162,3 +198,4 @@ export async function parseResumeAction(
     skillsCount: parsedData.skills.length,
   };
 }
+

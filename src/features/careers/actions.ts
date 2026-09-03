@@ -84,21 +84,22 @@ export async function submitApplicationAction(formData: FormData): Promise<void>
   } | null = null;
 
   if (resumeFile && resumeFile.size > 0) {
-    const allowedMimeTypes = [
-      'application/pdf',
-      'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-    ];
-
     const fileNameLower = resumeFile.name.toLowerCase();
-    const hasValidExtension = fileNameLower.endsWith('.pdf') || fileNameLower.endsWith('.docx');
+    const isPdf = fileNameLower.endsWith('.pdf');
+    const isDocx = fileNameLower.endsWith('.docx');
 
-    if (!allowedMimeTypes.includes(resumeFile.type) || !hasValidExtension) {
+
+    if (!isPdf && !isDocx) {
       redirect(
         `${applyPath}?error=${encodeURIComponent(
           'Invalid file format. Resume upload must strictly be a PDF (.pdf) or DOCX (.docx) document.'
         )}`
       );
     }
+
+    const resolvedMimeType = isPdf
+      ? 'application/pdf'
+      : 'application/vnd.openxmlformats-officedocument.wordprocessingml.document';
 
     const MAX_FILE_SIZE_BYTES = 5 * 1024 * 1024; // 5MB
     if (resumeFile.size > MAX_FILE_SIZE_BYTES) {
@@ -113,16 +114,17 @@ export async function submitApplicationAction(formData: FormData): Promise<void>
     const uploadResult = await localStorageProvider.upload(
       buffer,
       resumeFile.name,
-      resumeFile.type
+      resolvedMimeType
     );
 
     documentMeta = {
       fileName: resumeFile.name,
-      fileType: resumeFile.type,
+      fileType: resolvedMimeType,
       fileSize: resumeFile.size,
       storageKey: uploadResult.storageKey,
     };
   }
+
 
   let application;
   try {

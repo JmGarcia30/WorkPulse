@@ -1,30 +1,55 @@
-export interface ParsedEducation {
-  institution: string;
-  degree: string;
-  fieldOfStudy: string;
-  startDate: string;
-  endDate: string;
-}
-
-export interface ParsedWorkExperience {
-  company: string;
-  position: string;
-  startDate: string;
-  endDate: string;
-  description: string;
-}
-
-export interface ParsedResumeData {
-  summary: string;
-  skills: string[];
-  education: ParsedEducation[];
-  workExperience: ParsedWorkExperience[];
-  certifications: string[];
-  languages: string[];
-  totalExperienceYears: number | null;
-}
-
+import { z } from 'zod';
 import { getGeminiModel } from './gemini';
+
+export const ParsedEducationSchema = z.object({
+  institution: z.string().default(''),
+  degree: z.string().default(''),
+  fieldOfStudy: z.string().default(''),
+  startDate: z.string().default(''),
+  endDate: z.string().default(''),
+});
+
+export const ParsedWorkExperienceSchema = z.object({
+  company: z.string().default(''),
+  position: z.string().default(''),
+  startDate: z.string().default(''),
+  endDate: z.string().default(''),
+  description: z.string().default(''),
+});
+
+export const ParsedResumeSchema = z.object({
+  summary: z.string().default(''),
+  skills: z.array(z.string()).default([]),
+  education: z.array(ParsedEducationSchema).default([]),
+  workExperience: z.array(ParsedWorkExperienceSchema).default([]),
+  certifications: z.array(z.string()).default([]),
+  languages: z.array(z.string()).default([]),
+  totalExperienceYears: z
+    .union([z.number(), z.string()])
+    .nullable()
+    .optional()
+    .transform((val) => {
+      if (val === null || val === undefined) return null;
+      if (typeof val === 'number') {
+        return isNaN(val) || val < 0 ? null : Math.round(val * 10) / 10;
+      }
+      const parsed = parseFloat(val);
+      return isNaN(parsed) || parsed < 0 ? null : Math.round(parsed * 10) / 10;
+    }),
+});
+
+export type ParsedEducation = z.infer<typeof ParsedEducationSchema>;
+export type ParsedWorkExperience = z.infer<typeof ParsedWorkExperienceSchema>;
+export type ParsedResumeData = z.infer<typeof ParsedResumeSchema>;
+
+export class ResumeParserError extends Error {
+  code: string;
+  constructor(message: string, code: string) {
+    super(message);
+    this.name = 'ResumeParserError';
+    this.code = code;
+  }
+}
 
 const PARSE_PROMPT = `You are an expert HR resume parser. Extract structured data from the following resume text.
 
@@ -67,47 +92,131 @@ Rules:
 RESUME TEXT:
 `;
 
+async function callGeminiWithRetry(
+  prompt: string,
+  maxRetries = 3
+): Promise<string> {
+  const model = getGeminiModel();
+  let lastError: unknown;
+
+  for (let attempt = 1; attempt <= maxRetries; attempt++) {
+    try {
+      const result = await model.generateContent(prompt);
+      const response = result.response;
+      return response.text();
+    } catch (err: unknown) {
+      lastError = err;
+      const message = err instanceof Error ? err.message : String(err);
+      const isRetryable =
+        message.includes('503') ||
+        message.includes('429') ||
+        message.includes('high demand') ||
+        message.includes('temporarily unavailable') ||
+        message.includes('ResourceExhausted') ||
+        message.includes('ECONNRESET') ||
+        message.includes('ETIMEDOUT');
+
+      if (isRetryable && attempt < maxRetries) {
+        const delayMs = attempt * 1000;
+        console.warn(
+          `[Gemini API Warning] Attempt ${attempt} failed with retryable error (${message}). Retrying in ${delayMs}ms...`
+        );
+        await new Promise((res) => setTimeout(res, delayMs));
+        continue;
+      }
+      break;
+    }
+  }
+
+  const finalMsg =
+    lastError instanceof Error ? lastError.message : String(lastError);
+  console.error(`[Gemini API Error]: ${finalMsg}`);
+  throw new ResumeParserError(
+    `Gemini AI service error: ${finalMsg}`,
+    'GEMINI_API_ERROR'
+  );
+}
+
 /**
  * Send resume text to Gemini AI and extract structured data.
  */
 export async function parseResumeWithAI(
   rawText: string
 ): Promise<ParsedResumeData> {
-  const model = getGeminiModel();
+  const responseText = await callGeminiWithRetry(PARSE_PROMPT + rawText);
 
-  const result = await model.generateContent(PARSE_PROMPT + rawText);
-  const response = result.response;
-  const text = response.text();
 
-  // Parse the JSON response
-  let parsed: ParsedResumeData;
+  // Parse JSON response
+  let rawParsed: unknown;
   try {
-    parsed = JSON.parse(text);
+    const cleaned = responseText
+      .trim()
+      .replace(/^```json\s*/i, '')
+      .replace(/^```\s*/i, '')
+      .replace(/\s*```$/, '');
+    rawParsed = JSON.parse(cleaned);
   } catch {
-    throw new Error(
-      'Failed to parse AI response as JSON. The resume may be unreadable or in an unsupported format.'
+    console.error(`[Gemini Invalid JSON Response]: ${responseText}`);
+    throw new ResumeParserError(
+      'Failed to parse AI response as valid JSON.',
+      'GEMINI_INVALID_RESPONSE'
     );
   }
 
-  // Validate and normalize the parsed data
+  // Validate with Zod schema
+  const validation = ParsedResumeSchema.safeParse(rawParsed);
+  if (!validation.success) {
+    console.error(
+      `[Gemini Schema Validation Error]:`,
+      validation.error.flatten()
+    );
+    throw new ResumeParserError(
+      `AI response failed schema validation: ${validation.error.message}`,
+      'GEMINI_INVALID_RESPONSE'
+    );
+  }
+
+  const data = validation.data;
+
+  // Normalize extracted fields
   return {
-    summary: typeof parsed.summary === 'string' ? parsed.summary : '',
-    skills: Array.isArray(parsed.skills)
-      ? parsed.skills.filter((s): s is string => typeof s === 'string')
-      : [],
-    education: Array.isArray(parsed.education) ? parsed.education : [],
-    workExperience: Array.isArray(parsed.workExperience)
-      ? parsed.workExperience
-      : [],
-    certifications: Array.isArray(parsed.certifications)
-      ? parsed.certifications.filter((c): c is string => typeof c === 'string')
-      : [],
-    languages: Array.isArray(parsed.languages)
-      ? parsed.languages.filter((l): l is string => typeof l === 'string')
-      : [],
-    totalExperienceYears:
-      typeof parsed.totalExperienceYears === 'number'
-        ? parsed.totalExperienceYears
-        : null,
+    summary: data.summary.trim(),
+    skills: Array.from(
+      new Set(
+        data.skills
+          .map((s) => s.trim())
+          .filter((s) => s.length > 0 && s.length <= 100)
+      )
+    ),
+    education: data.education.map((edu) => ({
+      institution: edu.institution.trim(),
+      degree: edu.degree.trim(),
+      fieldOfStudy: edu.fieldOfStudy.trim(),
+      startDate: edu.startDate.trim(),
+      endDate: edu.endDate.trim(),
+    })),
+    workExperience: data.workExperience.map((exp) => ({
+      company: exp.company.trim(),
+      position: exp.position.trim(),
+      startDate: exp.startDate.trim(),
+      endDate: exp.endDate.trim(),
+      description: exp.description.trim(),
+    })),
+    certifications: Array.from(
+      new Set(
+        data.certifications
+          .map((c) => c.trim())
+          .filter((c) => c.length > 0)
+      )
+    ),
+    languages: Array.from(
+      new Set(
+        data.languages
+          .map((l) => l.trim())
+          .filter((l) => l.length > 0)
+      )
+    ),
+    totalExperienceYears: data.totalExperienceYears ?? null,
   };
 }
+
