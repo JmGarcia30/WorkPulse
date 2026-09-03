@@ -170,7 +170,7 @@ export default async function NewJobPage() {
             type="submit"
             name="status"
             value="PUBLISHED"
-            className="inline-flex items-center gap-1.5 rounded-xl bg-indigo-600 px-5 py-2.5 text-xs font-semibold text-white hover:bg-indigo-500 shadow-sm"
+            className="inline-flex items-center gap-1.5 rounded-2xl bg-[#181A1C] px-6 py-2.5 text-xs font-bold text-white hover:bg-[#2A2E33] shadow-md disabled:opacity-50 transition"
           >
             <Send className="h-4 w-4" />
             Publish Job Immediately

@@ -47,19 +47,19 @@ export function ApplicationCard({ application, canEditStatus }: ApplicationCardP
   });
 
   return (
-    <div className="group relative rounded-xl border border-slate-200 bg-white p-4 shadow-xs hover:shadow-md transition-all dark:border-slate-800 dark:bg-slate-900 flex flex-col justify-between space-y-3">
+    <div className="group relative rounded-2xl border border-[#E8EAED] bg-white p-4 shadow-2xs hover:shadow-sm transition-all flex flex-col justify-between space-y-3">
       {/* Top Header & Candidate Info */}
       <div className="space-y-2.5">
         <div className="flex items-start justify-between gap-2">
           <div className="flex items-center gap-2.5 min-w-0">
-            <div className="flex h-9 w-9 items-center justify-center rounded-full bg-indigo-100 text-indigo-700 font-bold text-xs shrink-0 dark:bg-indigo-950 dark:text-indigo-300">
+            <div className="flex h-9 w-9 items-center justify-center rounded-2xl bg-[#181A1C] text-white font-bold text-xs shrink-0 shadow-2xs">
               {initials}
             </div>
             <div className="min-w-0 truncate">
-              <h4 className="text-xs font-bold text-slate-900 dark:text-slate-100 truncate group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition">
+              <h4 className="text-xs font-bold text-[#181A1C] truncate group-hover:underline transition">
                 {fullName}
               </h4>
-              <p className="text-[11px] text-slate-500 dark:text-slate-400 truncate">
+              <p className="text-[11px] text-[#6B7280] truncate">
                 {application.applicant.email}
               </p>
             </div>
@@ -67,25 +67,25 @@ export function ApplicationCard({ application, canEditStatus }: ApplicationCardP
         </div>
 
         {/* Job Details */}
-        <div className="rounded-lg bg-slate-50 p-2.5 dark:bg-slate-950/60 border border-slate-100 dark:border-slate-800/80">
-          <div className="flex items-center gap-1.5 text-xs font-medium text-slate-700 dark:text-slate-300 truncate">
-            <Briefcase className="h-3.5 w-3.5 text-slate-400 shrink-0" />
+        <div className="rounded-xl bg-[#F8F9FA] p-2.5 border border-[#E8EAED]">
+          <div className="flex items-center gap-1.5 text-xs font-semibold text-[#181A1C] truncate">
+            <Briefcase className="h-3.5 w-3.5 text-[#6B7280] shrink-0" />
             <span className="truncate">{application.job.title}</span>
           </div>
-          <p className="text-[10px] text-slate-400 dark:text-slate-500 pl-5">
+          <p className="text-[10px] text-[#6B7280] pl-5">
             {application.job.department}
           </p>
         </div>
       </div>
 
       {/* Footer Info & Actions */}
-      <div className="pt-2 border-t border-slate-100 dark:border-slate-800 space-y-2">
-        <div className="flex items-center justify-between text-[11px] text-slate-500 dark:text-slate-400">
+      <div className="pt-2 border-t border-[#E8EAED] space-y-2">
+        <div className="flex items-center justify-between text-[11px] text-[#6B7280]">
           <span className="flex items-center gap-1">
             <Calendar className="h-3 w-3" /> {appliedDate}
           </span>
           <span
-            className={`rounded-md px-2 py-0.5 text-[10px] font-bold ${config.badgeBg} ${config.badgeText}`}
+            className={`rounded-lg px-2 py-0.5 text-[10px] font-bold ${config.badgeBg} ${config.badgeText}`}
           >
             {config.label}
           </span>
@@ -94,7 +94,7 @@ export function ApplicationCard({ application, canEditStatus }: ApplicationCardP
         <div className="flex items-center gap-2 pt-1">
           <Link
             href={`/dashboard/hiring/applicants/${application.id}`}
-            className="flex-1 inline-flex items-center justify-center gap-1 rounded-lg border border-slate-200 bg-white px-2.5 py-1.5 text-xs font-semibold text-slate-700 hover:bg-slate-50 dark:border-slate-800 dark:bg-slate-950 dark:text-slate-300 dark:hover:bg-slate-900 transition"
+            className="flex-1 inline-flex items-center justify-center gap-1 rounded-xl border border-[#E8EAED] bg-[#F8F9FA] px-2.5 py-1.5 text-xs font-bold text-[#181A1C] hover:bg-[#181A1C] hover:text-white transition shadow-2xs"
           >
             <User className="h-3.5 w-3.5" /> View Profile
           </Link>
@@ -103,7 +103,7 @@ export function ApplicationCard({ application, canEditStatus }: ApplicationCardP
             <button
               type="button"
               onClick={() => setShowDialog(!showDialog)}
-              className="inline-flex items-center gap-1 rounded-lg bg-indigo-50 px-2.5 py-1.5 text-xs font-semibold text-indigo-700 hover:bg-indigo-100 dark:bg-indigo-950/80 dark:text-indigo-300 dark:hover:bg-indigo-900 transition shrink-0"
+              className="inline-flex items-center gap-1 rounded-xl bg-[#181A1C] px-3 py-1.5 text-xs font-bold text-white hover:bg-[#2A2E33] transition shrink-0 shadow-2xs"
               title="Move Candidate Stage"
             >
               <span>Move</span>

@@ -358,7 +358,7 @@ export default async function CandidateProfilePage({ params }: CandidateProfileP
                     href={`/api/resumes/${doc.id}`}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center gap-1 rounded-lg bg-indigo-600 px-3 py-1.5 text-xs font-semibold text-white hover:bg-indigo-500 shrink-0"
+                    className="inline-flex items-center gap-1 rounded-xl bg-[#181A1C] px-3.5 py-1.5 text-xs font-bold text-white hover:bg-[#2A2E33] shrink-0 transition shadow-2xs"
                   >
                     <Download className="h-3.5 w-3.5" /> Download
                   </a>
