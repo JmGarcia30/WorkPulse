@@ -68,7 +68,7 @@ export default async function EditJobPage({ params }: EditJobPageProps) {
                 name="title"
                 required
                 defaultValue={job.title}
-                className="mt-1 block w-full rounded-lg border border-slate-300 px-3.5 py-2 text-xs text-slate-900 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
+                className="mt-1 block w-full rounded-lg border border-slate-300 px-3.5 py-2 text-xs text-slate-900 focus:border-[#181A1C] focus:ring-1 focus:ring-[#181A1C] dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
               />
             </div>
 
@@ -81,7 +81,7 @@ export default async function EditJobPage({ params }: EditJobPageProps) {
                 name="department"
                 required
                 defaultValue={job.department}
-                className="mt-1 block w-full rounded-lg border border-slate-300 px-3.5 py-2 text-xs text-slate-900 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
+                className="mt-1 block w-full rounded-lg border border-slate-300 px-3.5 py-2 text-xs text-slate-900 focus:border-[#181A1C] focus:ring-1 focus:ring-[#181A1C] dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
               />
             </div>
 
@@ -93,7 +93,7 @@ export default async function EditJobPage({ params }: EditJobPageProps) {
                 name="employmentType"
                 required
                 defaultValue={job.employmentType}
-                className="mt-1 block w-full rounded-lg border border-slate-300 px-3.5 py-2 text-xs text-slate-900 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
+                className="mt-1 block w-full rounded-lg border border-slate-300 px-3.5 py-2 text-xs text-slate-900 focus:border-[#181A1C] focus:ring-1 focus:ring-[#181A1C] dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
               >
                 <option value="Full-time">Full-time</option>
                 <option value="Part-time">Part-time</option>
@@ -111,7 +111,7 @@ export default async function EditJobPage({ params }: EditJobPageProps) {
                 name="location"
                 required
                 defaultValue={job.location}
-                className="mt-1 block w-full rounded-lg border border-slate-300 px-3.5 py-2 text-xs text-slate-900 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
+                className="mt-1 block w-full rounded-lg border border-slate-300 px-3.5 py-2 text-xs text-slate-900 focus:border-[#181A1C] focus:ring-1 focus:ring-[#181A1C] dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
               />
             </div>
 
@@ -125,7 +125,7 @@ export default async function EditJobPage({ params }: EditJobPageProps) {
                 defaultValue={
                   job.closingDate ? new Date(job.closingDate).toISOString().split('T')[0] : ''
                 }
-                className="mt-1 block w-full rounded-lg border border-slate-300 px-3.5 py-2 text-xs text-slate-900 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
+                className="mt-1 block w-full rounded-lg border border-slate-300 px-3.5 py-2 text-xs text-slate-900 focus:border-[#181A1C] focus:ring-1 focus:ring-[#181A1C] dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
               />
             </div>
           </div>
@@ -146,7 +146,7 @@ export default async function EditJobPage({ params }: EditJobPageProps) {
               required
               rows={4}
               defaultValue={job.description}
-              className="mt-1 block w-full rounded-lg border border-slate-300 px-3.5 py-2 text-xs text-slate-900 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
+              className="mt-1 block w-full rounded-lg border border-slate-300 px-3.5 py-2 text-xs text-slate-900 focus:border-[#181A1C] focus:ring-1 focus:ring-[#181A1C] dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
             />
           </div>
 
@@ -158,7 +158,7 @@ export default async function EditJobPage({ params }: EditJobPageProps) {
               name="responsibilities"
               rows={4}
               defaultValue={job.responsibilities}
-              className="mt-1 block w-full rounded-lg border border-slate-300 px-3.5 py-2 text-xs text-slate-900 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
+              className="mt-1 block w-full rounded-lg border border-slate-300 px-3.5 py-2 text-xs text-slate-900 focus:border-[#181A1C] focus:ring-1 focus:ring-[#181A1C] dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
             />
           </div>
 
@@ -170,7 +170,7 @@ export default async function EditJobPage({ params }: EditJobPageProps) {
               name="qualifications"
               rows={4}
               defaultValue={job.qualifications}
-              className="mt-1 block w-full rounded-lg border border-slate-300 px-3.5 py-2 text-xs text-slate-900 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
+              className="mt-1 block w-full rounded-lg border border-slate-300 px-3.5 py-2 text-xs text-slate-900 focus:border-[#181A1C] focus:ring-1 focus:ring-[#181A1C] dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
             />
           </div>
         </div>

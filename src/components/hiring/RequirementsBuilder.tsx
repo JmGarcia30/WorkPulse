@@ -70,13 +70,13 @@ export function RequirementsBuilder({ initialRequirements = [] }: RequirementsBu
               className="flex items-center justify-between gap-3 rounded-lg border border-slate-200 bg-white p-3 shadow-xs dark:border-slate-800 dark:bg-slate-900"
             >
               <div className="flex items-start gap-2.5">
-                <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-indigo-600 dark:text-indigo-400" />
+                <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-[#181A1C] dark:text-white" />
                 <div>
                   <div className="flex items-center gap-2">
                     <span className="text-sm font-medium text-slate-900 dark:text-slate-100">
                       {req.name}
                     </span>
-                    <span className="rounded-md bg-indigo-50 px-2 py-0.5 text-[10px] font-semibold text-indigo-700 dark:bg-indigo-950/60 dark:text-indigo-300">
+                    <span className="rounded-md bg-[#F8F9FA] border border-[#E8EAED] px-2 py-0.5 text-[10px] font-bold text-[#181A1C] dark:bg-slate-800 dark:border-slate-700 dark:text-slate-300">
                       {req.type}
                     </span>
                     <span
@@ -121,7 +121,7 @@ export function RequirementsBuilder({ initialRequirements = [] }: RequirementsBu
               value={name}
               onChange={(e) => setName(e.target.value)}
               placeholder="e.g. Master’s Degree in Physics"
-              className="mt-1 block w-full rounded-md border border-slate-300 px-3 py-1.5 text-xs text-slate-900 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
+              className="mt-1 block w-full rounded-md border border-slate-300 px-3 py-1.5 text-xs text-slate-900 focus:border-[#181A1C] focus:ring-1 focus:ring-[#181A1C] dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
             />
           </div>
           <div>
@@ -131,7 +131,7 @@ export function RequirementsBuilder({ initialRequirements = [] }: RequirementsBu
             <select
               value={type}
               onChange={(e) => setType(e.target.value as RequirementType)}
-              className="mt-1 block w-full rounded-md border border-slate-300 px-3 py-1.5 text-xs text-slate-900 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
+              className="mt-1 block w-full rounded-md border border-slate-300 px-3 py-1.5 text-xs text-slate-900 focus:border-[#181A1C] focus:ring-1 focus:ring-[#181A1C] dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
             >
               <option value={RequirementType.SKILL}>SKILL</option>
               <option value={RequirementType.EDUCATION}>EDUCATION</option>
@@ -152,7 +152,7 @@ export function RequirementsBuilder({ initialRequirements = [] }: RequirementsBu
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               placeholder="Additional specification or guidelines"
-              className="mt-1 block w-full rounded-md border border-slate-300 px-3 py-1.5 text-xs text-slate-900 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
+              className="mt-1 block w-full rounded-md border border-slate-300 px-3 py-1.5 text-xs text-slate-900 focus:border-[#181A1C] focus:ring-1 focus:ring-[#181A1C] dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
             />
           </div>
           <div className="flex items-center gap-2 pb-1">
@@ -161,7 +161,7 @@ export function RequirementsBuilder({ initialRequirements = [] }: RequirementsBu
               id="reqMandatory"
               checked={isRequired}
               onChange={(e) => setIsRequired(e.target.checked)}
-              className="h-4 w-4 rounded border-slate-300 text-indigo-600 focus:ring-indigo-500 dark:border-slate-700"
+              className="h-4 w-4 rounded border-slate-300 text-[#181A1C] focus:ring-[#181A1C] dark:border-slate-700"
             />
             <label htmlFor="reqMandatory" className="text-xs text-slate-700 dark:text-slate-300">
               Mandatory
@@ -173,7 +173,7 @@ export function RequirementsBuilder({ initialRequirements = [] }: RequirementsBu
           type="button"
           onClick={addRequirement}
           disabled={!name.trim()}
-          className="inline-flex items-center gap-1.5 rounded-md bg-indigo-600 px-3 py-1.5 text-xs font-medium text-white hover:bg-indigo-700 disabled:opacity-50"
+          className="inline-flex items-center gap-1.5 rounded-xl bg-[#181A1C] px-3.5 py-1.5 text-xs font-bold text-white hover:bg-[#2A2E33] transition shadow-2xs disabled:opacity-50"
         >
           <Plus className="h-3.5 w-3.5" />
           Add Requirement

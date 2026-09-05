@@ -14,6 +14,9 @@ import {
   OnboardingStatus,
   OnboardingTaskType,
   OnboardingTaskStatus,
+  EmploymentCategory,
+  RecruitmentDocumentType,
+  RecruitmentDocumentStatus,
 } from '@prisma/client';
 import { hash } from 'bcryptjs';
 
@@ -141,11 +144,13 @@ async function main() {
     },
     update: {
       status: JobStatus.PUBLISHED,
+      category: EmploymentCategory.TEACHING,
     },
     create: {
       organizationId: org.id,
       title: 'Senior STEM Educator',
       slug: 'senior-stem-educator',
+      category: EmploymentCategory.TEACHING,
       department: 'Academic Affairs',
       employmentType: 'Full-time',
       location: 'Main Campus - Quezon City',
@@ -188,11 +193,13 @@ async function main() {
     },
     update: {
       status: JobStatus.PUBLISHED,
+      category: EmploymentCategory.NON_TEACHING,
     },
     create: {
       organizationId: org.id,
       title: 'School Guidance Counselor',
       slug: 'school-guidance-counselor',
+      category: EmploymentCategory.NON_TEACHING,
       department: 'Student Affairs',
       employmentType: 'Full-time',
       location: 'Main Campus - Quezon City',
@@ -226,11 +233,14 @@ async function main() {
         slug: 'it-operations-lead',
       },
     },
-    update: {},
+    update: {
+      category: EmploymentCategory.NON_TEACHING,
+    },
     create: {
       organizationId: org.id,
       title: 'IT Operations Lead',
       slug: 'it-operations-lead',
+      category: EmploymentCategory.NON_TEACHING,
       department: 'Information Technology',
       employmentType: 'Full-time',
       location: 'Main Campus - Quezon City',
@@ -262,11 +272,13 @@ async function main() {
     },
     update: {
       status: JobStatus.PUBLISHED,
+      category: EmploymentCategory.NON_TEACHING,
     },
     create: {
       organizationId: testOrg.id,
       title: 'Automated Test Engineer',
       slug: 'automated-test-engineer',
+      category: EmploymentCategory.NON_TEACHING,
       department: 'Software Engineering',
       employmentType: 'Full-time',
       location: 'Remote',
@@ -296,11 +308,14 @@ async function main() {
         slug: 'fullstack-curriculum-lead',
       },
     },
-    update: {},
+    update: {
+      category: EmploymentCategory.NON_TEACHING,
+    },
     create: {
       organizationId: testOrg.id,
       title: 'Full-Stack Curriculum Lead',
       slug: 'fullstack-curriculum-lead',
+      category: EmploymentCategory.NON_TEACHING,
       department: 'Curriculum & Instruction',
       employmentType: 'Full-time',
       location: 'Remote',
@@ -1222,6 +1237,844 @@ async function main() {
       });
     }
   }
+
+  // 8. SAGA Institutional Hiring Policy Showcase Candidates
+  console.log('Seeding SAGA Institutional Hiring Policy showcase candidates...');
+
+  // 8a. SAGA Teaching Faculty - Ready to Hire: Dr. Teresa Aquino
+  const teresaApplicant = await prisma.applicant.upsert({
+    where: { email: 'teresa.aquino@gmail.com' },
+    update: {},
+    create: {
+      firstName: 'Teresa',
+      lastName: 'Aquino',
+      email: 'teresa.aquino@gmail.com',
+      phone: '+63 917 888 1234',
+    },
+  });
+
+  const teresaApp = await prisma.application.upsert({
+    where: {
+      jobId_applicantId: {
+        jobId: stemJob.id,
+        applicantId: teresaApplicant.id,
+      },
+    },
+    update: {
+      status: ApplicationStatus.OFFER,
+    },
+    create: {
+      jobId: stemJob.id,
+      applicantId: teresaApplicant.id,
+      status: ApplicationStatus.OFFER,
+      coverLetter:
+        'To the Head of the Department and Hiring Committee,\n\nI am submitting my formal application for the Senior STEM Educator (Faculty) position at St. Aloysius Gonzaga Academy, Inc., together with all required credentials.',
+    },
+  });
+
+  // Recruitment Documents for Teresa (Faculty - All Required submitted to HOD and Verified)
+  const teresaDocTemplates = [
+    {
+      type: RecruitmentDocumentType.RESUME_APPLICATION_LETTER,
+      title: 'Letter of Application with Resume',
+      fileName: 'Teresa_Aquino_Application_Letter_and_Resume.pdf',
+      isRequired: true,
+      isConditional: false,
+    },
+    {
+      type: RecruitmentDocumentType.TRANSCRIPT_OF_RECORDS,
+      title: 'Transcript of Records (TOR)',
+      fileName: 'Teresa_Aquino_Official_TOR_BS_MS.pdf',
+      isRequired: true,
+      isConditional: false,
+    },
+    {
+      type: RecruitmentDocumentType.DIPLOMA,
+      title: 'Photocopy of Diploma',
+      fileName: 'Teresa_Aquino_Master_of_Science_Diploma.pdf',
+      isRequired: true,
+      isConditional: false,
+    },
+    {
+      type: RecruitmentDocumentType.LET_BASIC_EDUCATION,
+      title: 'Photocopy of Licensure Examination for Teachers (Basic Education)',
+      fileName: 'Teresa_Aquino_PRC_LET_License_Card.pdf',
+      isRequired: true,
+      isConditional: false,
+    },
+    {
+      type: RecruitmentDocumentType.PREVIOUS_EMPLOYMENT_CERT,
+      title: 'Certification of Previous Employment',
+      fileName: 'Teresa_Aquino_COE_Senior_High_Ateneo.pdf',
+      isRequired: false,
+      isConditional: true,
+    },
+    {
+      type: RecruitmentDocumentType.RECOMMENDATION_LETTER_1,
+      title: 'Letter of Recommendation 1 (Moral Character)',
+      fileName: 'Recommendation_1_Dean_Sciences.pdf',
+      isRequired: true,
+      isConditional: false,
+    },
+    {
+      type: RecruitmentDocumentType.RECOMMENDATION_LETTER_2,
+      title: 'Letter of Recommendation 2 (Moral Character)',
+      fileName: 'Recommendation_2_Department_Chair.pdf',
+      isRequired: true,
+      isConditional: false,
+    },
+    {
+      type: RecruitmentDocumentType.RECOMMENDATION_LETTER_3,
+      title: 'Letter of Recommendation 3 (Moral Character)',
+      fileName: 'Recommendation_3_Parish_Priest.pdf',
+      isRequired: true,
+      isConditional: false,
+    },
+    {
+      type: RecruitmentDocumentType.NBI_CLEARANCE,
+      title: 'NBI Clearance',
+      fileName: 'Teresa_Aquino_NBI_Clearance_2026.pdf',
+      isRequired: true,
+      isConditional: false,
+    },
+    {
+      type: RecruitmentDocumentType.MARRIAGE_CONTRACT,
+      title: 'Marriage Contract (if married)',
+      fileName: null,
+      isRequired: false,
+      isConditional: true,
+    },
+  ];
+
+  for (const doc of teresaDocTemplates) {
+    await prisma.recruitmentDocument.upsert({
+      where: {
+        applicationId_type: {
+          applicationId: teresaApp.id,
+          type: doc.type,
+        },
+      },
+      update: {
+        status: doc.fileName ? RecruitmentDocumentStatus.VERIFIED : RecruitmentDocumentStatus.NOT_APPLICABLE,
+        fileName: doc.fileName,
+        fileType: doc.fileName ? 'application/pdf' : null,
+        fileSize: doc.fileName ? 215000 : null,
+        storageKey: doc.fileName ? `recruitment-docs/${doc.fileName}` : null,
+        verifiedAt: doc.fileName ? new Date(Date.now() - 7 * 24 * 60 * 60 * 1000) : null,
+        verifiedById: doc.fileName ? hrUser.id : null,
+      },
+      create: {
+        applicationId: teresaApp.id,
+        type: doc.type,
+        title: doc.title,
+        status: doc.fileName ? RecruitmentDocumentStatus.VERIFIED : RecruitmentDocumentStatus.NOT_APPLICABLE,
+        isRequired: doc.isRequired,
+        isConditional: doc.isConditional,
+        fileName: doc.fileName,
+        fileType: doc.fileName ? 'application/pdf' : null,
+        fileSize: doc.fileName ? 215000 : null,
+        storageKey: doc.fileName ? `recruitment-docs/${doc.fileName}` : null,
+        verifiedAt: doc.fileName ? new Date(Date.now() - 7 * 24 * 60 * 60 * 1000) : null,
+        verifiedById: doc.fileName ? hrUser.id : null,
+        notes: 'Submitted to Head of Department and verified by HR.',
+      },
+    });
+  }
+
+  // Written Exam for Teresa
+  const teresaExam = await prisma.assessment.findFirst({
+    where: {
+      applicationId: teresaApp.id,
+      type: AssessmentType.WRITTEN_EXAMINATION,
+    },
+  });
+  if (!teresaExam) {
+    await prisma.assessment.create({
+      data: {
+        applicationId: teresaApp.id,
+        title: 'SAGA Faculty Competency & Pedagogy Written Examination',
+        type: AssessmentType.WRITTEN_EXAMINATION,
+        description: 'Comprehensive written examination assessing STEM content mastery and Ignatian pedagogy.',
+        status: AssessmentStatus.PASSED,
+        score: 95,
+        maxScore: 100,
+        passingScore: 80,
+        evaluatorId: hrUser.id,
+        submittedAt: new Date(Date.now() - 6 * 24 * 60 * 60 * 1000),
+        evaluatedAt: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000),
+        reviewerNotes: 'Candidate demonstrated exemplary mastery on senior high STEM concepts and Catholic school curriculum design.',
+      },
+    });
+  }
+
+  // Teaching Demo for Teresa
+  let teresaDemo = await prisma.interview.findFirst({
+    where: {
+      applicationId: teresaApp.id,
+      type: InterviewType.TEACHING_DEMONSTRATION,
+    },
+  });
+  if (!teresaDemo) {
+    teresaDemo = await prisma.interview.create({
+      data: {
+        applicationId: teresaApp.id,
+        interviewerId: managerUser.id,
+        type: InterviewType.TEACHING_DEMONSTRATION,
+        status: InterviewStatus.COMPLETED,
+        scheduledAt: new Date(Date.now() - 4 * 24 * 60 * 60 * 1000),
+        durationMinutes: 60,
+        location: 'Science Laboratory Room 301',
+        notes: 'Teaching demonstration on Electromagnetism & Modern Physics for Grade 12 STEM.',
+      },
+    });
+  }
+  await prisma.candidateEvaluation.upsert({
+    where: { interviewId: teresaDemo.id },
+    update: {
+      communicationScore: 5,
+      technicalScore: 5,
+      problemSolvingScore: 5,
+      experienceScore: 4,
+      cultureFitScore: 5,
+      overallScore: 4.8,
+      recommendation: EvaluationRecommendation.STRONGLY_RECOMMEND,
+      comments: 'Teaching demonstration was highly engaging, academically rigorous, and pedagogical execution was satisfactory.',
+      evaluatedById: managerUser.id,
+    },
+    create: {
+      interviewId: teresaDemo.id,
+      evaluatedById: managerUser.id,
+      communicationScore: 5,
+      technicalScore: 5,
+      problemSolvingScore: 5,
+      experienceScore: 4,
+      cultureFitScore: 5,
+      overallScore: 4.8,
+      recommendation: EvaluationRecommendation.STRONGLY_RECOMMEND,
+      comments: 'Teaching demonstration was highly engaging, academically rigorous, and pedagogical execution was satisfactory.',
+    },
+  });
+
+  // HOD Interview for Teresa
+  let teresaHod = await prisma.interview.findFirst({
+    where: {
+      applicationId: teresaApp.id,
+      type: InterviewType.HEAD_OF_DEPARTMENT,
+    },
+  });
+  if (!teresaHod) {
+    teresaHod = await prisma.interview.create({
+      data: {
+        applicationId: teresaApp.id,
+        interviewerId: managerUser.id,
+        type: InterviewType.HEAD_OF_DEPARTMENT,
+        status: InterviewStatus.COMPLETED,
+        scheduledAt: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000),
+        durationMinutes: 45,
+        location: 'Office of the Academic Head, Gonzaga Hall',
+        notes: 'Departmental interview assessing curriculum alignment and institutional commitment.',
+      },
+    });
+  }
+  await prisma.candidateEvaluation.upsert({
+    where: { interviewId: teresaHod.id },
+    update: {
+      communicationScore: 5,
+      technicalScore: 5,
+      problemSolvingScore: 4,
+      experienceScore: 4,
+      cultureFitScore: 5,
+      overallScore: 4.7,
+      recommendation: EvaluationRecommendation.RECOMMEND,
+      comments: 'Satisfactory interview. Candidate is formally endorsed to the President for final interview.',
+      evaluatedById: managerUser.id,
+    },
+    create: {
+      interviewId: teresaHod.id,
+      evaluatedById: managerUser.id,
+      communicationScore: 5,
+      technicalScore: 5,
+      problemSolvingScore: 4,
+      experienceScore: 4,
+      cultureFitScore: 5,
+      overallScore: 4.7,
+      recommendation: EvaluationRecommendation.RECOMMEND,
+      comments: 'Satisfactory interview. Candidate is formally endorsed to the President for final interview.',
+    },
+  });
+
+  // President Final Interview for Teresa
+  let teresaPres = await prisma.interview.findFirst({
+    where: {
+      applicationId: teresaApp.id,
+      type: InterviewType.PRESIDENT_FINAL,
+    },
+  });
+  if (!teresaPres) {
+    teresaPres = await prisma.interview.create({
+      data: {
+        applicationId: teresaApp.id,
+        interviewerId: adminUser.id,
+        type: InterviewType.PRESIDENT_FINAL,
+        status: InterviewStatus.COMPLETED,
+        scheduledAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000),
+        durationMinutes: 45,
+        location: 'Office of the Academy President, St. Aloysius Hall',
+        notes: 'Final presidential interview for institutional appointment.',
+      },
+    });
+  }
+  await prisma.candidateEvaluation.upsert({
+    where: { interviewId: teresaPres.id },
+    update: {
+      communicationScore: 5,
+      technicalScore: 5,
+      problemSolvingScore: 5,
+      experienceScore: 5,
+      cultureFitScore: 5,
+      overallScore: 5.0,
+      recommendation: EvaluationRecommendation.STRONGLY_RECOMMEND,
+      comments: 'Applicant demonstrated deep moral character, academic excellence, and dedication to institutional mission. Approved for employment contract.',
+      evaluatedById: adminUser.id,
+    },
+    create: {
+      interviewId: teresaPres.id,
+      evaluatedById: adminUser.id,
+      communicationScore: 5,
+      technicalScore: 5,
+      problemSolvingScore: 5,
+      experienceScore: 5,
+      cultureFitScore: 5,
+      overallScore: 5.0,
+      recommendation: EvaluationRecommendation.STRONGLY_RECOMMEND,
+      comments: 'Applicant demonstrated deep moral character, academic excellence, and dedication to institutional mission. Approved for employment contract.',
+    },
+  });
+
+  // Offer / Employment Contract for Teresa (Signed by both employee and President)
+  const teresaOffer = await prisma.offer.findFirst({
+    where: { applicationId: teresaApp.id },
+  });
+  if (!teresaOffer) {
+    await prisma.offer.create({
+      data: {
+        applicationId: teresaApp.id,
+        salary: 68000,
+        payFrequency: PayFrequency.MONTHLY,
+        employmentType: 'Probationary Faculty (1 School Year)',
+        startDate: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000),
+        expirationDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
+        status: OfferStatus.ACCEPTED,
+        contractSignedByPresident: true,
+        contractSignedByEmployee: true,
+        contractExecutedAt: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000),
+        probationPeriodMonths: 12,
+        probationaryTerms:
+          'Fixed 1 school year probationary appointment renewable annually up to three (3) consecutive years max. Regularization is subject to exemplary performance evaluations, satisfactory teaching standards, and recommendation of the President. No automatic regularization based solely on the expiration of the probationary period.',
+        benefits: 'Full Faculty HMO coverage, 13th month pay, Pag-IBIG/SSS/PhilHealth coverage, and institutional retirement plan.',
+        allowances: '₱4,000 monthly instructional supplies and technology stipend.',
+        notes: 'Employment contract executed and signed by both the employee and the President.',
+        createdById: hrUser.id,
+        approvedById: adminUser.id,
+      },
+    });
+  }
+
+  // Orientation for Teresa
+  const teresaOnboarding = await prisma.onboardingProcess.findUnique({
+    where: { applicationId: teresaApp.id },
+  });
+  if (!teresaOnboarding) {
+    await prisma.onboardingProcess.create({
+      data: {
+        applicationId: teresaApp.id,
+        status: OnboardingStatus.IN_PROGRESS,
+        startDate: new Date(),
+        notes: 'Faculty onboarding and institutional orientation.',
+        tasks: {
+          create: [
+            {
+              title: 'Mandatory Institutional Orientation for New Faculty',
+              description: 'Comprehensive orientation on SAGA mission, educational philosophy, faculty manual, and student safeguarding policies.',
+              type: OnboardingTaskType.ORIENTATION,
+              status: OnboardingTaskStatus.VERIFIED,
+              isRequired: true,
+              verifiedAt: new Date(),
+              verifiedById: hrUser.id,
+              reviewerNotes: 'Candidate completed institutional orientation with HR and Academic Head.',
+            },
+          ],
+        },
+      },
+    });
+  }
+
+  // 8b. SAGA Non-Teaching Staff - Ready to Hire: Roberto Gomez
+  const robertoApplicant = await prisma.applicant.upsert({
+    where: { email: 'roberto.gomez@gmail.com' },
+    update: {},
+    create: {
+      firstName: 'Roberto',
+      lastName: 'Gomez',
+      email: 'roberto.gomez@gmail.com',
+      phone: '+63 918 777 4321',
+    },
+  });
+
+  const robertoApp = await prisma.application.upsert({
+    where: {
+      jobId_applicantId: {
+        jobId: counselorJob.id,
+        applicantId: robertoApplicant.id,
+      },
+    },
+    update: {
+      status: ApplicationStatus.OFFER,
+    },
+    create: {
+      jobId: counselorJob.id,
+      applicantId: robertoApplicant.id,
+      status: ApplicationStatus.OFFER,
+      coverLetter:
+        'Dear Head of Department,\n\nI am submitting my application and credentials for the School Guidance Counselor position.',
+    },
+  });
+
+  // Recruitment Documents for Roberto (Non-Teaching: LET is NOT required; RGC license provided)
+  const robertoDocTemplates = [
+    {
+      type: RecruitmentDocumentType.RESUME_APPLICATION_LETTER,
+      title: 'Letter of Application with Resume',
+      fileName: 'Roberto_Gomez_Application_Letter_and_Resume.pdf',
+      isRequired: true,
+      isConditional: false,
+    },
+    {
+      type: RecruitmentDocumentType.TRANSCRIPT_OF_RECORDS,
+      title: 'Transcript of Records (TOR)',
+      fileName: 'Roberto_Gomez_Official_TOR.pdf',
+      isRequired: true,
+      isConditional: false,
+    },
+    {
+      type: RecruitmentDocumentType.DIPLOMA,
+      title: 'Photocopy of Diploma',
+      fileName: 'Roberto_Gomez_College_Diploma_Psychology.pdf',
+      isRequired: true,
+      isConditional: false,
+    },
+    {
+      type: RecruitmentDocumentType.PROFESSIONAL_LICENSE,
+      title: 'Photocopy of Professional License (if applicable)',
+      fileName: 'Roberto_Gomez_PRC_Guidance_Counselor_License.pdf',
+      isRequired: false,
+      isConditional: true,
+    },
+    {
+      type: RecruitmentDocumentType.PREVIOUS_EMPLOYMENT_CERT,
+      title: 'Certification of Previous Employment',
+      fileName: 'Roberto_Gomez_COE_Student_Affairs.pdf',
+      isRequired: false,
+      isConditional: true,
+    },
+    {
+      type: RecruitmentDocumentType.RECOMMENDATION_LETTER_1,
+      title: 'Letter of Recommendation 1 (Moral Character)',
+      fileName: 'Recommendation_1_Clinical_Supervisor.pdf',
+      isRequired: true,
+      isConditional: false,
+    },
+    {
+      type: RecruitmentDocumentType.RECOMMENDATION_LETTER_2,
+      title: 'Letter of Recommendation 2 (Moral Character)',
+      fileName: 'Recommendation_2_College_Dean.pdf',
+      isRequired: true,
+      isConditional: false,
+    },
+    {
+      type: RecruitmentDocumentType.RECOMMENDATION_LETTER_3,
+      title: 'Letter of Recommendation 3 (Moral Character)',
+      fileName: 'Recommendation_3_Community_Leader.pdf',
+      isRequired: true,
+      isConditional: false,
+    },
+    {
+      type: RecruitmentDocumentType.NBI_CLEARANCE,
+      title: 'NBI Clearance',
+      fileName: 'Roberto_Gomez_NBI_Clearance_2026.pdf',
+      isRequired: true,
+      isConditional: false,
+    },
+    {
+      type: RecruitmentDocumentType.MARRIAGE_CONTRACT,
+      title: 'Marriage Contract (if married)',
+      fileName: null,
+      isRequired: false,
+      isConditional: true,
+    },
+  ];
+
+  for (const doc of robertoDocTemplates) {
+    await prisma.recruitmentDocument.upsert({
+      where: {
+        applicationId_type: {
+          applicationId: robertoApp.id,
+          type: doc.type,
+        },
+      },
+      update: {
+        status: doc.fileName ? RecruitmentDocumentStatus.VERIFIED : RecruitmentDocumentStatus.NOT_APPLICABLE,
+        fileName: doc.fileName,
+        fileType: doc.fileName ? 'application/pdf' : null,
+        fileSize: doc.fileName ? 180000 : null,
+        storageKey: doc.fileName ? `recruitment-docs/${doc.fileName}` : null,
+        verifiedAt: doc.fileName ? new Date(Date.now() - 5 * 24 * 60 * 60 * 1000) : null,
+        verifiedById: doc.fileName ? hrUser.id : null,
+      },
+      create: {
+        applicationId: robertoApp.id,
+        type: doc.type,
+        title: doc.title,
+        status: doc.fileName ? RecruitmentDocumentStatus.VERIFIED : RecruitmentDocumentStatus.NOT_APPLICABLE,
+        isRequired: doc.isRequired,
+        isConditional: doc.isConditional,
+        fileName: doc.fileName,
+        fileType: doc.fileName ? 'application/pdf' : null,
+        fileSize: doc.fileName ? 180000 : null,
+        storageKey: doc.fileName ? `recruitment-docs/${doc.fileName}` : null,
+        verifiedAt: doc.fileName ? new Date(Date.now() - 5 * 24 * 60 * 60 * 1000) : null,
+        verifiedById: doc.fileName ? hrUser.id : null,
+      },
+    });
+  }
+
+  // Written Exam for Roberto
+  const robertoExam = await prisma.assessment.findFirst({
+    where: {
+      applicationId: robertoApp.id,
+      type: AssessmentType.WRITTEN_EXAMINATION,
+    },
+  });
+  if (!robertoExam) {
+    await prisma.assessment.create({
+      data: {
+        applicationId: robertoApp.id,
+        title: 'SAGA Non-Teaching Aptitude & Institutional Written Examination',
+        type: AssessmentType.WRITTEN_EXAMINATION,
+        description: 'Written assessment testing administrative aptitude, ethics, and counseling protocols.',
+        status: AssessmentStatus.PASSED,
+        score: 89,
+        maxScore: 100,
+        passingScore: 75,
+        evaluatorId: hrUser.id,
+        submittedAt: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000),
+        evaluatedAt: new Date(Date.now() - 4 * 24 * 60 * 60 * 1000),
+        reviewerNotes: 'Passed written examination with solid understanding of student wellness protocols.',
+      },
+    });
+  }
+
+  // NOTE: Teaching Demonstration is NOT scheduled for Non-Teaching staff.
+
+  // HOD Interview for Roberto
+  let robertoHod = await prisma.interview.findFirst({
+    where: {
+      applicationId: robertoApp.id,
+      type: InterviewType.HEAD_OF_DEPARTMENT,
+    },
+  });
+  if (!robertoHod) {
+    robertoHod = await prisma.interview.create({
+      data: {
+        applicationId: robertoApp.id,
+        interviewerId: managerUser.id,
+        type: InterviewType.HEAD_OF_DEPARTMENT,
+        status: InterviewStatus.COMPLETED,
+        scheduledAt: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000),
+        durationMinutes: 45,
+        location: 'Student Affairs Office, Gonzaga Hall',
+        notes: 'Department interview assessing counseling competencies and student crisis management.',
+      },
+    });
+  }
+  await prisma.candidateEvaluation.upsert({
+    where: { interviewId: robertoHod.id },
+    update: {
+      communicationScore: 5,
+      technicalScore: 4,
+      problemSolvingScore: 5,
+      experienceScore: 4,
+      cultureFitScore: 5,
+      overallScore: 4.6,
+      recommendation: EvaluationRecommendation.RECOMMEND,
+      comments: 'Satisfactory interview. Endorsed to the President for final interview.',
+      evaluatedById: managerUser.id,
+    },
+    create: {
+      interviewId: robertoHod.id,
+      evaluatedById: managerUser.id,
+      communicationScore: 5,
+      technicalScore: 4,
+      problemSolvingScore: 5,
+      experienceScore: 4,
+      cultureFitScore: 5,
+      overallScore: 4.6,
+      recommendation: EvaluationRecommendation.RECOMMEND,
+      comments: 'Satisfactory interview. Endorsed to the President for final interview.',
+    },
+  });
+
+  // President Final Interview for Roberto
+  let robertoPres = await prisma.interview.findFirst({
+    where: {
+      applicationId: robertoApp.id,
+      type: InterviewType.PRESIDENT_FINAL,
+    },
+  });
+  if (!robertoPres) {
+    robertoPres = await prisma.interview.create({
+      data: {
+        applicationId: robertoApp.id,
+        interviewerId: adminUser.id,
+        type: InterviewType.PRESIDENT_FINAL,
+        status: InterviewStatus.COMPLETED,
+        scheduledAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000),
+        durationMinutes: 45,
+        location: 'Office of the Academy President, St. Aloysius Hall',
+        notes: 'Final presidential interview for non-teaching personnel appointment.',
+      },
+    });
+  }
+  await prisma.candidateEvaluation.upsert({
+    where: { interviewId: robertoPres.id },
+    update: {
+      communicationScore: 5,
+      technicalScore: 4,
+      problemSolvingScore: 5,
+      experienceScore: 5,
+      cultureFitScore: 5,
+      overallScore: 4.7,
+      recommendation: EvaluationRecommendation.RECOMMEND,
+      comments: 'President approves appointment for Guidance Counselor under 6 months probation.',
+      evaluatedById: adminUser.id,
+    },
+    create: {
+      interviewId: robertoPres.id,
+      evaluatedById: adminUser.id,
+      communicationScore: 5,
+      technicalScore: 4,
+      problemSolvingScore: 5,
+      experienceScore: 5,
+      cultureFitScore: 5,
+      overallScore: 4.7,
+      recommendation: EvaluationRecommendation.RECOMMEND,
+      comments: 'President approves appointment for Guidance Counselor under 6 months probation.',
+    },
+  });
+
+  // Offer / Contract for Roberto (6 Months Probation for Non-Teaching)
+  const robertoOffer = await prisma.offer.findFirst({
+    where: { applicationId: robertoApp.id },
+  });
+  if (!robertoOffer) {
+    await prisma.offer.create({
+      data: {
+        applicationId: robertoApp.id,
+        salary: 48000,
+        payFrequency: PayFrequency.MONTHLY,
+        employmentType: 'Probationary Staff (6 Months)',
+        startDate: new Date(Date.now() + 10 * 24 * 60 * 60 * 1000),
+        expirationDate: new Date(Date.now() + 25 * 24 * 60 * 60 * 1000),
+        status: OfferStatus.ACCEPTED,
+        contractSignedByPresident: true,
+        contractSignedByEmployee: true,
+        contractExecutedAt: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000),
+        probationPeriodMonths: 6,
+        probationaryTerms:
+          'Six (6) months probationary appointment pursuant to institutional policy and Philippine Labor Code. Regularization is contingent upon satisfactory evaluation during the probationary period and recommendation of the President. No automatic regularization based solely on time.',
+        benefits: 'HMO coverage, 13th month pay, statutory benefits.',
+        notes: 'Contract executed and signed by both the employee and the President.',
+        createdById: hrUser.id,
+        approvedById: adminUser.id,
+      },
+    });
+  }
+
+  // Orientation for Roberto
+  const robertoOnboarding = await prisma.onboardingProcess.findUnique({
+    where: { applicationId: robertoApp.id },
+  });
+  if (!robertoOnboarding) {
+    await prisma.onboardingProcess.create({
+      data: {
+        applicationId: robertoApp.id,
+        status: OnboardingStatus.IN_PROGRESS,
+        startDate: new Date(),
+        notes: 'Non-teaching staff onboarding and institutional orientation.',
+        tasks: {
+          create: [
+            {
+              title: 'Mandatory Institutional Orientation for Non-Teaching Staff',
+              description: 'Comprehensive orientation on SAGA institutional code, ethics, and department workflows.',
+              type: OnboardingTaskType.ORIENTATION,
+              status: OnboardingTaskStatus.VERIFIED,
+              isRequired: true,
+              verifiedAt: new Date(),
+              verifiedById: hrUser.id,
+              reviewerNotes: 'Orientation completed and verified.',
+            },
+          ],
+        },
+      },
+    });
+  }
+
+  // 8c. Incomplete SAGA Candidate (Not Ready to Hire): Miguel Rodriguez
+  const miguelApplicant = await prisma.applicant.upsert({
+    where: { email: 'miguel.rodriguez@gmail.com' },
+    update: {},
+    create: {
+      firstName: 'Miguel',
+      lastName: 'Rodriguez',
+      email: 'miguel.rodriguez@gmail.com',
+      phone: '+63 919 444 9876',
+    },
+  });
+
+  const miguelApp = await prisma.application.upsert({
+    where: {
+      jobId_applicantId: {
+        jobId: stemJob.id,
+        applicantId: miguelApplicant.id,
+      },
+    },
+    update: {
+      status: ApplicationStatus.SCREENING,
+    },
+    create: {
+      jobId: stemJob.id,
+      applicantId: miguelApplicant.id,
+      status: ApplicationStatus.SCREENING,
+      coverLetter: 'Applying for Senior STEM Educator position. Documents in progress.',
+    },
+  });
+
+  // Miguel has only 1 document submitted, remainder pending/missing
+  const miguelDocTemplates = [
+    {
+      type: RecruitmentDocumentType.RESUME_APPLICATION_LETTER,
+      title: 'Letter of Application with Resume',
+      fileName: 'Miguel_Rodriguez_Resume.pdf',
+      status: RecruitmentDocumentStatus.SUBMITTED,
+      isRequired: true,
+      isConditional: false,
+    },
+    {
+      type: RecruitmentDocumentType.TRANSCRIPT_OF_RECORDS,
+      title: 'Transcript of Records (TOR)',
+      fileName: null,
+      status: RecruitmentDocumentStatus.PENDING,
+      isRequired: true,
+      isConditional: false,
+    },
+    {
+      type: RecruitmentDocumentType.DIPLOMA,
+      title: 'Photocopy of Diploma',
+      fileName: null,
+      status: RecruitmentDocumentStatus.PENDING,
+      isRequired: true,
+      isConditional: false,
+    },
+    {
+      type: RecruitmentDocumentType.LET_BASIC_EDUCATION,
+      title: 'Photocopy of Licensure Examination for Teachers (Basic Education)',
+      fileName: null,
+      status: RecruitmentDocumentStatus.PENDING,
+      isRequired: true,
+      isConditional: false,
+    },
+    {
+      type: RecruitmentDocumentType.RECOMMENDATION_LETTER_1,
+      title: 'Letter of Recommendation 1 (Moral Character)',
+      fileName: null,
+      status: RecruitmentDocumentStatus.PENDING,
+      isRequired: true,
+      isConditional: false,
+    },
+    {
+      type: RecruitmentDocumentType.RECOMMENDATION_LETTER_2,
+      title: 'Letter of Recommendation 2 (Moral Character)',
+      fileName: null,
+      status: RecruitmentDocumentStatus.PENDING,
+      isRequired: true,
+      isConditional: false,
+    },
+    {
+      type: RecruitmentDocumentType.RECOMMENDATION_LETTER_3,
+      title: 'Letter of Recommendation 3 (Moral Character)',
+      fileName: null,
+      status: RecruitmentDocumentStatus.PENDING,
+      isRequired: true,
+      isConditional: false,
+    },
+    {
+      type: RecruitmentDocumentType.NBI_CLEARANCE,
+      title: 'NBI Clearance',
+      fileName: null,
+      status: RecruitmentDocumentStatus.PENDING,
+      isRequired: true,
+      isConditional: false,
+    },
+  ];
+
+  for (const doc of miguelDocTemplates) {
+    await prisma.recruitmentDocument.upsert({
+      where: {
+        applicationId_type: {
+          applicationId: miguelApp.id,
+          type: doc.type,
+        },
+      },
+      update: {
+        status: doc.status,
+        fileName: doc.fileName,
+      },
+      create: {
+        applicationId: miguelApp.id,
+        type: doc.type,
+        title: doc.title,
+        status: doc.status,
+        isRequired: doc.isRequired,
+        isConditional: doc.isConditional,
+        fileName: doc.fileName,
+      },
+    });
+  }
+
+  // Miguel has an assigned written exam not yet taken/passed
+  const miguelExam = await prisma.assessment.findFirst({
+    where: {
+      applicationId: miguelApp.id,
+      type: AssessmentType.WRITTEN_EXAMINATION,
+    },
+  });
+  if (!miguelExam) {
+    await prisma.assessment.create({
+      data: {
+        applicationId: miguelApp.id,
+        title: 'SAGA Faculty Competency & Pedagogy Written Examination',
+        type: AssessmentType.WRITTEN_EXAMINATION,
+        description: 'Comprehensive written examination assessing STEM content mastery and Ignatian pedagogy.',
+        status: AssessmentStatus.ASSIGNED,
+        maxScore: 100,
+        passingScore: 80,
+        evaluatorId: hrUser.id,
+        dueDate: new Date(Date.now() + 5 * 24 * 60 * 60 * 1000),
+      },
+    });
+  }
+
+  console.log('✓ SAGA showcase candidates seeded (1 Teaching Ready, 1 Non-Teaching Ready, 1 Incomplete Blocked).');
 
   console.log(`✓ Employee onboarding seeded.`);
   console.log('✅ Seed completed successfully!');

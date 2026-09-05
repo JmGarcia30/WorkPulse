@@ -9,7 +9,7 @@ import { ApplicationForm } from '@/components/careers/ApplicationForm';
 
 interface ApplyPageProps {
   params: Promise<{ organizationSlug: string; jobSlug: string }>;
-  searchParams: Promise<{ success?: string; error?: string }>;
+  searchParams: Promise<{ success?: string; error?: string; appId?: string }>;
 }
 
 export async function generateMetadata({
@@ -43,7 +43,7 @@ export async function generateMetadata({
 
 export default async function ApplyPage({ params, searchParams }: ApplyPageProps) {
   const { organizationSlug, jobSlug } = await params;
-  const { success, error } = await searchParams;
+  const { success, error, appId } = await searchParams;
 
   // Strict Multi-Tenant Security Check
   const org = await prisma.organization.findUnique({
@@ -84,16 +84,29 @@ export default async function ApplyPage({ params, searchParams }: ApplyPageProps
           </p>
         </div>
 
-        <div className="rounded-2xl border border-slate-100 bg-slate-50 p-4 text-xs text-slate-500 dark:border-slate-800 dark:bg-slate-950">
-          Your profile and resume have been securely registered in our HR operations system. Our hiring team will review your application.
+        <div className="rounded-2xl border border-indigo-100 bg-indigo-50/60 p-4 text-xs text-indigo-900 dark:border-indigo-900/40 dark:bg-indigo-950/30 text-left space-y-2">
+          <div className="font-bold flex items-center gap-1.5 text-indigo-950 dark:text-indigo-200">
+            <span>Next Step: SAGA Institutional Credential Submission</span>
+          </div>
+          <p className="text-[11px] text-indigo-800 dark:text-indigo-300 leading-relaxed">
+            In accordance with the SAGA Institutional Hiring Policy, all candidates must submit required documents (TOR, Diploma, LET license, 3 Recommendation Letters, and NBI Clearance) for review by the Head of the Department.
+          </p>
         </div>
 
-        <div className="pt-4 flex justify-center gap-3">
+        <div className="pt-2 flex flex-col sm:flex-row justify-center gap-3">
+          {appId && (
+            <Link
+              href={`/careers/${org.slug}/portal/${appId}`}
+              className="inline-flex items-center justify-center gap-2 rounded-xl bg-indigo-600 px-6 py-2.5 text-xs font-bold text-white hover:bg-indigo-500 transition shadow-sm"
+            >
+              Access Candidate Document Portal &rarr;
+            </Link>
+          )}
           <Link
             href={`/careers/${org.slug}`}
-            className="inline-flex items-center gap-2 rounded-xl bg-indigo-600 px-6 py-2.5 text-xs font-semibold text-white hover:bg-indigo-500 transition"
+            className="inline-flex items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-5 py-2.5 text-xs font-semibold text-slate-700 hover:bg-slate-50 transition dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200"
           >
-            Explore Other Careers at {org.name}
+            Explore Other Openings
           </Link>
         </div>
       </div>

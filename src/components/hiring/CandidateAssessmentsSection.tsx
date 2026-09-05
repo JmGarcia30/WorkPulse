@@ -65,13 +65,13 @@ export function CandidateAssessmentsSection({
   return (
     <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-xs dark:border-slate-800 dark:bg-slate-900 space-y-4">
       {/* Header */}
-      <div className="flex items-center justify-between border-b border-slate-100 pb-4 dark:border-slate-800">
+      <div className="flex items-center justify-between border-b border-[#E8EAED] pb-4 dark:border-slate-800">
         <div>
-          <h3 className="text-xs font-semibold text-slate-500 uppercase tracking-wider dark:text-slate-400 flex items-center gap-2">
-            <Award className="h-4 w-4 text-indigo-600 dark:text-indigo-400" />
+          <h3 className="text-xs font-bold text-[#6B7280] uppercase tracking-wider dark:text-slate-400 flex items-center gap-2">
+            <Award className="h-4 w-4 text-[#181A1C] dark:text-white" />
             Pre-Employment Assessments
           </h3>
-          <p className="text-[11px] text-slate-500 mt-0.5">
+          <p className="text-[11px] text-[#6B7280] mt-0.5">
             Technical, skills, and cognitive evaluations
           </p>
         </div>
@@ -80,7 +80,7 @@ export function CandidateAssessmentsSection({
           <button
             type="button"
             onClick={() => setIsAssignOpen(true)}
-            className="inline-flex items-center gap-1.5 rounded-lg bg-indigo-600 px-3 py-1.5 text-xs font-semibold text-white hover:bg-indigo-500 transition shadow-xs"
+            className="inline-flex items-center gap-1.5 rounded-xl bg-[#181A1C] px-3.5 py-1.5 text-xs font-bold text-white hover:bg-[#2A2E33] transition shadow-2xs"
           >
             <Plus className="h-3.5 w-3.5" />
             Assign Assessment
@@ -90,12 +90,12 @@ export function CandidateAssessmentsSection({
 
       {/* Assessments List */}
       {assessments.length === 0 ? (
-        <div className="rounded-xl border border-dashed border-slate-200 p-8 text-center dark:border-slate-800">
-          <Award className="mx-auto h-8 w-8 text-slate-300 dark:text-slate-700" />
-          <p className="mt-2 text-xs font-semibold text-slate-700 dark:text-slate-300">
+        <div className="rounded-2xl border border-dashed border-[#E8EAED] p-8 text-center dark:border-slate-800">
+          <Award className="mx-auto h-8 w-8 text-[#9CA3AF] dark:text-slate-700" />
+          <p className="mt-2 text-xs font-bold text-[#181A1C] dark:text-slate-300">
             No assessments assigned yet
           </p>
-          <p className="text-[11px] text-slate-500 mt-0.5">
+          <p className="text-[11px] text-[#6B7280] mt-0.5">
             Assign technical challenges, behavioral tasks, or skill evaluations to this candidate.
           </p>
         </div>
@@ -113,12 +113,12 @@ export function CandidateAssessmentsSection({
             return (
               <div
                 key={a.id}
-                className="rounded-xl border border-slate-200 bg-slate-50/50 p-4 transition dark:border-slate-800 dark:bg-slate-950/50 space-y-3"
+                className="rounded-2xl border border-[#E8EAED] bg-[#F8F9FA] p-4 transition dark:border-slate-800 dark:bg-slate-950/50 space-y-3"
               >
                 <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
                   <div className="space-y-1">
                     <div className="flex items-center gap-2">
-                      <span className="font-bold text-xs text-slate-900 dark:text-slate-100">
+                      <span className="font-bold text-xs text-[#181A1C] dark:text-slate-100">
                         {a.title}
                       </span>
                       <span
@@ -129,7 +129,7 @@ export function CandidateAssessmentsSection({
                     </div>
 
                     {a.description && (
-                      <p className="text-xs text-slate-600 dark:text-slate-300 whitespace-pre-line leading-relaxed">
+                      <p className="text-xs text-[#6B7280] dark:text-slate-300 whitespace-pre-line leading-relaxed">
                         {a.description}
                       </p>
                     )}
@@ -146,7 +146,7 @@ export function CandidateAssessmentsSection({
                       <button
                         type="button"
                         onClick={() => setSelectedAssessmentForScore(a)}
-                        className="inline-flex items-center gap-1 rounded-lg border border-indigo-200 bg-white px-2.5 py-1 text-xs font-semibold text-indigo-700 hover:bg-indigo-50 dark:border-indigo-800 dark:bg-slate-900 dark:text-indigo-300"
+                        className="inline-flex items-center gap-1 rounded-xl border border-[#E8EAED] bg-white px-2.5 py-1 text-xs font-bold text-[#181A1C] hover:bg-[#181A1C] hover:text-white dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300 transition shadow-2xs"
                       >
                         <FileEdit className="h-3 w-3" /> Record Score
                       </button>

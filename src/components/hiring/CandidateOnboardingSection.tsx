@@ -21,14 +21,11 @@ import { CustomOnboardingTaskModal } from './CustomOnboardingTaskModal';
 import {
   UserCheck,
   CheckCircle2,
-  Clock,
   Plus,
   FileText,
   UploadCloud,
   CheckSquare,
   AlertCircle,
-  Calendar,
-  ExternalLink,
 } from 'lucide-react';
 
 interface OnboardingSectionProps {
@@ -74,9 +71,8 @@ export function CandidateOnboardingSection({
   const [isInitializing, setIsInitializing] = useState(false);
   const [initError, setInitError] = useState<string | null>(null);
 
-  // Modals state
-  const [reviewTask, setReviewTask] = useState<(typeof onboarding extends null ? never : NonNullable<typeof onboarding>['tasks'][number]) | null>(null);
-  const [uploadTask, setUploadTask] = useState<(typeof onboarding extends null ? never : NonNullable<typeof onboarding>['tasks'][number]) | null>(null);
+  const [reviewTask, setReviewTask] = useState<NonNullable<typeof onboarding>['tasks'][0] | null>(null);
+  const [uploadTask, setUploadTask] = useState<NonNullable<typeof onboarding>['tasks'][0] | null>(null);
   const [isCustomModalOpen, setIsCustomModalOpen] = useState(false);
 
   const acceptedOffer = offers.find((o) => o.status === OfferStatus.ACCEPTED);
@@ -103,17 +99,17 @@ export function CandidateOnboardingSection({
 
   if (!onboarding) {
     return (
-      <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-xs dark:border-slate-800 dark:bg-slate-900 space-y-4">
+      <div className="rounded-3xl border border-[#E8EAED] bg-white p-6 shadow-2xs dark:border-slate-800 dark:bg-slate-900 space-y-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2.5">
-            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-indigo-50 text-indigo-600 dark:bg-indigo-950/60 dark:text-indigo-400">
+            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-[#181A1C] text-white">
               <UserCheck className="h-5 w-5" />
             </div>
             <div>
-              <h3 className="text-sm font-bold text-slate-900 dark:text-slate-100">
+              <h3 className="text-sm font-bold text-[#181A1C] dark:text-slate-100">
                 Pre-Employment & Onboarding Checklist
               </h3>
-              <p className="text-xs text-slate-500 dark:text-slate-400">
+              <p className="text-xs text-[#6B7280] dark:text-slate-400">
                 Institutional onboarding, document clearance, and Day 1 readiness.
               </p>
             </div>
@@ -127,13 +123,13 @@ export function CandidateOnboardingSection({
           </div>
         )}
 
-        <div className="rounded-xl border border-dashed border-slate-200 bg-slate-50/50 p-6 text-center dark:border-slate-800 dark:bg-slate-800/20 space-y-3">
-          <UserCheck className="mx-auto h-8 w-8 text-slate-400" />
+        <div className="rounded-2xl border border-dashed border-[#E8EAED] bg-[#F8F9FA] p-6 text-center dark:border-slate-800 dark:bg-slate-800/20 space-y-3">
+          <UserCheck className="mx-auto h-8 w-8 text-[#9CA3AF]" />
           <div>
-            <p className="text-xs font-semibold text-slate-700 dark:text-slate-300">
+            <p className="text-xs font-bold text-[#181A1C] dark:text-slate-300">
               Onboarding Process Not Yet Initialized
             </p>
-            <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">
+            <p className="text-[11px] text-[#6B7280] dark:text-slate-400 mt-0.5">
               {acceptedOffer
                 ? 'Candidate has an accepted offer. Click below to initialize the standard institutional checklist.'
                 : 'An offer must be created and marked as Accepted before starting employee onboarding.'}
@@ -144,7 +140,7 @@ export function CandidateOnboardingSection({
             <button
               onClick={handleInitialize}
               disabled={isInitializing}
-              className="inline-flex items-center gap-2 rounded-xl bg-indigo-600 px-4 py-2 text-xs font-semibold text-white hover:bg-indigo-700 transition shadow-xs disabled:opacity-50"
+              className="inline-flex items-center gap-2 rounded-xl bg-[#181A1C] px-4 py-2 text-xs font-bold text-white hover:bg-[#2A2E33] transition shadow-2xs disabled:opacity-50"
             >
               <CheckSquare className="h-4 w-4" />
               <span>{isInitializing ? 'Initializing...' : 'Initialize Onboarding Checklist'}</span>
@@ -159,16 +155,16 @@ export function CandidateOnboardingSection({
   const statusConfig = ONBOARDING_STATUS_CONFIG[onboarding.status];
 
   return (
-    <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-xs dark:border-slate-800 dark:bg-slate-900 space-y-5">
+    <div className="rounded-3xl border border-[#E8EAED] bg-white p-6 shadow-2xs dark:border-slate-800 dark:bg-slate-900 space-y-5">
       {/* Top Header & Progress */}
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between border-b border-slate-100 dark:border-slate-800 pb-4">
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between border-b border-[#E8EAED] dark:border-slate-800 pb-4">
         <div className="flex items-center gap-2.5">
-          <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-indigo-50 text-indigo-600 dark:bg-indigo-950/60 dark:text-indigo-400">
+          <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-[#181A1C] text-white">
             <UserCheck className="h-5 w-5" />
           </div>
           <div>
             <div className="flex items-center gap-2">
-              <h3 className="text-sm font-bold text-slate-900 dark:text-slate-100">
+              <h3 className="text-sm font-bold text-[#181A1C] dark:text-slate-100">
                 Pre-Employment & Onboarding Checklist
               </h3>
               <span
@@ -177,10 +173,10 @@ export function CandidateOnboardingSection({
                 {statusConfig.label}
               </span>
             </div>
-            <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
-              Start Date: <span className="font-semibold text-slate-700 dark:text-slate-300">{new Date(onboarding.startDate).toLocaleDateString()}</span>
+            <p className="text-xs text-[#6B7280] dark:text-slate-400 mt-0.5">
+              Start Date: <span className="font-bold text-[#181A1C] dark:text-slate-300">{new Date(onboarding.startDate).toLocaleDateString()}</span>
               {onboarding.targetCompletionDate && (
-                <> • Target: <span className="font-medium">{new Date(onboarding.targetCompletionDate).toLocaleDateString()}</span></>
+                <> • Target: <span className="font-semibold">{new Date(onboarding.targetCompletionDate).toLocaleDateString()}</span></>
               )}
             </p>
           </div>
@@ -189,33 +185,33 @@ export function CandidateOnboardingSection({
         {canManage && (
           <button
             onClick={() => setIsCustomModalOpen(true)}
-            className="inline-flex items-center gap-1.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-3.5 py-2 text-xs font-semibold text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700/60 transition"
+            className="inline-flex items-center gap-1.5 rounded-xl border border-[#E8EAED] dark:border-slate-700 bg-[#F8F9FA] dark:bg-slate-800 px-3.5 py-2 text-xs font-bold text-[#181A1C] dark:text-slate-300 hover:bg-[#181A1C] hover:text-white transition shadow-2xs"
           >
-            <Plus className="h-3.5 w-3.5 text-indigo-600 dark:text-indigo-400" />
+            <Plus className="h-3.5 w-3.5" />
             <span>Add Custom Task</span>
           </button>
         )}
       </div>
 
       {/* Progress Bar Card */}
-      <div className="rounded-xl bg-slate-50 dark:bg-slate-800/40 p-4 border border-slate-100 dark:border-slate-800 space-y-2">
+      <div className="rounded-2xl bg-[#F8F9FA] dark:bg-slate-800/40 p-4 border border-[#E8EAED] dark:border-slate-800 space-y-2">
         <div className="flex items-center justify-between text-xs">
-          <span className="font-bold text-slate-700 dark:text-slate-300">
+          <span className="font-bold text-[#181A1C] dark:text-slate-300">
             Checklist Completion Progress
           </span>
-          <span className="font-extrabold text-indigo-600 dark:text-indigo-400">
+          <span className="font-extrabold text-[#181A1C] dark:text-slate-100">
             {progress.completedTasks} of {progress.totalTasks} tasks verified ({progress.percentComplete}%)
           </span>
         </div>
-        <div className="h-2.5 w-full overflow-hidden rounded-full bg-slate-200 dark:bg-slate-700">
+        <div className="h-2.5 w-full overflow-hidden rounded-full bg-[#E8EAED] dark:bg-slate-700">
           <div
             className={`h-full transition-all duration-300 ${
-              progress.percentComplete === 100 ? 'bg-emerald-500' : 'bg-indigo-600'
+              progress.percentComplete === 100 ? 'bg-emerald-500' : 'bg-[#181A1C]'
             }`}
             style={{ width: `${progress.percentComplete}%` }}
           />
         </div>
-        <div className="flex items-center justify-between text-[11px] text-slate-500 dark:text-slate-400 pt-1">
+        <div className="flex items-center justify-between text-[11px] text-[#6B7280] dark:text-slate-400 pt-1">
           <span>{progress.verifiedCount} Verified</span>
           <span>{progress.submittedCount} Awaiting Review</span>
           <span>{progress.pendingCount} Pending</span>
@@ -234,7 +230,7 @@ export function CandidateOnboardingSection({
           return (
             <div
               key={task.id}
-              className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 rounded-xl border border-slate-200/80 bg-white p-4 dark:border-slate-800 dark:bg-slate-900/90 hover:border-slate-300 dark:hover:border-slate-700 transition"
+              className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 rounded-2xl border border-[#E8EAED] bg-white p-4 dark:border-slate-800 dark:bg-slate-900/90 hover:border-[#181A1C]/30 transition"
             >
               <div className="space-y-1 min-w-0">
                 <div className="flex items-center gap-2 flex-wrap">
@@ -249,18 +245,18 @@ export function CandidateOnboardingSection({
                     {statusConf.label}
                   </span>
                   {task.isRequired && (
-                    <span className="rounded-md bg-amber-50 dark:bg-amber-950/60 px-1.5 py-0.2 text-[9px] font-bold text-amber-700 dark:text-amber-300">
+                    <span className="rounded-md bg-amber-50 dark:bg-amber-950/60 px-1.5 py-0.5 text-[9px] font-bold text-amber-700 dark:text-amber-300">
                       REQUIRED
                     </span>
                   )}
                 </div>
 
-                <h4 className="text-xs font-bold text-slate-900 dark:text-slate-100">
+                <h4 className="text-xs font-bold text-[#181A1C] dark:text-slate-100">
                   {task.title}
                 </h4>
 
                 {task.description && (
-                  <p className="text-[11px] text-slate-500 dark:text-slate-400 line-clamp-1">
+                  <p className="text-[11px] text-[#6B7280] dark:text-slate-400 line-clamp-1">
                     {task.description}
                   </p>
                 )}
@@ -279,17 +275,17 @@ export function CandidateOnboardingSection({
                     href={`/api/onboarding-documents/${task.id}`}
                     target="_blank"
                     rel="noreferrer"
-                    className="inline-flex items-center gap-1 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-2.5 py-1.5 text-xs font-semibold text-slate-700 dark:text-slate-300 hover:bg-slate-50 transition"
+                    className="inline-flex items-center gap-1 rounded-xl border border-[#E8EAED] dark:border-slate-700 bg-[#F8F9FA] dark:bg-slate-800 px-3 py-1.5 text-xs font-bold text-[#181A1C] dark:text-slate-300 hover:bg-[#181A1C] hover:text-white transition shadow-2xs"
                   >
-                    <FileText className="h-3.5 w-3.5 text-indigo-600" />
+                    <FileText className="h-3.5 w-3.5" />
                     <span>View File</span>
                   </a>
                 ) : (
                   <button
                     onClick={() => setUploadTask(task)}
-                    className="inline-flex items-center gap-1 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-2.5 py-1.5 text-xs font-semibold text-slate-700 dark:text-slate-300 hover:bg-slate-50 transition"
+                    className="inline-flex items-center gap-1 rounded-xl border border-[#E8EAED] dark:border-slate-700 bg-white dark:bg-slate-800 px-3 py-1.5 text-xs font-bold text-[#181A1C] dark:text-slate-300 hover:bg-[#F8F9FA] transition shadow-2xs"
                   >
-                    <UploadCloud className="h-3.5 w-3.5 text-slate-500" />
+                    <UploadCloud className="h-3.5 w-3.5 text-[#6B7280]" />
                     <span>Upload</span>
                   </button>
                 )}
@@ -297,7 +293,7 @@ export function CandidateOnboardingSection({
                 {canManage && (
                   <button
                     onClick={() => setReviewTask(task)}
-                    className="inline-flex items-center gap-1 rounded-lg bg-indigo-50 dark:bg-indigo-950/60 border border-indigo-200 dark:border-indigo-800 px-2.5 py-1.5 text-xs font-semibold text-indigo-700 dark:text-indigo-300 hover:bg-indigo-100 transition"
+                    className="inline-flex items-center gap-1 rounded-xl bg-[#181A1C] px-3.5 py-1.5 text-xs font-bold text-white hover:bg-[#2A2E33] transition shadow-2xs"
                   >
                     <CheckCircle2 className="h-3.5 w-3.5" />
                     <span>Review / Verify</span>

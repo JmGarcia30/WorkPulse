@@ -130,7 +130,7 @@ export default async function JobDetailPage({ params }: JobDetailPageProps) {
       {/* Metrics Row */}
       <div className="grid gap-4 sm:grid-cols-3">
         <div className="rounded-xl border border-slate-200 bg-white p-4 shadow-xs dark:border-slate-800 dark:bg-slate-900 flex items-center gap-3">
-          <div className="rounded-lg bg-indigo-50 p-2.5 text-indigo-600 dark:bg-indigo-950/60 dark:text-indigo-400">
+          <div className="rounded-lg bg-[#F8F9FA] border border-[#E8EAED] p-2.5 text-[#181A1C] dark:bg-slate-800 dark:border-slate-700 dark:text-white">
             <Users className="h-5 w-5" />
           </div>
           <div>
@@ -162,7 +162,7 @@ export default async function JobDetailPage({ params }: JobDetailPageProps) {
             <Link
               href={`/careers/${job.slug}`}
               target="_blank"
-              className="text-xs font-semibold text-indigo-600 hover:underline dark:text-indigo-400 mt-0.5 block truncate max-w-[180px]"
+              className="text-xs font-bold text-[#181A1C] hover:underline dark:text-slate-200 mt-0.5 block truncate max-w-[180px]"
             >
               /careers/{job.slug}
             </Link>
@@ -189,7 +189,7 @@ export default async function JobDetailPage({ params }: JobDetailPageProps) {
                     {req.name}
                   </span>
                   <div className="flex items-center gap-1.5">
-                    <span className="rounded-md bg-indigo-50 px-1.5 py-0.5 text-[9px] font-semibold text-indigo-700 dark:bg-indigo-950 dark:text-indigo-300">
+                    <span className="rounded-md bg-[#F8F9FA] border border-[#E8EAED] px-1.5 py-0.5 text-[9px] font-bold text-[#181A1C] dark:bg-slate-800 dark:border-slate-700 dark:text-slate-300">
                       {req.type}
                     </span>
                     <span

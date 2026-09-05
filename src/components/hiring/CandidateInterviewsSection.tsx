@@ -52,14 +52,14 @@ export function CandidateInterviewsSection({
   return (
     <div className="space-y-6">
       {/* Header with Schedule Button */}
-      <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-xs dark:border-slate-800 dark:bg-slate-900 space-y-4">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 pb-4 dark:border-slate-800">
+      <div className="rounded-3xl border border-[#E8EAED] bg-white p-6 shadow-2xs dark:border-slate-800 dark:bg-slate-900 space-y-4">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-[#E8EAED] pb-4 dark:border-slate-800">
           <div>
-            <h3 className="text-sm font-bold text-slate-900 dark:text-slate-100 flex items-center gap-2">
-              <Calendar className="h-4 w-4 text-indigo-600 dark:text-indigo-400" />
+            <h3 className="text-sm font-bold text-[#181A1C] dark:text-slate-100 flex items-center gap-2">
+              <Calendar className="h-4 w-4 text-[#181A1C] dark:text-white" />
               Interview Management & Candidate Evaluation
             </h3>
-            <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+            <p className="text-xs text-[#6B7280] dark:text-slate-400 mt-0.5">
               Coordinate interview rounds, log evaluations, and record hiring recommendations.
             </p>
           </div>
@@ -68,7 +68,7 @@ export function CandidateInterviewsSection({
             <button
               type="button"
               onClick={() => setShowScheduleModal(true)}
-              className="inline-flex items-center gap-1.5 rounded-xl bg-indigo-600 px-3.5 py-2 text-xs font-semibold text-white shadow-sm hover:bg-indigo-500 transition self-start sm:self-auto shrink-0"
+              className="inline-flex items-center gap-1.5 rounded-xl bg-[#181A1C] px-3.5 py-2 text-xs font-bold text-white shadow-2xs hover:bg-[#2A2E33] transition self-start sm:self-auto shrink-0"
             >
               <Plus className="h-4 w-4" /> Schedule Interview
             </button>

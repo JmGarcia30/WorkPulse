@@ -75,8 +75,8 @@ export function AssessmentModal({
       <div className="w-full max-w-lg rounded-2xl border border-slate-200 bg-white p-6 shadow-2xl dark:border-slate-800 dark:bg-slate-900 my-8">
         <div className="flex items-center justify-between border-b border-slate-100 pb-4 dark:border-slate-800">
           <div>
-            <h3 className="text-base font-bold text-slate-900 dark:text-slate-100 flex items-center gap-2">
-              <Award className="h-5 w-5 text-indigo-600 dark:text-indigo-400" />
+            <h3 className="text-base font-bold text-[#181A1C] dark:text-slate-100 flex items-center gap-2">
+              <Award className="h-5 w-5 text-[#181A1C] dark:text-white" />
               Assign Pre-Employment Assessment
             </h3>
             <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
@@ -111,7 +111,7 @@ export function AssessmentModal({
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               placeholder="e.g. Senior High Physics Demonstration & Pedagogy Exam"
-              className="w-full rounded-lg border border-slate-300 px-3 py-2 text-xs text-slate-900 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
+              className="w-full rounded-lg border border-slate-300 px-3 py-2 text-xs text-slate-900 focus:border-[#181A1C] focus:ring-1 focus:ring-[#181A1C] dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
             />
           </div>
 
@@ -124,7 +124,7 @@ export function AssessmentModal({
               <select
                 value={type}
                 onChange={(e) => setType(e.target.value as AssessmentType)}
-                className="w-full rounded-lg border border-slate-300 px-3 py-2 text-xs text-slate-900 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
+                className="w-full rounded-lg border border-slate-300 px-3 py-2 text-xs text-slate-900 focus:border-[#181A1C] focus:ring-1 focus:ring-[#181A1C] dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
               >
                 {Object.values(AssessmentType).map((t) => (
                   <option key={t} value={t}>
@@ -141,7 +141,7 @@ export function AssessmentModal({
               <select
                 value={evaluatorId}
                 onChange={(e) => setEvaluatorId(e.target.value)}
-                className="w-full rounded-lg border border-slate-300 px-3 py-2 text-xs text-slate-900 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
+                className="w-full rounded-lg border border-slate-300 px-3 py-2 text-xs text-slate-900 focus:border-[#181A1C] focus:ring-1 focus:ring-[#181A1C] dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
               >
                 <option value="">Unassigned / Open Evaluation</option>
                 {evaluators.map((ev) => (
@@ -166,7 +166,7 @@ export function AssessmentModal({
                 required
                 value={maxScore}
                 onChange={(e) => setMaxScore(e.target.value)}
-                className="w-full rounded-lg border border-slate-300 px-3 py-2 text-xs text-slate-900 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
+                className="w-full rounded-lg border border-slate-300 px-3 py-2 text-xs text-slate-900 focus:border-[#181A1C] focus:ring-1 focus:ring-[#181A1C] dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
               />
             </div>
 
@@ -181,7 +181,7 @@ export function AssessmentModal({
                 required
                 value={passingScore}
                 onChange={(e) => setPassingScore(e.target.value)}
-                className="w-full rounded-lg border border-slate-300 px-3 py-2 text-xs text-slate-900 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
+                className="w-full rounded-lg border border-slate-300 px-3 py-2 text-xs text-slate-900 focus:border-[#181A1C] focus:ring-1 focus:ring-[#181A1C] dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
               />
             </div>
           </div>
@@ -195,7 +195,7 @@ export function AssessmentModal({
               type="date"
               value={dueDate}
               onChange={(e) => setDueDate(e.target.value)}
-              className="w-full rounded-lg border border-slate-300 px-3 py-2 text-xs text-slate-900 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
+              className="w-full rounded-lg border border-slate-300 px-3 py-2 text-xs text-slate-900 focus:border-[#181A1C] focus:ring-1 focus:ring-[#181A1C] dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
             />
           </div>
 
@@ -209,7 +209,7 @@ export function AssessmentModal({
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               placeholder="Provide instructions, project brief, or submission expectations for this assessment..."
-              className="w-full rounded-lg border border-slate-300 px-3 py-2 text-xs text-slate-900 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
+              className="w-full rounded-lg border border-slate-300 px-3 py-2 text-xs text-slate-900 focus:border-[#181A1C] focus:ring-1 focus:ring-[#181A1C] dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
             />
           </div>
 
@@ -225,7 +225,7 @@ export function AssessmentModal({
             <button
               type="submit"
               disabled={loading}
-              className="rounded-lg bg-indigo-600 px-4 py-2 text-xs font-semibold text-white hover:bg-indigo-500 disabled:opacity-50 transition shadow-sm"
+              className="rounded-xl bg-[#181A1C] px-4 py-2 text-xs font-bold text-white hover:bg-[#2A2E33] disabled:opacity-50 transition shadow-2xs"
             >
               {loading ? 'Assigning...' : 'Assign Assessment'}
             </button>

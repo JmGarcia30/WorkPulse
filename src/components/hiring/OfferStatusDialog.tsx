@@ -71,14 +71,14 @@ export function OfferStatusDialog({
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 p-4 backdrop-blur-xs overflow-y-auto">
       <div className="w-full max-w-md rounded-2xl border border-slate-200 bg-white p-6 shadow-2xl dark:border-slate-800 dark:bg-slate-900 my-8">
-        <div className="flex items-center justify-between border-b border-slate-100 pb-4 dark:border-slate-800">
+        <div className="flex items-center justify-between border-b border-[#E8EAED] pb-4 dark:border-slate-800">
           <div>
-            <h3 className="text-base font-bold text-slate-900 dark:text-slate-100 flex items-center gap-2">
-              <ArrowRightLeft className="h-5 w-5 text-indigo-600 dark:text-indigo-400" />
+            <h3 className="text-base font-bold text-[#181A1C] dark:text-slate-100 flex items-center gap-2">
+              <ArrowRightLeft className="h-5 w-5 text-[#181A1C] dark:text-white" />
               Update Offer Workflow Stage
             </h3>
             <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
-              Candidate: <span className="font-semibold text-slate-700 dark:text-slate-300">{candidateName}</span>
+              Candidate: <span className="font-semibold text-[#181A1C] dark:text-slate-300">{candidateName}</span>
             </p>
           </div>
           <button
@@ -97,8 +97,8 @@ export function OfferStatusDialog({
           </div>
         )}
 
-        <div className="mt-4 rounded-xl bg-slate-50 p-3.5 border border-slate-100 dark:bg-slate-950 dark:border-slate-800 space-y-1">
-          <span className="text-[10px] font-semibold uppercase tracking-wider text-slate-400">
+        <div className="mt-4 rounded-xl bg-[#F8F9FA] p-3.5 border border-[#E8EAED] dark:bg-slate-950 dark:border-slate-800 space-y-1">
+          <span className="text-[10px] font-semibold uppercase tracking-wider text-[#6B7280]">
             Current Stage
           </span>
           <div className="flex items-center gap-2">
@@ -111,14 +111,14 @@ export function OfferStatusDialog({
         </div>
 
         {availableNextStatuses.length === 0 ? (
-          <div className="mt-4 rounded-xl bg-slate-100 p-4 text-center text-xs text-slate-600 dark:bg-slate-800 dark:text-slate-400">
-            <CheckCircle2 className="mx-auto h-6 w-6 text-slate-400 mb-1" />
+          <div className="mt-4 rounded-xl bg-[#F8F9FA] p-4 text-center text-xs text-[#6B7280] dark:bg-slate-800 dark:text-slate-400">
+            <CheckCircle2 className="mx-auto h-6 w-6 text-[#9CA3AF] mb-1" />
             This offer is in terminal status <strong>{currentStatus}</strong> and cannot be transitioned further.
           </div>
         ) : (
           <form onSubmit={handleSubmit} className="mt-4 space-y-4 text-xs">
             <div>
-              <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">
+              <label className="block font-bold text-[#181A1C] dark:text-slate-300 mb-1">
                 Target Transition Stage *
               </label>
               <div className="space-y-2">
@@ -129,8 +129,8 @@ export function OfferStatusDialog({
                       key={st}
                       className={`flex items-center justify-between rounded-xl border p-3 cursor-pointer transition ${
                         selectedStatus === st
-                          ? 'border-indigo-600 bg-indigo-50/50 dark:border-indigo-500 dark:bg-indigo-950/40'
-                          : 'border-slate-200 hover:bg-slate-50 dark:border-slate-800 dark:hover:bg-slate-950'
+                          ? 'border-[#181A1C] bg-[#F8F9FA] dark:border-white dark:bg-slate-800'
+                          : 'border-[#E8EAED] hover:bg-[#F8F9FA] dark:border-slate-800 dark:hover:bg-slate-950'
                       }`}
                     >
                       <div className="flex items-center gap-2.5">
@@ -140,9 +140,9 @@ export function OfferStatusDialog({
                           value={st}
                           checked={selectedStatus === st}
                           onChange={() => setSelectedStatus(st)}
-                          className="h-4 w-4 text-indigo-600 focus:ring-indigo-500"
+                          className="h-4 w-4 text-[#181A1C] focus:ring-[#181A1C]"
                         />
-                        <span className="font-semibold text-slate-900 dark:text-slate-100">
+                        <span className="font-bold text-[#181A1C] dark:text-slate-100">
                           {cfg.label}
                         </span>
                       </div>
@@ -158,7 +158,7 @@ export function OfferStatusDialog({
             </div>
 
             <div>
-              <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">
+              <label className="block font-bold text-[#181A1C] dark:text-slate-300 mb-1">
                 Decision / Audit Notes (Optional)
               </label>
               <textarea
@@ -166,23 +166,23 @@ export function OfferStatusDialog({
                 value={notes}
                 onChange={(e) => setNotes(e.target.value)}
                 placeholder="Reason or notes regarding this offer decision..."
-                className="w-full rounded-lg border border-slate-300 px-3 py-2 text-xs text-slate-900 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
+                className="w-full rounded-xl border border-[#E8EAED] px-3 py-2 text-xs text-[#181A1C] focus:border-[#181A1C] focus:ring-1 focus:ring-[#181A1C] dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
               />
             </div>
 
-            <div className="flex items-center justify-end gap-2 border-t border-slate-100 pt-4 dark:border-slate-800">
+            <div className="flex items-center justify-end gap-2 border-t border-[#E8EAED] pt-4 dark:border-slate-800">
               <button
                 type="button"
                 onClick={onClose}
                 disabled={loading}
-                className="rounded-lg border border-slate-200 px-4 py-2 text-xs font-semibold text-slate-600 hover:bg-slate-100 dark:border-slate-800 dark:text-slate-400"
+                className="rounded-xl border border-[#E8EAED] px-4 py-2 text-xs font-semibold text-[#6B7280] hover:text-[#181A1C] hover:bg-[#F8F9FA] dark:border-slate-800 dark:text-slate-400"
               >
                 Cancel
               </button>
               <button
                 type="submit"
                 disabled={loading || !selectedStatus}
-                className="rounded-lg bg-indigo-600 px-4 py-2 text-xs font-semibold text-white hover:bg-indigo-500 disabled:opacity-50 transition shadow-sm"
+                className="rounded-xl bg-[#181A1C] px-4 py-2 text-xs font-bold text-white hover:bg-[#2A2E33] disabled:opacity-50 transition shadow-2xs"
               >
                 {loading ? 'Updating...' : 'Confirm Status Change'}
               </button>

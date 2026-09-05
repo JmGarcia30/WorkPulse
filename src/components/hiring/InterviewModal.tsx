@@ -127,8 +127,8 @@ export function InterviewModal({
         {/* Header */}
         <div className="flex items-center justify-between border-b border-slate-100 pb-4 dark:border-slate-800">
           <div>
-            <h2 className="text-base font-bold text-slate-900 dark:text-slate-100 flex items-center gap-2">
-              <Calendar className="h-5 w-5 text-indigo-600 dark:text-indigo-400" />
+            <h2 className="text-base font-bold text-[#181A1C] dark:text-slate-100 flex items-center gap-2">
+              <Calendar className="h-5 w-5 text-[#181A1C] dark:text-white" />
               Schedule Candidate Interview
             </h2>
             <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
@@ -167,9 +167,18 @@ export function InterviewModal({
             <select
               value={type}
               onChange={(e) => setType(e.target.value as InterviewType)}
-              className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs text-slate-900 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
+              className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs text-slate-900 focus:border-[#181A1C] focus:ring-1 focus:ring-[#181A1C] dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
             >
               <option value={InterviewType.INITIAL_SCREENING}>Initial Screening Interview</option>
+              <option value={InterviewType.TEACHING_DEMONSTRATION}>
+                Teaching Demonstration Evaluation (Faculty Only)
+              </option>
+              <option value={InterviewType.HEAD_OF_DEPARTMENT}>
+                Head of Department (HOD) Interview
+              </option>
+              <option value={InterviewType.PRESIDENT_FINAL}>
+                President Final Interview (Endorsement Stage)
+              </option>
               <option value={InterviewType.TECHNICAL}>Technical Assessment / Coding Interview</option>
               <option value={InterviewType.BEHAVIORAL}>Behavioral & Culture Fit Interview</option>
               <option value={InterviewType.FINAL}>Final Executive / Panel Interview</option>
@@ -190,7 +199,7 @@ export function InterviewModal({
               <select
                 value={interviewerId}
                 onChange={(e) => setInterviewerId(e.target.value)}
-                className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs text-slate-900 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
+                className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs text-slate-900 focus:border-[#181A1C] focus:ring-1 focus:ring-[#181A1C] dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
               >
                 {interviewers.map((u) => (
                   <option key={u.id} value={u.id}>
@@ -212,7 +221,7 @@ export function InterviewModal({
                 value={date}
                 onChange={(e) => setDate(e.target.value)}
                 required
-                className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs text-slate-900 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
+                className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs text-slate-900 focus:border-[#181A1C] focus:ring-1 focus:ring-[#181A1C] dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
               />
             </div>
 
@@ -225,7 +234,7 @@ export function InterviewModal({
                 value={time}
                 onChange={(e) => setTime(e.target.value)}
                 required
-                className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs text-slate-900 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
+                className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs text-slate-900 focus:border-[#181A1C] focus:ring-1 focus:ring-[#181A1C] dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
               />
             </div>
 
@@ -236,7 +245,7 @@ export function InterviewModal({
               <select
                 value={durationMinutes}
                 onChange={(e) => setDurationMinutes(Number(e.target.value))}
-                className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs text-slate-900 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
+                className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs text-slate-900 focus:border-[#181A1C] focus:ring-1 focus:ring-[#181A1C] dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
               >
                 <option value={15}>15 mins</option>
                 <option value={30}>30 mins</option>
@@ -259,7 +268,7 @@ export function InterviewModal({
                 placeholder="https://meet.google.com/..."
                 value={meetingUrl}
                 onChange={(e) => setMeetingUrl(e.target.value)}
-                className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs text-slate-900 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
+                className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs text-slate-900 focus:border-[#181A1C] focus:ring-1 focus:ring-[#181A1C] dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
               />
             </div>
 
@@ -272,7 +281,7 @@ export function InterviewModal({
                 placeholder="e.g. Conference Room A"
                 value={location}
                 onChange={(e) => setLocation(e.target.value)}
-                className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs text-slate-900 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
+                className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs text-slate-900 focus:border-[#181A1C] focus:ring-1 focus:ring-[#181A1C] dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
               />
             </div>
           </div>
@@ -287,7 +296,7 @@ export function InterviewModal({
               placeholder="Topics to evaluate, instructions for candidate or interviewer..."
               value={notes}
               onChange={(e) => setNotes(e.target.value)}
-              className="w-full rounded-xl border border-slate-200 bg-white p-3 text-xs text-slate-900 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
+              className="w-full rounded-xl border border-slate-200 bg-white p-3 text-xs text-slate-900 focus:border-[#181A1C] focus:ring-1 focus:ring-[#181A1C] dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
             />
           </div>
 
@@ -303,7 +312,7 @@ export function InterviewModal({
             <button
               type="submit"
               disabled={isPending || loadingInterviewers}
-              className="inline-flex items-center gap-2 rounded-xl bg-indigo-600 px-5 py-2.5 text-xs font-semibold text-white shadow-sm hover:bg-indigo-500 disabled:opacity-50 transition"
+              className="inline-flex items-center gap-2 rounded-xl bg-[#181A1C] px-5 py-2.5 text-xs font-bold text-white shadow-sm hover:bg-[#2A2E33] disabled:opacity-50 transition"
             >
               {isPending && <Loader2 className="h-3.5 w-3.5 animate-spin" />}
               Confirm & Schedule Interview

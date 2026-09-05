@@ -49,7 +49,7 @@ export default async function NewJobPage() {
                 name="title"
                 required
                 placeholder="e.g. Senior STEM Educator"
-                className="mt-1 block w-full rounded-lg border border-slate-300 px-3.5 py-2 text-xs text-slate-900 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
+                className="mt-1 block w-full rounded-lg border border-slate-300 px-3.5 py-2 text-xs text-slate-900 focus:border-[#181A1C] focus:ring-1 focus:ring-[#181A1C] dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
               />
             </div>
 
@@ -62,7 +62,7 @@ export default async function NewJobPage() {
                 name="department"
                 required
                 placeholder="e.g. Academic Affairs"
-                className="mt-1 block w-full rounded-lg border border-slate-300 px-3.5 py-2 text-xs text-slate-900 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
+                className="mt-1 block w-full rounded-lg border border-slate-300 px-3.5 py-2 text-xs text-slate-900 focus:border-[#181A1C] focus:ring-1 focus:ring-[#181A1C] dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
               />
             </div>
 
@@ -73,7 +73,7 @@ export default async function NewJobPage() {
               <select
                 name="employmentType"
                 required
-                className="mt-1 block w-full rounded-lg border border-slate-300 px-3.5 py-2 text-xs text-slate-900 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
+                className="mt-1 block w-full rounded-lg border border-slate-300 px-3.5 py-2 text-xs text-slate-900 focus:border-[#181A1C] focus:ring-1 focus:ring-[#181A1C] dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
               >
                 <option value="Full-time">Full-time</option>
                 <option value="Part-time">Part-time</option>
@@ -91,7 +91,7 @@ export default async function NewJobPage() {
                 name="location"
                 required
                 placeholder="e.g. Main Campus - Quezon City"
-                className="mt-1 block w-full rounded-lg border border-slate-300 px-3.5 py-2 text-xs text-slate-900 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
+                className="mt-1 block w-full rounded-lg border border-slate-300 px-3.5 py-2 text-xs text-slate-900 focus:border-[#181A1C] focus:ring-1 focus:ring-[#181A1C] dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
               />
             </div>
 
@@ -102,7 +102,7 @@ export default async function NewJobPage() {
               <input
                 type="date"
                 name="closingDate"
-                className="mt-1 block w-full rounded-lg border border-slate-300 px-3.5 py-2 text-xs text-slate-900 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
+                className="mt-1 block w-full rounded-lg border border-slate-300 px-3.5 py-2 text-xs text-slate-900 focus:border-[#181A1C] focus:ring-1 focus:ring-[#181A1C] dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
               />
             </div>
           </div>
@@ -123,7 +123,7 @@ export default async function NewJobPage() {
               required
               rows={4}
               placeholder="Provide a comprehensive summary of the job role..."
-              className="mt-1 block w-full rounded-lg border border-slate-300 px-3.5 py-2 text-xs text-slate-900 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
+              className="mt-1 block w-full rounded-lg border border-slate-300 px-3.5 py-2 text-xs text-slate-900 focus:border-[#181A1C] focus:ring-1 focus:ring-[#181A1C] dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
             />
           </div>
 
@@ -135,7 +135,7 @@ export default async function NewJobPage() {
               name="responsibilities"
               rows={4}
               placeholder="• Teach General Physics and Advanced Calculus&#10;• Maintain laboratory equipment..."
-              className="mt-1 block w-full rounded-lg border border-slate-300 px-3.5 py-2 text-xs text-slate-900 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
+              className="mt-1 block w-full rounded-lg border border-slate-300 px-3.5 py-2 text-xs text-slate-900 focus:border-[#181A1C] focus:ring-1 focus:ring-[#181A1C] dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
             />
           </div>
 
@@ -147,7 +147,7 @@ export default async function NewJobPage() {
               name="qualifications"
               rows={4}
               placeholder="• Master degree in STEM field&#10;• Licensed Professional Teacher (LPT)..."
-              className="mt-1 block w-full rounded-lg border border-slate-300 px-3.5 py-2 text-xs text-slate-900 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
+              className="mt-1 block w-full rounded-lg border border-slate-300 px-3.5 py-2 text-xs text-slate-900 focus:border-[#181A1C] focus:ring-1 focus:ring-[#181A1C] dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
             />
           </div>
         </div>

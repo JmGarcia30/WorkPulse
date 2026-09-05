@@ -8,6 +8,8 @@ import {
   InterviewType,
   InterviewStatus,
   EvaluationRecommendation,
+  AssessmentType,
+  AssessmentStatus,
 } from '@prisma/client';
 
 export interface CreateInterviewInput {
@@ -127,11 +129,66 @@ export async function createInterviewAction(input: CreateInterviewInput) {
     },
     include: {
       job: true,
+      interviews: {
+        include: { evaluation: true },
+      },
+      assessments: true,
     },
   });
 
   if (!application) {
     return { error: 'Application not found or access denied.' };
+  }
+
+  // SAGA Institutional Gating Validation
+  if (type === InterviewType.TEACHING_DEMONSTRATION) {
+    if (application.job.category === 'NON_TEACHING') {
+      return {
+        error: 'Teaching Demonstration applies only to Teaching (Faculty) positions.',
+      };
+    }
+    // Written exam check if exists
+    const exam = application.assessments.find(
+      (a) =>
+        a.type === AssessmentType.WRITTEN_EXAMINATION ||
+        a.title.toLowerCase().includes('written') ||
+        a.title.toLowerCase().includes('exam')
+    );
+    if (exam && exam.status === AssessmentStatus.FAILED) {
+      return {
+        error: 'Candidate cannot undergo a Teaching Demonstration after failing the written examination.',
+      };
+    }
+  }
+
+  if (type === InterviewType.HEAD_OF_DEPARTMENT && application.job.category === 'TEACHING') {
+    const demo = application.interviews.find(
+      (i) => i.type === InterviewType.TEACHING_DEMONSTRATION
+    );
+    if (
+      demo &&
+      (demo.status !== InterviewStatus.COMPLETED ||
+        demo.evaluation?.recommendation === EvaluationRecommendation.DO_NOT_RECOMMEND)
+    ) {
+      return {
+        error: 'Teaching applicants must receive a satisfactory Teaching Demonstration result before progressing to the Head of Department Interview.',
+      };
+    }
+  }
+
+  if (type === InterviewType.PRESIDENT_FINAL) {
+    const hod = application.interviews.find(
+      (i) => i.type === InterviewType.HEAD_OF_DEPARTMENT
+    );
+    if (
+      hod &&
+      (hod.status !== InterviewStatus.COMPLETED ||
+        hod.evaluation?.recommendation === EvaluationRecommendation.DO_NOT_RECOMMEND)
+    ) {
+      return {
+        error: 'Applicant must successfully complete the Head of Department Interview and be endorsed before scheduling the President Final Interview.',
+      };
+    }
   }
 
   // Multi-tenant check: Verify Interviewer belongs to the exact same Organization

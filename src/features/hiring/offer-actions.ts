@@ -4,11 +4,12 @@ import { revalidatePath } from 'next/cache';
 import { prisma } from '@/lib/db/prisma';
 import { getSession } from '@/lib/auth/session';
 import { canManageOffers, canApproveOffer } from '@/lib/permissions/rbac';
-import { OfferStatus, PayFrequency } from '@prisma/client';
+import { OfferStatus, PayFrequency, OnboardingStatus, OnboardingTaskStatus } from '@prisma/client';
 import {
   ACTIVE_OFFER_STATUSES,
   isValidOfferTransition,
 } from './offer-pipeline';
+import { DEFAULT_INSTITUTIONAL_ONBOARDING_TASKS } from './onboarding-pipeline';
 
 export interface CreateOfferInput {
   applicationId: string;
@@ -103,11 +104,28 @@ export async function createOfferAction(input: CreateOfferInput) {
     },
     include: {
       job: true,
+      interviews: {
+        include: { evaluation: true },
+      },
     },
   });
 
   if (!application) {
     return { error: 'Application not found or access denied.' };
+  }
+
+  // SAGA Gating: President final interview must not be failed
+  const presidentInterview = application.interviews.find(
+    (i) => i.type === 'PRESIDENT_FINAL'
+  );
+  if (
+    presidentInterview &&
+    presidentInterview.evaluation?.recommendation === 'DO_NOT_RECOMMEND'
+  ) {
+    return {
+      error:
+        'Cannot issue an Employment Contract: President Final Interview outcome was not approved.',
+    };
   }
 
   // Active Offer Duplicate Check: Enforce that only one active offer may exist per application
@@ -131,6 +149,12 @@ export async function createOfferAction(input: CreateOfferInput) {
       ? OfferStatus.PENDING_APPROVAL
       : OfferStatus.DRAFT;
 
+  const isTeaching = application.job.category === 'TEACHING';
+  const defaultProbationMonths = isTeaching ? 12 : 6;
+  const defaultProbationTerms = isTeaching
+    ? 'Probationary appointment for one (1) school year, renewable annually for a maximum of three (3) school years.'
+    : 'Probationary appointment for six (6) months; satisfactory completion may result in regular appointment.';
+
   const offer = await prisma.offer.create({
     data: {
       applicationId,
@@ -144,6 +168,8 @@ export async function createOfferAction(input: CreateOfferInput) {
       additionalTerms: additionalTerms?.trim() || null,
       notes: notes?.trim() || null,
       status: initialStatus,
+      probationPeriodMonths: defaultProbationMonths,
+      probationaryTerms: defaultProbationTerms,
       createdById: user.userId,
     },
   });
@@ -221,12 +247,53 @@ export async function updateOfferStatusAction(
       : `[${newStatus} on ${new Date().toLocaleDateString()}]: ${actionNotes.trim()}`;
   }
 
-  await prisma.offer.update({
-    where: { id: offerId },
-    data: updateData,
+  await prisma.$transaction(async (tx) => {
+    await tx.offer.update({
+      where: { id: offerId },
+      data: updateData,
+    });
+
+    // When an offer is marked ACCEPTED, initialize pre-employment onboarding checklist if not yet present
+    if (newStatus === OfferStatus.ACCEPTED) {
+      const existingProcess = await tx.onboardingProcess.findUnique({
+        where: { applicationId: offer.applicationId },
+      });
+
+      if (!existingProcess) {
+        const startDate = offer.startDate || new Date();
+        const targetCompletionDate = new Date(
+          startDate.getTime() + 14 * 24 * 60 * 60 * 1000
+        );
+
+        const newProcess = await tx.onboardingProcess.create({
+          data: {
+            applicationId: offer.applicationId,
+            status: OnboardingStatus.IN_PROGRESS,
+            startDate,
+            targetCompletionDate,
+            notes: `Pre-employment onboarding initialized automatically upon offer acceptance (${offer.employmentType}).`,
+          },
+        });
+
+        for (const taskTemplate of DEFAULT_INSTITUTIONAL_ONBOARDING_TASKS) {
+          await tx.onboardingTask.create({
+            data: {
+              onboardingProcessId: newProcess.id,
+              title: taskTemplate.title,
+              description: taskTemplate.description,
+              type: taskTemplate.type,
+              status: OnboardingTaskStatus.PENDING,
+              isRequired: taskTemplate.isRequired,
+              dueDate: startDate,
+            },
+          });
+        }
+      }
+    }
   });
 
   revalidatePath('/dashboard/hiring/offers');
+  revalidatePath('/dashboard/hiring/onboarding');
   revalidatePath(`/dashboard/hiring/applicants/${offer.applicationId}`);
   revalidatePath('/dashboard');
 
@@ -349,6 +416,53 @@ export async function updateOfferDetailsAction(
   await prisma.offer.update({
     where: { id: offerId },
     data: updateData,
+  });
+
+  revalidatePath('/dashboard/hiring/offers');
+  revalidatePath(`/dashboard/hiring/applicants/${offer.applicationId}`);
+  revalidatePath('/dashboard');
+
+  return { success: true };
+}
+
+/**
+ * Record institutional contract execution by the Employee and the President.
+ */
+export async function executeContractAction(
+  offerId: string,
+  options: {
+    signedByPresident: boolean;
+    signedByEmployee: boolean;
+  }
+) {
+  const user = await getSession();
+  if (!user || !canManageOffers(user)) {
+    return { error: 'Unauthorized to record contract execution.' };
+  }
+
+  const offer = await prisma.offer.findFirst({
+    where: {
+      id: offerId,
+      application: {
+        job: { organizationId: user.organizationId },
+      },
+    },
+  });
+
+  if (!offer) {
+    return { error: 'Offer not found or access denied.' };
+  }
+
+  const bothSigned = options.signedByPresident && options.signedByEmployee;
+
+  await prisma.offer.update({
+    where: { id: offerId },
+    data: {
+      contractSignedByPresident: options.signedByPresident,
+      contractSignedByEmployee: options.signedByEmployee,
+      contractExecutedAt: bothSigned ? new Date() : null,
+      status: bothSigned ? OfferStatus.ACCEPTED : offer.status,
+    },
   });
 
   revalidatePath('/dashboard/hiring/offers');

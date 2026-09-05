@@ -113,10 +113,10 @@ export function EvaluationModal({
                 key={num}
                 type="button"
                 onClick={() => setter(num)}
-                className={`flex h-8 w-8 items-center justify-center rounded-lg text-xs font-bold transition ${
+                className={`flex h-8 w-8 items-center justify-center rounded-xl text-xs font-bold transition ${
                   isSelected
-                    ? 'bg-indigo-600 text-white shadow-xs'
-                    : 'bg-white text-slate-700 hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-300 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700'
+                    ? 'bg-[#181A1C] text-white shadow-2xs'
+                    : 'bg-white text-[#181A1C] hover:bg-[#F8F9FA] dark:bg-slate-800 dark:text-slate-300 dark:hover:bg-slate-700 border border-[#E8EAED] dark:border-slate-700'
                 }`}
               >
                 {num}
@@ -132,14 +132,14 @@ export function EvaluationModal({
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 p-4 backdrop-blur-xs overflow-y-auto">
       <div className="relative w-full max-w-xl rounded-2xl bg-white p-6 shadow-2xl dark:bg-slate-900 border border-slate-200 dark:border-slate-800 space-y-5 my-8">
         {/* Header */}
-        <div className="flex items-center justify-between border-b border-slate-100 pb-4 dark:border-slate-800">
+        <div className="flex items-center justify-between border-b border-[#E8EAED] pb-4 dark:border-slate-800">
           <div>
-            <h2 className="text-base font-bold text-slate-900 dark:text-slate-100 flex items-center gap-2">
-              <Award className="h-5 w-5 text-indigo-600 dark:text-indigo-400" />
+            <h2 className="text-base font-bold text-[#181A1C] dark:text-slate-100 flex items-center gap-2">
+              <Award className="h-5 w-5 text-[#181A1C] dark:text-white" />
               Candidate Interview Evaluation
             </h2>
             <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
-              Candidate: <span className="font-semibold text-slate-700 dark:text-slate-300">{candidateName}</span> • {interviewType} (Interviewer: {interviewerName})
+              Candidate: <span className="font-semibold text-[#181A1C] dark:text-slate-300">{candidateName}</span> • {interviewType} (Interviewer: {interviewerName})
             </p>
           </div>
           <button
@@ -167,16 +167,16 @@ export function EvaluationModal({
 
         <form onSubmit={handleSubmit} className="space-y-4 text-xs">
           {/* Live Overall Rating Badge */}
-          <div className="flex items-center justify-between rounded-xl bg-indigo-50/80 p-3.5 border border-indigo-100 dark:bg-indigo-950/40 dark:border-indigo-900/50">
+          <div className="flex items-center justify-between rounded-2xl bg-[#F8F9FA] p-3.5 border border-[#E8EAED] dark:bg-slate-950/40 dark:border-slate-800">
             <div className="flex items-center gap-2">
-              <Sparkles className="h-4 w-4 text-indigo-600 dark:text-indigo-400" />
-              <span className="font-bold text-slate-900 dark:text-slate-100">
+              <Sparkles className="h-4 w-4 text-[#181A1C] dark:text-white" />
+              <span className="font-bold text-[#181A1C] dark:text-slate-100">
                 Calculated Overall Score:
               </span>
             </div>
             <div className="flex items-center gap-1.5">
               <Star className="h-4 w-4 fill-amber-400 text-amber-400" />
-              <span className="text-base font-extrabold text-indigo-700 dark:text-indigo-300">
+              <span className="text-base font-extrabold text-[#181A1C] dark:text-slate-100">
                 {overallScore} / 5.0
               </span>
             </div>
@@ -239,7 +239,7 @@ export function EvaluationModal({
                 {
                   val: EvaluationRecommendation.RECOMMEND,
                   label: 'Recommend',
-                  color: 'text-indigo-700 border-indigo-300 dark:text-indigo-300',
+                  color: 'text-[#181A1C] border-[#E8EAED] dark:text-slate-100',
                 },
                 {
                   val: EvaluationRecommendation.MAYBE,
@@ -258,10 +258,10 @@ export function EvaluationModal({
                     key={item.val}
                     type="button"
                     onClick={() => setRecommendation(item.val)}
-                    className={`rounded-xl border p-2.5 text-center text-xs font-semibold transition ${
+                    className={`rounded-xl border p-2.5 text-center text-xs font-bold transition ${
                       isSelected
-                        ? 'bg-indigo-600 text-white ring-2 ring-indigo-600 dark:bg-indigo-600'
-                        : 'bg-white text-slate-700 hover:bg-slate-50 dark:bg-slate-950 dark:text-slate-300 dark:border-slate-800'
+                        ? 'bg-[#181A1C] text-white ring-2 ring-[#181A1C] dark:bg-white dark:text-[#181A1C]'
+                        : 'bg-white text-[#6B7280] hover:text-[#181A1C] hover:bg-[#F8F9FA] dark:bg-slate-950 dark:text-slate-300 dark:border-slate-800'
                     }`}
                   >
                     {item.label}
@@ -273,8 +273,8 @@ export function EvaluationModal({
 
           {/* Qualitative Comments */}
           <div>
-            <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1 flex items-center gap-1.5">
-              <MessageSquare className="h-3.5 w-3.5 text-slate-400" /> Qualitative Feedback & Interview Notes
+            <label className="block font-bold text-[#181A1C] dark:text-slate-300 mb-1 flex items-center gap-1.5">
+              <MessageSquare className="h-3.5 w-3.5 text-[#9CA3AF]" /> Qualitative Feedback & Interview Notes
             </label>
             <textarea
               rows={4}
@@ -282,23 +282,23 @@ export function EvaluationModal({
               placeholder="Candidate strengths, areas for development, key interview observations..."
               value={comments}
               onChange={(e) => setComments(e.target.value)}
-              className="w-full rounded-xl border border-slate-200 bg-white p-3 text-xs text-slate-900 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
+              className="w-full rounded-2xl border border-[#E8EAED] bg-white p-3 text-xs text-[#181A1C] focus:border-[#181A1C] focus:ring-1 focus:ring-[#181A1C] dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
             />
           </div>
 
           {/* Submit Actions */}
-          <div className="flex items-center justify-end gap-2.5 pt-3 border-t border-slate-100 dark:border-slate-800">
+          <div className="flex items-center justify-end gap-2.5 pt-3 border-t border-[#E8EAED] dark:border-slate-800">
             <button
               type="button"
               onClick={onClose}
-              className="rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-xs font-semibold text-slate-700 hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300 dark:hover:bg-slate-700 transition"
+              className="rounded-xl border border-[#E8EAED] bg-white px-4 py-2.5 text-xs font-semibold text-[#6B7280] hover:text-[#181A1C] hover:bg-[#F8F9FA] dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300 dark:hover:bg-slate-700 transition"
             >
               Cancel
             </button>
             <button
               type="submit"
               disabled={isPending}
-              className="inline-flex items-center gap-2 rounded-xl bg-indigo-600 px-5 py-2.5 text-xs font-semibold text-white shadow-sm hover:bg-indigo-500 disabled:opacity-50 transition"
+              className="inline-flex items-center gap-2 rounded-xl bg-[#181A1C] px-5 py-2.5 text-xs font-bold text-white shadow-2xs hover:bg-[#2A2E33] disabled:opacity-50 transition"
             >
               {isPending && <Loader2 className="h-3.5 w-3.5 animate-spin" />}
               Submit Candidate Evaluation

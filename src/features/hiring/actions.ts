@@ -7,6 +7,7 @@ import { getSession } from '@/lib/auth/session';
 import { canManageJobs, canUpdateApplicationStatus } from '@/lib/permissions/rbac';
 import {
   JobStatus,
+  EmploymentCategory,
   ApplicationStatus,
   RequirementType,
   OfferStatus,
@@ -15,6 +16,7 @@ import {
 } from '@prisma/client';
 import { isValidStatusTransition } from './pipeline';
 import { DEFAULT_INSTITUTIONAL_ONBOARDING_TASKS } from './onboarding-pipeline';
+import { calculateHiringReadiness } from './readiness';
 
 function slugify(text: string): string {
   return text
@@ -84,6 +86,12 @@ export async function createJobAction(formData: FormData): Promise<void> {
   const publishedAt = status === JobStatus.PUBLISHED ? new Date() : null;
   const closingDate = closingDateRaw ? new Date(closingDateRaw) : null;
 
+  const categoryRaw = (formData.get('category') as string)?.trim();
+  const category =
+    categoryRaw === 'TEACHING'
+      ? EmploymentCategory.TEACHING
+      : EmploymentCategory.NON_TEACHING;
+
   const job = await prisma.job.create({
     data: {
       organizationId: user.organizationId,
@@ -92,6 +100,7 @@ export async function createJobAction(formData: FormData): Promise<void> {
       department,
       employmentType,
       location,
+      category,
       description,
       responsibilities: responsibilities || description,
       qualifications: qualifications || description,
@@ -162,6 +171,8 @@ export async function updateJobAction(jobId: string, formData: FormData): Promis
   // Re-create structured requirements cleanly
   await prisma.jobRequirement.deleteMany({ where: { jobId } });
 
+  const categoryRaw = (formData.get('category') as string)?.trim();
+
   await prisma.job.update({
     where: { id: jobId },
     data: {
@@ -169,6 +180,14 @@ export async function updateJobAction(jobId: string, formData: FormData): Promis
       department,
       employmentType,
       location,
+      ...(categoryRaw
+        ? {
+            category:
+              categoryRaw === 'TEACHING'
+                ? EmploymentCategory.TEACHING
+                : EmploymentCategory.NON_TEACHING,
+          }
+        : {}),
       description,
       responsibilities: responsibilities || description,
       qualifications: qualifications || description,
@@ -263,9 +282,16 @@ export async function updateApplicationStatusAction(
       },
     },
     include: {
+      applicant: true,
       job: true,
       offers: true,
-      onboarding: true,
+      assessments: true,
+      interviews: true,
+      onboarding: {
+        include: {
+          tasks: true,
+        },
+      },
     },
   });
 
@@ -285,9 +311,17 @@ export async function updateApplicationStatusAction(
     };
   }
 
-  // Critical Business Rule: Candidate may only transition to HIRED if they have an ACCEPTED offer
+  // Critical Ready-to-Hire Gate: Final conversion to HIRED strictly requires candidate readiness
   let acceptedOffer = null;
   if (newStatus === ApplicationStatus.HIRED) {
+    const readiness = calculateHiringReadiness(application);
+    if (!readiness.isReadyToHire) {
+      const issues = readiness.unmetRequirements.join(' ');
+      return {
+        error: `Candidate is not ready to be hired. Required prerequisites incomplete: ${issues}`,
+      };
+    }
+
     acceptedOffer = application.offers.find(
       (offer) => offer.status === OfferStatus.ACCEPTED
     );

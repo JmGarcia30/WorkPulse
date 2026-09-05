@@ -193,9 +193,9 @@ export const ONBOARDING_STATUS_CONFIG: Record<
   },
   [OnboardingStatus.IN_PROGRESS]: {
     label: 'In Progress',
-    badgeBg: 'bg-blue-50 dark:bg-blue-950/60',
-    badgeText: 'text-blue-700 dark:text-blue-300',
-    borderColor: 'border-blue-200 dark:border-blue-800',
+    badgeBg: 'bg-amber-50 dark:bg-amber-950/60',
+    badgeText: 'text-amber-700 dark:text-amber-300',
+    borderColor: 'border-amber-200 dark:border-amber-800',
   },
   [OnboardingStatus.COMPLETED]: {
     label: 'Completed',
@@ -253,13 +253,13 @@ export const TASK_TYPE_CONFIG: Record<
 > = {
   [OnboardingTaskType.DOCUMENT]: {
     label: 'Document',
-    badgeBg: 'bg-indigo-50 dark:bg-indigo-950/60',
-    badgeText: 'text-indigo-700 dark:text-indigo-300',
+    badgeBg: 'bg-[#F8F9FA] dark:bg-slate-800',
+    badgeText: 'text-[#181A1C] dark:text-slate-200',
   },
   [OnboardingTaskType.EQUIPMENT]: {
     label: 'Equipment & Access',
-    badgeBg: 'bg-cyan-50 dark:bg-cyan-950/60',
-    badgeText: 'text-cyan-700 dark:text-cyan-300',
+    badgeBg: 'bg-purple-50 dark:bg-purple-950/60',
+    badgeText: 'text-purple-700 dark:text-purple-300',
   },
   [OnboardingTaskType.ADMIN]: {
     label: 'Administrative & IT',

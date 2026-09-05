@@ -3,7 +3,9 @@
 import { redirect } from 'next/navigation';
 import { prisma } from '@/lib/db/prisma';
 import { localStorageProvider } from '@/lib/storage';
-import { JobStatus, ApplicationStatus } from '@prisma/client';
+import { JobStatus, ApplicationStatus, RecruitmentDocumentType, RecruitmentDocumentStatus } from '@prisma/client';
+import { ensureRecruitmentDocumentsExist } from '@/features/hiring/saga-requirements';
+import { sendApplicationConfirmationEmail } from '@/lib/email';
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -20,7 +22,7 @@ export async function submitApplicationAction(formData: FormData): Promise<void>
   const job = await prisma.job.findUnique({
     where: { id: jobId },
     include: {
-      organization: { select: { slug: true, careersEnabled: true } },
+      organization: { select: { slug: true, careersEnabled: true, name: true } },
     },
   });
 
@@ -165,6 +167,36 @@ export async function submitApplicationAction(formData: FormData): Promise<void>
             }
           : undefined,
       },
+    });
+
+    // 7. Auto-initialize SAGA Document Requirements Checklist
+    await ensureRecruitmentDocumentsExist(application.id, job.category);
+
+    // If resume was uploaded, automatically link it to the Letter of Application with Resume requirement
+    if (documentMeta) {
+      await prisma.recruitmentDocument.updateMany({
+        where: {
+          applicationId: application.id,
+          type: RecruitmentDocumentType.RESUME_APPLICATION_LETTER,
+        },
+        data: {
+          fileName: documentMeta.fileName,
+          fileType: documentMeta.fileType,
+          fileSize: documentMeta.fileSize,
+          storageKey: documentMeta.storageKey,
+          status: RecruitmentDocumentStatus.SUBMITTED,
+        },
+      });
+    }
+
+    // 8. Dispatch Free Email Notification with Portal Access Link
+    await sendApplicationConfirmationEmail({
+      to: normalizedEmail,
+      candidateName: `${firstName} ${lastName}`,
+      jobTitle: job.title,
+      organizationName: job.organization.name || 'St. Aloysius Gonzaga Academy',
+      organizationSlug: orgSlug,
+      applicationId: application.id,
     });
   } catch (error: any) {
     if (error.code === 'P2002') {

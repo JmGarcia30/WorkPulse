@@ -327,29 +327,29 @@ export function ApplicationTimeline({
   return (
     <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-xs dark:border-slate-800 dark:bg-slate-900 space-y-4">
       <div className="flex items-center justify-between border-b border-slate-100 pb-3 dark:border-slate-800">
-        <h3 className="text-xs font-semibold text-slate-500 uppercase tracking-wider dark:text-slate-400 flex items-center gap-2">
-          <History className="h-4 w-4 text-indigo-600 dark:text-indigo-400" /> Candidate Activity & Audit Timeline
+        <h3 className="text-xs font-bold text-[#6B7280] uppercase tracking-wider dark:text-slate-400 flex items-center gap-2">
+          <History className="h-4 w-4 text-[#181A1C] dark:text-white" /> Candidate Activity & Audit Timeline
         </h3>
-        <span className="text-[10px] font-semibold text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-950 px-2 py-0.5 rounded-md">
+        <span className="text-[10px] font-bold text-[#181A1C] dark:text-slate-200 bg-[#F8F9FA] border border-[#E8EAED] dark:bg-slate-800 px-2 py-0.5 rounded-lg">
           {events.length} Timeline Events
         </span>
       </div>
 
-      <div className="relative pl-5 space-y-5 border-l-2 border-slate-200 dark:border-slate-800 ml-2">
+      <div className="relative pl-5 space-y-5 border-l-2 border-[#E8EAED] dark:border-slate-800 ml-2">
         {events.map((event) => {
           if (event.kind === 'INITIAL_APPLIED') {
             return (
               <div key="initial" className="relative space-y-1">
-                <div className="absolute -left-[27px] top-0.5 h-3.5 w-3.5 rounded-full border-2 border-white bg-indigo-600 shadow-xs dark:border-slate-900 dark:bg-indigo-400" />
+                <div className="absolute -left-[27px] top-0.5 h-3.5 w-3.5 rounded-full border-2 border-white bg-[#181A1C] shadow-xs dark:border-slate-900 dark:bg-white" />
                 <div className="flex items-center gap-2">
-                  <span className="text-xs font-bold text-slate-900 dark:text-slate-100">
+                  <span className="text-xs font-bold text-[#181A1C] dark:text-slate-100">
                     Application Created ({ApplicationStatus.APPLIED})
                   </span>
-                  <span className="rounded-md bg-indigo-50 px-1.5 py-0.5 text-[9px] font-semibold text-indigo-700 dark:bg-indigo-950 dark:text-indigo-300">
+                  <span className="rounded-md bg-[#F8F9FA] border border-[#E8EAED] px-1.5 py-0.5 text-[9px] font-bold text-[#181A1C] dark:bg-slate-800 dark:text-slate-300">
                     Initial Submission
                   </span>
                 </div>
-                <p className="text-[11px] text-slate-500 dark:text-slate-400 flex items-center gap-1">
+                <p className="text-[11px] text-[#6B7280] dark:text-slate-400 flex items-center gap-1">
                   <Clock className="h-3 w-3" /> Submitted by candidate on {event.timestamp.toLocaleString()}
                 </p>
               </div>
@@ -377,14 +377,14 @@ export function ApplicationTimeline({
           if (event.kind === 'INTERVIEW_SCHEDULED') {
             return (
               <div key={event.id} className="relative space-y-1">
-                <div className="absolute -left-[27px] top-0.5 h-3.5 w-3.5 rounded-full border-2 border-white bg-blue-600 shadow-xs dark:border-slate-900 dark:bg-blue-400" />
+                <div className="absolute -left-[27px] top-0.5 h-3.5 w-3.5 rounded-full border-2 border-white bg-[#181A1C] shadow-xs dark:border-slate-900 dark:bg-white" />
                 <div className="flex items-center gap-2">
-                  <span className="text-xs font-bold text-slate-900 dark:text-slate-100">
+                  <span className="text-xs font-bold text-[#181A1C] dark:text-slate-100">
                     Interview Scheduled: {event.type.replace('_', ' ')}
                   </span>
                 </div>
-                <p className="text-[11px] text-slate-500 dark:text-slate-400 flex items-center gap-1">
-                  <Calendar className="h-3 w-3 text-blue-500" /> Scheduled for {event.scheduledAt.toLocaleString()} with {event.interviewer.name}
+                <p className="text-[11px] text-[#6B7280] dark:text-slate-400 flex items-center gap-1">
+                  <Calendar className="h-3 w-3 text-[#181A1C] dark:text-slate-300" /> Scheduled for {event.scheduledAt.toLocaleString()} with {event.interviewer.name}
                 </p>
               </div>
             );
@@ -442,14 +442,14 @@ export function ApplicationTimeline({
           if (event.kind === 'ASSESSMENT_ASSIGNED') {
             return (
               <div key={event.id} className="relative space-y-1">
-                <div className="absolute -left-[27px] top-0.5 h-3.5 w-3.5 rounded-full border-2 border-white bg-cyan-600 shadow-xs dark:border-slate-900 dark:bg-cyan-400" />
+                <div className="absolute -left-[27px] top-0.5 h-3.5 w-3.5 rounded-full border-2 border-white bg-[#181A1C] shadow-xs dark:border-slate-900 dark:bg-white" />
                 <div className="flex items-center gap-2">
-                  <span className="text-xs font-bold text-slate-900 dark:text-slate-100">
+                  <span className="text-xs font-bold text-[#181A1C] dark:text-slate-100">
                     Assessment Assigned: {event.title} ({event.type})
                   </span>
                 </div>
-                <p className="text-[11px] text-slate-500 dark:text-slate-400 flex items-center gap-1">
-                  <Award className="h-3 w-3 text-cyan-500" /> Assigned on {event.timestamp.toLocaleString()}
+                <p className="text-[11px] text-[#6B7280] dark:text-slate-400 flex items-center gap-1">
+                  <Award className="h-3 w-3 text-[#181A1C] dark:text-slate-300" /> Assigned on {event.timestamp.toLocaleString()}
                   {event.evaluatorName ? ` • Reviewer: ${event.evaluatorName}` : ''}
                 </p>
               </div>
@@ -487,14 +487,14 @@ export function ApplicationTimeline({
             const freqCfg = PAY_FREQUENCY_CONFIG[event.payFrequency];
             return (
               <div key={event.id} className="relative space-y-1">
-                <div className="absolute -left-[27px] top-0.5 h-3.5 w-3.5 rounded-full border-2 border-white bg-indigo-600 shadow-xs dark:border-slate-900 dark:bg-indigo-400" />
+                <div className="absolute -left-[27px] top-0.5 h-3.5 w-3.5 rounded-full border-2 border-white bg-[#181A1C] shadow-xs dark:border-slate-900 dark:bg-white" />
                 <div className="flex items-center gap-2">
-                  <span className="text-xs font-bold text-slate-900 dark:text-slate-100">
+                  <span className="text-xs font-bold text-[#181A1C] dark:text-slate-100">
                     Offer Package Prepared: ₱{event.salary.toLocaleString()}{freqCfg.suffix} ({event.status})
                   </span>
                 </div>
-                <p className="text-[11px] text-slate-500 dark:text-slate-400 flex items-center gap-1">
-                  <DollarSign className="h-3 w-3 text-indigo-500" /> Created by {event.createdByName} on {event.timestamp.toLocaleString()}
+                <p className="text-[11px] text-[#6B7280] dark:text-slate-400 flex items-center gap-1">
+                  <DollarSign className="h-3 w-3 text-[#181A1C] dark:text-slate-300" /> Created by {event.createdByName} on {event.timestamp.toLocaleString()}
                 </p>
               </div>
             );
@@ -506,16 +506,16 @@ export function ApplicationTimeline({
               <div key={event.id} className="relative space-y-1">
                 <div
                   className={`absolute -left-[27px] top-0.5 h-3.5 w-3.5 rounded-full border-2 border-white shadow-xs dark:border-slate-900 ${
-                    isAccepted ? 'bg-emerald-600' : 'bg-blue-600'
+                    isAccepted ? 'bg-emerald-600' : 'bg-[#181A1C]'
                   }`}
                 />
                 <div className="flex items-center gap-2">
-                  <span className="text-xs font-bold text-slate-900 dark:text-slate-100">
+                  <span className="text-xs font-bold text-[#181A1C] dark:text-slate-100">
                     Offer Stage Updated: {event.status}
                   </span>
                 </div>
-                <p className="text-[11px] text-slate-500 dark:text-slate-400 flex items-center gap-1">
-                  <FileText className="h-3 w-3 text-blue-500" /> Status modified on {event.timestamp.toLocaleString()}
+                <p className="text-[11px] text-[#6B7280] dark:text-slate-400 flex items-center gap-1">
+                  <FileText className="h-3 w-3 text-[#181A1C] dark:text-slate-300" /> Status modified on {event.timestamp.toLocaleString()}
                   {event.approvedByName ? ` • Approved by ${event.approvedByName}` : ''}
                 </p>
               </div>
@@ -525,14 +525,14 @@ export function ApplicationTimeline({
           if (event.kind === 'ONBOARDING_INITIALIZED') {
             return (
               <div key={event.id} className="relative space-y-1">
-                <div className="absolute -left-[27px] top-0.5 h-3.5 w-3.5 rounded-full border-2 border-white bg-indigo-600 shadow-xs dark:border-slate-900 dark:bg-indigo-400" />
+                <div className="absolute -left-[27px] top-0.5 h-3.5 w-3.5 rounded-full border-2 border-white bg-[#181A1C] shadow-xs dark:border-slate-900 dark:bg-white" />
                 <div className="flex items-center gap-2">
-                  <span className="text-xs font-bold text-slate-900 dark:text-slate-100">
+                  <span className="text-xs font-bold text-[#181A1C] dark:text-slate-100">
                     Employee Onboarding Checklist Initialized
                   </span>
                 </div>
-                <p className="text-[11px] text-slate-500 dark:text-slate-400 flex items-center gap-1">
-                  <UserCheck className="h-3 w-3 text-indigo-500" /> Checklist generated for start date on {event.startDate.toLocaleDateString()}
+                <p className="text-[11px] text-[#6B7280] dark:text-slate-400 flex items-center gap-1">
+                  <UserCheck className="h-3 w-3 text-[#181A1C] dark:text-slate-300" /> Checklist generated for start date on {event.startDate.toLocaleDateString()}
                 </p>
               </div>
             );

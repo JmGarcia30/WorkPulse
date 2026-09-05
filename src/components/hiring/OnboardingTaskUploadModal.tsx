@@ -102,7 +102,7 @@ export function OnboardingTaskUploadModal({
         <form onSubmit={handleSubmit} className="space-y-4">
           <div
             onClick={() => fileInputRef.current?.click()}
-            className="flex flex-col items-center justify-center rounded-xl border-2 border-dashed border-slate-200 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-800/30 p-6 text-center hover:border-indigo-500 transition cursor-pointer"
+            className="flex flex-col items-center justify-center rounded-2xl border-2 border-dashed border-[#E8EAED] dark:border-slate-700 bg-[#F8F9FA] dark:bg-slate-800/30 p-6 text-center hover:border-[#181A1C] transition cursor-pointer"
           >
             <input
               ref={fileInputRef}
@@ -116,40 +116,40 @@ export function OnboardingTaskUploadModal({
                 <div className="mx-auto rounded-full bg-emerald-100 dark:bg-emerald-950/60 p-3 text-emerald-600 dark:text-emerald-400 w-12 h-12 flex items-center justify-center">
                   <CheckCircle2 className="h-6 w-6" />
                 </div>
-                <p className="text-xs font-semibold text-slate-900 dark:text-slate-100 truncate max-w-[250px]">
+                <p className="text-xs font-bold text-[#181A1C] dark:text-slate-100 truncate max-w-[250px]">
                   {selectedFile.name}
                 </p>
-                <p className="text-[10px] text-slate-400">
+                <p className="text-[10px] text-[#9CA3AF]">
                   {Math.round(selectedFile.size / 1024)} KB
                 </p>
               </div>
             ) : (
               <div className="space-y-1">
-                <div className="mx-auto rounded-full bg-indigo-50 dark:bg-indigo-950/60 p-3 text-indigo-600 dark:text-indigo-400 w-12 h-12 flex items-center justify-center">
+                <div className="mx-auto rounded-full bg-white border border-[#E8EAED] dark:bg-slate-800 p-3 text-[#181A1C] dark:text-slate-200 w-12 h-12 flex items-center justify-center shadow-2xs">
                   <UploadCloud className="h-6 w-6" />
                 </div>
-                <p className="text-xs font-semibold text-slate-700 dark:text-slate-300">
+                <p className="text-xs font-bold text-[#181A1C] dark:text-slate-300">
                   Click to select file or document
                 </p>
-                <p className="text-[10px] text-slate-400">
+                <p className="text-[10px] text-[#9CA3AF]">
                   Supports PDF, DOCX, PNG, JPG (up to 10MB)
                 </p>
               </div>
             )}
           </div>
 
-          <div className="flex items-center justify-end gap-2 pt-2 border-t border-slate-100 dark:border-slate-800">
+          <div className="flex items-center justify-end gap-2 pt-2 border-t border-[#E8EAED] dark:border-slate-800">
             <button
               type="button"
               onClick={onClose}
-              className="rounded-xl border border-slate-200 dark:border-slate-700 px-4 py-2 text-xs font-semibold text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition"
+              className="rounded-xl border border-[#E8EAED] dark:border-slate-700 px-4 py-2 text-xs font-semibold text-[#6B7280] hover:text-[#181A1C] hover:bg-[#F8F9FA] transition"
             >
               Cancel
             </button>
             <button
               type="submit"
               disabled={isUploading || !selectedFile}
-              className="inline-flex items-center gap-1.5 rounded-xl bg-indigo-600 px-4 py-2 text-xs font-semibold text-white hover:bg-indigo-700 transition disabled:opacity-50"
+              className="inline-flex items-center gap-1.5 rounded-xl bg-[#181A1C] px-4 py-2 text-xs font-bold text-white hover:bg-[#2A2E33] transition shadow-2xs disabled:opacity-50"
             >
               {isUploading ? 'Uploading...' : 'Submit Document'}
             </button>

@@ -208,7 +208,7 @@ export default async function ApplicantsPage({ searchParams }: ApplicantsPagePro
                             : app.status === ApplicationStatus.SCREENING
                             ? 'bg-slate-800 text-white'
                             : app.status === ApplicationStatus.APPLIED
-                            ? 'bg-blue-100 text-blue-800'
+                            ? 'bg-[#F8F9FA] text-[#181A1C] border border-[#E8EAED]'
                             : app.status === ApplicationStatus.REJECTED
                             ? 'bg-rose-100 text-rose-800'
                             : 'bg-slate-100 text-slate-700'

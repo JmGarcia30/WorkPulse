@@ -172,35 +172,43 @@ export function ParsedResumeSection({
   return (
     <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-xs dark:border-slate-800 dark:bg-slate-900 space-y-4">
       {/* Header */}
-      <div className="flex items-center justify-between border-b border-slate-100 pb-4 dark:border-slate-800">
-        <h3 className="text-xs font-semibold text-slate-500 uppercase tracking-wider dark:text-slate-400 flex items-center gap-2">
-          <Sparkles className="h-4 w-4 text-indigo-600 dark:text-indigo-400" />
-          AI Resume Analysis
+      <div className="flex items-center justify-between border-b border-[#E8EAED] pb-4 dark:border-slate-800">
+        <h3 className="text-xs font-bold text-[#6B7280] uppercase tracking-wider dark:text-slate-400 flex items-center gap-2">
+          <Sparkles className="h-4 w-4 text-[#181A1C] dark:text-white" />
+          AI-Assisted Resume Analysis
         </h3>
         {canManage && (
           <button
             onClick={handleParse}
             disabled={parsing}
-            className="inline-flex items-center gap-1.5 rounded-lg bg-indigo-600 px-3 py-1.5 text-[11px] font-semibold text-white hover:bg-indigo-500 transition disabled:opacity-50 disabled:cursor-not-allowed"
+            className="inline-flex items-center gap-1.5 rounded-xl bg-[#181A1C] px-3.5 py-1.5 text-xs font-bold text-white hover:bg-[#2A2E33] transition shadow-2xs disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {parsing ? (
               <>
                 <Loader2 className="h-3.5 w-3.5 animate-spin" />
-                Parsing...
+                Analyzing...
               </>
             ) : localParsed ? (
               <>
                 <RefreshCw className="h-3.5 w-3.5" />
-                Re-parse
+                Re-analyze
               </>
             ) : (
               <>
                 <Sparkles className="h-3.5 w-3.5" />
-                Parse Resume
+                Analyze Resume
               </>
             )}
           </button>
         )}
+      </div>
+
+      {/* Assistive AI Disclaimer */}
+      <div className="flex items-center gap-2.5 rounded-2xl border border-[#E8EAED] bg-[#F8F9FA] p-3 text-[11px] text-[#181A1C] dark:border-slate-800 dark:bg-slate-950/40 dark:text-slate-200">
+        <Sparkles className="h-4 w-4 text-[#181A1C] dark:text-white shrink-0" />
+        <span>
+          <strong>AI is Assistive Only:</strong> Extracted data and deterministic qualification scores assist human evaluation. All hiring and progression decisions are made by hiring team members.
+        </span>
       </div>
 
       {/* Error State */}
@@ -215,7 +223,7 @@ export function ParsedResumeSection({
       {localParsed?.parseError && !error && (
         <div className="flex items-center gap-2.5 rounded-xl border border-amber-200 bg-amber-50 p-3.5 text-xs text-amber-800 dark:border-amber-900 dark:bg-amber-950 dark:text-amber-300">
           <AlertCircle className="h-4 w-4 shrink-0" />
-          <span>Last parse failed: {localParsed.parseError}</span>
+          <span>Last analysis note: {localParsed.parseError}</span>
         </div>
       )}
 
@@ -224,11 +232,11 @@ export function ParsedResumeSection({
         <div className="py-8 text-center">
           <Sparkles className="mx-auto h-8 w-8 text-slate-300 dark:text-slate-600" />
           <p className="mt-2 text-xs text-slate-500 dark:text-slate-400">
-            Resume has not been parsed yet.
+            Resume has not been analyzed yet.
           </p>
           <p className="text-[10px] text-slate-400 dark:text-slate-500">
-            Click &quot;Parse Resume&quot; to extract structured data and match
-            against job requirements.
+            Click &quot;Analyze Resume&quot; to extract structured data and calculate deterministic
+            job requirement match.
           </p>
         </div>
       )}
@@ -242,13 +250,13 @@ export function ParsedResumeSection({
               <div className="shrink-0">
                 <MatchScoreRing score={localParsed.matchScore} />
                 <p className="mt-1 text-center text-[10px] font-semibold text-slate-500 dark:text-slate-400">
-                  Job Match
+                  Job Requirement Match
                 </p>
               </div>
             )}
             <div className="flex-1 min-w-0">
               <h4 className="text-[10px] font-semibold text-slate-500 uppercase tracking-wider dark:text-slate-400 mb-1.5">
-                Professional Summary
+                AI-Assisted Resume Summary
               </h4>
               <p className="text-xs text-slate-700 leading-relaxed dark:text-slate-300">
                 {localParsed.summary}
@@ -268,7 +276,7 @@ export function ParsedResumeSection({
             localParsed.matchDetails.length > 0 && (
               <div>
                 <h4 className="text-[10px] font-semibold text-slate-500 uppercase tracking-wider dark:text-slate-400 mb-2">
-                  Requirement Matching
+                  Job Requirement Match
                 </h4>
                 <div className="flex flex-wrap gap-1.5">
                   {localParsed.matchDetails.map((detail) => (
@@ -281,9 +289,9 @@ export function ParsedResumeSection({
           {/* Skills */}
           {localParsed.skills.length > 0 && (
             <div>
-              <h4 className="text-[10px] font-semibold text-slate-500 uppercase tracking-wider dark:text-slate-400 mb-2 flex items-center gap-1.5">
-                <Brain className="h-3.5 w-3.5 text-indigo-600 dark:text-indigo-400" />
-                Skills ({localParsed.skills.length})
+              <h4 className="text-[10px] font-bold text-[#6B7280] uppercase tracking-wider dark:text-slate-400 mb-2 flex items-center gap-1.5">
+                <Brain className="h-3.5 w-3.5 text-[#181A1C] dark:text-white" />
+                Detected Skills ({localParsed.skills.length})
               </h4>
               <div className="flex flex-wrap gap-1.5">
                 {localParsed.skills.map((skill, i) => {
@@ -299,7 +307,7 @@ export function ParsedResumeSection({
                       className={`rounded-full px-2.5 py-0.5 text-[10px] font-medium ${
                         isMatched
                           ? 'bg-emerald-50 text-emerald-700 dark:bg-emerald-950/60 dark:text-emerald-300 ring-1 ring-emerald-200 dark:ring-emerald-800'
-                          : 'bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300'
+                          : 'bg-[#F8F9FA] text-[#181A1C] border border-[#E8EAED] dark:bg-slate-800 dark:text-slate-300'
                       }`}
                     >
                       {skill}
@@ -313,31 +321,31 @@ export function ParsedResumeSection({
           {/* Work Experience */}
           {localParsed.workExperience.length > 0 && (
             <div>
-              <h4 className="text-[10px] font-semibold text-slate-500 uppercase tracking-wider dark:text-slate-400 mb-2 flex items-center gap-1.5">
-                <Briefcase className="h-3.5 w-3.5 text-indigo-600 dark:text-indigo-400" />
+              <h4 className="text-[10px] font-bold text-[#6B7280] uppercase tracking-wider dark:text-slate-400 mb-2 flex items-center gap-1.5">
+                <Briefcase className="h-3.5 w-3.5 text-[#181A1C] dark:text-white" />
                 Work Experience
               </h4>
               <div className="space-y-2.5">
                 {localParsed.workExperience.map((exp, i) => (
                   <div
                     key={i}
-                    className="rounded-xl border border-slate-100 bg-slate-50 p-3.5 dark:border-slate-800 dark:bg-slate-950"
+                    className="rounded-2xl border border-[#E8EAED] bg-[#F8F9FA] p-3.5 dark:border-slate-800 dark:bg-slate-950"
                   >
                     <div className="flex items-start justify-between">
                       <div>
-                        <p className="text-xs font-semibold text-slate-900 dark:text-slate-100">
+                        <p className="text-xs font-bold text-[#181A1C] dark:text-slate-100">
                           {exp.position}
                         </p>
-                        <p className="text-[11px] text-slate-600 dark:text-slate-400">
+                        <p className="text-[11px] text-[#6B7280] dark:text-slate-400">
                           {exp.company}
                         </p>
                       </div>
-                      <span className="text-[10px] text-slate-500 dark:text-slate-400 whitespace-nowrap">
+                      <span className="text-[10px] text-[#9CA3AF] dark:text-slate-400 whitespace-nowrap font-medium">
                         {exp.startDate} — {exp.endDate}
                       </span>
                     </div>
                     {exp.description && (
-                      <p className="mt-1.5 text-[11px] text-slate-500 leading-relaxed dark:text-slate-400">
+                      <p className="mt-1.5 text-[11px] text-[#6B7280] leading-relaxed dark:text-slate-400">
                         {exp.description}
                       </p>
                     )}
@@ -350,24 +358,24 @@ export function ParsedResumeSection({
           {/* Education */}
           {localParsed.education.length > 0 && (
             <div>
-              <h4 className="text-[10px] font-semibold text-slate-500 uppercase tracking-wider dark:text-slate-400 mb-2 flex items-center gap-1.5">
-                <GraduationCap className="h-3.5 w-3.5 text-indigo-600 dark:text-indigo-400" />
+              <h4 className="text-[10px] font-bold text-[#6B7280] uppercase tracking-wider dark:text-slate-400 mb-2 flex items-center gap-1.5">
+                <GraduationCap className="h-3.5 w-3.5 text-[#181A1C] dark:text-white" />
                 Education
               </h4>
               <div className="space-y-2">
                 {localParsed.education.map((edu, i) => (
                   <div
                     key={i}
-                    className="rounded-xl border border-slate-100 bg-slate-50 p-3.5 dark:border-slate-800 dark:bg-slate-950"
+                    className="rounded-2xl border border-[#E8EAED] bg-[#F8F9FA] p-3.5 dark:border-slate-800 dark:bg-slate-950"
                   >
-                    <p className="text-xs font-semibold text-slate-900 dark:text-slate-100">
+                    <p className="text-xs font-bold text-[#181A1C] dark:text-slate-100">
                       {edu.degree}
                       {edu.fieldOfStudy ? ` in ${edu.fieldOfStudy}` : ''}
                     </p>
-                    <p className="text-[11px] text-slate-600 dark:text-slate-400">
+                    <p className="text-[11px] text-[#6B7280] dark:text-slate-400">
                       {edu.institution}
                     </p>
-                    <p className="text-[10px] text-slate-500 dark:text-slate-400 mt-0.5">
+                    <p className="text-[10px] text-[#9CA3AF] dark:text-slate-400 mt-0.5 font-medium">
                       {edu.startDate} — {edu.endDate}
                     </p>
                   </div>
@@ -380,17 +388,17 @@ export function ParsedResumeSection({
           <div className="grid gap-4 sm:grid-cols-2">
             {localParsed.certifications.length > 0 && (
               <div>
-                <h4 className="text-[10px] font-semibold text-slate-500 uppercase tracking-wider dark:text-slate-400 mb-2 flex items-center gap-1.5">
-                  <Award className="h-3.5 w-3.5 text-indigo-600 dark:text-indigo-400" />
+                <h4 className="text-[10px] font-bold text-[#6B7280] uppercase tracking-wider dark:text-slate-400 mb-2 flex items-center gap-1.5">
+                  <Award className="h-3.5 w-3.5 text-[#181A1C] dark:text-white" />
                   Certifications
                 </h4>
                 <ul className="space-y-1">
                   {localParsed.certifications.map((cert, i) => (
                     <li
                       key={i}
-                      className="text-[11px] text-slate-700 dark:text-slate-300 flex items-start gap-1.5"
+                      className="text-[11px] text-[#181A1C] dark:text-slate-300 flex items-start gap-1.5"
                     >
-                      <span className="mt-1 h-1 w-1 rounded-full bg-indigo-400 shrink-0" />
+                      <span className="mt-1.5 h-1.5 w-1.5 rounded-full bg-[#181A1C] dark:bg-white shrink-0" />
                       {cert}
                     </li>
                   ))}
@@ -400,15 +408,15 @@ export function ParsedResumeSection({
 
             {localParsed.languages.length > 0 && (
               <div>
-                <h4 className="text-[10px] font-semibold text-slate-500 uppercase tracking-wider dark:text-slate-400 mb-2 flex items-center gap-1.5">
-                  <Globe className="h-3.5 w-3.5 text-indigo-600 dark:text-indigo-400" />
+                <h4 className="text-[10px] font-bold text-[#6B7280] uppercase tracking-wider dark:text-slate-400 mb-2 flex items-center gap-1.5">
+                  <Globe className="h-3.5 w-3.5 text-[#181A1C] dark:text-white" />
                   Languages
                 </h4>
                 <div className="flex flex-wrap gap-1.5">
                   {localParsed.languages.map((lang, i) => (
                     <span
                       key={i}
-                      className="rounded-full bg-slate-100 px-2.5 py-0.5 text-[10px] font-medium text-slate-700 dark:bg-slate-800 dark:text-slate-300"
+                      className="rounded-full bg-[#F8F9FA] border border-[#E8EAED] px-2.5 py-0.5 text-[10px] font-semibold text-[#181A1C] dark:bg-slate-800 dark:text-slate-300"
                     >
                       {lang}
                     </span>

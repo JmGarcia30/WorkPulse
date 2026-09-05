@@ -114,7 +114,7 @@ export default async function InterviewsPage({ searchParams }: InterviewsPagePro
     switch (status) {
       case InterviewStatus.SCHEDULED:
         return (
-          <span className="rounded-md bg-blue-50 px-2 py-0.5 text-[10px] font-bold text-blue-700 dark:bg-blue-950/60 dark:text-blue-300">
+          <span className="rounded-md bg-[#F8F9FA] border border-[#E8EAED] px-2 py-0.5 text-[10px] font-bold text-[#181A1C] dark:bg-slate-800 dark:border-slate-700 dark:text-slate-300">
             Scheduled
           </span>
         );
@@ -149,7 +149,7 @@ export default async function InterviewsPage({ searchParams }: InterviewsPagePro
         );
       case EvaluationRecommendation.RECOMMEND:
         return (
-          <span className="text-[10px] font-bold text-indigo-600 dark:text-indigo-400">
+          <span className="text-[10px] font-bold text-[#181A1C] dark:text-slate-200">
             Recommend
           </span>
         );

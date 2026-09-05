@@ -77,9 +77,9 @@ export const OFFER_STAGE_CONFIG: Record<
   },
   [OfferStatus.APPROVED]: {
     label: 'Approved',
-    badgeBg: 'bg-blue-50 dark:bg-blue-950/60',
-    badgeText: 'text-blue-700 dark:text-blue-300',
-    borderColor: 'border-blue-200 dark:border-blue-800',
+    badgeBg: 'bg-teal-50 dark:bg-teal-950/60',
+    badgeText: 'text-teal-700 dark:text-teal-300',
+    borderColor: 'border-teal-200 dark:border-teal-800',
   },
   [OfferStatus.SENT]: {
     label: 'Sent to Candidate',

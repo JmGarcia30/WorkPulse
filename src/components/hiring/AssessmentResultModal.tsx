@@ -94,8 +94,8 @@ export function AssessmentResultModal({
       <div className="w-full max-w-md rounded-2xl border border-slate-200 bg-white p-6 shadow-2xl dark:border-slate-800 dark:bg-slate-900 my-8">
         <div className="flex items-center justify-between border-b border-slate-100 pb-4 dark:border-slate-800">
           <div>
-            <h3 className="text-base font-bold text-slate-900 dark:text-slate-100 flex items-center gap-2">
-              <Award className="h-5 w-5 text-indigo-600 dark:text-indigo-400" />
+            <h3 className="text-base font-bold text-[#181A1C] dark:text-slate-100 flex items-center gap-2">
+              <Award className="h-5 w-5 text-[#181A1C] dark:text-white" />
               Record Assessment Result
             </h3>
             <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
@@ -139,7 +139,7 @@ export function AssessmentResultModal({
                 value={score}
                 onChange={(e) => setScore(e.target.value)}
                 placeholder="e.g. 88.5"
-                className="w-full rounded-lg border border-slate-300 px-3 py-2 text-xs text-slate-900 font-bold focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
+                className="w-full rounded-lg border border-slate-300 px-3 py-2 text-xs text-slate-900 font-bold focus:border-[#181A1C] focus:ring-1 focus:ring-[#181A1C] dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
               />
             </div>
 
@@ -154,7 +154,7 @@ export function AssessmentResultModal({
                 max={numMax}
                 value={passingScore}
                 onChange={(e) => setPassingScore(e.target.value)}
-                className="w-full rounded-lg border border-slate-300 px-3 py-2 text-xs text-slate-900 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
+                className="w-full rounded-lg border border-slate-300 px-3 py-2 text-xs text-slate-900 focus:border-[#181A1C] focus:ring-1 focus:ring-[#181A1C] dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
               />
             </div>
           </div>
@@ -194,7 +194,7 @@ export function AssessmentResultModal({
               value={reviewerNotes}
               onChange={(e) => setReviewerNotes(e.target.value)}
               placeholder="Candidate demonstrated strong skills in..."
-              className="w-full rounded-lg border border-slate-300 px-3 py-2 text-xs text-slate-900 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
+              className="w-full rounded-lg border border-slate-300 px-3 py-2 text-xs text-slate-900 focus:border-[#181A1C] focus:ring-1 focus:ring-[#181A1C] dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
             />
           </div>
 
@@ -210,7 +210,7 @@ export function AssessmentResultModal({
             <button
               type="submit"
               disabled={loading || !isScoreValid}
-              className="rounded-lg bg-indigo-600 px-4 py-2 text-xs font-semibold text-white hover:bg-indigo-500 disabled:opacity-50 transition shadow-sm"
+              className="rounded-xl bg-[#181A1C] px-4 py-2 text-xs font-bold text-white hover:bg-[#2A2E33] disabled:opacity-50 transition shadow-2xs"
             >
               {loading ? 'Submitting...' : 'Save Result & Status'}
             </button>

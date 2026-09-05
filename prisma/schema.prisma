@@ -20,6 +20,11 @@ enum JobStatus {
   ARCHIVED
 }
 
+enum EmploymentCategory {
+  TEACHING
+  NON_TEACHING
+}
+
 enum RequirementType {
   SKILL
   EDUCATION
@@ -45,6 +50,9 @@ enum InterviewType {
   TECHNICAL
   BEHAVIORAL
   FINAL
+  TEACHING_DEMONSTRATION
+  HEAD_OF_DEPARTMENT
+  PRESIDENT_FINAL
   OTHER
 }
 
@@ -79,7 +87,31 @@ enum AssessmentType {
   COGNITIVE
   BEHAVIORAL
   ROLE_SPECIFIC
+  WRITTEN_EXAMINATION
   OTHER
+}
+
+enum RecruitmentDocumentType {
+  RESUME_APPLICATION_LETTER
+  TRANSCRIPT_OF_RECORDS
+  DIPLOMA
+  LET_BASIC_EDUCATION
+  PROFESSIONAL_LICENSE
+  PREVIOUS_EMPLOYMENT_CERT
+  RECOMMENDATION_LETTER_1
+  RECOMMENDATION_LETTER_2
+  RECOMMENDATION_LETTER_3
+  NBI_CLEARANCE
+  MARRIAGE_CONTRACT
+  OTHER
+}
+
+enum RecruitmentDocumentStatus {
+  PENDING
+  SUBMITTED
+  VERIFIED
+  REJECTED
+  NOT_APPLICABLE
 }
 
 enum OfferStatus {
@@ -157,6 +189,7 @@ model User {
   offersCreated           Offer[]                    @relation("OfferCreatedBy")
   offersApproved          Offer[]                    @relation("OfferApprovedBy")
   verifiedOnboardingTasks OnboardingTask[]
+  verifiedRecruitmentDocs RecruitmentDocument[]
 
   @@index([organizationId])
 }
@@ -172,12 +205,13 @@ model Job {
   description      String      @db.Text
   responsibilities String      @db.Text
   qualifications   String      @db.Text
-  requirements     String      @db.Text
-  status           JobStatus   @default(DRAFT)
+  requirements     String             @db.Text
+  status           JobStatus          @default(DRAFT)
+  category         EmploymentCategory @default(NON_TEACHING)
   publishedAt      DateTime?
   closingDate      DateTime?
-  createdAt        DateTime    @default(now())
-  updatedAt        DateTime    @updatedAt
+  createdAt        DateTime           @default(now())
+  updatedAt        DateTime           @updatedAt
 
   organization   Organization     @relation(fields: [organizationId], references: [id], onDelete: Cascade)
   structuredReqs JobRequirement[]
@@ -186,6 +220,7 @@ model Job {
   @@unique([organizationId, slug])
   @@index([organizationId])
   @@index([status])
+  @@index([category])
   @@index([publishedAt])
 }
 
@@ -227,14 +262,15 @@ model Application {
   appliedAt   DateTime          @default(now())
   updatedAt   DateTime          @updatedAt
 
-  job         Job                        @relation(fields: [jobId], references: [id], onDelete: Cascade)
-  applicant   Applicant                  @relation(fields: [applicantId], references: [id], onDelete: Cascade)
-  documents   Document[]
-  history     ApplicationStatusHistory[]
-  interviews  Interview[]
-  assessments Assessment[]
-  offers      Offer[]
-  onboarding  OnboardingProcess?
+  job                  Job                        @relation(fields: [jobId], references: [id], onDelete: Cascade)
+  applicant            Applicant                  @relation(fields: [applicantId], references: [id], onDelete: Cascade)
+  documents            Document[]
+  recruitmentDocuments RecruitmentDocument[]
+  history              ApplicationStatusHistory[]
+  interviews           Interview[]
+  assessments          Assessment[]
+  offers               Offer[]
+  onboarding           OnboardingProcess?
 
   @@unique([jobId, applicantId])
   @@index([jobId])
@@ -358,12 +394,17 @@ model Offer {
   benefits        String?      @db.Text
   allowances      String?      @db.Text
   additionalTerms String?      @db.Text
-  notes           String?      @db.Text
-  status          OfferStatus  @default(DRAFT)
-  createdById     String
-  approvedById    String?
-  createdAt       DateTime     @default(now())
-  updatedAt       DateTime     @updatedAt
+  notes                     String?      @db.Text
+  status                    OfferStatus  @default(DRAFT)
+  contractSignedByPresident Boolean      @default(false)
+  contractSignedByEmployee  Boolean      @default(false)
+  contractExecutedAt        DateTime?
+  probationPeriodMonths     Int?
+  probationaryTerms         String?      @db.Text
+  createdById               String
+  approvedById              String?
+  createdAt                 DateTime     @default(now())
+  updatedAt                 DateTime     @updatedAt
 
   application Application @relation(fields: [applicationId], references: [id], onDelete: Cascade)
   createdBy   User        @relation("OfferCreatedBy", fields: [createdById], references: [id])
@@ -440,6 +481,33 @@ model OnboardingTask {
   @@index([onboardingProcessId])
   @@index([status])
   @@index([type])
+  @@index([verifiedById])
+}
+
+model RecruitmentDocument {
+  id            String                    @id @default(cuid())
+  applicationId String
+  type          RecruitmentDocumentType
+  title         String
+  status        RecruitmentDocumentStatus @default(PENDING)
+  isRequired    Boolean                   @default(true)
+  isConditional Boolean                   @default(false)
+  notes         String?                   @db.Text
+  fileName      String?
+  fileType      String?
+  fileSize      Int?
+  storageKey    String?
+  verifiedAt    DateTime?
+  verifiedById  String?
+  createdAt     DateTime                  @default(now())
+  updatedAt     DateTime                  @updatedAt
+
+  application Application @relation(fields: [applicationId], references: [id], onDelete: Cascade)
+  verifiedBy  User?       @relation(fields: [verifiedById], references: [id])
+
+  @@unique([applicationId, type])
+  @@index([applicationId])
+  @@index([status])
   @@index([verifiedById])
 }
 

@@ -63,21 +63,21 @@ export const ASSESSMENT_STAGE_CONFIG: Record<
 > = {
   [AssessmentStatus.ASSIGNED]: {
     label: 'Assigned',
-    badgeBg: 'bg-indigo-50 dark:bg-indigo-950/60',
-    badgeText: 'text-indigo-700 dark:text-indigo-300',
-    borderColor: 'border-indigo-200 dark:border-indigo-800',
+    badgeBg: 'bg-[#F8F9FA] dark:bg-slate-800',
+    badgeText: 'text-[#181A1C] dark:text-slate-200',
+    borderColor: 'border-[#E8EAED] dark:border-slate-700',
   },
   [AssessmentStatus.IN_PROGRESS]: {
     label: 'In Progress',
-    badgeBg: 'bg-blue-50 dark:bg-blue-950/60',
-    badgeText: 'text-blue-700 dark:text-blue-300',
-    borderColor: 'border-blue-200 dark:border-blue-800',
+    badgeBg: 'bg-amber-50 dark:bg-amber-950/60',
+    badgeText: 'text-amber-700 dark:text-amber-300',
+    borderColor: 'border-amber-200 dark:border-amber-800',
   },
   [AssessmentStatus.SUBMITTED]: {
     label: 'Submitted',
-    badgeBg: 'bg-cyan-50 dark:bg-cyan-950/60',
-    badgeText: 'text-cyan-700 dark:text-cyan-300',
-    borderColor: 'border-cyan-200 dark:border-cyan-800',
+    badgeBg: 'bg-purple-50 dark:bg-purple-950/60',
+    badgeText: 'text-purple-700 dark:text-purple-300',
+    borderColor: 'border-purple-200 dark:border-purple-800',
   },
   [AssessmentStatus.UNDER_REVIEW]: {
     label: 'Under Review',
@@ -122,8 +122,8 @@ export const ASSESSMENT_TYPE_CONFIG: Record<
   },
   [AssessmentType.SKILLS]: {
     label: 'Skills',
-    badgeBg: 'bg-blue-50 dark:bg-blue-950/60',
-    badgeText: 'text-blue-700 dark:text-blue-300',
+    badgeBg: 'bg-[#F8F9FA] dark:bg-slate-800',
+    badgeText: 'text-[#181A1C] dark:text-slate-200',
   },
   [AssessmentType.COGNITIVE]: {
     label: 'Cognitive',
@@ -137,6 +137,11 @@ export const ASSESSMENT_TYPE_CONFIG: Record<
   },
   [AssessmentType.ROLE_SPECIFIC]: {
     label: 'Role-Specific',
+    badgeBg: 'bg-emerald-50 dark:bg-emerald-950/60',
+    badgeText: 'text-emerald-700 dark:text-emerald-300',
+  },
+  [AssessmentType.WRITTEN_EXAMINATION]: {
+    label: 'Written Examination',
     badgeBg: 'bg-indigo-50 dark:bg-indigo-950/60',
     badgeText: 'text-indigo-700 dark:text-indigo-300',
   },

@@ -72,14 +72,14 @@ export function CandidateOffersSection({
   return (
     <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-xs dark:border-slate-800 dark:bg-slate-900 space-y-4">
       {/* Section Header */}
-      <div className="flex items-center justify-between border-b border-slate-100 pb-4 dark:border-slate-800">
+      <div className="flex items-center justify-between border-b border-[#E8EAED] pb-4 dark:border-slate-800">
         <div>
-          <h3 className="text-xs font-semibold text-slate-500 uppercase tracking-wider dark:text-slate-400 flex items-center gap-2">
-            <FileText className="h-4 w-4 text-indigo-600 dark:text-indigo-400" />
-            Employment Offers & Terms
+          <h3 className="text-xs font-bold text-[#6B7280] uppercase tracking-wider dark:text-slate-400 flex items-center gap-2">
+            <FileText className="h-4 w-4 text-[#181A1C] dark:text-white" />
+            Employment Offer / Contract
           </h3>
-          <p className="text-[11px] text-slate-500 mt-0.5">
-            Compensation packages, approval tracking, and signed agreements
+          <p className="text-[11px] text-[#6B7280] mt-0.5">
+            SAGA institutional contract executed by the employee and the President with probationary terms
           </p>
         </div>
 
@@ -89,7 +89,7 @@ export function CandidateOffersSection({
             onClick={() => setIsCreateOpen(true)}
             disabled={hasActiveOffer}
             title={hasActiveOffer ? 'An active offer is currently open' : 'Draft new offer'}
-            className="inline-flex items-center gap-1.5 rounded-lg bg-indigo-600 px-3 py-1.5 text-xs font-semibold text-white hover:bg-indigo-500 transition shadow-xs disabled:opacity-40 disabled:cursor-not-allowed"
+            className="inline-flex items-center gap-1.5 rounded-xl bg-[#181A1C] px-3.5 py-1.5 text-xs font-bold text-white hover:bg-[#2A2E33] transition shadow-2xs disabled:opacity-40 disabled:cursor-not-allowed"
           >
             <Plus className="h-3.5 w-3.5" />
             Create Offer Package
@@ -99,12 +99,12 @@ export function CandidateOffersSection({
 
       {/* Offer Cards */}
       {offers.length === 0 ? (
-        <div className="rounded-xl border border-dashed border-slate-200 p-8 text-center dark:border-slate-800">
-          <FileText className="mx-auto h-8 w-8 text-slate-300 dark:text-slate-700" />
-          <p className="mt-2 text-xs font-semibold text-slate-700 dark:text-slate-300">
+        <div className="rounded-2xl border border-dashed border-[#E8EAED] p-8 text-center dark:border-slate-800">
+          <FileText className="mx-auto h-8 w-8 text-[#9CA3AF] dark:text-slate-700" />
+          <p className="mt-2 text-xs font-bold text-[#181A1C] dark:text-slate-300">
             No employment offers drafted yet
           </p>
-          <p className="text-[11px] text-slate-500 mt-0.5">
+          <p className="text-[11px] text-[#6B7280] mt-0.5">
             Prepare formal salary terms, benefits, and employment contracts for this applicant.
           </p>
         </div>
@@ -123,19 +123,19 @@ export function CandidateOffersSection({
             return (
               <div
                 key={offer.id}
-                className={`rounded-xl border p-4 transition space-y-3 ${
+                className={`rounded-2xl border p-4 transition space-y-3 ${
                   isActive
-                    ? 'border-indigo-200 bg-indigo-50/20 dark:border-indigo-900/60 dark:bg-indigo-950/20'
-                    : 'border-slate-200 bg-slate-50/50 dark:border-slate-800 dark:bg-slate-950/50'
+                    ? 'border-[#181A1C]/40 bg-[#F8F9FA] dark:border-white/40 dark:bg-slate-900'
+                    : 'border-[#E8EAED] bg-white dark:border-slate-800 dark:bg-slate-950/50'
                 }`}
               >
                 {/* Top Row: Compensation & Status */}
                 <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
                   <div>
                     <div className="flex items-center gap-2">
-                      <span className="text-base font-extrabold text-slate-900 dark:text-slate-100 flex items-center">
+                      <span className="text-base font-extrabold text-[#181A1C] dark:text-slate-100 flex items-center">
                         ₱{offer.salary.toLocaleString(undefined, { minimumFractionDigits: 2 })}
-                        <span className="text-xs font-normal text-slate-500 ml-1">
+                        <span className="text-xs font-normal text-[#6B7280] ml-1">
                           {payFreqConfig.suffix}
                         </span>
                       </span>
@@ -161,7 +161,7 @@ export function CandidateOffersSection({
                       <button
                         type="button"
                         onClick={() => setSelectedOfferForStatus(offer)}
-                        className="inline-flex items-center gap-1 rounded-lg border border-indigo-200 bg-white px-2.5 py-1 text-xs font-semibold text-indigo-700 hover:bg-indigo-50 dark:border-indigo-800 dark:bg-slate-900 dark:text-indigo-300"
+                        className="inline-flex items-center gap-1 rounded-xl border border-[#E8EAED] bg-white px-2.5 py-1 text-xs font-bold text-[#181A1C] hover:bg-[#181A1C] hover:text-white dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300 transition shadow-2xs"
                       >
                         <ArrowRightLeft className="h-3 w-3" /> Update Stage
                       </button>
