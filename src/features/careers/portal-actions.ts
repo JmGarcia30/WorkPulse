@@ -3,7 +3,11 @@
 import { revalidatePath } from 'next/cache';
 import { prisma } from '@/lib/db/prisma';
 import { localStorageProvider } from '@/lib/storage';
-import { RecruitmentDocumentStatus, EmploymentCategory } from '@prisma/client';
+import {
+  RecruitmentDocumentStatus,
+  EmploymentCategory,
+  OnboardingTaskStatus,
+} from '@prisma/client';
 import { areRecruitmentDocumentsSatisfied } from '@/features/hiring/saga-requirements';
 
 const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
@@ -67,6 +71,13 @@ export async function getCandidatePortalData(organizationSlug: string, applicati
           status: true,
           startDate: true,
           employmentType: true,
+        },
+      },
+      onboarding: {
+        include: {
+          tasks: {
+            orderBy: { createdAt: 'asc' },
+          },
         },
       },
     },
@@ -211,5 +222,109 @@ export async function submitCandidateRecruitmentDocumentAction(
     success: true,
     fileName: file.name,
     status: RecruitmentDocumentStatus.SUBMITTED,
+  };
+}
+
+/**
+ * Upload and submit a candidate onboarding document directly through the candidate portal.
+ * Validates tenant boundary, file format, stores file, and transitions task to SUBMITTED.
+ */
+export async function submitCandidateOnboardingDocumentAction(
+  organizationSlug: string,
+  applicationId: string,
+  taskId: string,
+  formData: FormData
+) {
+  // 1. Verify candidate task belongs to the authenticated applicant portal session
+  const task = await prisma.onboardingTask.findFirst({
+    where: {
+      id: taskId,
+      onboardingProcess: {
+        applicationId,
+        application: {
+          job: {
+            organization: {
+              slug: organizationSlug,
+            },
+          },
+        },
+      },
+    },
+  });
+
+  if (!task) {
+    return {
+      error: 'Security verification failed: Onboarding task not found or access denied.',
+    };
+  }
+
+  // 2. Validate file
+  const file = formData.get('file') as File | null;
+  if (!file || file.size === 0) {
+    return { error: 'Please choose a document file to upload.' };
+  }
+
+  if (file.size > MAX_FILE_SIZE) {
+    return { error: 'File size exceeds maximum allowed limit of 10MB.' };
+  }
+
+  if (file.size < 512) {
+    return {
+      error: 'File appears empty or corrupted. Please select a valid document file.',
+    };
+  }
+
+  const mimeType = file.type || 'application/octet-stream';
+  const fileNameLower = file.name.toLowerCase();
+  const hasValidExtension =
+    fileNameLower.endsWith('.pdf') ||
+    fileNameLower.endsWith('.png') ||
+    fileNameLower.endsWith('.jpg') ||
+    fileNameLower.endsWith('.jpeg') ||
+    fileNameLower.endsWith('.webp') ||
+    fileNameLower.endsWith('.doc') ||
+    fileNameLower.endsWith('.docx');
+
+  if (!ALLOWED_MIME_TYPES.includes(mimeType) && !hasValidExtension) {
+    return {
+      error: 'Invalid file format. Please upload PDF, Word Document (DOC/DOCX), or image (JPG, PNG, WEBP).',
+    };
+  }
+
+  // 3. Store file securely
+  const buffer = Buffer.from(await file.arrayBuffer());
+  const uploadResult = await localStorageProvider.upload(
+    buffer,
+    `candidate-onboarding-${applicationId}-${taskId}-${file.name}`,
+    mimeType
+  );
+
+  // 4. Update OnboardingTask
+  await prisma.onboardingTask.update({
+    where: { id: taskId },
+    data: {
+      fileName: file.name,
+      fileType: mimeType,
+      fileSize: file.size,
+      storageKey: uploadResult.storageKey,
+      status: OnboardingTaskStatus.SUBMITTED,
+      submittedAt: new Date(),
+      reviewerNotes: `Submitted by applicant on ${new Date().toLocaleDateString()}`,
+    },
+  });
+
+  // Revalidate both candidate portal and HR dashboard
+  try {
+    revalidatePath(`/careers/${organizationSlug}/portal/${applicationId}`);
+    revalidatePath(`/dashboard/hiring/applicants/${applicationId}`);
+    revalidatePath('/dashboard/hiring/onboarding');
+  } catch {
+    // Gracefully ignore outside Next.js request context
+  }
+
+  return {
+    success: true,
+    fileName: file.name,
+    status: OnboardingTaskStatus.SUBMITTED,
   };
 }

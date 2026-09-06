@@ -7,11 +7,6 @@ export async function GET(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
-  const user = await getSession();
-  if (!user) {
-    return new NextResponse('Unauthorized', { status: 401 });
-  }
-
   const { id: taskId } = await params;
 
   // Look up task and enforce tenant isolation: Task -> Process -> Application -> Job -> Organization
@@ -36,10 +31,17 @@ export async function GET(
     return new NextResponse('Document not found', { status: 404 });
   }
 
-  // Multi-tenant authorization check
+  // Authorization check: User session (HR) OR candidate query parameter
+  const user = await getSession();
   const taskOrgId = task.onboardingProcess.application.job.organizationId;
-  if (taskOrgId !== user.organizationId) {
-    return new NextResponse('Forbidden', { status: 403 });
+
+  if (user && user.organizationId === taskOrgId) {
+    // Authorized HR user
+  } else {
+    const candidateAppId = request.nextUrl.searchParams.get('appId');
+    if (!candidateAppId || candidateAppId !== task.onboardingProcess.applicationId) {
+      return new NextResponse('Unauthorized access to onboarding document', { status: 403 });
+    }
   }
 
   try {

@@ -514,6 +514,7 @@ export default async function CandidateProfilePage({ params }: CandidateProfileP
             offers={application.offers}
             onboarding={application.onboarding}
             canManage={canManageOnb}
+            category={application.job.category}
           />
         </div>
 

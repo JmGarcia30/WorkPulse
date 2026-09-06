@@ -234,6 +234,7 @@ export default async function CandidatePortalPage({ params }: CandidatePortalPag
         organizationSlug={org.slug}
         applicationId={application.id}
         initialDocuments={application.recruitmentDocuments}
+        onboarding={application.onboarding}
         category={category}
         applicantName={`${applicant.firstName} ${applicant.lastName}`}
         jobTitle={job.title}

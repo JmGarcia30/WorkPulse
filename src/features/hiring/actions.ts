@@ -15,7 +15,7 @@ import {
   OnboardingTaskStatus,
 } from '@prisma/client';
 import { isValidStatusTransition } from './pipeline';
-import { DEFAULT_INSTITUTIONAL_ONBOARDING_TASKS } from './onboarding-pipeline';
+import { createSagaOnboardingProcessInTx } from './onboarding-actions';
 import { calculateHiringReadiness } from './readiness';
 
 function slugify(text: string): string {
@@ -287,6 +287,7 @@ export async function updateApplicationStatusAction(
       offers: true,
       assessments: true,
       interviews: true,
+      recruitmentDocuments: true,
       onboarding: {
         include: {
           tasks: true,
@@ -359,32 +360,13 @@ export async function updateApplicationStatusAction(
       });
 
       if (!existingProcess) {
-        const onboardingProcess = await tx.onboardingProcess.create({
-          data: {
-            applicationId,
-            status: OnboardingStatus.IN_PROGRESS,
-            startDate: acceptedOffer.startDate,
-            targetCompletionDate: new Date(
-              acceptedOffer.startDate.getTime() + 14 * 24 * 60 * 60 * 1000
-            ),
-            notes: `Onboarding initialized automatically upon hire confirmation with accepted offer (${acceptedOffer.employmentType}).`,
-          },
-        });
-
-        // Initialize default institutional tasks
-        for (const taskTemplate of DEFAULT_INSTITUTIONAL_ONBOARDING_TASKS) {
-          await tx.onboardingTask.create({
-            data: {
-              onboardingProcessId: onboardingProcess.id,
-              title: taskTemplate.title,
-              description: taskTemplate.description,
-              type: taskTemplate.type,
-              status: OnboardingTaskStatus.PENDING,
-              isRequired: taskTemplate.isRequired,
-              dueDate: acceptedOffer.startDate,
-            },
-          });
-        }
+        await createSagaOnboardingProcessInTx(
+          tx,
+          application,
+          acceptedOffer,
+          acceptedOffer.startDate,
+          `Onboarding initialized automatically upon hire confirmation with accepted offer (${acceptedOffer.employmentType}).`
+        );
       }
     }
   });

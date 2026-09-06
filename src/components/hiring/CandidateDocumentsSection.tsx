@@ -20,6 +20,7 @@ import {
   AlertTriangle,
   X,
   Sparkles,
+  Eye,
 } from 'lucide-react';
 import {
   verifyRecruitmentDocumentAction,
@@ -348,11 +349,20 @@ export function CandidateDocumentsSection({
                   )}
 
                   {doc.fileName && (
-                    <div className="flex items-center gap-2 text-[11px] text-[#181A1C] dark:text-slate-300 font-medium">
+                    <div className="flex items-center gap-2 flex-wrap text-[11px] text-[#181A1C] dark:text-slate-300 font-medium">
                       <span className="truncate max-w-[280px]">File: {doc.fileName}</span>
                       {doc.fileSize && (
                         <span className="text-[#9CA3AF]">({(doc.fileSize / 1024).toFixed(1)} KB)</span>
                       )}
+                      <a
+                        href={`/api/recruitment-documents/${doc.id}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-1 text-blue-600 hover:text-blue-700 dark:text-blue-400 font-semibold underline underline-offset-2 ml-1"
+                      >
+                        <Eye className="h-3 w-3" />
+                        <span>View / Download</span>
+                      </a>
                     </div>
                   )}
                 </div>

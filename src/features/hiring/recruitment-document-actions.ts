@@ -4,8 +4,9 @@ import { revalidatePath } from 'next/cache';
 import { prisma } from '@/lib/db/prisma';
 import { getSession } from '@/lib/auth/session';
 import { canManageRecruitmentDocuments } from '@/lib/permissions/rbac';
-import { RecruitmentDocumentStatus } from '@prisma/client';
+import { RecruitmentDocumentStatus, OnboardingTaskStatus } from '@prisma/client';
 import { ensureRecruitmentDocumentsExist } from './saga-requirements';
+import { RECRUITMENT_DOC_TO_ONBOARDING_TITLE_MAP } from './onboarding-pipeline';
 import { localStorageProvider } from '@/lib/storage';
 import { sendDocumentRejectedEmail, sendDocumentVerifiedEmail } from '@/lib/email';
 
@@ -102,6 +103,49 @@ export async function verifyRecruitmentDocumentAction(
       notes: reviewerNotes ? reviewerNotes.trim() : doc.notes,
     },
   });
+
+  // Automatically sync verified credential into candidate's active onboarding checklist
+  try {
+    const onboarding = await prisma.onboardingProcess.findUnique({
+      where: { applicationId: doc.applicationId },
+      include: { tasks: true },
+    });
+
+    if (onboarding) {
+      for (const [docType, titlePatterns] of Object.entries(RECRUITMENT_DOC_TO_ONBOARDING_TITLE_MAP)) {
+        if (doc.type === docType) {
+          const matchingTask = onboarding.tasks.find((t) =>
+            titlePatterns.some(
+              (p) =>
+                t.title.toLowerCase().includes(p.toLowerCase()) ||
+                p.toLowerCase().includes(t.title.toLowerCase())
+            )
+          );
+
+          if (matchingTask) {
+            await prisma.onboardingTask.update({
+              where: { id: matchingTask.id },
+              data: {
+                status: OnboardingTaskStatus.VERIFIED,
+                fileName: doc.fileName || matchingTask.fileName,
+                fileType: doc.fileType || matchingTask.fileType,
+                fileSize: doc.fileSize || matchingTask.fileSize,
+                storageKey: doc.storageKey || matchingTask.storageKey,
+                verifiedAt: new Date(),
+                verifiedById: user.userId,
+                reviewerNotes:
+                  reviewerNotes?.trim() ||
+                  doc.notes ||
+                  'Auto-verified from verified SAGA Recruitment Document requirements.',
+              },
+            });
+          }
+        }
+      }
+    }
+  } catch (syncErr) {
+    console.warn('[Recruitment Document Action] Auto-sync to onboarding skipped:', syncErr);
+  }
 
   // Free notification to candidate
   const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';

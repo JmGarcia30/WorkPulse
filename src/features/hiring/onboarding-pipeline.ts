@@ -50,71 +50,196 @@ export function getAvailableTaskTransitions(
   return ALLOWED_TASK_TRANSITIONS[fromStatus] || [];
 }
 
+export type OnboardingSectionType =
+  | 'PRE_EMPLOYMENT_CREDENTIALS'
+  | 'ONBOARDING_ACTIVITIES';
+
 export interface DefaultOnboardingTaskTemplate {
   title: string;
   description: string;
   type: OnboardingTaskType;
   isRequired: boolean;
+  section?: OnboardingSectionType;
+  matchedRecruitmentDocType?: string;
 }
 
-export const DEFAULT_INSTITUTIONAL_ONBOARDING_TASKS: DefaultOnboardingTaskTemplate[] = [
-  {
-    title: 'Government Identification (SSS, PhilHealth, Pag-IBIG, TIN)',
-    description:
-      'Upload scanned copies or verified government member numbers for SSS, PhilHealth, Pag-IBIG, and TIN.',
-    type: OnboardingTaskType.DOCUMENT,
-    isRequired: true,
-  },
-  {
-    title: 'PRC Board Certification & License Credentials',
-    description:
-      'Upload PRC Professional Teacher/Specialist license card and board rating certificate for verification.',
-    type: OnboardingTaskType.DOCUMENT,
-    isRequired: true,
-  },
-  {
-    title: 'Medical Fitness & Fit-to-Work Clearance',
-    description:
-      'Submit comprehensive medical examination results including chest X-ray and physician Fit-to-Work certificate.',
-    type: OnboardingTaskType.DOCUMENT,
-    isRequired: true,
-  },
-  {
-    title: 'NBI / Police Clearance Certificate',
-    description:
-      'Submit a valid, unexpired NBI clearance or police clearance certificate.',
-    type: OnboardingTaskType.DOCUMENT,
-    isRequired: true,
-  },
-  {
-    title: 'Official Transcript of Records (TOR) & Diploma',
-    description:
-      'Submit authenticated copies of official transcript of records and college/graduate diploma.',
-    type: OnboardingTaskType.DOCUMENT,
-    isRequired: true,
-  },
-  {
-    title: 'Institutional Email & System Portal Access Provisioning',
-    description:
-      'Set up official institutional work email account, faculty/staff portal access, and institutional system credentials.',
-    type: OnboardingTaskType.ADMIN,
-    isRequired: true,
-  },
-  {
-    title: 'Faculty / Staff ID Badge & Campus Keycard',
-    description:
-      'Issue official institutional ID card, RFID gate access badge, and department building keys.',
-    type: OnboardingTaskType.EQUIPMENT,
-    isRequired: true,
-  },
-  {
-    title: 'New Hire Institutional Orientation & Department Induction',
-    description:
-      'Attend mandatory welcome orientation, department briefing, and institutional policy overview session.',
-    type: OnboardingTaskType.ORIENTATION,
-    isRequired: true,
-  },
-];
+/**
+ * Returns SAGA institutional onboarding tasks tailored by employment category.
+ * - Separates TOR and Diploma as distinct requirements.
+ * - Mandates LET for Faculty (TEACHING).
+ * - Makes Professional License conditional for Staff (NON_TEACHING).
+ * - Explicitly demarcates pre-employment credentials from institutional onboarding activities.
+ */
+export function getSagaOnboardingTaskTemplates(
+  category: 'TEACHING' | 'NON_TEACHING'
+): DefaultOnboardingTaskTemplate[] {
+  const isTeaching = category === 'TEACHING';
+
+  return [
+    // ==========================================
+    // SECTION A: PRE-EMPLOYMENT CREDENTIALS
+    // ==========================================
+    {
+      title: 'Transcript of Records (TOR)',
+      description:
+        'Official authenticated copy of collegiate / post-graduate transcript of records (TOR).',
+      type: OnboardingTaskType.DOCUMENT,
+      isRequired: true,
+      section: 'PRE_EMPLOYMENT_CREDENTIALS',
+      matchedRecruitmentDocType: 'TRANSCRIPT_OF_RECORDS',
+    },
+    {
+      title: 'Photocopy of Diploma',
+      description:
+        'Authenticated copy of Bachelor’s, Master’s, or highest educational degree diploma.',
+      type: OnboardingTaskType.DOCUMENT,
+      isRequired: true,
+      section: 'PRE_EMPLOYMENT_CREDENTIALS',
+      matchedRecruitmentDocType: 'DIPLOMA',
+    },
+    ...(isTeaching
+      ? [
+          {
+            title:
+              'Photocopy of Board Licensure Examination for Teachers (LET - Basic Education)',
+            description:
+              'PRC Board Professional Teacher license card or Certificate of Good Standing.',
+            type: OnboardingTaskType.DOCUMENT,
+            isRequired: true,
+            section: 'PRE_EMPLOYMENT_CREDENTIALS' as OnboardingSectionType,
+            matchedRecruitmentDocType: 'LET_BASIC_EDUCATION',
+          },
+        ]
+      : [
+          {
+            title: 'Photocopy of Professional License (if applicable)',
+            description:
+              'PRC license for professional non-teaching roles (e.g. Guidance Counselor, Psychometrician, CPA, Librarian, Nurse).',
+            type: OnboardingTaskType.DOCUMENT,
+            isRequired: false,
+            section: 'PRE_EMPLOYMENT_CREDENTIALS' as OnboardingSectionType,
+            matchedRecruitmentDocType: 'PROFESSIONAL_LICENSE',
+          },
+        ]),
+    {
+      title: 'Valid NBI Clearance',
+      description:
+        'Valid, unexpired National Bureau of Investigation clearance without derogatory record.',
+      type: OnboardingTaskType.DOCUMENT,
+      isRequired: true,
+      section: 'PRE_EMPLOYMENT_CREDENTIALS',
+      matchedRecruitmentDocType: 'NBI_CLEARANCE',
+    },
+    {
+      title: 'Government Identification (SSS, PhilHealth, Pag-IBIG, TIN)',
+      description:
+        'Upload scanned copies or verified government registration member numbers for SSS, PhilHealth, Pag-IBIG, and TIN.',
+      type: OnboardingTaskType.DOCUMENT,
+      isRequired: true,
+      section: 'PRE_EMPLOYMENT_CREDENTIALS',
+    },
+    {
+      title: 'Medical Fitness & Fit-to-Work Clearance',
+      description:
+        'Submit comprehensive medical examination results including chest X-ray and licensed physician Fit-to-Work certification.',
+      type: OnboardingTaskType.DOCUMENT,
+      isRequired: true,
+      section: 'PRE_EMPLOYMENT_CREDENTIALS',
+    },
+
+    // ==========================================
+    // SECTION B: ONBOARDING & INDUCTION ACTIVITIES
+    // ==========================================
+    {
+      title: 'Institutional Employment Contract Execution & Signing',
+      description:
+        'Formal execution and signing of the institutional appointment contract by the President and employee.',
+      type: OnboardingTaskType.ADMIN,
+      isRequired: true,
+      section: 'ONBOARDING_ACTIVITIES',
+    },
+    {
+      title: 'Institutional Email & System Portal Access Provisioning',
+      description:
+        'Set up official institutional work email account (@saga.edu.ph), faculty/staff portal access, and system credentials.',
+      type: OnboardingTaskType.ADMIN,
+      isRequired: true,
+      section: 'ONBOARDING_ACTIVITIES',
+    },
+    {
+      title: 'Faculty / Staff ID Badge & Campus Keycard',
+      description:
+        'Issue official institutional ID card, RFID gate access badge, and department building keys.',
+      type: OnboardingTaskType.EQUIPMENT,
+      isRequired: true,
+      section: 'ONBOARDING_ACTIVITIES',
+    },
+    {
+      title: 'SAGA Institutional Policies, Rules & Regulations Orientation',
+      description:
+        'Attend mandatory institutional welcome orientation, faculty/staff handbook review, and SAGA rules and regulations briefing.',
+      type: OnboardingTaskType.ORIENTATION,
+      isRequired: true,
+      section: 'ONBOARDING_ACTIVITIES',
+    },
+  ];
+}
+
+export const DEFAULT_INSTITUTIONAL_ONBOARDING_TASKS: DefaultOnboardingTaskTemplate[] =
+  getSagaOnboardingTaskTemplates('TEACHING');
+
+/**
+ * Mapping between RecruitmentDocumentType and corresponding Onboarding task title patterns.
+ * Supports both modern distinct titles and legacy unified titles for backward compatibility.
+ */
+export const RECRUITMENT_DOC_TO_ONBOARDING_TITLE_MAP: Record<string, string[]> = {
+  TRANSCRIPT_OF_RECORDS: [
+    'Transcript of Records (TOR)',
+    'Official Transcript of Records (TOR)',
+    'Official Transcript of Records (TOR) & Diploma',
+  ],
+  DIPLOMA: [
+    'Photocopy of Diploma',
+    'College / Post-Graduate Diploma',
+    'Official Transcript of Records (TOR) & Diploma',
+  ],
+  LET_BASIC_EDUCATION: [
+    'Photocopy of Board Licensure Examination for Teachers (LET - Basic Education)',
+    'PRC Board Certification & License Credentials',
+  ],
+  PROFESSIONAL_LICENSE: [
+    'Photocopy of Professional License (if applicable)',
+    'Photocopy of Professional License',
+    'PRC Board Certification & License Credentials',
+  ],
+  NBI_CLEARANCE: [
+    'Valid NBI Clearance',
+    'NBI Clearance',
+    'NBI / Police Clearance Certificate',
+  ],
+};
+
+/**
+ * Categorizes an onboarding task into its institutional section.
+ */
+export function getOnboardingTaskSection(taskTitle: string, taskType: OnboardingTaskType): OnboardingSectionType {
+  const titleLower = taskTitle.toLowerCase();
+  if (
+    taskType === OnboardingTaskType.DOCUMENT ||
+    titleLower.includes('transcript') ||
+    titleLower.includes('diploma') ||
+    titleLower.includes('prc') ||
+    titleLower.includes('license') ||
+    titleLower.includes('let') ||
+    titleLower.includes('nbi') ||
+    titleLower.includes('government') ||
+    titleLower.includes('medical') ||
+    titleLower.includes('fit-to-work')
+  ) {
+    return 'PRE_EMPLOYMENT_CREDENTIALS';
+  }
+  return 'ONBOARDING_ACTIVITIES';
+}
 
 /**
  * An onboarding process may only complete when EVERY required task is VERIFIED or WAIVED.

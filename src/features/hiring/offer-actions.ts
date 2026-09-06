@@ -9,7 +9,7 @@ import {
   ACTIVE_OFFER_STATUSES,
   isValidOfferTransition,
 } from './offer-pipeline';
-import { DEFAULT_INSTITUTIONAL_ONBOARDING_TASKS } from './onboarding-pipeline';
+import { createSagaOnboardingProcessInTx } from './onboarding-actions';
 
 export interface CreateOfferInput {
   applicationId: string;
@@ -215,7 +215,12 @@ export async function updateOfferStatusAction(
       },
     },
     include: {
-      application: true,
+      application: {
+        include: {
+          job: true,
+          recruitmentDocuments: true,
+        },
+      },
     },
   });
 
@@ -261,33 +266,13 @@ export async function updateOfferStatusAction(
 
       if (!existingProcess) {
         const startDate = offer.startDate || new Date();
-        const targetCompletionDate = new Date(
-          startDate.getTime() + 14 * 24 * 60 * 60 * 1000
+        await createSagaOnboardingProcessInTx(
+          tx,
+          offer.application,
+          offer,
+          startDate,
+          `Pre-employment onboarding initialized automatically upon offer acceptance (${offer.employmentType}).`
         );
-
-        const newProcess = await tx.onboardingProcess.create({
-          data: {
-            applicationId: offer.applicationId,
-            status: OnboardingStatus.IN_PROGRESS,
-            startDate,
-            targetCompletionDate,
-            notes: `Pre-employment onboarding initialized automatically upon offer acceptance (${offer.employmentType}).`,
-          },
-        });
-
-        for (const taskTemplate of DEFAULT_INSTITUTIONAL_ONBOARDING_TASKS) {
-          await tx.onboardingTask.create({
-            data: {
-              onboardingProcessId: newProcess.id,
-              title: taskTemplate.title,
-              description: taskTemplate.description,
-              type: taskTemplate.type,
-              status: OnboardingTaskStatus.PENDING,
-              isRequired: taskTemplate.isRequired,
-              dueDate: startDate,
-            },
-          });
-        }
       }
     }
   });
