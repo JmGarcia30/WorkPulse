@@ -15,6 +15,10 @@ import {
   OnboardingTaskType,
   OnboardingTaskStatus,
   EmploymentCategory,
+  EmployeeStatus,
+  EmploymentStatus,
+  ProbationDecision,
+  ProbationStatus,
   RecruitmentDocumentType,
   RecruitmentDocumentStatus,
 } from '@prisma/client';
@@ -41,6 +45,7 @@ async function main() {
         'A premier Catholic educational institution dedicated to academic excellence, character formation, and holistic student development in Senior High School and basic education.',
       logoUrl: 'https://images.unsplash.com/photo-1546410531-bb4caa6b424d?auto=format&fit=crop&q=80&w=200',
       careersEnabled: true,
+      employeeNumberPrefix: 'SAGA',
     },
     create: {
       name: 'St. Aloysius Gonzaga Academy, Inc.',
@@ -49,6 +54,7 @@ async function main() {
         'A premier Catholic educational institution dedicated to academic excellence, character formation, and holistic student development in Senior High School and basic education.',
       logoUrl: 'https://images.unsplash.com/photo-1546410531-bb4caa6b424d?auto=format&fit=crop&q=80&w=200',
       careersEnabled: true,
+      employeeNumberPrefix: 'SAGA',
     },
   });
 
@@ -63,6 +69,7 @@ async function main() {
         'A modern STEM & Software Innovation Institute empowering engineers and technologists through hands-on technical learning.',
       logoUrl: 'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&q=80&w=200',
       careersEnabled: true,
+      employeeNumberPrefix: 'TEST',
     },
     create: {
       name: 'Test Academy, Inc.',
@@ -71,6 +78,7 @@ async function main() {
         'A modern STEM & Software Innovation Institute empowering engineers and technologists through hands-on technical learning.',
       logoUrl: 'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&q=80&w=200',
       careersEnabled: true,
+      employeeNumberPrefix: 'TEST',
     },
   });
 
@@ -2073,6 +2081,144 @@ async function main() {
       },
     });
   }
+
+  // Deterministic H2 UI acceptance fixtures. If a fixture has already been
+  // exercised, preserve its decision history instead of resetting it.
+  async function seedH2AcceptanceEmployee(input: {
+    firstName: string; lastName: string; email: string; employeeNumber: string;
+    category: EmploymentCategory; job: typeof stemJob;
+    startedAt: Date; expectedEndAt: Date;
+  }) {
+    const existingFixture = await prisma.employee.findUnique({
+      where: {
+        organizationId_employeeNumber: {
+          organizationId: org.id,
+          employeeNumber: input.employeeNumber,
+        },
+      },
+      select: { id: true },
+    });
+    if (existingFixture) {
+      console.log(`H2 UI fixture preserved unchanged: ${input.firstName} ${input.lastName} (${input.employeeNumber})`);
+      return;
+    }
+    const applicant = await prisma.applicant.upsert({
+      where: { email: input.email },
+      update: { firstName: input.firstName, lastName: input.lastName },
+      create: { firstName: input.firstName, lastName: input.lastName, email: input.email, phone: '+63 900 H2 TEST' },
+    });
+    const application = await prisma.application.upsert({
+      where: { jobId_applicantId: { jobId: input.job.id, applicantId: applicant.id } },
+      update: { status: ApplicationStatus.HIRED },
+      create: {
+        jobId: input.job.id, applicantId: applicant.id, status: ApplicationStatus.HIRED,
+        coverLetter: 'DEVELOPMENT FIXTURE ONLY - deterministic H2 UI acceptance employee.',
+      },
+    });
+    let offer = await prisma.offer.findFirst({
+      where: { applicationId: application.id, status: OfferStatus.ACCEPTED },
+      orderBy: { createdAt: 'asc' },
+    });
+    if (!offer) {
+      offer = await prisma.offer.create({
+        data: {
+          applicationId: application.id,
+          salary: input.category === EmploymentCategory.TEACHING ? 42000 : 36000,
+          payFrequency: PayFrequency.MONTHLY, employmentType: 'Full-time', startDate: input.startedAt,
+          status: OfferStatus.ACCEPTED, contractSignedByPresident: true, contractSignedByEmployee: true,
+          contractExecutedAt: input.startedAt,
+          probationPeriodMonths: input.category === EmploymentCategory.TEACHING ? 12 : 6,
+          probationaryTerms: input.category === EmploymentCategory.TEACHING
+            ? 'One explicit school-year probation period; renewable annually up to two times.'
+            : 'Six calendar months; no automatic regularization.',
+          notes: 'DEVELOPMENT FIXTURE ONLY - H2 manual UI acceptance.',
+          createdById: hrUser.id, approvedById: hrUser.id,
+        },
+      });
+    }
+    let employee = await prisma.employee.findUnique({ where: { sourceApplicationId: application.id } });
+    if (!employee) {
+      employee = await prisma.employee.create({
+        data: {
+          organizationId: org.id, sourceApplicationId: application.id, applicantId: applicant.id,
+          employeeNumber: input.employeeNumber, firstName: input.firstName, lastName: input.lastName,
+          email: input.email, phone: applicant.phone, employeeStatus: EmployeeStatus.ACTIVE,
+          createdById: hrUser.id,
+        },
+      });
+      await prisma.employeeStatusHistory.create({
+        data: {
+          employeeId: employee.id, fromStatus: null, toStatus: EmployeeStatus.ACTIVE,
+          changedById: hrUser.id, reason: 'Deterministic H2 development acceptance fixture created by seed.',
+        },
+      });
+    }
+    if (await prisma.employmentDecisionHistory.count({ where: { employeeId: employee.id } })) {
+      console.log(`H2 UI fixture history preserved: ${input.firstName} ${input.lastName} (${input.employeeNumber})`);
+      return;
+    }
+    employee = await prisma.employee.update({
+      where: { id: employee.id },
+      data: {
+        firstName: input.firstName, lastName: input.lastName, email: input.email,
+        phone: applicant.phone, employeeStatus: EmployeeStatus.ACTIVE,
+      },
+    });
+    let employment = await prisma.employmentRecord.findFirst({
+      where: { employeeId: employee.id, effectiveTo: null },
+    });
+    const employmentData = {
+      jobId: input.job.id, acceptedOfferId: offer.id, jobTitle: input.job.title,
+      department: input.job.department, employmentCategory: input.category,
+      employmentType: offer.employmentType, hireDate: input.startedAt, startDate: input.startedAt,
+      salary: offer.salary, payFrequency: offer.payFrequency,
+      employmentStatus: EmploymentStatus.PROBATIONARY, effectiveFrom: input.startedAt,
+      effectiveTo: null, createdById: hrUser.id,
+    };
+    employment = employment
+      ? await prisma.employmentRecord.update({ where: { id: employment.id }, data: employmentData })
+      : await prisma.employmentRecord.create({ data: { employeeId: employee.id, ...employmentData } });
+    const policySnapshot = input.category === EmploymentCategory.TEACHING
+      ? 'SAGA Teaching: explicit one-school-year probation, renewable annually up to two times; no automatic renewal.'
+      : 'SAGA Non-Teaching: six-calendar-month probation; no automatic regularization.';
+    await prisma.probationRecord.upsert({
+      where: { employmentRecordId: employment.id },
+      update: {
+        employeeId: employee.id, category: input.category, startedAt: input.startedAt,
+        expectedEndAt: input.expectedEndAt, probationStatus: ProbationStatus.ACTIVE,
+        renewalCount: 0, maxRenewals: input.category === EmploymentCategory.TEACHING ? 2 : 0,
+        completedAt: null, decision: ProbationDecision.PENDING, decisionAt: null, decisionById: null,
+        policySnapshot, remarks: 'DEVELOPMENT FIXTURE ONLY - due for H2 UI acceptance review on 2026-09-07.',
+        previousProbationRecordId: null,
+      },
+      create: {
+        employeeId: employee.id, employmentRecordId: employment.id, category: input.category,
+        startedAt: input.startedAt, expectedEndAt: input.expectedEndAt, renewalCount: 0,
+        maxRenewals: input.category === EmploymentCategory.TEACHING ? 2 : 0,
+        policySnapshot, remarks: 'DEVELOPMENT FIXTURE ONLY - due for H2 UI acceptance review on 2026-09-07.',
+      },
+    });
+    console.log(`H2 UI fixture ready: ${input.firstName} ${input.lastName} (${input.employeeNumber})`);
+  }
+
+  await seedH2AcceptanceEmployee({
+    firstName: 'H2 Test', lastName: 'Non-Teaching',
+    email: 'h2.acceptance.non-teaching@staloysius.test', employeeNumber: 'SAGA-H2-NT-0001',
+    category: EmploymentCategory.NON_TEACHING, job: counselorJob,
+    startedAt: new Date('2026-03-07T00:00:00.000Z'), expectedEndAt: new Date('2026-09-07T00:00:00.000Z'),
+  });
+  await seedH2AcceptanceEmployee({
+    firstName: 'H2 Test', lastName: 'Teaching',
+    email: 'h2.acceptance.teaching@staloysius.test', employeeNumber: 'SAGA-H2-T-0001',
+    category: EmploymentCategory.TEACHING, job: stemJob,
+    startedAt: new Date('2025-09-08T00:00:00.000Z'), expectedEndAt: new Date('2026-09-07T00:00:00.000Z'),
+  });
+  await seedH2AcceptanceEmployee({
+    firstName: 'H2 Test', lastName: 'Not Renew',
+    email: 'h2.acceptance.not-renew@staloysius.test', employeeNumber: 'SAGA-H2-NR-0001',
+    category: EmploymentCategory.NON_TEACHING, job: counselorJob,
+    startedAt: new Date('2026-03-07T00:00:00.000Z'), expectedEndAt: new Date('2026-09-07T00:00:00.000Z'),
+  });
 
   console.log('✓ SAGA showcase candidates seeded (1 Teaching Ready, 1 Non-Teaching Ready, 1 Incomplete Blocked).');
 

@@ -9,19 +9,17 @@ import { Check, Loader2, AlertCircle, ShieldAlert } from 'lucide-react';
 interface StatusChangeDialogProps {
   applicationId: string;
   currentStatus: ApplicationStatus;
-  isReadyToHire?: boolean;
-  unmetRequirements?: string[];
   onStatusUpdated?: () => void;
 }
 
 export function StatusChangeDialog({
   applicationId,
   currentStatus,
-  isReadyToHire = true,
-  unmetRequirements = [],
   onStatusUpdated,
 }: StatusChangeDialogProps) {
-  const allowedNextStatuses = getAvailableNextStatuses(currentStatus);
+  const allowedNextStatuses = getAvailableNextStatuses(currentStatus).filter(
+    (status) => status !== ApplicationStatus.HIRED
+  );
   const isTerminal = allowedNextStatuses.length === 0;
 
   const [selectedStatus, setSelectedStatus] = useState<ApplicationStatus | null>(
@@ -34,13 +32,6 @@ export function StatusChangeDialog({
 
   const handleUpdate = () => {
     if (!selectedStatus || selectedStatus === currentStatus) return;
-    if (selectedStatus === ApplicationStatus.HIRED && !isReadyToHire) {
-      setFeedback({
-        type: 'error',
-        message: 'Cannot move to Hired: candidate has not completed all mandatory pre-employment requirements.',
-      });
-      return;
-    }
     setFeedback(null);
 
     startTransition(async () => {
@@ -101,9 +92,15 @@ export function StatusChangeDialog({
         <div className="rounded-xl border border-amber-200 bg-amber-50/60 p-3.5 text-xs text-amber-800 dark:border-amber-900/60 dark:bg-amber-950/40 dark:text-amber-300 flex items-start gap-2.5">
           <ShieldAlert className="h-4 w-4 text-amber-600 dark:text-amber-400 shrink-0 mt-0.5" />
           <div>
-            <p className="font-semibold">Terminal Application State</p>
+            <p className="font-semibold">
+              {currentStatus === ApplicationStatus.OFFER
+                ? 'Final Hiring Conversion'
+                : 'Terminal Application State'}
+            </p>
             <p className="text-[11px] opacity-90 mt-0.5">
-              Candidate is in terminal state ({currentStatus}). No further stage transitions allowed.
+              {currentStatus === ApplicationStatus.OFFER
+                ? 'Use the Hiring Readiness card to complete the atomic Employee conversion.'
+                : `Candidate is in terminal state (${currentStatus}). No further stage transitions allowed.`}
             </p>
           </div>
         </div>
@@ -138,22 +135,12 @@ export function StatusChangeDialog({
             })}
           </div>
 
-          {selectedStatus === ApplicationStatus.HIRED && !isReadyToHire && (
-            <div className="rounded-xl border border-amber-200 bg-amber-50 p-3 text-[11px] text-amber-800 dark:border-amber-900/60 dark:bg-amber-950/40 dark:text-amber-300">
-              <p className="font-bold">Candidate Not Ready to Hire</p>
-              <p className="mt-0.5">
-                All mandatory pre-employment onboarding tasks and accepted offer terms must be verified
-                before moving to Hired. Please use the Hiring Readiness card to review pending requirements.
-              </p>
-            </div>
-          )}
-
           {selectedStatus && selectedStatus !== currentStatus && (
             <div className="flex justify-end pt-2">
               <button
                 type="button"
                 onClick={handleUpdate}
-                disabled={isPending || (selectedStatus === ApplicationStatus.HIRED && !isReadyToHire)}
+                disabled={isPending}
                 className="inline-flex items-center gap-2 rounded-xl bg-[#181A1C] px-4 py-2.5 text-xs font-bold text-white shadow-sm hover:bg-[#2A2E33] disabled:opacity-50 disabled:cursor-not-allowed transition"
               >
                 {isPending && <Loader2 className="h-3.5 w-3.5 animate-spin" />}

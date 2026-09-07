@@ -1,9 +1,10 @@
 'use client';
 
 import React, { useState, useTransition } from 'react';
-import { ApplicationStatus } from '@prisma/client';
+import { ApplicationStatus, EmploymentCategory } from '@prisma/client';
+import { useRouter } from 'next/navigation';
 import { HiringReadinessResult } from '@/features/hiring/readiness';
-import { updateApplicationStatusAction } from '@/features/hiring/actions';
+import { convertApplicationToEmployeeAction } from '@/features/employees/actions';
 import {
   ShieldCheck,
   CheckCircle2,
@@ -13,8 +14,6 @@ import {
   Lock,
   ArrowRight,
   Sparkles,
-  Briefcase,
-  Calendar,
 } from 'lucide-react';
 
 interface HiringReadinessCardProps {
@@ -24,6 +23,8 @@ interface HiringReadinessCardProps {
   readiness: HiringReadinessResult;
   canManage: boolean;
   currentStatus: ApplicationStatus;
+  employmentCategory: EmploymentCategory;
+  employeeId?: string | null;
 }
 
 export function HiringReadinessCard({
@@ -33,10 +34,14 @@ export function HiringReadinessCard({
   readiness,
   canManage,
   currentStatus,
+  employmentCategory,
+  employeeId,
 }: HiringReadinessCardProps) {
+  const router = useRouter();
   const [isPending, startTransition] = useTransition();
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [actionError, setActionError] = useState<string | null>(null);
+  const [teachingExpectedEndAt, setTeachingExpectedEndAt] = useState('');
 
   const isHired = currentStatus === ApplicationStatus.HIRED;
   const isTerminal =
@@ -46,15 +51,19 @@ export function HiringReadinessCard({
   const handleConfirmHire = () => {
     setActionError(null);
     startTransition(async () => {
-      const result = await updateApplicationStatusAction(
+      const result = await convertApplicationToEmployeeAction(
         applicationId,
-        ApplicationStatus.HIRED
+        employmentCategory === EmploymentCategory.TEACHING
+          ? { teachingExpectedEndAt }
+          : undefined
       );
 
-      if (result?.error) {
+      if (!('employeeId' in result)) {
         setActionError(result.error);
       } else {
         setShowConfirmModal(false);
+        router.push(`/dashboard/employees/${result.employeeId}`);
+        router.refresh();
       }
     });
   };
@@ -112,8 +121,25 @@ export function HiringReadinessCard({
             <p className="text-teal-700 dark:text-teal-300 leading-relaxed">
               {candidateName} has cleared all hiring prerequisites and onboarding verifications.
               The recruitment lifecycle is complete and the compliance handoff package is prepared for
-              the upcoming Employee Management module.
+              Employee Core.
             </p>
+            {employeeId ? (
+              <button
+                type="button"
+                onClick={() => router.push(`/dashboard/employees/${employeeId}`)}
+                className="font-bold text-teal-800 underline underline-offset-2 dark:text-teal-200"
+              >
+                View Employee Record
+              </button>
+            ) : canManage ? (
+              <button
+                type="button"
+                onClick={() => setShowConfirmModal(true)}
+                className="rounded-lg bg-teal-700 px-3 py-2 font-bold text-white hover:bg-teal-800"
+              >
+                Complete Employee Record
+              </button>
+            ) : null}
           </div>
         )}
 
@@ -269,6 +295,22 @@ export function HiringReadinessCard({
               <strong>Hired</strong> for the role of <strong>{jobTitle}</strong>?
             </p>
 
+            {employmentCategory === EmploymentCategory.TEACHING && (
+              <label className="block space-y-1.5 text-xs font-semibold text-slate-700 dark:text-slate-300">
+                <span>Exact school-year probation end date</span>
+                <input
+                  type="date"
+                  required
+                  value={teachingExpectedEndAt}
+                  onChange={(event) => setTeachingExpectedEndAt(event.target.value)}
+                  className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 dark:border-slate-700 dark:bg-slate-950"
+                />
+                <span className="block text-[10px] font-normal text-slate-500">
+                  Confirm this date from the executed employment contract. H1 never converts a school year to 12 months.
+                </span>
+              </label>
+            )}
+
             <div className="rounded-xl border border-slate-100 bg-slate-50 p-3 text-[11px] text-slate-600 dark:border-slate-800 dark:bg-slate-950 dark:text-slate-400 space-y-1">
               <p className="font-semibold text-slate-900 dark:text-slate-200">
                 Handoff Package Summary:
@@ -289,7 +331,11 @@ export function HiringReadinessCard({
               </button>
               <button
                 type="button"
-                disabled={isPending}
+                disabled={
+                  isPending ||
+                  (employmentCategory === EmploymentCategory.TEACHING &&
+                    !teachingExpectedEndAt)
+                }
                 onClick={handleConfirmHire}
                 className="inline-flex items-center gap-1.5 rounded-xl bg-emerald-600 px-4 py-2 text-xs font-bold text-white hover:bg-emerald-700 transition shadow-sm disabled:opacity-50"
               >

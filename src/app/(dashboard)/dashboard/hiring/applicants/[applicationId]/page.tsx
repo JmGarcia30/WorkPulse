@@ -127,6 +127,7 @@ export default async function CandidateProfilePage({ params }: CandidateProfileP
             },
           },
         },
+        employee: { select: { id: true } },
       },
     }),
     prisma.user.findMany({
@@ -528,6 +529,8 @@ export default async function CandidateProfilePage({ params }: CandidateProfileP
             readiness={readiness}
             canManage={canEditStatus}
             currentStatus={application.status}
+            employmentCategory={application.job.category}
+            employeeId={application.employee?.id}
           />
 
           {/* Status Change Control Dialog */}
@@ -535,8 +538,6 @@ export default async function CandidateProfilePage({ params }: CandidateProfileP
             <StatusChangeDialog
               applicationId={application.id}
               currentStatus={application.status}
-              isReadyToHire={readiness.isReadyToHire}
-              unmetRequirements={readiness.unmetRequirements}
             />
           ) : (
             <div className="rounded-2xl border border-slate-200 bg-white p-4 text-xs text-slate-500 dark:border-slate-800 dark:bg-slate-900">

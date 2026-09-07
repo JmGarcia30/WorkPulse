@@ -85,5 +85,19 @@ export function canVerifyOnboardingTasks(user: UserSessionPayload | null): boole
   return user.role === Role.ORGANIZATION_ADMIN || user.role === Role.HR_ADMIN;
 }
 
+export function canViewEmployees(user: UserSessionPayload | null): boolean {
+  if (!user) return false;
+  return user.role === Role.ORGANIZATION_ADMIN || user.role === Role.HR_ADMIN;
+}
 
+export function canManageEmployees(user: UserSessionPayload | null): boolean {
+  return canViewEmployees(user);
+}
+
+export function canManageEmploymentLifecycle(
+  user: UserSessionPayload | null
+): boolean {
+  if (!user) return false;
+  return user.role === Role.ORGANIZATION_ADMIN || user.role === Role.HR_ADMIN;
+}
 

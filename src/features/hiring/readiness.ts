@@ -107,8 +107,29 @@ export interface ApplicationReadinessSource {
 export function calculateHiringReadiness(
   application: ApplicationReadinessSource
 ): HiringReadinessResult {
+  return calculateHiringReadinessInternal(application, false);
+}
+
+/**
+ * Re-evaluates the existing prerequisite checklist for a legacy HIRED record.
+ * This intentionally bypasses only the HIRED presentation short-circuit; all
+ * SAGA gates, ordering, labels, and eligibility rules remain unchanged.
+ */
+export function calculateHiringPrerequisites(
+  application: ApplicationReadinessSource
+): HiringReadinessResult {
+  return calculateHiringReadinessInternal(application, true);
+}
+
+function calculateHiringReadinessInternal(
+  application: ApplicationReadinessSource,
+  evaluateHiredPrerequisites: boolean
+): HiringReadinessResult {
   // If already hired, return HIRED state
-  if (application.status === ApplicationStatus.HIRED) {
+  if (
+    application.status === ApplicationStatus.HIRED &&
+    !evaluateHiredPrerequisites
+  ) {
     return {
       isReadyToHire: false,
       overallStatus: 'HIRED',

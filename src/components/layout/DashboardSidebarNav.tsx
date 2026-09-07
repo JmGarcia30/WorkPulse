@@ -85,6 +85,11 @@ export function DashboardSidebarNav({ orgSlug }: DashboardSidebarNavProps) {
       label: 'Employee Journey',
       items: [
         {
+          href: '/dashboard/employees',
+          label: 'Employees',
+          icon: Users,
+        },
+        {
           href: '/dashboard/hiring/onboarding',
           label: 'Onboarding',
           icon: UserCheck,

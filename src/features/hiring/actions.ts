@@ -10,13 +10,8 @@ import {
   EmploymentCategory,
   ApplicationStatus,
   RequirementType,
-  OfferStatus,
-  OnboardingStatus,
-  OnboardingTaskStatus,
 } from '@prisma/client';
 import { isValidStatusTransition } from './pipeline';
-import { createSagaOnboardingProcessInTx } from './onboarding-actions';
-import { calculateHiringReadiness } from './readiness';
 
 function slugify(text: string): string {
   return text
@@ -273,6 +268,13 @@ export async function updateApplicationStatusAction(
     return { error: 'Unauthorized to update application status.' };
   }
 
+  if (newStatus === ApplicationStatus.HIRED) {
+    return {
+      error:
+        'Use the Hiring Readiness conversion action to create the Employee record atomically.',
+    };
+  }
+
   // Derived Multi-tenant check: Verify application belongs to user's Organization
   const application = await prisma.application.findFirst({
     where: {
@@ -312,30 +314,7 @@ export async function updateApplicationStatusAction(
     };
   }
 
-  // Critical Ready-to-Hire Gate: Final conversion to HIRED strictly requires candidate readiness
-  let acceptedOffer = null;
-  if (newStatus === ApplicationStatus.HIRED) {
-    const readiness = calculateHiringReadiness(application);
-    if (!readiness.isReadyToHire) {
-      const issues = readiness.unmetRequirements.join(' ');
-      return {
-        error: `Candidate is not ready to be hired. Required prerequisites incomplete: ${issues}`,
-      };
-    }
-
-    acceptedOffer = application.offers.find(
-      (offer) => offer.status === OfferStatus.ACCEPTED
-    );
-
-    if (!acceptedOffer) {
-      return {
-        error:
-          'Candidate cannot be marked as Hired without an accepted offer. Please verify that a formal offer has been issued and marked as Accepted.',
-      };
-    }
-  }
-
-  // Atomic Hire + Onboarding Transaction
+  // Atomic status/history transaction. HIRED is handled by Employee conversion above.
   await prisma.$transaction(async (tx) => {
     // 1. Update Application status
     await tx.application.update({
@@ -353,22 +332,6 @@ export async function updateApplicationStatusAction(
       },
     });
 
-    // 3. Atomically initialize OnboardingProcess if moving to HIRED and not already created
-    if (newStatus === ApplicationStatus.HIRED && acceptedOffer) {
-      const existingProcess = await tx.onboardingProcess.findUnique({
-        where: { applicationId },
-      });
-
-      if (!existingProcess) {
-        await createSagaOnboardingProcessInTx(
-          tx,
-          application,
-          acceptedOffer,
-          acceptedOffer.startDate,
-          `Onboarding initialized automatically upon hire confirmation with accepted offer (${acceptedOffer.employmentType}).`
-        );
-      }
-    }
   });
 
   revalidatePath('/dashboard/hiring/pipeline');
