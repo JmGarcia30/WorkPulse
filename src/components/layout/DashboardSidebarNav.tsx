@@ -12,6 +12,7 @@ import {
   Award,
   FileText,
   UserCheck,
+  Clock3,
   Building2,
   ExternalLink,
 } from 'lucide-react';
@@ -88,6 +89,11 @@ export function DashboardSidebarNav({ orgSlug }: DashboardSidebarNavProps) {
           href: '/dashboard/employees',
           label: 'Employees',
           icon: Users,
+        },
+        {
+          href: '/dashboard/attendance',
+          label: 'Attendance',
+          icon: Clock3,
         },
         {
           href: '/dashboard/hiring/onboarding',

@@ -180,6 +180,31 @@ enum ProbationDecision {
   NOT_RENEWED
 }
 
+enum AttendanceDirection {
+  TIME_IN
+  TIME_OUT
+}
+
+enum AttendanceSource {
+  MANUAL
+  IMPORT
+  RFID
+}
+
+enum AttendanceStatus {
+  OPEN
+  PRESENT
+  ABSENT
+  INCOMPLETE
+  REST_DAY
+  NO_SCHEDULE
+}
+
+enum AttendanceDerivation {
+  RAW_EVENTS
+  CORRECTED
+}
+
 model Organization {
   id                   String   @id @default(cuid())
   name                 String
@@ -188,6 +213,7 @@ model Organization {
   logoUrl              String?
   careersEnabled       Boolean  @default(true)
   employeeNumberPrefix String?
+  timeZone             String   @default("UTC")
   createdAt            DateTime @default(now())
   updatedAt            DateTime @updatedAt
 
@@ -195,6 +221,11 @@ model Organization {
   jobs                    Job[]
   employees               Employee[]
   employeeNumberSequences EmployeeNumberSequence[]
+  workScheduleGroups      WorkScheduleGroup[]
+  scheduleAssignments     EmployeeScheduleAssignment[]
+  attendanceEvents        AttendanceEvent[]
+  dailyAttendanceRecords  DailyAttendanceRecord[]
+  attendanceCorrections   AttendanceCorrection[]
 }
 
 model User {
@@ -207,20 +238,25 @@ model User {
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
 
-  organization             Organization                @relation(fields: [organizationId], references: [id], onDelete: Cascade)
-  statusChanges            ApplicationStatusHistory[]
-  interviews               Interview[]
-  evaluations              CandidateEvaluation[]
-  evaluationsAssessed      Assessment[]
-  offersCreated            Offer[]                     @relation("OfferCreatedBy")
-  offersApproved           Offer[]                     @relation("OfferApprovedBy")
-  verifiedOnboardingTasks  OnboardingTask[]
-  verifiedRecruitmentDocs  RecruitmentDocument[]
-  employeesCreated         Employee[]                  @relation("EmployeeCreatedBy")
-  employmentRecordsCreated EmploymentRecord[]          @relation("EmploymentRecordCreatedBy")
-  probationDecisions       ProbationRecord[]           @relation("ProbationDecisionBy")
-  employmentDecisions      EmploymentDecisionHistory[]
-  employeeStatusChanges    EmployeeStatusHistory[]
+  organization                 Organization                 @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  statusChanges                ApplicationStatusHistory[]
+  interviews                   Interview[]
+  evaluations                  CandidateEvaluation[]
+  evaluationsAssessed          Assessment[]
+  offersCreated                Offer[]                      @relation("OfferCreatedBy")
+  offersApproved               Offer[]                      @relation("OfferApprovedBy")
+  verifiedOnboardingTasks      OnboardingTask[]
+  verifiedRecruitmentDocs      RecruitmentDocument[]
+  employeesCreated             Employee[]                   @relation("EmployeeCreatedBy")
+  employmentRecordsCreated     EmploymentRecord[]           @relation("EmploymentRecordCreatedBy")
+  probationDecisions           ProbationRecord[]            @relation("ProbationDecisionBy")
+  employmentDecisions          EmploymentDecisionHistory[]
+  employeeStatusChanges        EmployeeStatusHistory[]
+  workScheduleGroupsCreated    WorkScheduleGroup[]          @relation("WorkScheduleGroupCreatedBy")
+  workScheduleVersionsCreated  WorkScheduleVersion[]        @relation("WorkScheduleVersionCreatedBy")
+  scheduleAssignmentsCreated   EmployeeScheduleAssignment[] @relation("ScheduleAssignmentCreatedBy")
+  attendanceEventsCreated      AttendanceEvent[]            @relation("AttendanceEventCreatedBy")
+  attendanceCorrectionsCreated AttendanceCorrection[]       @relation("AttendanceCorrectionCreatedBy")
 
   @@index([organizationId])
 }
@@ -477,14 +513,17 @@ model Employee {
   createdAt           DateTime       @default(now())
   updatedAt           DateTime       @updatedAt
 
-  organization        Organization                @relation(fields: [organizationId], references: [id], onDelete: Cascade)
-  sourceApplication   Application                 @relation(fields: [sourceApplicationId], references: [id], onDelete: Restrict)
-  applicant           Applicant                   @relation(fields: [applicantId], references: [id], onDelete: Restrict)
-  createdBy           User                        @relation("EmployeeCreatedBy", fields: [createdById], references: [id])
-  employmentRecords   EmploymentRecord[]
-  probationRecords    ProbationRecord[]
-  employmentDecisions EmploymentDecisionHistory[]
-  statusHistory       EmployeeStatusHistory[]
+  organization           Organization                 @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  sourceApplication      Application                  @relation(fields: [sourceApplicationId], references: [id], onDelete: Restrict)
+  applicant              Applicant                    @relation(fields: [applicantId], references: [id], onDelete: Restrict)
+  createdBy              User                         @relation("EmployeeCreatedBy", fields: [createdById], references: [id])
+  employmentRecords      EmploymentRecord[]
+  probationRecords       ProbationRecord[]
+  employmentDecisions    EmploymentDecisionHistory[]
+  statusHistory          EmployeeStatusHistory[]
+  scheduleAssignments    EmployeeScheduleAssignment[]
+  attendanceEvents       AttendanceEvent[]
+  dailyAttendanceRecords DailyAttendanceRecord[]
 
   @@unique([organizationId, employeeNumber])
   @@unique([organizationId, applicantId])
@@ -512,13 +551,14 @@ model EmploymentRecord {
   createdAt          DateTime           @default(now())
   updatedAt          DateTime           @updatedAt
 
-  employee      Employee                    @relation(fields: [employeeId], references: [id], onDelete: Cascade)
-  job           Job?                        @relation(fields: [jobId], references: [id], onDelete: SetNull)
-  acceptedOffer Offer?                      @relation(fields: [acceptedOfferId], references: [id], onDelete: SetNull)
-  createdBy     User                        @relation("EmploymentRecordCreatedBy", fields: [createdById], references: [id])
-  probation     ProbationRecord?
-  decisionsFrom EmploymentDecisionHistory[] @relation("EmploymentDecisionPreviousRecord")
-  decisionsTo   EmploymentDecisionHistory[] @relation("EmploymentDecisionResultingRecord")
+  employee               Employee                    @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+  job                    Job?                        @relation(fields: [jobId], references: [id], onDelete: SetNull)
+  acceptedOffer          Offer?                      @relation(fields: [acceptedOfferId], references: [id], onDelete: SetNull)
+  createdBy              User                        @relation("EmploymentRecordCreatedBy", fields: [createdById], references: [id])
+  probation              ProbationRecord?
+  decisionsFrom          EmploymentDecisionHistory[] @relation("EmploymentDecisionPreviousRecord")
+  decisionsTo            EmploymentDecisionHistory[] @relation("EmploymentDecisionResultingRecord")
+  dailyAttendanceRecords DailyAttendanceRecord[]
 
   @@index([employeeId])
   @@index([jobId])
@@ -548,7 +588,7 @@ model ProbationRecord {
 
   employee                Employee                   @relation(fields: [employeeId], references: [id], onDelete: Cascade)
   employmentRecord        EmploymentRecord           @relation(fields: [employmentRecordId], references: [id], onDelete: Cascade)
-  decisionBy              User?                      @relation("ProbationDecisionBy", fields: [decisionById], references: [id])
+  decisionBy              User?                      @relation("ProbationDecisionBy", fields: [decisionById], references: [id], onDelete: Restrict)
   previousProbationRecord ProbationRecord?           @relation("ProbationRenewals", fields: [previousProbationRecordId], references: [id], onDelete: SetNull)
   nextProbationRecord     ProbationRecord?           @relation("ProbationRenewals")
   decisionHistory         EmploymentDecisionHistory?
@@ -599,6 +639,177 @@ model EmployeeStatusHistory {
 
   @@index([employeeId, createdAt])
   @@index([changedById])
+}
+
+model WorkScheduleGroup {
+  id             String   @id @default(cuid())
+  organizationId String
+  scheduleKey    String
+  name           String
+  description    String?  @db.Text
+  isArchived     Boolean  @default(false)
+  createdById    String
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  organization Organization          @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  createdBy    User                  @relation("WorkScheduleGroupCreatedBy", fields: [createdById], references: [id], onDelete: Restrict)
+  versions     WorkScheduleVersion[]
+
+  @@unique([organizationId, scheduleKey])
+  @@index([organizationId, isArchived])
+  @@index([createdById])
+}
+
+model WorkScheduleVersion {
+  id               String   @id @default(cuid())
+  scheduleGroupId  String
+  version          Int
+  displayName      String
+  lateGraceSeconds Int      @default(0)
+  createdById      String
+  createdAt        DateTime @default(now())
+
+  scheduleGroup WorkScheduleGroup            @relation(fields: [scheduleGroupId], references: [id], onDelete: Restrict)
+  createdBy     User                         @relation("WorkScheduleVersionCreatedBy", fields: [createdById], references: [id], onDelete: Restrict)
+  days          WorkScheduleDay[]
+  assignments   EmployeeScheduleAssignment[]
+
+  @@unique([scheduleGroupId, version])
+  @@index([createdById])
+}
+
+model WorkScheduleDay {
+  id                  String  @id @default(cuid())
+  scheduleVersionId   String
+  isoWeekday          Int
+  isWorkday           Boolean @default(true)
+  expectedStartSecond Int?
+  expectedEndSecond   Int?
+
+  scheduleVersion WorkScheduleVersion @relation(fields: [scheduleVersionId], references: [id], onDelete: Cascade)
+  breaks          WorkScheduleBreak[]
+
+  @@unique([scheduleVersionId, isoWeekday])
+}
+
+model WorkScheduleBreak {
+  id            String  @id @default(cuid())
+  scheduleDayId String
+  startSecond   Int
+  endSecond     Int
+  isPaid        Boolean @default(false)
+
+  scheduleDay WorkScheduleDay @relation(fields: [scheduleDayId], references: [id], onDelete: Cascade)
+
+  @@index([scheduleDayId])
+}
+
+model EmployeeScheduleAssignment {
+  id                String    @id @default(cuid())
+  organizationId    String
+  employeeId        String
+  scheduleVersionId String
+  effectiveFrom     DateTime  @db.Date
+  effectiveTo       DateTime? @db.Date
+  createdById       String
+  createdAt         DateTime  @default(now())
+
+  organization           Organization            @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  employee               Employee                @relation(fields: [employeeId], references: [id], onDelete: Restrict)
+  scheduleVersion        WorkScheduleVersion     @relation(fields: [scheduleVersionId], references: [id], onDelete: Restrict)
+  createdBy              User                    @relation("ScheduleAssignmentCreatedBy", fields: [createdById], references: [id], onDelete: Restrict)
+  dailyAttendanceRecords DailyAttendanceRecord[]
+
+  @@index([organizationId, employeeId, effectiveFrom])
+  @@index([scheduleVersionId])
+  @@index([createdById])
+}
+
+model AttendanceEvent {
+  id              String               @id @default(cuid())
+  organizationId  String
+  employeeId      String
+  occurredAt      DateTime
+  direction       AttendanceDirection?
+  source          AttendanceSource
+  sourceReference String
+  metadata        Json?
+  createdById     String?
+  createdAt       DateTime             @default(now())
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Restrict)
+  employee     Employee     @relation(fields: [employeeId], references: [id], onDelete: Restrict)
+  createdBy    User?        @relation("AttendanceEventCreatedBy", fields: [createdById], references: [id], onDelete: Restrict)
+
+  @@unique([organizationId, source, sourceReference])
+  @@index([organizationId, employeeId, occurredAt])
+  @@index([createdById])
+}
+
+model DailyAttendanceRecord {
+  id                          String               @id @default(cuid())
+  organizationId              String
+  employeeId                  String
+  employmentRecordId          String
+  scheduleAssignmentId        String?
+  attendanceDate              DateTime             @db.Date
+  timeZoneSnapshot            String
+  scheduledStartAt            DateTime?
+  scheduledEndAt              DateTime?
+  lateGraceSeconds            Int                  @default(0)
+  scheduledUnpaidBreakSeconds Int                  @default(0)
+  firstTimeIn                 DateTime?
+  lastTimeOut                 DateTime?
+  workedSeconds               Int?
+  lateSeconds                 Int?
+  undertimeSeconds            Int?
+  overtimeSeconds             Int?
+  attendanceStatus            AttendanceStatus
+  derivation                  AttendanceDerivation @default(RAW_EVENTS)
+  hasUnclassifiedEvents       Boolean              @default(false)
+  hasOutBeforeIn              Boolean              @default(false)
+  correctionVersion           Int                  @default(0)
+  remarks                     String?              @db.Text
+  finalizedAt                 DateTime?
+  lastCalculatedAt            DateTime
+  createdAt                   DateTime             @default(now())
+  updatedAt                   DateTime             @updatedAt
+
+  organization       Organization                @relation(fields: [organizationId], references: [id], onDelete: Restrict)
+  employee           Employee                    @relation(fields: [employeeId], references: [id], onDelete: Restrict)
+  employmentRecord   EmploymentRecord            @relation(fields: [employmentRecordId], references: [id], onDelete: Restrict)
+  scheduleAssignment EmployeeScheduleAssignment? @relation(fields: [scheduleAssignmentId], references: [id], onDelete: Restrict)
+  corrections        AttendanceCorrection[]
+
+  @@unique([organizationId, employeeId, attendanceDate])
+  @@index([organizationId, attendanceDate, attendanceStatus])
+  @@index([employeeId, attendanceDate])
+  @@index([employmentRecordId])
+  @@index([scheduleAssignmentId])
+}
+
+model AttendanceCorrection {
+  id                      String           @id @default(cuid())
+  organizationId          String
+  dailyAttendanceRecordId String
+  revision                Int
+  correctedTimeIn         DateTime?
+  correctedTimeOut        DateTime?
+  correctedStatus         AttendanceStatus
+  reason                  String           @db.Text
+  previousState           Json
+  correctedState          Json
+  createdById             String
+  createdAt               DateTime         @default(now())
+
+  organization          Organization          @relation(fields: [organizationId], references: [id], onDelete: Restrict)
+  dailyAttendanceRecord DailyAttendanceRecord @relation(fields: [dailyAttendanceRecordId], references: [id], onDelete: Restrict)
+  createdBy             User                  @relation("AttendanceCorrectionCreatedBy", fields: [createdById], references: [id], onDelete: Restrict)
+
+  @@unique([dailyAttendanceRecordId, revision])
+  @@index([organizationId, createdAt])
+  @@index([createdById])
 }
 
 model ParsedResume {

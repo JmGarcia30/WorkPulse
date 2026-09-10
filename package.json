@@ -6,13 +6,17 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "test:h1": "tsx scripts/test-h1-employee-core.ts",
+    "test:h2": "tsx scripts/test-h2-employment-probation.ts",
+    "test:h3": "tsx scripts/test-h3-attendance.ts"
   },
   "prisma": {
     "seed": "tsx prisma/seed.ts"
   },
   "dependencies": {
     "@google/generative-ai": "^0.24.1",
+    "@js-temporal/polyfill": "^0.5.1",
     "@prisma/client": "^6.19.3",
     "bcryptjs": "^3.0.3",
     "jose": "^6.2.8",

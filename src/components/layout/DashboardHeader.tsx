@@ -31,6 +31,9 @@ export function DashboardHeader({ orgName }: DashboardHeaderProps) {
       assessments: 'Assessments',
       offers: 'Job Offers',
       onboarding: 'Onboarding',
+      employees: 'Employees',
+      attendance: 'Attendance',
+      schedules: 'Schedules',
       new: 'Create',
       edit: 'Edit',
     };

@@ -46,6 +46,7 @@ async function main() {
       logoUrl: 'https://images.unsplash.com/photo-1546410531-bb4caa6b424d?auto=format&fit=crop&q=80&w=200',
       careersEnabled: true,
       employeeNumberPrefix: 'SAGA',
+      timeZone: 'Asia/Manila',
     },
     create: {
       name: 'St. Aloysius Gonzaga Academy, Inc.',
@@ -55,6 +56,7 @@ async function main() {
       logoUrl: 'https://images.unsplash.com/photo-1546410531-bb4caa6b424d?auto=format&fit=crop&q=80&w=200',
       careersEnabled: true,
       employeeNumberPrefix: 'SAGA',
+      timeZone: 'Asia/Manila',
     },
   });
 
@@ -2219,6 +2221,134 @@ async function main() {
     category: EmploymentCategory.NON_TEACHING, job: counselorJob,
     startedAt: new Date('2026-03-07T00:00:00.000Z'), expectedEndAt: new Date('2026-09-07T00:00:00.000Z'),
   });
+
+  // Teaching renewal #2 acceptance fixture. Preserve it after any tester decision.
+  async function seedH2TeachingMaxRenewalEmployee() {
+    const employeeNumber = 'SAGA-H2-T-MAX-0001';
+    const firstName = 'H2 Test';
+    const lastName = 'Teaching Max Renewal';
+    const email = 'h2.acceptance.teaching-max-renewal@staloysius.test';
+    const existingFixture = await prisma.employee.findUnique({
+      where: { organizationId_employeeNumber: { organizationId: org.id, employeeNumber } },
+      select: { id: true },
+    });
+    if (existingFixture) {
+      console.log(`H2 UI fixture preserved unchanged: ${firstName} ${lastName} (${employeeNumber})`);
+      return;
+    }
+
+    await prisma.$transaction(async (tx) => {
+      const initialStart = new Date('2024-09-09T00:00:00.000Z');
+      const initialEnd = new Date('2025-09-08T00:00:00.000Z');
+      const currentStart = new Date('2025-09-09T00:00:00.000Z');
+      const currentEnd = new Date('2026-09-08T00:00:00.000Z');
+      const decisionAt = new Date('2025-09-08T09:00:00.000Z');
+      const policySnapshot = 'SAGA Teaching: explicit one-school-year probation, renewable annually up to two times; no automatic renewal.';
+      const applicant = await tx.applicant.upsert({
+        where: { email },
+        update: { firstName, lastName },
+        create: { firstName, lastName, email, phone: '+63 900 H2 MAX' },
+      });
+      const application = await tx.application.upsert({
+        where: { jobId_applicantId: { jobId: stemJob.id, applicantId: applicant.id } },
+        update: { status: ApplicationStatus.HIRED },
+        create: {
+          jobId: stemJob.id, applicantId: applicant.id, status: ApplicationStatus.HIRED,
+          coverLetter: 'DEVELOPMENT FIXTURE ONLY - Teaching renewal #2 and maximum-renewal acceptance.',
+        },
+      });
+      const offer = await tx.offer.create({
+        data: {
+          applicationId: application.id, salary: 42000, payFrequency: PayFrequency.MONTHLY,
+          employmentType: 'Full-time', startDate: initialStart, status: OfferStatus.ACCEPTED,
+          contractSignedByPresident: true, contractSignedByEmployee: true,
+          contractExecutedAt: initialStart, probationPeriodMonths: 12,
+          probationaryTerms: 'One explicit school-year probation period; renewable annually up to two times.',
+          notes: 'DEVELOPMENT FIXTURE ONLY - Teaching max-renewal manual acceptance.',
+          createdById: hrUser.id, approvedById: hrUser.id,
+        },
+      });
+      const employee = await tx.employee.create({
+        data: {
+          organizationId: org.id, sourceApplicationId: application.id, applicantId: applicant.id,
+          employeeNumber, firstName, lastName, email, phone: applicant.phone,
+          employeeStatus: EmployeeStatus.ACTIVE, createdById: hrUser.id,
+        },
+      });
+      await tx.employeeStatusHistory.create({
+        data: {
+          employeeId: employee.id, fromStatus: null, toStatus: EmployeeStatus.ACTIVE,
+          changedById: hrUser.id,
+          reason: 'Deterministic H2 Teaching max-renewal acceptance fixture created by seed.',
+        },
+      });
+      const previousEmployment = await tx.employmentRecord.create({
+        data: {
+          employeeId: employee.id, jobId: stemJob.id, acceptedOfferId: offer.id,
+          jobTitle: stemJob.title, department: stemJob.department,
+          employmentCategory: EmploymentCategory.TEACHING, employmentType: offer.employmentType,
+          hireDate: initialStart, startDate: initialStart, salary: offer.salary,
+          payFrequency: offer.payFrequency, employmentStatus: EmploymentStatus.PROBATIONARY,
+          effectiveFrom: initialStart, effectiveTo: currentStart, createdById: hrUser.id,
+        },
+      });
+      const previousProbation = await tx.probationRecord.create({
+        data: {
+          employeeId: employee.id, employmentRecordId: previousEmployment.id,
+          category: EmploymentCategory.TEACHING, startedAt: initialStart, expectedEndAt: initialEnd,
+          probationStatus: ProbationStatus.CLOSED, renewalCount: 0, maxRenewals: 2,
+          completedAt: initialEnd, decision: ProbationDecision.RENEWED, decisionAt,
+          decisionById: hrUser.id, policySnapshot,
+          remarks: 'DEVELOPMENT FIXTURE ONLY - first Teaching renewal completed before acceptance testing.',
+        },
+      });
+      const currentEmployment = await tx.employmentRecord.create({
+        data: {
+          employeeId: employee.id, jobId: stemJob.id, acceptedOfferId: null,
+          jobTitle: stemJob.title, department: stemJob.department,
+          employmentCategory: EmploymentCategory.TEACHING, employmentType: offer.employmentType,
+          hireDate: initialStart, startDate: initialStart, salary: offer.salary,
+          payFrequency: offer.payFrequency, employmentStatus: EmploymentStatus.PROBATIONARY,
+          effectiveFrom: currentStart, effectiveTo: null, createdById: hrUser.id,
+        },
+      });
+      const currentProbation = await tx.probationRecord.create({
+        data: {
+          employeeId: employee.id, employmentRecordId: currentEmployment.id,
+          category: EmploymentCategory.TEACHING, startedAt: currentStart, expectedEndAt: currentEnd,
+          probationStatus: ProbationStatus.ACTIVE, renewalCount: 1, maxRenewals: 2,
+          decision: ProbationDecision.PENDING, policySnapshot,
+          remarks: 'DEVELOPMENT FIXTURE ONLY - due for Teaching renewal #2 review on 2026-09-08.',
+          previousProbationRecordId: previousProbation.id,
+        },
+      });
+      await tx.employmentDecisionHistory.create({
+        data: {
+          employeeId: employee.id, probationRecordId: previousProbation.id,
+          previousEmploymentRecordId: previousEmployment.id,
+          resultingEmploymentRecordId: currentEmployment.id,
+          decision: ProbationDecision.RENEWED, decisionAt, effectiveAt: currentStart,
+          changedById: hrUser.id,
+          remarks: 'First Teaching probation renewal recorded for deterministic H2 acceptance history.',
+          previousState: {
+            employeeStatus: EmployeeStatus.ACTIVE, employmentRecordId: previousEmployment.id,
+            employmentStatus: EmploymentStatus.PROBATIONARY, probationRecordId: previousProbation.id,
+            probationStatus: ProbationStatus.ACTIVE, probationDecision: ProbationDecision.PENDING,
+            renewalCount: 0, maxRenewals: 2,
+          },
+          newState: {
+            employeeStatus: EmployeeStatus.ACTIVE, employmentRecordId: currentEmployment.id,
+            employmentStatus: EmploymentStatus.PROBATIONARY, probationRecordId: currentProbation.id,
+            previousProbationRecordId: previousProbation.id, probationStatus: ProbationStatus.ACTIVE,
+            probationDecision: ProbationDecision.PENDING, renewalCount: 1, maxRenewals: 2,
+          },
+        },
+      });
+    });
+    console.log(`H2 UI fixture ready: ${firstName} ${lastName} (${employeeNumber})`);
+  }
+
+  await seedH2TeachingMaxRenewalEmployee();
 
   console.log('✓ SAGA showcase candidates seeded (1 Teaching Ready, 1 Non-Teaching Ready, 1 Incomplete Blocked).');
 

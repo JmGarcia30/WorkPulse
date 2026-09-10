@@ -101,3 +101,18 @@ export function canManageEmploymentLifecycle(
   return user.role === Role.ORGANIZATION_ADMIN || user.role === Role.HR_ADMIN;
 }
 
+export function canViewAttendance(user: UserSessionPayload | null): boolean {
+  return canViewEmployees(user);
+}
+
+export function canManageSchedules(user: UserSessionPayload | null): boolean {
+  return canViewAttendance(user);
+}
+
+export function canRecordAttendance(user: UserSessionPayload | null): boolean {
+  return canViewAttendance(user);
+}
+
+export function canCorrectAttendance(user: UserSessionPayload | null): boolean {
+  return canViewAttendance(user);
+}
