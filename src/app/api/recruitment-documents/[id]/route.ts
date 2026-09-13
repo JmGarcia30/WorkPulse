@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getSession } from '@/lib/auth/session';
 import { prisma } from '@/lib/db/prisma';
 import { localStorageProvider } from '@/lib/storage';
+import { canViewHiringData } from '@/lib/permissions/rbac';
 
 export async function GET(
   request: NextRequest,
@@ -31,7 +32,8 @@ export async function GET(
   const orgId = doc.application.job.organizationId;
 
   // Allow if HR belongs to the organization
-  if (user && user.organizationId === orgId) {
+  if (user) {
+    if (!canViewHiringData(user) || user.organizationId !== orgId) return new NextResponse('Forbidden', { status: 403 });
     // Authorized
   } else {
     // Also allow candidate if query token or candidate context matches

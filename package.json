@@ -9,7 +9,8 @@
     "lint": "eslint",
     "test:h1": "tsx scripts/test-h1-employee-core.ts",
     "test:h2": "tsx scripts/test-h2-employment-probation.ts",
-    "test:h3": "tsx scripts/test-h3-attendance.ts"
+    "test:h3": "tsx scripts/test-h3-attendance.ts",
+    "test:h4": "tsx scripts/test-h4-employee-self-service.ts"
   },
   "prisma": {
     "seed": "tsx prisma/seed.ts"

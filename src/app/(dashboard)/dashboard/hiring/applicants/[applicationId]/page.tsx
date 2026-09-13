@@ -1,6 +1,6 @@
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
-import { getSession } from '@/lib/auth/session';
+import { requireBackOfficeContext } from '@/lib/auth/guards';
 import { prisma } from '@/lib/db/prisma';
 import {
   canUpdateApplicationStatus,
@@ -46,7 +46,7 @@ interface CandidateProfilePageProps {
 }
 
 export default async function CandidateProfilePage({ params }: CandidateProfilePageProps) {
-  const user = await getSession();
+  const user = await requireBackOfficeContext();
   if (!user) return null;
 
   const { applicationId } = await params;

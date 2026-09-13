@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { getSession } from '@/lib/auth/session';
+import { requireBackOfficeContext } from '@/lib/auth/guards';
 import { prisma } from '@/lib/db/prisma';
 import { ApplicationStatus } from '@prisma/client';
 import {
@@ -22,8 +22,7 @@ interface ApplicantsPageProps {
 }
 
 export default async function ApplicantsPage({ searchParams }: ApplicantsPageProps) {
-  const user = await getSession();
-  if (!user) return null;
+  const user = await requireBackOfficeContext();
 
   const params = await searchParams;
   const statusFilter = params.status;

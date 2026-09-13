@@ -105,6 +105,12 @@ export function getOrganizationEmployeeById(
         orderBy: { createdAt: 'desc' },
         include: { changedBy: { select: { name: true } } },
       },
+      employeeAccount: {
+        include: {
+          user: { select: { email: true } },
+          audits: { orderBy: { createdAt: 'desc' }, take: 10 },
+        },
+      },
     },
   });
 }

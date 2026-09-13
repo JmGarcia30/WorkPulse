@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getSession } from '@/lib/auth/session';
 import { prisma } from '@/lib/db/prisma';
 import { localStorageProvider } from '@/lib/storage';
+import { canViewHiringData } from '@/lib/permissions/rbac';
 
 export async function GET(
   request: NextRequest,
@@ -35,7 +36,8 @@ export async function GET(
   const user = await getSession();
   const taskOrgId = task.onboardingProcess.application.job.organizationId;
 
-  if (user && user.organizationId === taskOrgId) {
+  if (user) {
+    if (!canViewHiringData(user) || user.organizationId !== taskOrgId) return new NextResponse('Forbidden', { status: 403 });
     // Authorized HR user
   } else {
     const candidateAppId = request.nextUrl.searchParams.get('appId');

@@ -116,3 +116,21 @@ export function canRecordAttendance(user: UserSessionPayload | null): boolean {
 export function canCorrectAttendance(user: UserSessionPayload | null): boolean {
   return canViewAttendance(user);
 }
+
+export function canAccessEmployeeSelfService(user: UserSessionPayload | null): boolean {
+  return user?.role === Role.EMPLOYEE;
+}
+
+export function canViewOwnProfile(user: UserSessionPayload | null): boolean {
+  return canAccessEmployeeSelfService(user);
+}
+
+export function canViewOwnAttendance(user: UserSessionPayload | null): boolean {
+  return canAccessEmployeeSelfService(user);
+}
+
+export function canAccessBackOffice(user: UserSessionPayload | null): boolean {
+  if (!user) return false;
+  const roles: Role[] = [Role.ORGANIZATION_ADMIN, Role.HR_ADMIN, Role.HIRING_MANAGER];
+  return roles.includes(user.role);
+}

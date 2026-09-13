@@ -2,13 +2,14 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getSession } from '@/lib/auth/session';
 import { prisma } from '@/lib/db/prisma';
 import { localStorageProvider } from '@/lib/storage';
+import { canViewHiringData } from '@/lib/permissions/rbac';
 
 export async function GET(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
   const user = await getSession();
-  if (!user) {
+  if (!user || !canViewHiringData(user)) {
     return new NextResponse('Unauthorized', { status: 401 });
   }
 

@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { getSession } from '@/lib/auth/session';
+import { requireBackOfficeContext } from '@/lib/auth/guards';
 import { prisma } from '@/lib/db/prisma';
 import {
   JobStatus,
@@ -28,7 +28,7 @@ import {
 } from 'lucide-react';
 
 export default async function DashboardPage() {
-  const user = await getSession();
+  const user = await requireBackOfficeContext();
   if (!user) return null;
 
   const orgId = user.organizationId;

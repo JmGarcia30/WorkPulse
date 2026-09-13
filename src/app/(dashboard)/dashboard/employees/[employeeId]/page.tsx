@@ -7,6 +7,7 @@ import { getOrganizationEmployeeById } from '@/features/employees/queries';
 import { deriveProbationReviewState } from '@/features/employees/domain';
 import { EmploymentLifecycleActions } from '@/components/employees/EmploymentLifecycleActions';
 import { ArrowLeft, Briefcase, FileCheck2, History, ShieldCheck, UserRound } from 'lucide-react';
+import { EmployeeAccountPanel } from '@/components/employee-self-service/EmployeeAccountPanel';
 
 interface EmployeeProfilePageProps { params: Promise<{ employeeId: string }> }
 const date = (value: Date | null | undefined) => value ? new Intl.DateTimeFormat('en-PH', { timeZone: 'UTC', dateStyle: 'medium' }).format(value) : '—';
@@ -70,6 +71,7 @@ export default async function EmployeeProfilePage({ params }: EmployeeProfilePag
 
       <section className="rounded-3xl border border-[#E8EAED] bg-white p-6 shadow-2xs lg:col-span-2"><h2 className="mb-4 flex items-center gap-2 text-sm font-bold"><UserRound className="h-4 w-4" /> Hiring Traceability</h2><Link href={`/dashboard/hiring/applicants/${employee.sourceApplicationId}`} className="inline-flex rounded-xl bg-[#181A1C] px-4 py-2.5 text-xs font-bold text-white">View Hiring Record</Link></section>
       <section className="rounded-3xl border border-[#E8EAED] bg-white p-6 shadow-2xs lg:col-span-2"><h2 className="mb-4 flex items-center gap-2 text-sm font-bold"><History className="h-4 w-4" /> Attendance</h2><Link href={`/dashboard/attendance/${employee.id}`} className="inline-flex rounded-xl bg-[#181A1C] px-4 py-2.5 text-xs font-bold text-white">View Attendance History</Link></section>
+      <EmployeeAccountPanel employeeId={employee.id} contactEmail={employee.email} employeeActive={employee.employeeStatus === EmployeeStatus.ACTIVE} account={employee.employeeAccount ? { id: employee.employeeAccount.id, email: employee.employeeAccount.user.email, status: employee.employeeAccount.status, expiresAt: employee.employeeAccount.activationTokenExpiresAt?.toISOString() ?? null, activatedAt: employee.employeeAccount.activatedAt?.toISOString() ?? null, disabledAt: employee.employeeAccount.disabledAt?.toISOString() ?? null, disabledReason: employee.employeeAccount.disabledReason } : null} />
     </div>
   </div>;
 }

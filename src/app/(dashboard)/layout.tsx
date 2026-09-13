@@ -5,16 +5,18 @@ import { prisma } from '@/lib/db/prisma';
 import { LogOut } from 'lucide-react';
 import { DashboardSidebarNav } from '@/components/layout/DashboardSidebarNav';
 import { DashboardHeader } from '@/components/layout/DashboardHeader';
+import { Role } from '@prisma/client';
+import { requireBackOfficeContext } from '@/lib/auth/guards';
 
 export default async function DashboardLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const user = await getSession();
-  if (!user) {
-    redirect('/login');
-  }
+  const session = await getSession();
+  if (session?.role === Role.EMPLOYEE) redirect('/employee');
+  let user;
+  try { user = await requireBackOfficeContext(); } catch { redirect('/login'); }
 
   // Fetch organization details
   const org = await prisma.organization.findUnique({

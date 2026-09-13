@@ -11,6 +11,25 @@ enum Role {
   ORGANIZATION_ADMIN
   HR_ADMIN
   HIRING_MANAGER
+  EMPLOYEE
+}
+
+enum EmployeeAccountStatus {
+  INVITED
+  ACTIVE
+  DISABLED
+}
+
+enum EmployeeAccountAuditAction {
+  ACCOUNT_CREATED
+  EMPLOYEE_LINKED
+  INVITATION_SENT
+  INVITATION_RESENT
+  INVITATION_SEND_FAILED
+  ACTIVATED
+  DISABLED
+  ENABLED
+  LINK_REJECTED
 }
 
 enum JobStatus {
@@ -226,6 +245,8 @@ model Organization {
   attendanceEvents        AttendanceEvent[]
   dailyAttendanceRecords  DailyAttendanceRecord[]
   attendanceCorrections   AttendanceCorrection[]
+  employeeAccounts        EmployeeAccount[]
+  employeeAccountAudits   EmployeeAccountAudit[]
 }
 
 model User {
@@ -233,7 +254,7 @@ model User {
   organizationId String
   name           String
   email          String   @unique
-  passwordHash   String
+  passwordHash   String?
   role           Role     @default(HR_ADMIN)
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt
@@ -257,6 +278,9 @@ model User {
   scheduleAssignmentsCreated   EmployeeScheduleAssignment[] @relation("ScheduleAssignmentCreatedBy")
   attendanceEventsCreated      AttendanceEvent[]            @relation("AttendanceEventCreatedBy")
   attendanceCorrectionsCreated AttendanceCorrection[]       @relation("AttendanceCorrectionCreatedBy")
+  employeeAccount              EmployeeAccount?             @relation("EmployeeAccountUser")
+  employeeAccountsCreated      EmployeeAccount[]            @relation("EmployeeAccountCreatedBy")
+  employeeAccountAudits        EmployeeAccountAudit[]       @relation("EmployeeAccountAuditActor")
 
   @@index([organizationId])
 }
@@ -524,11 +548,56 @@ model Employee {
   scheduleAssignments    EmployeeScheduleAssignment[]
   attendanceEvents       AttendanceEvent[]
   dailyAttendanceRecords DailyAttendanceRecord[]
+  employeeAccount        EmployeeAccount?
 
   @@unique([organizationId, employeeNumber])
   @@unique([organizationId, applicantId])
   @@index([organizationId, employeeStatus])
   @@index([applicantId])
+}
+
+model EmployeeAccount {
+  id                       String                @id @default(cuid())
+  organizationId           String
+  userId                   String                @unique
+  employeeId               String                @unique
+  status                   EmployeeAccountStatus @default(INVITED)
+  activationTokenHash      String?               @unique
+  activationTokenExpiresAt DateTime?
+  invitedAt                DateTime              @default(now())
+  activatedAt              DateTime?
+  disabledAt               DateTime?
+  disabledReason           String?               @db.Text
+  createdById              String
+  createdAt                DateTime              @default(now())
+  updatedAt                DateTime              @updatedAt
+
+  organization Organization           @relation(fields: [organizationId], references: [id], onDelete: Restrict)
+  user         User                   @relation("EmployeeAccountUser", fields: [userId], references: [id], onDelete: Restrict)
+  employee     Employee               @relation(fields: [employeeId], references: [id], onDelete: Restrict)
+  createdBy    User                   @relation("EmployeeAccountCreatedBy", fields: [createdById], references: [id], onDelete: Restrict)
+  audits       EmployeeAccountAudit[]
+
+  @@index([organizationId, status])
+  @@index([createdById])
+}
+
+model EmployeeAccountAudit {
+  id                String                     @id @default(cuid())
+  organizationId    String
+  employeeAccountId String?
+  actorUserId       String
+  action            EmployeeAccountAuditAction
+  details           Json?
+  createdAt         DateTime                   @default(now())
+
+  organization    Organization     @relation(fields: [organizationId], references: [id], onDelete: Restrict)
+  employeeAccount EmployeeAccount? @relation(fields: [employeeAccountId], references: [id], onDelete: Restrict)
+  actor           User             @relation("EmployeeAccountAuditActor", fields: [actorUserId], references: [id], onDelete: Restrict)
+
+  @@index([organizationId, createdAt])
+  @@index([employeeAccountId, createdAt])
+  @@index([actorUserId])
 }
 
 model EmploymentRecord {

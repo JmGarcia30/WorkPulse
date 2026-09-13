@@ -2,9 +2,14 @@ import { SignJWT, jwtVerify } from 'jose';
 import { cookies } from 'next/headers';
 import { Role } from '@prisma/client';
 
-const SECRET_KEY = new TextEncoder().encode(
-  process.env.SESSION_SECRET || 'workpulse_super_secret_jwt_key_32bytes_long_min!'
-);
+function sessionSecret() {
+  const configured = process.env.SESSION_SECRET;
+  if (configured && configured.length >= 32) return new TextEncoder().encode(configured);
+  if (process.env.NODE_ENV === 'production') {
+    throw new Error('SESSION_SECRET must be configured with at least 32 characters.');
+  }
+  return new TextEncoder().encode('workpulse_development_only_session_secret_32bytes');
+}
 
 const COOKIE_NAME = 'workpulse_session';
 const EXPIRATION_TIME = '7d';
@@ -22,7 +27,7 @@ export async function createSession(payload: UserSessionPayload): Promise<string
     .setProtectedHeader({ alg: 'HS256' })
     .setIssuedAt()
     .setExpirationTime(EXPIRATION_TIME)
-    .sign(SECRET_KEY);
+    .sign(sessionSecret());
 
   const cookieStore = await cookies();
   cookieStore.set(COOKIE_NAME, token, {
@@ -42,7 +47,7 @@ export async function getSession(): Promise<UserSessionPayload | null> {
   if (!token) return null;
 
   try {
-    const { payload } = await jwtVerify(token, SECRET_KEY);
+    const { payload } = await jwtVerify(token, sessionSecret());
     return {
       userId: payload.userId as string,
       email: payload.email as string,
@@ -50,7 +55,7 @@ export async function getSession(): Promise<UserSessionPayload | null> {
       role: payload.role as Role,
       organizationId: payload.organizationId as string,
     };
-  } catch (error) {
+  } catch {
     return null;
   }
 }

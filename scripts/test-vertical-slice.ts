@@ -30,7 +30,7 @@ async function runTest() {
       role: Role.HR_ADMIN,
     },
   });
-  const isValidPass = await compare('SecurePass123!', user.passwordHash);
+  const isValidPass = user.passwordHash ? await compare('SecurePass123!', user.passwordHash) : false;
   console.log(`✓ Password hash verification: ${isValidPass ? 'PASSED' : 'FAILED'}`);
 
   // 3. Job Creation with Structured Requirements

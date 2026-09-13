@@ -48,9 +48,10 @@ interface SendEmailParams {
   subject: string;
   html: string;
   text?: string;
+  sensitive?: boolean;
 }
 
-export async function sendEmail({ to, subject, html, text }: SendEmailParams): Promise<{ success: boolean; mode: 'smtp' | 'preview_log'; id: string }> {
+export async function sendEmail({ to, subject, html, text, sensitive = false }: SendEmailParams): Promise<{ success: boolean; mode: 'smtp' | 'preview_log'; id: string }> {
   const plainText = text || html.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim();
   const id = `email_${Date.now()}_${Math.random().toString(36).substring(2, 8)}`;
   const transporter = getTransporter();
@@ -66,13 +67,21 @@ export async function sendEmail({ to, subject, html, text }: SendEmailParams): P
         html,
       });
 
-      const entry: EmailLogEntry = { id, to, subject, text: plainText, html, sentAt: new Date(), mode: 'smtp' };
-      emailLogQueue.push(entry);
+      if (!sensitive) {
+        const entry: EmailLogEntry = { id, to, subject, text: plainText, html, sentAt: new Date(), mode: 'smtp' };
+        emailLogQueue.push(entry);
+      }
       console.log(`[WorkPulse Emailer (SMTP)] Dispatched to ${to} | Subject: "${subject}"`);
       return { success: true, mode: 'smtp', id };
-    } catch (error) {
-      console.warn(`[WorkPulse Emailer] SMTP delivery failed. Falling back to preview log:`, error);
+    } catch {
+      console.warn('[WorkPulse Emailer] SMTP delivery failed.');
     }
+  }
+
+  // Secret-bearing messages must never be retained or printed by the preview logger.
+  if (sensitive) {
+    console.warn(`[WorkPulse Emailer] Sensitive email ${id} was not delivered; content was discarded.`);
+    return { success: false, mode: 'preview_log', id };
   }
 
   // Preview / Development / Defense mode (Zero-cost, 100% reliable offline)
@@ -88,6 +97,25 @@ export async function sendEmail({ to, subject, html, text }: SendEmailParams): P
   console.log(`=====================================================================\n`);
 
   return { success: true, mode: 'preview_log', id };
+}
+
+export function sendEmployeeActivationEmail(input: {
+  to: string;
+  employeeName: string;
+  organizationName: string;
+  activationUrl: string;
+  expiresAt: Date;
+}) {
+  const escapeHtml = (value: string) => value.replace(/[&<>"']/g, (character) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[character] ?? character);
+  const subject = `Activate your WorkPulse account — ${input.organizationName}`;
+  const expiry = input.expiresAt.toLocaleString('en-PH', { timeZone: 'Asia/Manila' });
+  return sendEmail({
+    to: input.to,
+    subject,
+    sensitive: true,
+    text: `Hello ${input.employeeName}, activate your WorkPulse account using this one-time link: ${input.activationUrl}\nThis link expires on ${expiry}.`,
+    html: `<p>Hello ${escapeHtml(input.employeeName)},</p><p>Activate your WorkPulse account using the secure one-time link below.</p><p><a href="${escapeHtml(input.activationUrl)}">Activate WorkPulse account</a></p><p>This link expires on ${escapeHtml(expiry)}.</p>`,
+  });
 }
 
 // ==========================================
