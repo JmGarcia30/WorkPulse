@@ -15,22 +15,26 @@ async function ensureDirectoryExists() {
 }
 
 export const localStorageProvider: StorageProvider = {
-  async upload(fileBuffer: Buffer, fileName: string, mimeType: string) {
+  async upload(fileBuffer: Buffer, fileName: string, mimeType: string, namespace?: string) {
     await ensureDirectoryExists();
+    const safeNamespace = namespace?.replace(/[^a-zA-Z0-9_-]/g, '') || '';
+    const targetDirectory = safeNamespace ? path.join(STORAGE_DIR, safeNamespace) : STORAGE_DIR;
+    await fs.mkdir(targetDirectory, { recursive: true });
     const ext = path.extname(fileName) || '.pdf';
     const hash = crypto.randomBytes(16).toString('hex');
     const storageKey = `${Date.now()}-${hash}${ext}`;
-    const filePath = path.join(STORAGE_DIR, storageKey);
+    const filePath = path.join(targetDirectory, storageKey);
 
     await fs.writeFile(filePath, fileBuffer);
-    return { storageKey };
+    return { storageKey: safeNamespace ? `${safeNamespace}/${storageKey}` : storageKey };
   },
 
   async get(storageKey: string) {
     await ensureDirectoryExists();
     // Prevent directory traversal attacks
-    const sanitizedKey = path.basename(storageKey);
-    const filePath = path.join(STORAGE_DIR, sanitizedKey);
+    const parts = storageKey.split('/').filter(Boolean).map((part) => path.basename(part));
+    const sanitizedKey = parts.at(-1) ?? '';
+    const filePath = path.join(STORAGE_DIR, ...parts);
 
     const buffer = await fs.readFile(filePath);
     let contentType = 'application/octet-stream';
@@ -44,8 +48,8 @@ export const localStorageProvider: StorageProvider = {
 
   async delete(storageKey: string) {
     await ensureDirectoryExists();
-    const sanitizedKey = path.basename(storageKey);
-    const filePath = path.join(STORAGE_DIR, sanitizedKey);
+    const parts = storageKey.split('/').filter(Boolean).map((part) => path.basename(part));
+    const filePath = path.join(STORAGE_DIR, ...parts);
     try {
       await fs.unlink(filePath);
     } catch {

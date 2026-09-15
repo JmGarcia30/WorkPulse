@@ -96,6 +96,11 @@ export function DashboardSidebarNav({ orgSlug }: DashboardSidebarNavProps) {
           icon: Clock3,
         },
         {
+          href: '/dashboard/leave',
+          label: 'Leave',
+          icon: Calendar,
+        },
+        {
           href: '/dashboard/hiring/onboarding',
           label: 'Onboarding',
           icon: UserCheck,

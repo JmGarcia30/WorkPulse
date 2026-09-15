@@ -134,3 +134,14 @@ export function canAccessBackOffice(user: UserSessionPayload | null): boolean {
   const roles: Role[] = [Role.ORGANIZATION_ADMIN, Role.HR_ADMIN, Role.HIRING_MANAGER];
   return roles.includes(user.role);
 }
+
+export const canViewOrganizationLeave = canViewEmployees;
+export const canManageLeaveTypes = canManageEmployees;
+export const canManageLeaveBalances = canManageEmployees;
+export const canGrantCycleEntitlements = canManageEmployees;
+export const canReviewLeaveRequests = canManageEmployees;
+export const canCancelApprovedLeave = canManageEmployees;
+export const canRetryLeaveAttendanceSync = canManageEmployees;
+export const canViewOwnLeave = canAccessEmployeeSelfService;
+export const canSubmitOwnLeave = canAccessEmployeeSelfService;
+export const canWithdrawOwnLeave = canAccessEmployeeSelfService;

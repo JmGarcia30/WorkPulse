@@ -1,6 +1,7 @@
 import { randomUUID } from 'node:crypto';
 import { Temporal } from '@js-temporal/polyfill';
 import {
+  AttendanceDisposition,
   AttendanceDerivation,
   AttendanceDirection,
   AttendanceSource,
@@ -250,6 +251,15 @@ export async function materializeAttendanceDay(
     where: { organizationId: input.organizationId, dailyAttendanceRecord: { employeeId: input.employeeId, attendanceDate: date } },
     orderBy: { revision: 'desc' },
   });
+  const approvedLeaveDay = scheduleDay?.isWorkday ? await db.leaveRequestDay.findFirst({
+    where: {
+      organizationId: input.organizationId,
+      employeeId: input.employeeId,
+      attendanceDate: date,
+      leaveRequest: { status: 'APPROVED' },
+    },
+    include: { leaveRequest: true },
+  }) : null;
   const firstTimeIn = latestCorrection ? latestCorrection.correctedTimeIn : pairing.firstTimeIn;
   const lastTimeOut = latestCorrection ? latestCorrection.correctedTimeOut : pairing.lastTimeOut;
   const effectivePairing = { ...pairing, firstTimeIn, lastTimeOut };
@@ -261,6 +271,8 @@ export async function materializeAttendanceDay(
     eventCount: events.length,
   });
   const status = latestCorrection?.correctedStatus ?? derived.status;
+  const disposition = approvedLeaveDay ? AttendanceDisposition.APPROVED_LEAVE : AttendanceDisposition.NORMAL;
+  const hasLeaveAttendanceConflict = Boolean(approvedLeaveDay && (firstTimeIn || lastTimeOut || events.length));
   const durations = scheduledStartAt && scheduledEndAt && scheduleDay?.isWorkday
     ? calculateAttendanceDurations({
         attendanceDate: input.attendanceDate, timeZone: organization.timeZone,
@@ -280,6 +292,12 @@ export async function materializeAttendanceDay(
       lateGraceSeconds: assignment?.scheduleVersion.lateGraceSeconds ?? 0,
       scheduledUnpaidBreakSeconds, firstTimeIn, lastTimeOut, ...durations,
       attendanceStatus: status,
+      disposition, approvedLeaveRequestDayId: approvedLeaveDay?.id ?? null,
+      approvedLeaveSeconds: approvedLeaveDay?.leaveSeconds ?? null,
+      leaveTypeCodeSnapshot: approvedLeaveDay?.leaveRequest.leaveTypeCodeSnapshot ?? null,
+      leaveTypeNameSnapshot: approvedLeaveDay?.leaveRequest.leaveTypeNameSnapshot ?? null,
+      leavePaidSnapshot: approvedLeaveDay?.leaveRequest.leavePaidSnapshot ?? null,
+      hasLeaveAttendanceConflict,
       derivation: latestCorrection ? AttendanceDerivation.CORRECTED : AttendanceDerivation.RAW_EVENTS,
       hasUnclassifiedEvents: pairing.hasUnclassifiedEvents, hasOutBeforeIn: pairing.hasOutBeforeIn,
       correctionVersion: latestCorrection?.revision ?? 0,
@@ -294,6 +312,12 @@ export async function materializeAttendanceDay(
       lateGraceSeconds: assignment?.scheduleVersion.lateGraceSeconds ?? 0,
       scheduledUnpaidBreakSeconds, firstTimeIn, lastTimeOut, ...durations,
       attendanceStatus: status,
+      disposition, approvedLeaveRequestDayId: approvedLeaveDay?.id ?? null,
+      approvedLeaveSeconds: approvedLeaveDay?.leaveSeconds ?? null,
+      leaveTypeCodeSnapshot: approvedLeaveDay?.leaveRequest.leaveTypeCodeSnapshot ?? null,
+      leaveTypeNameSnapshot: approvedLeaveDay?.leaveRequest.leaveTypeNameSnapshot ?? null,
+      leavePaidSnapshot: approvedLeaveDay?.leaveRequest.leavePaidSnapshot ?? null,
+      hasLeaveAttendanceConflict,
       derivation: latestCorrection ? AttendanceDerivation.CORRECTED : AttendanceDerivation.RAW_EVENTS,
       hasUnclassifiedEvents: pairing.hasUnclassifiedEvents, hasOutBeforeIn: pairing.hasOutBeforeIn,
       correctionVersion: latestCorrection?.revision ?? 0,

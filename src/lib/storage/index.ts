@@ -2,7 +2,8 @@ export interface StorageProvider {
   upload(
     fileBuffer: Buffer,
     fileName: string,
-    mimeType: string
+    mimeType: string,
+    namespace?: string
   ): Promise<{ storageKey: string }>;
   
   get(storageKey: string): Promise<{ buffer: Buffer; contentType: string }>;

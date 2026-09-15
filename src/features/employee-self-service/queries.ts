@@ -121,6 +121,9 @@ export async function getMyAttendance(filters: { from: string; to: string }) {
       overtimeSeconds: true,
       attendanceStatus: true,
       correctionVersion: true,
+      disposition: true,
+      leaveTypeNameSnapshot: true,
+      hasLeaveAttendanceConflict: true,
       scheduleAssignment: { select: { scheduleVersion: { select: { displayName: true } } } },
     },
   });
@@ -139,5 +142,8 @@ export async function getMyAttendance(filters: { from: string; to: string }) {
     overtimeSeconds: row.overtimeSeconds,
     status: row.attendanceStatus,
     corrected: row.correctionVersion > 0,
+    disposition: row.disposition,
+    leaveTypeName: row.leaveTypeNameSnapshot,
+    leaveAttendanceConflict: row.hasLeaveAttendanceConflict,
   }));
 }

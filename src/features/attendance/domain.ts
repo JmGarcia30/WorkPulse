@@ -1,5 +1,5 @@
 import { Temporal } from '@js-temporal/polyfill';
-import { AttendanceDirection, AttendanceStatus } from '@prisma/client';
+import { AttendanceDirection, AttendanceDisposition, AttendanceStatus } from '@prisma/client';
 
 export interface AttendanceEventFact {
   id: string;
@@ -203,13 +203,15 @@ export function deriveAttendanceStatus(input: {
 }
 
 export function summarizeAttendanceIndicators(
-  days: Array<{ attendanceDate: string; status: AttendanceStatus; lateSeconds: number | null }>
+  days: Array<{ attendanceDate: string; status: AttendanceStatus; disposition?: AttendanceDisposition; lateSeconds: number | null }>
 ): AttendanceIndicatorSummary {
   const ordered = [...days].sort((a, b) => a.attendanceDate.localeCompare(b.attendanceDate));
   let streak = 0;
   let longest = 0;
   for (const day of ordered) {
-    if (day.status === AttendanceStatus.ABSENT) {
+    if (day.disposition === AttendanceDisposition.APPROVED_LEAVE) {
+      streak = 0;
+    } else if (day.status === AttendanceStatus.ABSENT) {
       streak += 1;
       longest = Math.max(longest, streak);
     } else if (day.status !== AttendanceStatus.REST_DAY && day.status !== AttendanceStatus.NO_SCHEDULE) {
@@ -217,7 +219,7 @@ export function summarizeAttendanceIndicators(
     }
   }
   const tardinessCount = ordered.filter((day) => (day.lateSeconds ?? 0) > 0).length;
-  const absenceDays = ordered.filter((day) => day.status === AttendanceStatus.ABSENT).length;
+  const absenceDays = ordered.filter((day) => day.status === AttendanceStatus.ABSENT && day.disposition !== AttendanceDisposition.APPROVED_LEAVE).length;
   return {
     tardinessCount,
     absenceDays,

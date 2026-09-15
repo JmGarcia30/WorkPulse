@@ -224,6 +224,62 @@ enum AttendanceDerivation {
   CORRECTED
 }
 
+enum AttendanceDisposition {
+  NORMAL
+  APPROVED_LEAVE
+}
+
+enum LeaveCountingMode {
+  SCHEDULED_WORK_DAYS
+  CALENDAR_DAYS
+}
+
+enum LeaveOccurrenceScope {
+  CYCLE
+  LIFETIME
+}
+
+enum LeaveRequestStatus {
+  PENDING
+  APPROVED
+  REJECTED
+  WITHDRAWN
+  CANCELLED
+}
+
+enum LeaveLedgerEntryType {
+  GRANT
+  ACCRUAL
+  ADJUSTMENT
+  APPROVED_LEAVE
+  REVERSAL
+  CARRYOVER
+  EXPIRY
+}
+
+enum LeaveRequestAuditAction {
+  SUBMITTED
+  DOCUMENT_ADDED
+  DOCUMENT_REMOVED
+  ELIGIBILITY_VERIFIED
+  APPROVED
+  REJECTED
+  WITHDRAWN
+  CANCELLED
+  ATTENDANCE_SYNC_SUCCEEDED
+  ATTENDANCE_SYNC_FAILED
+  ATTENDANCE_SYNC_RETRIED
+  NOTIFICATION_SENT
+  NOTIFICATION_FAILED
+}
+
+enum LeaveAttendanceSyncStatus {
+  NOT_REQUIRED
+  PENDING
+  SUCCEEDED
+  FAILED
+}
+
 model Organization {
   id                   String   @id @default(cuid())
   name                 String
@@ -247,6 +303,13 @@ model Organization {
   attendanceCorrections   AttendanceCorrection[]
   employeeAccounts        EmployeeAccount[]
   employeeAccountAudits   EmployeeAccountAudit[]
+  leaveTypes              LeaveType[]
+  leaveCycles             LeaveCycle[]
+  leaveRequests           LeaveRequest[]
+  leaveLedgerEntries      LeaveLedgerEntry[]
+  leaveRequestAudits      LeaveRequestAudit[]
+  leaveDocuments          LeaveDocument[]
+  leaveRequestDays        LeaveRequestDay[]
 }
 
 model User {
@@ -281,6 +344,11 @@ model User {
   employeeAccount              EmployeeAccount?             @relation("EmployeeAccountUser")
   employeeAccountsCreated      EmployeeAccount[]            @relation("EmployeeAccountCreatedBy")
   employeeAccountAudits        EmployeeAccountAudit[]       @relation("EmployeeAccountAuditActor")
+  leaveRequestsReviewed        LeaveRequest[]               @relation("LeaveRequestReviewedBy")
+  leaveEligibilityVerified     LeaveRequest[]               @relation("LeaveEligibilityVerifiedBy")
+  leaveLedgerEntries           LeaveLedgerEntry[]
+  leaveRequestAudits           LeaveRequestAudit[]
+  leaveDocumentsUploaded       LeaveDocument[]
 
   @@index([organizationId])
 }
@@ -549,6 +617,10 @@ model Employee {
   attendanceEvents       AttendanceEvent[]
   dailyAttendanceRecords DailyAttendanceRecord[]
   employeeAccount        EmployeeAccount?
+  leaveRequests          LeaveRequest[]
+  leaveRequestDays       LeaveRequestDay[]
+  leaveLedgerEntries     LeaveLedgerEntry[]
+  leaveDocuments         LeaveDocument[]
 
   @@unique([organizationId, employeeNumber])
   @@unique([organizationId, applicantId])
@@ -628,6 +700,7 @@ model EmploymentRecord {
   decisionsFrom          EmploymentDecisionHistory[] @relation("EmploymentDecisionPreviousRecord")
   decisionsTo            EmploymentDecisionHistory[] @relation("EmploymentDecisionResultingRecord")
   dailyAttendanceRecords DailyAttendanceRecord[]
+  leaveRequestDays       LeaveRequestDay[]
 
   @@index([employeeId])
   @@index([jobId])
@@ -789,6 +862,7 @@ model EmployeeScheduleAssignment {
   scheduleVersion        WorkScheduleVersion     @relation(fields: [scheduleVersionId], references: [id], onDelete: Restrict)
   createdBy              User                    @relation("ScheduleAssignmentCreatedBy", fields: [createdById], references: [id], onDelete: Restrict)
   dailyAttendanceRecords DailyAttendanceRecord[]
+  leaveRequestDays       LeaveRequestDay[]
 
   @@index([organizationId, employeeId, effectiveFrom])
   @@index([scheduleVersionId])
@@ -817,17 +891,17 @@ model AttendanceEvent {
 }
 
 model DailyAttendanceRecord {
-  id                          String               @id @default(cuid())
+  id                          String                @id @default(cuid())
   organizationId              String
   employeeId                  String
   employmentRecordId          String
   scheduleAssignmentId        String?
-  attendanceDate              DateTime             @db.Date
+  attendanceDate              DateTime              @db.Date
   timeZoneSnapshot            String
   scheduledStartAt            DateTime?
   scheduledEndAt              DateTime?
-  lateGraceSeconds            Int                  @default(0)
-  scheduledUnpaidBreakSeconds Int                  @default(0)
+  lateGraceSeconds            Int                   @default(0)
+  scheduledUnpaidBreakSeconds Int                   @default(0)
   firstTimeIn                 DateTime?
   lastTimeOut                 DateTime?
   workedSeconds               Int?
@@ -835,27 +909,245 @@ model DailyAttendanceRecord {
   undertimeSeconds            Int?
   overtimeSeconds             Int?
   attendanceStatus            AttendanceStatus
-  derivation                  AttendanceDerivation @default(RAW_EVENTS)
-  hasUnclassifiedEvents       Boolean              @default(false)
-  hasOutBeforeIn              Boolean              @default(false)
-  correctionVersion           Int                  @default(0)
-  remarks                     String?              @db.Text
+  derivation                  AttendanceDerivation  @default(RAW_EVENTS)
+  disposition                 AttendanceDisposition @default(NORMAL)
+  approvedLeaveRequestDayId   String?               @unique
+  approvedLeaveSeconds        Int?
+  leaveTypeCodeSnapshot       String?
+  leaveTypeNameSnapshot       String?
+  leavePaidSnapshot           Boolean?
+  hasLeaveAttendanceConflict  Boolean               @default(false)
+  hasUnclassifiedEvents       Boolean               @default(false)
+  hasOutBeforeIn              Boolean               @default(false)
+  correctionVersion           Int                   @default(0)
+  remarks                     String?               @db.Text
   finalizedAt                 DateTime?
   lastCalculatedAt            DateTime
-  createdAt                   DateTime             @default(now())
-  updatedAt                   DateTime             @updatedAt
+  createdAt                   DateTime              @default(now())
+  updatedAt                   DateTime              @updatedAt
 
   organization       Organization                @relation(fields: [organizationId], references: [id], onDelete: Restrict)
   employee           Employee                    @relation(fields: [employeeId], references: [id], onDelete: Restrict)
   employmentRecord   EmploymentRecord            @relation(fields: [employmentRecordId], references: [id], onDelete: Restrict)
   scheduleAssignment EmployeeScheduleAssignment? @relation(fields: [scheduleAssignmentId], references: [id], onDelete: Restrict)
   corrections        AttendanceCorrection[]
+  approvedLeaveDay   LeaveRequestDay?            @relation(fields: [approvedLeaveRequestDayId], references: [id], onDelete: SetNull)
 
   @@unique([organizationId, employeeId, attendanceDate])
   @@index([organizationId, attendanceDate, attendanceStatus])
   @@index([employeeId, attendanceDate])
   @@index([employmentRecordId])
   @@index([scheduleAssignmentId])
+  @@index([organizationId, attendanceDate, disposition])
+}
+
+model LeaveType {
+  id                              String                @id @default(cuid())
+  organizationId                  String
+  code                            String
+  name                            String
+  description                     String?               @db.Text
+  isActive                        Boolean               @default(true)
+  isPaid                          Boolean               @default(true)
+  countingMode                    LeaveCountingMode
+  balanceTracked                  Boolean               @default(false)
+  defaultGrantUnits               Decimal?              @db.Decimal(10, 4)
+  requiredEmploymentStatus        EmploymentStatus?
+  minimumServiceMonths            Int?
+  maximumRequestUnits             Decimal?              @db.Decimal(10, 4)
+  maximumApprovedOccurrences      Int?
+  occurrenceLimitScope            LeaveOccurrenceScope?
+  allowsRetrospectiveFiling       Boolean               @default(false)
+  requiresEligibilityVerification Boolean               @default(false)
+  requestCategoryOptions          Json                  @default("[]")
+  attestationRules                Json                  @default("[]")
+  documentRules                   Json                  @default("[]")
+  policyReference                 String                @db.Text
+  createdAt                       DateTime              @default(now())
+  updatedAt                       DateTime              @updatedAt
+
+  organization  Organization       @relation(fields: [organizationId], references: [id], onDelete: Restrict)
+  cycles        LeaveCycle[]
+  requests      LeaveRequest[]
+  ledgerEntries LeaveLedgerEntry[]
+
+  @@unique([organizationId, code])
+  @@index([organizationId, isActive])
+}
+
+model LeaveCycle {
+  id             String   @id @default(cuid())
+  organizationId String
+  leaveTypeId    String
+  code           String
+  name           String
+  startDate      DateTime @db.Date
+  endDate        DateTime @db.Date
+  isClosed       Boolean  @default(false)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  organization  Organization       @relation(fields: [organizationId], references: [id], onDelete: Restrict)
+  leaveType     LeaveType          @relation(fields: [leaveTypeId], references: [id], onDelete: Restrict)
+  requests      LeaveRequest[]
+  ledgerEntries LeaveLedgerEntry[]
+
+  @@unique([organizationId, leaveTypeId, code])
+  @@index([organizationId, leaveTypeId, startDate, endDate])
+}
+
+model LeaveRequest {
+  id                      String                    @id @default(cuid())
+  organizationId          String
+  employeeId              String
+  leaveTypeId             String
+  leaveCycleId            String?
+  requestedStartDate      DateTime                  @db.Date
+  requestedEndDate        DateTime                  @db.Date
+  requestedUnits          Decimal                   @db.Decimal(10, 4)
+  requestCategoryCode     String?
+  reason                  String                    @db.Text
+  status                  LeaveRequestStatus        @default(PENDING)
+  eligibilityAttestation  Json?
+  policySnapshot          Json
+  leaveTypeCodeSnapshot   String
+  leaveTypeNameSnapshot   String
+  leavePaidSnapshot       Boolean
+  countingModeSnapshot    LeaveCountingMode
+  employeeNameSnapshot    String?
+  organizationNameSnapshot String?
+  organizationTimeZoneSnapshot String?
+  expectedReturnDateSnapshot DateTime?                 @db.Date
+  reviewerNameSnapshot    String?
+  submittedAt             DateTime                  @default(now())
+  reviewedAt              DateTime?
+  reviewedById            String?
+  reviewerRemarks         String?                   @db.Text
+  eligibilityVerifiedAt   DateTime?
+  eligibilityVerifiedById String?
+  eligibilityVerification Json?
+  attendanceSyncStatus    LeaveAttendanceSyncStatus @default(NOT_REQUIRED)
+  attendanceSyncedAt      DateTime?
+  attendanceSyncError     String?                   @db.Text
+  createdAt               DateTime                  @default(now())
+  updatedAt               DateTime                  @updatedAt
+
+  organization          Organization        @relation(fields: [organizationId], references: [id], onDelete: Restrict)
+  employee              Employee            @relation(fields: [employeeId], references: [id], onDelete: Restrict)
+  leaveType             LeaveType           @relation(fields: [leaveTypeId], references: [id], onDelete: Restrict)
+  leaveCycle            LeaveCycle?         @relation(fields: [leaveCycleId], references: [id], onDelete: Restrict)
+  reviewedBy            User?               @relation("LeaveRequestReviewedBy", fields: [reviewedById], references: [id], onDelete: Restrict)
+  eligibilityVerifiedBy User?               @relation("LeaveEligibilityVerifiedBy", fields: [eligibilityVerifiedById], references: [id], onDelete: Restrict)
+  days                  LeaveRequestDay[]
+  ledgerEntries         LeaveLedgerEntry[]
+  audits                LeaveRequestAudit[]
+  documents             LeaveDocument[]
+
+  @@index([organizationId, status, submittedAt])
+  @@index([organizationId, employeeId, requestedStartDate])
+  @@index([leaveTypeId, leaveCycleId])
+}
+
+model LeaveRequestDay {
+  id                          String   @id @default(cuid())
+  organizationId              String
+  leaveRequestId              String
+  employeeId                  String
+  attendanceDate              DateTime @db.Date
+  employmentRecordId          String
+  scheduleAssignmentId        String?
+  isScheduledWorkday          Boolean
+  scheduledStartSecond        Int?
+  scheduledEndSecond          Int?
+  scheduledUnpaidBreakSeconds Int      @default(0)
+  scheduledNetSeconds         Int?
+  chargeUnits                 Decimal  @db.Decimal(10, 4)
+  leaveSeconds                Int?
+  employmentSnapshot          Json
+  scheduleSnapshot            Json?
+  createdAt                   DateTime @default(now())
+
+  organization          Organization                @relation(fields: [organizationId], references: [id], onDelete: Restrict)
+  leaveRequest          LeaveRequest                @relation(fields: [leaveRequestId], references: [id], onDelete: Restrict)
+  employee              Employee                    @relation(fields: [employeeId], references: [id], onDelete: Restrict)
+  employmentRecord      EmploymentRecord            @relation(fields: [employmentRecordId], references: [id], onDelete: Restrict)
+  scheduleAssignment    EmployeeScheduleAssignment? @relation(fields: [scheduleAssignmentId], references: [id], onDelete: Restrict)
+  dailyAttendanceRecord DailyAttendanceRecord?
+
+  @@unique([leaveRequestId, attendanceDate])
+  @@index([organizationId, employeeId, attendanceDate])
+}
+
+model LeaveLedgerEntry {
+  id              String               @id @default(cuid())
+  organizationId  String
+  employeeId      String
+  leaveTypeId     String
+  leaveCycleId    String?
+  leaveRequestId  String?
+  entryType       LeaveLedgerEntryType
+  amountUnits     Decimal              @db.Decimal(10, 4)
+  reason          String               @db.Text
+  actorUserId     String
+  reversesEntryId String?              @unique
+  grantSource     String?
+  beforeBalance   Decimal?             @db.Decimal(10, 4)
+  afterBalance    Decimal?             @db.Decimal(10, 4)
+  createdAt       DateTime             @default(now())
+
+  organization  Organization      @relation(fields: [organizationId], references: [id], onDelete: Restrict)
+  employee      Employee          @relation(fields: [employeeId], references: [id], onDelete: Restrict)
+  leaveType     LeaveType         @relation(fields: [leaveTypeId], references: [id], onDelete: Restrict)
+  leaveCycle    LeaveCycle?       @relation(fields: [leaveCycleId], references: [id], onDelete: Restrict)
+  leaveRequest  LeaveRequest?     @relation(fields: [leaveRequestId], references: [id], onDelete: Restrict)
+  actor         User              @relation(fields: [actorUserId], references: [id], onDelete: Restrict)
+  reversesEntry LeaveLedgerEntry? @relation("LeaveLedgerReversal", fields: [reversesEntryId], references: [id], onDelete: Restrict)
+  reversal      LeaveLedgerEntry? @relation("LeaveLedgerReversal")
+
+  @@unique([employeeId, leaveTypeId, leaveCycleId, grantSource])
+  @@index([organizationId, employeeId, leaveTypeId, leaveCycleId])
+  @@index([leaveRequestId, entryType])
+}
+
+model LeaveRequestAudit {
+  id             String                  @id @default(cuid())
+  organizationId String
+  leaveRequestId String
+  actorUserId    String
+  action         LeaveRequestAuditAction
+  details        Json?
+  createdAt      DateTime                @default(now())
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Restrict)
+  leaveRequest LeaveRequest @relation(fields: [leaveRequestId], references: [id], onDelete: Restrict)
+  actor        User         @relation(fields: [actorUserId], references: [id], onDelete: Restrict)
+
+  @@index([organizationId, createdAt])
+  @@index([leaveRequestId, createdAt])
+}
+
+model LeaveDocument {
+  id             String    @id @default(cuid())
+  organizationId String
+  leaveRequestId String
+  employeeId     String
+  kindCode       String
+  fileName       String
+  fileType       String
+  fileSize       Int
+  storageKey     String    @unique
+  uploadedById   String
+  removedAt      DateTime?
+  removedById    String?
+  createdAt      DateTime  @default(now())
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Restrict)
+  leaveRequest LeaveRequest @relation(fields: [leaveRequestId], references: [id], onDelete: Restrict)
+  employee     Employee     @relation(fields: [employeeId], references: [id], onDelete: Restrict)
+  uploadedBy   User         @relation(fields: [uploadedById], references: [id], onDelete: Restrict)
+
+  @@index([organizationId, leaveRequestId])
+  @@index([employeeId])
 }
 
 model AttendanceCorrection {

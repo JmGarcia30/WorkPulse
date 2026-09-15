@@ -52,6 +52,8 @@ export async function getAttendancePeriod(
     undertimeSeconds: record.undertimeSeconds,
     overtimeSeconds: record.overtimeSeconds,
     status: record.attendanceStatus,
+    disposition: record.disposition,
+    leaveTypeName: record.leaveTypeNameSnapshot,
     corrected: record.correctionVersion > 0,
     hasAnomaly: record.hasUnclassifiedEvents || record.hasOutBeforeIn,
   }));
@@ -107,6 +109,7 @@ export async function getEmployeeAttendanceDetail(
   const indicators = summarizeAttendanceIndicators(records.map((record) => ({
     attendanceDate: record.attendanceDate.toISOString().slice(0, 10),
     status: record.attendanceStatus,
+    disposition: record.disposition,
     lateSeconds: record.lateSeconds,
   })));
   return { employee, timeZone: organization.timeZone, records, events, indicators };

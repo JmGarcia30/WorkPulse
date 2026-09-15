@@ -58,3 +58,10 @@ body {
   }
 }
 
+@media print {
+  body { background: white !important; }
+  body > * { visibility: hidden; }
+  .leave-form, .leave-form * { visibility: visible; }
+  .leave-form { position: absolute; inset: 0; max-width: none !important; border-color: #000 !important; }
+  .no-print { display: none !important; }
+}
