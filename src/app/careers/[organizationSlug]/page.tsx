@@ -5,6 +5,8 @@ import { prisma } from '@/lib/db/prisma';
 import { JobStatus } from '@prisma/client';
 import { OrganizationHeader } from '@/components/layout/OrganizationHeader';
 import { Search, MapPin, Briefcase, Calendar, ArrowRight } from 'lucide-react';
+import { getOrganizationBranding } from '@/features/organization-branding/read-model';
+import { TenantTheme } from '@/components/layout/TenantTheme';
 
 interface OrganizationCareersPageProps {
   params: Promise<{ organizationSlug: string }>;
@@ -48,6 +50,8 @@ export default async function OrganizationCareersPage({
   if (!org || !org.careersEnabled) {
     notFound();
   }
+  const branding = await getOrganizationBranding(org.id);
+  if (!branding) notFound();
 
   // Multi-tenant check: Query ONLY published jobs belonging to THIS organization
   const jobs = await prisma.job.findMany({
@@ -65,13 +69,13 @@ export default async function OrganizationCareersPage({
   });
 
   return (
-    <div className="space-y-8">
+    <TenantTheme branding={branding}><div className="space-y-8">
       {/* Reusable Organization Header Branding */}
       <OrganizationHeader
-        name={org.name}
+        name={branding.displayName}
         slug={org.slug}
-        description={org.description}
-        logoUrl={org.logoUrl}
+        description={branding.tagline}
+        logoUrl={branding.hasLogo ? '/api/branding/logo' : branding.legacyLogoUrl}
       />
 
       {/* Search & Job List */}
@@ -166,6 +170,6 @@ export default async function OrganizationCareersPage({
           </div>
         )}
       </div>
-    </div>
+    </div></TenantTheme>
   );
 }

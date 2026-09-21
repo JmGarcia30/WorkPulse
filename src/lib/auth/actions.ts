@@ -6,8 +6,10 @@ import { prisma } from '@/lib/db/prisma';
 import { createSession, destroySession, getSession } from './session';
 import { EmployeeAccountStatus, EmployeeStatus, Role } from '@prisma/client';
 import { landingPathForRole } from './routing';
+import { requireRequestTenant } from '@/lib/tenant/server';
 
 export async function loginAction(formData: FormData) {
+  const tenant = await requireRequestTenant();
   const email = (formData.get('email') as string)?.trim().toLowerCase();
   const password = formData.get('password') as string;
 
@@ -15,8 +17,8 @@ export async function loginAction(formData: FormData) {
     return { error: 'Please enter both email and password.' };
   }
 
-  const user = await prisma.user.findUnique({
-    where: { email },
+  const user = await prisma.user.findFirst({
+    where: { email, organizationId: tenant.organizationId },
     include: { organization: true, employeeAccount: { include: { employee: true } } },
   });
 

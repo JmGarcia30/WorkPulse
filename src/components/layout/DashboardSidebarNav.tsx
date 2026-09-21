@@ -15,6 +15,7 @@ import {
   Clock3,
   Building2,
   ExternalLink,
+  Settings,
 } from 'lucide-react';
 
 interface DashboardSidebarNavProps {
@@ -163,7 +164,7 @@ export function DashboardSidebarNav({ orgSlug }: DashboardSidebarNavProps) {
             </span>
           </div>
           <Link
-            href={`/careers/${orgSlug}`}
+            href="/careers"
             target="_blank"
             className="group flex items-center justify-between px-3.5 py-2 text-xs font-semibold text-[#6B7280] hover:text-[#181A1C] hover:bg-[#F4F5F7] rounded-2xl transition"
           >
@@ -175,6 +176,9 @@ export function DashboardSidebarNav({ orgSlug }: DashboardSidebarNavProps) {
           </Link>
         </div>
       )}
+      <div className="border-t pt-3">
+        <Link href="/dashboard/organization" className={`flex items-center gap-3 px-3.5 py-2.5 text-xs font-semibold ${isLinkActive('/dashboard/organization') ? 'bg-[var(--tenant-primary)] text-[var(--tenant-primary-foreground)]' : 'text-[var(--wp-text-muted)] hover:bg-[var(--wp-surface-subtle)]'}`}><Settings className="h-4 w-4" />Organization settings</Link>
+      </div>
     </nav>
   );
 }

@@ -11,7 +11,7 @@ function sessionSecret() {
   return new TextEncoder().encode('workpulse_development_only_session_secret_32bytes');
 }
 
-const COOKIE_NAME = 'workpulse_session';
+export const COOKIE_NAME = process.env.NODE_ENV === 'production' ? '__Host-workpulse_session' : 'workpulse_session';
 const EXPIRATION_TIME = '7d';
 
 export interface UserSessionPayload {

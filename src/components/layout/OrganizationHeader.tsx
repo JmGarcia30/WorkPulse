@@ -15,7 +15,7 @@ export function OrganizationHeader({
   logoUrl,
 }: OrganizationHeaderProps) {
   return (
-    <div className="rounded-3xl bg-linear-to-r from-indigo-950 via-slate-900 to-indigo-900 p-8 sm:p-12 text-white shadow-xl text-center space-y-4">
+    <div className="border-l-4 border-[var(--tenant-accent)] bg-[var(--tenant-primary)] p-8 text-[var(--tenant-primary-foreground)] sm:p-12 text-center space-y-4">
       {/* Logo or Fallback Badge */}
       <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-2xl bg-white/10 p-2 backdrop-blur-xs border border-white/20 shadow-md">
         {logoUrl ? (
@@ -30,7 +30,7 @@ export function OrganizationHeader({
       </div>
 
       <div className="space-y-2">
-        <span className="inline-block rounded-full bg-indigo-500/20 px-3.5 py-1 text-xs font-semibold text-indigo-200 border border-indigo-400/30">
+        <span className="inline-block border border-current px-3.5 py-1 text-xs font-semibold opacity-80">
           Official Organization Career Portal
         </span>
         <h1 className="text-2xl sm:text-4xl font-extrabold tracking-tight">{name}</h1>

@@ -150,7 +150,7 @@ async function buildRequestDays(tx: Tx, input: {
       throw new LeaveError('INELIGIBLE_EMPLOYMENT', 'The current employment classification is not eligible for this leave type.');
     }
     if (input.countingMode === 'SCHEDULED_WORK_DAYS' && !assignment) {
-      throw new LeaveError('NO_SCHEDULE', 'A work schedule is required to calculate this leave request.');
+      throw new LeaveError('NO_SCHEDULE', 'This employee has no active work schedule covering the requested leave dates. Assign a work schedule before approving this request.');
     }
     const unpaidBreak = scheduleDay?.breaks.filter((item) => !item.isPaid)
       .reduce((sum, item) => sum + item.endSecond - item.startSecond, 0) ?? 0;
@@ -176,6 +176,57 @@ async function buildRequestDays(tx: Tx, input: {
   const units = result.reduce((sum, day) => sum + decimalNumber(day.chargeUnits), 0);
   if (units <= 0) throw new LeaveError('NO_CHARGED_DAYS', 'The request must include at least one leave day.');
   return { days: result, units, range };
+}
+
+export async function previewLeaveCalculation(input: {
+  organizationId: string;
+  employeeId: string;
+  from: string;
+  to: string;
+  countingMode: 'SCHEDULED_WORK_DAYS' | 'CALENDAR_DAYS';
+  requiredEmploymentStatus: 'PROBATIONARY' | 'REGULAR' | null;
+}) {
+  try {
+    const built = await buildRequestDays(prisma, input);
+    const workdays = built.days.filter((day) => day.isScheduledWorkday);
+    return {
+      status: 'READY' as const,
+      units: built.units,
+      scheduledWorkdays: workdays.length,
+      scheduleNames: [...new Set(workdays.map((day) => {
+        const snapshot = day.scheduleSnapshot as { displayName?: string } | null;
+        return snapshot?.displayName;
+      }).filter((name): name is string => Boolean(name)))],
+      expectedReturnDate: (await expectedReturnDate(prisma, { organizationId: input.organizationId, employeeId: input.employeeId, after: built.range.endDb }))?.toISOString().slice(0, 10) ?? null,
+    };
+  } catch (error) {
+    if (error instanceof LeaveError) return { status: 'BLOCKED' as const, code: error.code, message: error.message, units: 0, scheduledWorkdays: 0, scheduleNames: [] as string[], expectedReturnDate: null };
+    throw error;
+  }
+}
+
+async function validateSubmissionEmployment(tx: Tx, input: {
+  employeeId: string;
+  from: string;
+  to: string;
+  requiredEmploymentStatus: 'PROBATIONARY' | 'REGULAR' | null;
+}) {
+  const range = validateLeaveRange(input.from, input.to);
+  const records = await tx.employmentRecord.findMany({
+    where: { employeeId: input.employeeId },
+    orderBy: { effectiveFrom: 'asc' },
+  });
+  for (const date of datesInclusive(range.start, range.end)) {
+    const dateDb = attendanceDateToDb(date);
+    const employment = records.find((record) =>
+      record.effectiveFrom <= dateDb && (!record.effectiveTo || record.effectiveTo > dateDb)
+    );
+    if (!employment) throw new LeaveError('EMPLOYMENT_GAP', 'Current or effective employment must cover the requested leave period.');
+    if (input.requiredEmploymentStatus && employment.employmentStatus !== input.requiredEmploymentStatus) {
+      throw new LeaveError('INELIGIBLE_EMPLOYMENT', 'The employment classification is not eligible for this leave type.');
+    }
+  }
+  return range;
 }
 
 async function assertMinimumContinuousService(tx: Tx, employeeId: string, months: number | null, referenceDate: Date) {
@@ -229,12 +280,16 @@ export async function submitLeaveRequest(input: {
       if (value === undefined || value === false || value === '') throw new LeaveError('ATTESTATION_REQUIRED', `Required confirmation: ${rule.label}`);
       if (rule.options && !rule.options.includes(String(value))) throw new LeaveError('INVALID_ATTESTATION', 'A leave attestation value is invalid.');
     }
-    const built = await buildRequestDays(tx, {
+    const range = await validateSubmissionEmployment(tx, {
+      employeeId: input.employeeId, from: input.from, to: input.to,
+      requiredEmploymentStatus: type.requiredEmploymentStatus,
+    });
+    const built = type.countingMode === 'CALENDAR_DAYS' ? await buildRequestDays(tx, {
       organizationId: input.organizationId, employeeId: input.employeeId,
       from: input.from, to: input.to, countingMode: type.countingMode,
       requiredEmploymentStatus: type.requiredEmploymentStatus,
-    });
-    let serviceReference = built.range.startDb;
+    }) : null;
+    let serviceReference = range.startDb;
     if (type.code === 'MATERNITY') {
       const expected = String(input.attestations?.EXPECTED_DELIVERY_DATE ?? '');
       serviceReference = validateLeaveRange(expected, expected).startDb;
@@ -242,38 +297,27 @@ export async function submitLeaveRequest(input: {
     if (!type.requiresEligibilityVerification) {
       await assertMinimumContinuousService(tx, employee.id, type.minimumServiceMonths, serviceReference);
     }
-    if (type.maximumRequestUnits && built.units > decimalNumber(type.maximumRequestUnits)) throw new LeaveError('POLICY_LIMIT', 'The request exceeds the configured leave limit.');
-    if (!type.allowsRetrospectiveFiling && built.range.startDb < attendanceDateToDb(new Date().toISOString().slice(0, 10))) {
+    if (built && type.maximumRequestUnits && built.units > decimalNumber(type.maximumRequestUnits)) throw new LeaveError('POLICY_LIMIT', 'The request exceeds the configured leave limit.');
+    if (!type.allowsRetrospectiveFiling && range.startDb < attendanceDateToDb(new Date().toISOString().slice(0, 10))) {
       throw new LeaveError('RETROSPECTIVE_NOT_ALLOWED', 'This leave type does not allow retrospective filing.');
     }
     let cycle = null;
     if (type.balanceTracked) {
-      cycle = await resolveLeaveCycle(tx, { organizationId: input.organizationId, leaveTypeId: type.id, startDate: built.range.startDb, endDate: built.range.endDb });
-      if (type.code === SICK_PERSONAL_CODE) {
-        if (!type.defaultGrantUnits) throw new LeaveError('ENTITLEMENT_UNAVAILABLE', 'The default Sick/Personal entitlement is not configured.');
-        await ensureDefaultCycleEntitlement(tx, {
-          organizationId: input.organizationId, employeeId: employee.id, leaveTypeId: type.id,
-          leaveCycleId: cycle.id, units: type.defaultGrantUnits, actorUserId: input.actorUserId,
-          reason: `Automatic ${cycle.name} Sick/Personal entitlement`,
-        });
-        const [balance, pending] = await Promise.all([
-          ledgerBalance(tx, employee.id, type.id, cycle.id),
-          tx.leaveRequest.aggregate({ where: { employeeId: employee.id, leaveTypeId: type.id, leaveCycleId: cycle.id, status: LeaveRequestStatus.PENDING }, _sum: { requestedUnits: true } }),
-        ]);
-        if (balance - decimalNumber(pending._sum.requestedUnits) < built.units) throw new LeaveError('INSUFFICIENT_BALANCE', 'Insufficient leave balance after pending requests.');
-      }
+      cycle = await resolveLeaveCycle(tx, { organizationId: input.organizationId, leaveTypeId: type.id, startDate: range.startDb, endDate: range.endDb });
+      if (type.code === SICK_PERSONAL_CODE && !type.defaultGrantUnits) throw new LeaveError('ENTITLEMENT_UNAVAILABLE', 'The default Sick/Personal entitlement is not configured.');
     }
     const overlap = await tx.leaveRequest.findFirst({ where: {
       organizationId: input.organizationId, employeeId: employee.id,
       status: { in: [LeaveRequestStatus.PENDING, LeaveRequestStatus.APPROVED] },
-      requestedStartDate: { lte: built.range.endDb }, requestedEndDate: { gte: built.range.startDb },
+      requestedStartDate: { lte: range.endDb }, requestedEndDate: { gte: range.startDb },
     }, select: { id: true } });
     if (overlap) throw new LeaveError('OVERLAP', 'This request overlaps another pending or approved leave request.');
-    const returnDate = await expectedReturnDate(tx, { organizationId: input.organizationId, employeeId: employee.id, after: built.range.endDb });
     const request = await tx.leaveRequest.create({ data: {
       organizationId: input.organizationId, employeeId: employee.id, leaveTypeId: type.id,
-      leaveCycleId: cycle?.id ?? null, requestedStartDate: built.range.startDb, requestedEndDate: built.range.endDb,
-      requestedUnits: new Prisma.Decimal(built.units), requestCategoryCode: category, reason,
+      leaveCycleId: cycle?.id ?? null, requestedStartDate: range.startDb, requestedEndDate: range.endDb,
+      requestedUnits: built ? new Prisma.Decimal(built.units) : null,
+      calculationFinalizedAt: built ? new Date() : null,
+      requestCategoryCode: category, reason,
       eligibilityAttestation: input.attestations ?? Prisma.JsonNull,
       policySnapshot: { ...policy, minimumServiceMonths: type.minimumServiceMonths, maximumRequestUnits: type.maximumRequestUnits?.toString() ?? null, maximumApprovedOccurrences: type.maximumApprovedOccurrences, occurrenceLimitScope: type.occurrenceLimitScope, requiresEligibilityVerification: type.requiresEligibilityVerification, policyReference: type.policyReference },
       leaveTypeCodeSnapshot: type.code, leaveTypeNameSnapshot: type.name, leavePaidSnapshot: type.isPaid,
@@ -281,9 +325,9 @@ export async function submitLeaveRequest(input: {
       employeeNameSnapshot: `${employee.firstName} ${employee.lastName}`.trim(),
       organizationNameSnapshot: organization.name,
       organizationTimeZoneSnapshot: organization.timeZone,
-      expectedReturnDateSnapshot: returnDate,
-      days: { create: built.days.map((day) => ({ ...day, employmentRecordId: day.employmentRecordId! })) },
-      audits: { create: { organizationId: input.organizationId, actorUserId: input.actorUserId, action: LeaveRequestAuditAction.SUBMITTED, details: { category, units: built.units } } },
+      expectedReturnDateSnapshot: null,
+      ...(built ? { days: { create: built.days.map((day) => ({ ...day, employmentRecordId: day.employmentRecordId! })) } } : {}),
+      audits: { create: { organizationId: input.organizationId, actorUserId: input.actorUserId, action: LeaveRequestAuditAction.SUBMITTED, details: { category, units: built?.units ?? null, calculationStatus: built ? 'FINALIZED' : 'PENDING_SCHEDULE' } } },
     } });
     return { id: request.id };
   };
@@ -372,7 +416,18 @@ export async function reviewLeaveRequest(input: { organizationId: string; actorU
     const checks = input.eligibilityChecks ?? {};
     if (request.leaveType.requiresEligibilityVerification && !checks.ELIGIBILITY_CONFIRMED) throw new LeaveError('ELIGIBILITY_REQUIRED', 'Explicit policy eligibility verification is required.');
     if (request.leaveType.code === 'MATERNITY' && !checks.SSS_SUPPORT_CONFIRMED) throw new LeaveError('SSS_REQUIRED', 'SSS approval/support must be explicitly verified for maternity leave.');
-    const needed = applicableDocumentRules(policy.documents, request.requestCategoryCode, decimalNumber(request.requestedUnits));
+    const built = await buildRequestDays(tx, {
+      organizationId: input.organizationId,
+      employeeId: request.employeeId,
+      from: request.requestedStartDate.toISOString().slice(0, 10),
+      to: request.requestedEndDate.toISOString().slice(0, 10),
+      countingMode: request.countingModeSnapshot,
+      requiredEmploymentStatus: request.leaveType.requiredEmploymentStatus,
+    });
+    if (request.leaveType.maximumRequestUnits && built.units > decimalNumber(request.leaveType.maximumRequestUnits)) {
+      throw new LeaveError('POLICY_LIMIT', 'The request exceeds the configured leave limit.');
+    }
+    const needed = applicableDocumentRules(policy.documents, request.requestCategoryCode, built.units);
     for (const rule of needed) {
       const hasDocument = request.documents.some((document) => document.kindCode === rule.kindCode);
       const verifiedAlternative = rule.satisfaction === 'DOCUMENT_OR_HR_VERIFICATION' && checks[`DOCUMENT_${rule.kindCode}_VERIFIED`];
@@ -411,23 +466,33 @@ export async function reviewLeaveRequest(input: { organizationId: string; actorU
         });
       }
       const balance = await ledgerBalance(tx, request.employeeId, request.leaveTypeId, request.leaveCycleId);
-      const units = decimalNumber(request.requestedUnits);
+      const units = built.units;
       if (balance < units) throw new LeaveError('INSUFFICIENT_BALANCE', 'Insufficient leave balance at approval.');
       await tx.leaveLedgerEntry.create({ data: {
         organizationId: input.organizationId, employeeId: request.employeeId, leaveTypeId: request.leaveTypeId, leaveCycleId: request.leaveCycleId,
-        leaveRequestId: request.id, entryType: LeaveLedgerEntryType.APPROVED_LEAVE, amountUnits: request.requestedUnits.negated(),
+        leaveRequestId: request.id, entryType: LeaveLedgerEntryType.APPROVED_LEAVE, amountUnits: new Prisma.Decimal(units).negated(),
         reason: `Approved leave: ${remarks}`, actorUserId: input.actorUserId, beforeBalance: balance, afterBalance: balance - units,
       } });
+    }
+    const returnDate = await expectedReturnDate(tx, { organizationId: input.organizationId, employeeId: request.employeeId, after: request.requestedEndDate });
+    const existingDayCount = await tx.leaveRequestDay.count({ where: { leaveRequestId: request.id } });
+    if (existingDayCount === 0) {
+      await tx.leaveRequestDay.createMany({ data: built.days.map((day) => ({
+        ...day,
+        leaveRequestId: request.id,
+        employmentRecordId: day.employmentRecordId!,
+      })) });
     }
     await tx.leaveRequest.update({ where: { id: request.id }, data: {
       status: LeaveRequestStatus.APPROVED, reviewedAt: new Date(), reviewedById: input.actorUserId, reviewerRemarks: remarks,
       reviewerNameSnapshot: reviewer.name,
+      requestedUnits: new Prisma.Decimal(built.units), calculationFinalizedAt: new Date(), expectedReturnDateSnapshot: returnDate,
       eligibilityVerifiedAt: new Date(), eligibilityVerifiedById: input.actorUserId, eligibilityVerification: checks,
       attendanceSyncStatus: LeaveAttendanceSyncStatus.PENDING,
     } });
     await tx.leaveRequestAudit.createMany({ data: [
       { organizationId: input.organizationId, leaveRequestId: request.id, actorUserId: input.actorUserId, action: LeaveRequestAuditAction.ELIGIBILITY_VERIFIED, details: checks },
-      { organizationId: input.organizationId, leaveRequestId: request.id, actorUserId: input.actorUserId, action: LeaveRequestAuditAction.APPROVED, details: { remarks } },
+      { organizationId: input.organizationId, leaveRequestId: request.id, actorUserId: input.actorUserId, action: LeaveRequestAuditAction.APPROVED, details: { remarks, finalUnits: built.units } },
     ] });
     return { approved: true, rejected: false, requestId: request.id };
   };

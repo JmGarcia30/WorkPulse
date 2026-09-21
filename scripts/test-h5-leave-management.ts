@@ -67,6 +67,8 @@ async function main() {
       await tx.employmentRecord.updateMany({ where: { employeeId: employeeE.id }, data: { employmentStatus: EmploymentStatus.PROBATIONARY } });
       const employeeAUser = await tx.user.create({ data: { organizationId: org.id, name: 'Employee A', email: `${marker}-a-login@test.invalid`, passwordHash: 'test', role: Role.EMPLOYEE } });
       await tx.employeeAccount.create({ data: { organizationId: org.id, userId: employeeAUser.id, employeeId: employeeA.id, status: 'ACTIVE', activatedAt: new Date(), createdById: hr.id } });
+      const employeeDUser = await tx.user.create({ data: { organizationId: org.id, name: 'Employee D', email: `${marker}-d-login@test.invalid`, passwordHash: 'test', role: Role.EMPLOYEE } });
+      await tx.employeeAccount.create({ data: { organizationId: org.id, userId: employeeDUser.id, employeeId: employeeD.id, status: 'ACTIVE', activatedAt: new Date(), createdById: hr.id } });
       const scheduleGroup = await tx.workScheduleGroup.create({ data: { organizationId: org.id, scheduleKey: marker, name: 'Daily', createdById: hr.id } });
       const version = await tx.workScheduleVersion.create({ data: { scheduleGroupId: scheduleGroup.id, version: 1, displayName: 'Daily', createdById: hr.id, days: { create: [1,2,3,4,5,6,7].map((isoWeekday) => ({ isoWeekday, isWorkday: true, expectedStartSecond: 28800, expectedEndSecond: 61200 })) } } });
       for (const target of [employeeA, employeeB, employeeC, employeeE, employeeF]) await tx.employeeScheduleAssignment.create({ data: { organizationId: org.id, employeeId: target.id, scheduleVersionId: version.id, effectiveFrom: date('2027-01-01'), createdById: hr.id } });
@@ -85,10 +87,25 @@ async function main() {
       ok(await dbRejected(tx, 'same_type_cycle', () => tx.leaveCycle.create({ data: { organizationId: org.id, leaveTypeId: sickType.id, code: 'OVERLAP', name: 'Overlap', startDate: date('2027-06-01'), endDate: date('2028-05-31') } })), 'same-type overlapping cycle is rejected');
       ok(await tx.leaveLedgerEntry.count({ where: { employeeId: employeeB.id } }) === 0, 'Employee B receives no automatic grant');
 
+      const noSchedule = await submitLeaveRequest({ organizationId: org.id, employeeId: employeeD.id, actorUserId: employeeDUser.id, leaveTypeId: sickType.id, from: '2027-07-05', to: '2027-07-06', categoryCode: 'PERSONAL', reason: 'No schedule yet' }, tx);
+      const uncalculated = await tx.leaveRequest.findUniqueOrThrow({ where: { id: noSchedule.id } });
+      ok(uncalculated.status === 'PENDING' && uncalculated.requestedUnits === null, 'employee without a schedule can file a pending request');
+      ok(await tx.leaveRequestDay.count({ where: { leaveRequestId: noSchedule.id } }) === 0, 'submission without schedule creates no provisional leave days');
+      ok(await tx.leaveLedgerEntry.count({ where: { employeeId: employeeD.id } }) === 0, 'submission without schedule creates no grant or debit');
+      ok(await tx.attendanceEvent.count({ where: { employeeId: employeeD.id } }) === 0 && await tx.dailyAttendanceRecord.count({ where: { employeeId: employeeD.id } }) === 0, 'submission performs no attendance mutation');
+      ok(await rejected(() => reviewLeaveRequest({ organizationId: org.id, actorUserId: hr.id, requestId: noSchedule.id, decision: 'APPROVE', remarks: 'Not yet' }, tx), 'NO_SCHEDULE'), 'approval without schedule returns NO_SCHEDULE');
+      ok((await tx.leaveRequest.findUniqueOrThrow({ where: { id: noSchedule.id } })).status === 'PENDING', 'failed approval leaves request pending');
+      await tx.employeeScheduleAssignment.create({ data: { organizationId: org.id, employeeId: employeeD.id, scheduleVersionId: version.id, effectiveFrom: date('2027-07-01'), createdById: hr.id } });
+      await reviewLeaveRequest({ organizationId: org.id, actorUserId: hr.id, requestId: noSchedule.id, decision: 'APPROVE', remarks: 'Schedule assigned' }, tx);
+      const finalized = await tx.leaveRequest.findUniqueOrThrow({ where: { id: noSchedule.id }, include: { days: true } });
+      ok(finalized.status === 'APPROVED' && finalized.requestedUnits?.equals(2) === true && finalized.days.length === 2, 'approval after assignment finalizes units and day snapshots');
+      ok(await tx.leaveLedgerEntry.count({ where: { employeeId: employeeD.id, grantSource: 'DEFAULT_CYCLE_ENTITLEMENT' } }) === 1 && await tx.leaveLedgerEntry.count({ where: { leaveRequestId: noSchedule.id, entryType: 'APPROVED_LEAVE' } }) === 1, 'approval creates one entitlement and one debit');
+
       const base = { organizationId: org.id, employeeId: employeeA.id, actorUserId: employeeAUser.id, leaveTypeId: sickType.id, reason: 'Test request' };
       const beforePageRead = await tx.leaveLedgerEntry.count({ where: { employeeId: employeeA.id } });
-      await getEmployeeLeaveOverviewData(tx, org.id, employeeA.id);
+      const projectedOverview = await getEmployeeLeaveOverviewData(tx, org.id, employeeA.id);
       ok(await tx.leaveLedgerEntry.count({ where: { employeeId: employeeA.id } }) === beforePageRead, 'employee leave page read never creates an entitlement grant');
+      ok(projectedOverview.balances.find((item) => item.leaveTypeCode === 'SICK_PERSONAL' && item.cycleId === sickCycle.id)?.annualEntitlement === 5, 'eligible employee sees projected five-day entitlement without a ledger write');
       ok(await rejected(() => submitLeaveRequest({ ...base, from: '2027-01-03', to: '2027-01-03', categoryCode: 'VACATION' }, tx), 'INVALID_CATEGORY'), 'unsupported category is rejected through service');
       ok(await tx.leaveLedgerEntry.count({ where: { employeeId: employeeA.id } }) === 0, 'failed submission leaves no entitlement grant');
       ok(await rejected(() => submitLeaveRequest({ ...base, employeeId: employeeE.id, actorUserId: hr.id, from: '2027-03-01', to: '2027-03-01', categoryCode: 'PERSONAL' }, tx), 'INELIGIBLE_EMPLOYMENT'), 'non-Regular employee cannot submit against the regular entitlement');
@@ -97,30 +114,32 @@ async function main() {
         submitLeaveRequest({ ...base, employeeId: employeeF.id, actorUserId: hr.id, from: '2027-03-10', to: '2027-03-10', categoryCode: 'SICK' }, tx),
         submitLeaveRequest({ ...base, employeeId: employeeF.id, actorUserId: hr.id, from: '2027-03-11', to: '2027-03-11', categoryCode: 'PERSONAL' }, tx),
       ]);
-      ok(await tx.leaveLedgerEntry.count({ where: { employeeId: employeeF.id, leaveTypeId: sickType.id, grantSource: 'DEFAULT_CYCLE_ENTITLEMENT' } }) === 1, 'concurrent entitlement initialization resolves to one grant');
+      ok(await tx.leaveLedgerEntry.count({ where: { employeeId: employeeF.id, leaveTypeId: sickType.id, grantSource: 'DEFAULT_CYCLE_ENTITLEMENT' } }) === 0, 'pending submissions do not initialize entitlement grants');
       const failureBlocker = await submitLeaveRequest({ organizationId: org.id, employeeId: employeeB.id, actorUserId: hr.id, leaveTypeId: types.get('BEREAVEMENT')!.id, from: '2027-04-01', to: '2027-04-01', categoryCode: 'PARENT', reason: 'Overlap fixture', attestations: { FULL_TIME_STATUS: true } }, tx);
-      ok(await serviceRejected(tx, 'orphan_grant', () => submitLeaveRequest({ organizationId: org.id, employeeId: employeeB.id, actorUserId: hr.id, leaveTypeId: sickType.id, from: '2027-04-01', to: '2027-04-01', categoryCode: 'PERSONAL', reason: 'Must roll back' }, tx), 'OVERLAP'), 'submission failure rolls back automatic entitlement initialization');
+      ok(await serviceRejected(tx, 'orphan_grant', () => submitLeaveRequest({ organizationId: org.id, employeeId: employeeB.id, actorUserId: hr.id, leaveTypeId: sickType.id, from: '2027-04-01', to: '2027-04-01', categoryCode: 'PERSONAL', reason: 'Must roll back' }, tx), 'OVERLAP'), 'overlapping submission is rejected without entitlement mutation');
       ok(await tx.leaveLedgerEntry.count({ where: { employeeId: employeeB.id, leaveTypeId: sickType.id } }) === 0 && Boolean(failureBlocker.id), 'failed submission leaves no orphan entitlement');
       ok(await rejected(() => submitLeaveRequest({ ...base, from: '2027-12-31', to: '2028-01-01', categoryCode: 'PERSONAL' }, tx), 'INVALID_CYCLE'), 'cross-cycle request is rejected after server cycle derivation');
       const pending = await submitLeaveRequest({ ...base, from: '2027-01-04', to: '2027-01-05', categoryCode: 'PERSONAL' }, tx);
       ok(Boolean(pending.id), 'PERSONAL request is accepted through service');
-      const grant = await tx.leaveLedgerEntry.findFirstOrThrow({ where: { employeeId: employeeA.id, leaveTypeId: sickType.id, leaveCycleId: sickCycle.id, grantSource: 'DEFAULT_CYCLE_ENTITLEMENT' } });
-      ok(grant.amountUnits.equals(5), 'eligible submission initializes the five-unit entitlement');
       const submittedSnapshot = await tx.leaveRequest.findUniqueOrThrow({ where: { id: pending.id } });
       ok(submittedSnapshot.leaveCycleId === sickCycle.id, 'server derives the applicable cycle');
-      ok(submittedSnapshot.expectedReturnDateSnapshot?.toISOString().slice(0, 10) === '2027-01-06', 'expected return uses the authoritative assigned schedule');
+      ok(submittedSnapshot.requestedUnits === null && submittedSnapshot.expectedReturnDateSnapshot === null, 'scheduled request remains pending calculation at submission');
       ok(submittedSnapshot.employeeNameSnapshot === 'A Employee' && submittedSnapshot.organizationTimeZoneSnapshot === 'Asia/Manila', 'leave form context is snapshotted at submission');
-      ok(await dbRejected(tx, 'duplicate_grant', () => tx.leaveLedgerEntry.create({ data: { organizationId: org.id, employeeId: employeeA.id, leaveTypeId: sickType.id, leaveCycleId: sickCycle.id, entryType: LeaveLedgerEntryType.GRANT, amountUnits: 5, reason: 'Duplicate', actorUserId: hr.id, grantSource: 'DEFAULT_CYCLE_ENTITLEMENT' } })), 'duplicate default grant is blocked');
-      ok(await dbRejected(tx, 'ledger_update', () => tx.leaveLedgerEntry.update({ where: { id: grant.id }, data: { reason: 'Mutated' } })), 'ledger update is rejected');
-      ok(await dbRejected(tx, 'ledger_delete', () => tx.leaveLedgerEntry.delete({ where: { id: grant.id } })), 'ledger delete is rejected');
       const reserved = await tx.leaveRequest.aggregate({ where: { employeeId: employeeA.id, status: 'PENDING' }, _sum: { requestedUnits: true } });
-      ok(reserved._sum.requestedUnits?.equals(2), 'pending request creates soft reservation');
-      ok(await rejected(() => submitLeaveRequest({ ...base, from: '2027-01-10', to: '2027-01-13', categoryCode: 'SICK' }, tx), 'INSUFFICIENT_BALANCE'), 'second pending request cannot oversubscribe balance');
+      ok(reserved._sum.requestedUnits === null, 'uncalculated pending request creates no false reservation');
+      const projectedPending = await submitLeaveRequest({ ...base, from: '2027-01-10', to: '2027-01-13', categoryCode: 'SICK' }, tx);
+      ok(Boolean(projectedPending.id), 'pending filing is not rejected on a provisional balance calculation');
+      await withdrawLeaveRequest({ organizationId: org.id, employeeId: employeeA.id, actorUserId: employeeAUser.id, requestId: projectedPending.id }, tx);
       await withdrawLeaveRequest({ organizationId: org.id, employeeId: employeeA.id, actorUserId: employeeAUser.id, requestId: pending.id }, tx);
       ok(await tx.leaveLedgerEntry.count({ where: { leaveRequestId: pending.id } }) === 0, 'withdrawal releases reservation without ledger debit');
       const personal = await submitLeaveRequest({ ...base, from: '2027-01-04', to: '2027-01-05', categoryCode: 'PERSONAL' }, tx);
-      ok(await tx.leaveLedgerEntry.count({ where: { employeeId: employeeA.id, leaveTypeId: sickType.id, grantSource: 'DEFAULT_CYCLE_ENTITLEMENT' } }) === 1, 'second request does not create another entitlement');
+      ok(await tx.leaveLedgerEntry.count({ where: { employeeId: employeeA.id, leaveTypeId: sickType.id, grantSource: 'DEFAULT_CYCLE_ENTITLEMENT' } }) === 0, 'replacement pending request still creates no entitlement');
       await reviewLeaveRequest({ organizationId: org.id, actorUserId: hr.id, requestId: personal.id, decision: 'APPROVE', remarks: 'Approved' }, tx);
+      const grant = await tx.leaveLedgerEntry.findFirstOrThrow({ where: { employeeId: employeeA.id, leaveTypeId: sickType.id, leaveCycleId: sickCycle.id, grantSource: 'DEFAULT_CYCLE_ENTITLEMENT' } });
+      ok(grant.amountUnits.equals(5), 'approval initializes the five-unit entitlement');
+      ok(await dbRejected(tx, 'duplicate_grant', () => tx.leaveLedgerEntry.create({ data: { organizationId: org.id, employeeId: employeeA.id, leaveTypeId: sickType.id, leaveCycleId: sickCycle.id, entryType: LeaveLedgerEntryType.GRANT, amountUnits: 5, reason: 'Duplicate', actorUserId: hr.id, grantSource: 'DEFAULT_CYCLE_ENTITLEMENT' } })), 'duplicate default grant is blocked');
+      ok(await dbRejected(tx, 'ledger_update', () => tx.leaveLedgerEntry.update({ where: { id: grant.id }, data: { reason: 'Mutated' } })), 'ledger update is rejected');
+      ok(await dbRejected(tx, 'ledger_delete', () => tx.leaveLedgerEntry.delete({ where: { id: grant.id } })), 'ledger delete is rejected');
       ok(await tx.leaveLedgerEntry.count({ where: { leaveRequestId: personal.id, entryType: 'APPROVED_LEAVE' } }) === 1, 'PERSONAL approval creates exactly one debit');
       await tx.employee.update({ where: { id: employeeA.id }, data: { firstName: 'Changed' } }); await tx.user.update({ where: { id: hr.id }, data: { name: 'Changed Reviewer' } });
       const stableForm = await tx.leaveRequest.findUniqueOrThrow({ where: { id: personal.id } });
@@ -166,7 +185,7 @@ async function main() {
       ok(await rejected(() => reviewLeaveRequest({ organizationId: org.id, actorUserId: hr.id, requestId: gapMaternity.id, decision: 'APPROVE', remarks: 'Verify gap', eligibilityChecks: { ELIGIBILITY_CONFIRMED: true, SSS_SUPPORT_CONFIRMED: true, DOCUMENT_SSS_SUPPORT_VERIFIED: true } }, tx), 'INSUFFICIENT_SERVICE'), 'minimum-service approval rejects history separated by an employment gap');
       ok(await rejected(() => submitLeaveRequest({ ...maternityInput, from: '2028-01-01', to: '2028-04-15' }, tx), 'POLICY_LIMIT'), 'maternity above 105 calendar days is rejected');
       const maternity = await submitLeaveRequest({ ...maternityInput, from: '2028-01-01', to: '2028-04-14' }, tx);
-      ok((await tx.leaveRequest.findUniqueOrThrow({ where: { id: maternity.id } })).requestedUnits.equals(105), 'maternity charges 105 calendar days');
+      ok((await tx.leaveRequest.findUniqueOrThrow({ where: { id: maternity.id } })).requestedUnits?.equals(105) === true, 'maternity charges 105 calendar days');
       ok(await rejected(() => reviewLeaveRequest({ organizationId: org.id, actorUserId: hr.id, requestId: maternity.id, decision: 'APPROVE', remarks: 'Generic', eligibilityChecks: { ELIGIBILITY_CONFIRMED: true } }, tx), 'SSS_REQUIRED'), 'generic approval cannot bypass SSS verification');
       await reviewLeaveRequest({ organizationId: org.id, actorUserId: hr.id, requestId: maternity.id, decision: 'APPROVE', remarks: 'SSS verified', eligibilityChecks: { ELIGIBILITY_CONFIRMED: true, SSS_SUPPORT_CONFIRMED: true, DOCUMENT_SSS_SUPPORT_VERIFIED: true } }, tx);
       ok((await tx.leaveRequest.findUniqueOrThrow({ where: { id: maternity.id } })).status === 'APPROVED', 'separate SSS verification permits approval');

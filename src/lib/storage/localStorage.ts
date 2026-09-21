@@ -42,6 +42,9 @@ export const localStorageProvider: StorageProvider = {
     else if (sanitizedKey.endsWith('.doc')) contentType = 'application/msword';
     else if (sanitizedKey.endsWith('.docx'))
       contentType = 'application/vnd.openxmlformats-officedocument.wordprocessingml.document';
+    else if (sanitizedKey.endsWith('.png')) contentType = 'image/png';
+    else if (sanitizedKey.endsWith('.jpg') || sanitizedKey.endsWith('.jpeg')) contentType = 'image/jpeg';
+    else if (sanitizedKey.endsWith('.webp')) contentType = 'image/webp';
 
     return { buffer, contentType };
   },

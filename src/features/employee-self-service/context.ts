@@ -4,6 +4,7 @@ import { cache } from 'react';
 import { EmployeeAccountStatus, EmployeeStatus, Role } from '@prisma/client';
 import { getSession } from '@/lib/auth/session';
 import { prisma } from '@/lib/db/prisma';
+import { requireRequestTenant } from '@/lib/tenant/server';
 
 export interface EmployeeSelfContext {
   user: { id: string; name: string; email: string; role: Role };
@@ -20,8 +21,9 @@ export class EmployeeSelfAccessError extends Error {
 }
 
 export const requireEmployeeSelfContext = cache(async (): Promise<EmployeeSelfContext> => {
-  const session = await getSession();
+  const [session, tenant] = await Promise.all([getSession(), requireRequestTenant()]);
   if (!session) throw new EmployeeSelfAccessError('UNAUTHENTICATED');
+  if (session.organizationId !== tenant.organizationId) throw new EmployeeSelfAccessError('FORBIDDEN');
   const user = await prisma.user.findUnique({
     where: { id: session.userId },
     select: {

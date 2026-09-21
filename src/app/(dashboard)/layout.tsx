@@ -1,107 +1,17 @@
 import { redirect } from 'next/navigation';
-import { getSession } from '@/lib/auth/session';
-import { logoutAction } from '@/lib/auth/actions';
-import { prisma } from '@/lib/db/prisma';
 import { LogOut } from 'lucide-react';
+import { Role } from '@prisma/client';
+import { logoutAction } from '@/lib/auth/actions';
+import { requireBackOfficeContext } from '@/lib/auth/guards';
+import { getOrganizationBranding } from '@/features/organization-branding/read-model';
+import { TenantTheme } from '@/components/layout/TenantTheme';
 import { DashboardSidebarNav } from '@/components/layout/DashboardSidebarNav';
 import { DashboardHeader } from '@/components/layout/DashboardHeader';
-import { Role } from '@prisma/client';
-import { requireBackOfficeContext } from '@/lib/auth/guards';
 
-export default async function DashboardLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
-  const session = await getSession();
-  if (session?.role === Role.EMPLOYEE) redirect('/employee');
-  let user;
-  try { user = await requireBackOfficeContext(); } catch { redirect('/login'); }
-
-  // Fetch organization details
-  const org = await prisma.organization.findUnique({
-    where: { id: user.organizationId },
-    select: { name: true, slug: true },
-  });
-
-  const orgName = org?.name || 'Workspace';
-
-  // Compute initials for avatar
-  const initials = user.name
-    ? user.name
-        .split(' ')
-        .map((n) => n[0])
-        .slice(0, 2)
-        .join('')
-        .toUpperCase()
-    : 'WP';
-
-  return (
-    <div className="min-h-screen bg-[#F4F5F7] text-[#181A1C] flex">
-      {/* Sidebar Navigation */}
-      <aside className="w-64 border-r border-[#E8EAED] bg-white flex flex-col justify-between shrink-0 sticky top-0 h-screen z-30 shadow-2xs">
-        <div className="flex-1 overflow-y-auto">
-          {/* Logo & Org Context */}
-          <div className="p-5 border-b border-[#E8EAED]">
-            <div className="flex items-center gap-3">
-              <div className="relative flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-[#181A1C] text-white font-black text-sm shadow-sm">
-                WP
-                <span className="absolute -top-1 -right-1 h-3 w-3 rounded-full bg-[#22C55E] border-2 border-white" />
-              </div>
-              <div className="min-w-0">
-                <h2 className="text-sm font-extrabold tracking-tight text-[#181A1C] truncate">
-                  WorkPulse
-                </h2>
-                <p className="text-[11px] font-medium text-[#6B7280] truncate">
-                  {orgName}
-                </p>
-              </div>
-            </div>
-          </div>
-
-          {/* Interactive Navigation */}
-          <DashboardSidebarNav orgSlug={org?.slug} />
-        </div>
-
-        {/* User Account Footer */}
-        <div className="p-3 border-t border-[#E8EAED] bg-[#F8F9FA]/60">
-          <div className="flex items-center justify-between p-2 rounded-2xl border border-[#E8EAED] bg-white shadow-2xs">
-            <div className="flex items-center gap-2.5 min-w-0">
-              <div className="relative flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-[#181A1C] text-white font-bold text-xs shadow-2xs">
-                {initials}
-                <span className="absolute -bottom-0.5 -right-0.5 h-2 w-2 rounded-full bg-[#22C55E] ring-1 ring-white" />
-              </div>
-              <div className="min-w-0 truncate">
-                <p className="text-xs font-bold truncate text-[#181A1C]">
-                  {user.name}
-                </p>
-                <span className="inline-block rounded-md bg-[#F4F5F7] px-1.5 py-0.5 text-[9px] font-bold tracking-wide text-[#6B7280]">
-                  {user.role}
-                </span>
-              </div>
-            </div>
-
-            <form action={logoutAction}>
-              <button
-                type="submit"
-                className="p-1.5 rounded-lg text-[#6B7280] hover:text-rose-600 hover:bg-rose-50 transition-colors"
-                title="Sign out"
-              >
-                <LogOut className="h-4 w-4" />
-              </button>
-            </form>
-          </div>
-        </div>
-      </aside>
-
-      {/* Main Content Area */}
-      <div className="flex-1 flex flex-col min-w-0">
-        <DashboardHeader orgName={orgName} />
-        <main className="p-6 sm:p-8 flex-1 overflow-y-auto max-w-7xl w-full mx-auto">
-          {children}
-        </main>
-      </div>
-    </div>
-  );
+export default async function DashboardLayout({ children }: { children: React.ReactNode }) {
+  let user; try { user = await requireBackOfficeContext(); } catch { redirect('/login'); }
+  if (user.role === Role.EMPLOYEE) redirect('/employee');
+  const brand = await getOrganizationBranding(user.organizationId); if (!brand) redirect('/login');
+  const initials = user.name.split(' ').map(n => n[0]).slice(0, 2).join('').toUpperCase();
+  return <TenantTheme branding={brand}><div className="flex min-h-screen bg-[var(--wp-background)] text-[var(--wp-text)]"><aside className="sticky top-0 z-30 hidden h-screen w-60 shrink-0 flex-col border-r bg-[var(--wp-surface)] md:flex"><div className="border-b px-5 py-5"><div className="flex items-center gap-3">{brand.hasLogo ? <img alt="" className="h-9 w-9 object-contain" src="/api/branding/logo" /> : <span className="flex h-9 w-9 items-center justify-center bg-[var(--tenant-primary)] text-xs font-black text-[var(--tenant-primary-foreground)]">{brand.displayName.slice(0, 2).toUpperCase()}</span>}<div className="min-w-0"><p className="truncate text-sm font-bold">{brand.displayName}</p><p className="text-[10px] font-semibold uppercase tracking-wider text-[var(--wp-text-muted)]">Powered by WorkPulse</p></div></div></div><div className="flex-1 overflow-y-auto"><DashboardSidebarNav orgSlug={brand.slug} /></div><div className="border-t p-4"><div className="flex items-center gap-3"><span className="flex h-8 w-8 items-center justify-center bg-[var(--wp-surface-subtle)] text-xs font-bold">{initials}</span><div className="min-w-0 flex-1"><p className="truncate text-xs font-bold">{user.name}</p><p className="truncate text-[10px] text-[var(--wp-text-muted)]">{user.role.replaceAll('_', ' ')}</p></div><form action={logoutAction}><button title="Sign out" className="p-2 text-[var(--wp-text-muted)] hover:text-[var(--wp-danger)]"><LogOut className="h-4 w-4" /></button></form></div></div></aside><div className="min-w-0 flex-1"><DashboardHeader orgName={brand.displayName} /><main className="mx-auto w-full max-w-[92rem] p-5 sm:p-7 lg:p-9">{children}</main></div></div></TenantTheme>;
 }
-

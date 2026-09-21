@@ -310,6 +310,8 @@ model Organization {
   leaveRequestAudits      LeaveRequestAudit[]
   leaveDocuments          LeaveDocument[]
   leaveRequestDays        LeaveRequestDay[]
+  branding                OrganizationBranding?
+  brandingAudits          OrganizationBrandingAudit[]
 }
 
 model User {
@@ -349,8 +351,42 @@ model User {
   leaveLedgerEntries           LeaveLedgerEntry[]
   leaveRequestAudits           LeaveRequestAudit[]
   leaveDocumentsUploaded       LeaveDocument[]
+  organizationBrandingAudits   OrganizationBrandingAudit[]
 
   @@index([organizationId])
+}
+
+model OrganizationBranding {
+  id                    String   @id @default(cuid())
+  organizationId        String   @unique
+  displayName           String?
+  tagline               String?
+  primaryColor          String?
+  accentColor           String?
+  logoStorageKey        String?
+  loginImageStorageKey  String?
+  address               String?  @db.Text
+  contactEmail          String?
+  contactPhone          String?
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+}
+
+model OrganizationBrandingAudit {
+  id             String   @id @default(cuid())
+  organizationId String
+  actorUserId    String
+  action         String
+  details        Json?
+  createdAt      DateTime @default(now())
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Restrict)
+  actor        User         @relation(fields: [actorUserId], references: [id], onDelete: Restrict)
+
+  @@index([organizationId, createdAt])
+  @@index([actorUserId])
 }
 
 model Job {
@@ -1004,7 +1040,8 @@ model LeaveRequest {
   leaveCycleId            String?
   requestedStartDate      DateTime                  @db.Date
   requestedEndDate        DateTime                  @db.Date
-  requestedUnits          Decimal                   @db.Decimal(10, 4)
+  requestedUnits          Decimal?                  @db.Decimal(10, 4)
+  calculationFinalizedAt  DateTime?
   requestCategoryCode     String?
   reason                  String                    @db.Text
   status                  LeaveRequestStatus        @default(PENDING)

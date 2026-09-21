@@ -1,12 +1,5 @@
 import type { Metadata } from 'next';
-import { Plus_Jakarta_Sans } from 'next/font/google';
 import './globals.css';
-
-const fontSans = Plus_Jakarta_Sans({
-  subsets: ['latin'],
-  variable: '--font-sans',
-  display: 'swap',
-});
 
 export const metadata: Metadata = {
   title: 'WorkPulse — Workforce Operations & HR Platform',
@@ -21,12 +14,9 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className="h-full antialiased">
-      <body
-        className={`min-h-full flex flex-col bg-[#F4F5F7] text-[#181A1C] ${fontSans.className}`}
-      >
+      <body className="min-h-full flex flex-col">
         {children}
       </body>
     </html>
   );
 }
-
