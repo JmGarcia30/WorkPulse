@@ -33,6 +33,11 @@ export function tenantOrigin(slug: string) {
   return `${protocol}://${slug}.${root}`;
 }
 
+export function databaseSlugForTenant(slug: string) {
+  const root = normalizeHostname(rootDomain());
+  return (root === 'localhost' || root === '127.0.0.1') && slug === 'saga' ? 'st-aloysius' : slug;
+}
+
 export function publicOrigin() {
   return process.env.PLATFORM_PUBLIC_ORIGIN || 'http://localhost:3000';
 }

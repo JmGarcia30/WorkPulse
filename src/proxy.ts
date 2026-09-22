@@ -15,13 +15,17 @@ export function proxy(request: NextRequest) {
     return NextResponse.redirect(new URL(`${request.nextUrl.protocol}//app.${rootDomain()}`));
   }
 
+  if (classification.kind === 'public' && pathname === '/workspace-discovery') {
+    return NextResponse.redirect(new URL(`${request.nextUrl.protocol}//app.${rootDomain()}`));
+  }
+
   if (classification.kind === 'discovery') {
     if (pathname === '/' || pathname === '/login') {
-      const url = request.nextUrl.clone(); url.pathname = '/';
+      const url = request.nextUrl.clone(); url.pathname = '/workspace-discovery';
       return NextResponse.rewrite(url);
     }
     if (pathname.startsWith('/dashboard') || pathname.startsWith('/employee')) {
-      const url = request.nextUrl.clone(); url.pathname = '/_workspace';
+      const url = request.nextUrl.clone(); url.pathname = '/';
       return NextResponse.redirect(url);
     }
   }

@@ -32,6 +32,7 @@
 * { border-color: var(--wp-border); }
 html { background: var(--wp-background); }
 body { min-height: 100vh; background: var(--wp-background); color: var(--wp-text); font-family: var(--font-workpulse); -webkit-font-smoothing: antialiased; }
+html { scroll-behavior: smooth; }
 :focus-visible { outline: 3px solid color-mix(in srgb, var(--wp-focus) 55%, transparent); outline-offset: 2px; }
 ::selection { background: color-mix(in srgb, var(--tenant-accent) 24%, white); }
 

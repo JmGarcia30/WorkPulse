@@ -4,7 +4,7 @@ import { cache } from 'react';
 import { headers } from 'next/headers';
 import { getOrganizationBranding } from '@/features/organization-branding/read-model';
 import { measureDevelopment } from '@/lib/performance/diagnostics';
-import { parsePlatformHost } from './host';
+import { databaseSlugForTenant, parsePlatformHost } from './host';
 
 export const resolveRequestTenant = cache(async () => measureDevelopment('tenant resolution', async () => {
   const requestHeaders = await headers();
@@ -17,7 +17,7 @@ export const resolveRequestTenant = cache(async () => measureDevelopment('tenant
 
 export const getOrganizationBrandingBySlug = cache(async (slug: string) => {
   const { prisma } = await import('@/lib/db/prisma');
-  const organization = await prisma.organization.findUnique({ where: { slug }, select: { id: true } });
+  const organization = await prisma.organization.findUnique({ where: { slug: databaseSlugForTenant(slug) }, select: { id: true } });
   return organization ? getOrganizationBranding(organization.id) : null;
 });
 

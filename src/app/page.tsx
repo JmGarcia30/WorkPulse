@@ -1,1082 +1,128 @@
 import Link from 'next/link';
-import {
-  ArrowRight,
-  BriefcaseBusiness,
-  Building2,
-  CalendarCheck2,
-  Check,
-  ChevronRight,
-  Clock3,
-  FileSearch,
-  Fingerprint,
-  History,
-  KeyRound,
-  Lock,
-  Menu,
-  Server,
-  ShieldCheck,
-  Sparkles,
-  UserCheck,
-  UsersRound,
-} from 'lucide-react';
+import { ArrowRight, BriefcaseBusiness, CalendarCheck2, Check, Clock3, FileSearch, Fingerprint, History, KeyRound, Lock, ScanText, Server, UserCheck, UsersRound } from 'lucide-react';
 import { discoveryOrigin } from '@/lib/tenant/host';
+import { LandingNavbar } from './landing-navbar';
 import styles from './landing.module.css';
 
 const lifecycleStages = [
-  {
-    number: '01',
-    title: 'Hiring',
-    status: 'Live' as const,
-    copy: 'AI-assisted resume parsing, requirement matching, and interview pipelines feeding directly into onboarding.',
-    tags: ['Resume Parsing', 'Applicant Tracking', 'Interview Workflow'],
-  },
-  {
-    number: '02',
-    title: 'Active Employment',
-    status: 'Live' as const,
-    copy: 'Centralized employee records, probation tracking, schedule-aware attendance, and leave management.',
-    tags: ['Employee Dossiers', 'Probation Milestones', 'Attendance & Leave'],
-  },
-  {
-    number: '03',
-    title: 'Exit',
-    status: 'Planned' as const,
-    copy: 'A structured post-employment transition framework for clearance, asset handover, and final record archiving.',
-    tags: ['Clearance Workflow', 'Asset Handover', 'Post-Employment Records'],
-  },
+  { number: '01', title: 'Hiring', description: 'Recruit candidates, review qualifications, manage interviews, and move successful applicants into onboarding.' },
+  { number: '02', title: 'Active Employment', description: 'Manage employee records, attendance, leave, probation, and employee self-service in one place.' },
+  { number: '03', title: 'Exit', description: 'Support the transition out of the organization through structured separation and record handling.' },
 ] as const;
 
 const faqItems = [
-  {
-    question: 'What is WorkPulse?',
-    answer:
-      'WorkPulse is a multi-tenant workforce management and HR platform built for schools, educational institutions, and enterprises. It unifies the employee journey—from recruitment and applicant tracking through employee records, probation evaluation, schedule-aware attendance, leave management, and employee self-service.',
-  },
-  {
-    question: 'Can each organization have its own workspace?',
-    answer:
-      'Yes. Each organization operates on its own dedicated WorkPulse subdomain (for example, saga.workpulse.com). The platform enforces tenant isolation through organizationId scoping and server-side authorization so that organizational data remains strictly segregated.',
-  },
-  {
-    question: 'Can organizations customize their branding?',
-    answer:
-      'Yes. Organization Admins can set their organization’s legal display name, official logo, and primary and accent brand colors to match their institution’s identity across both administrative and employee-facing views.',
-  },
-  {
-    question: 'Does AI make hiring decisions?',
-    answer:
-      'No. AI assists with document parsing and requirement matching to highlight relevant qualifications from candidate resumes. Hiring authority and final employment decisions remain strictly in the hands of HR Admins and Hiring Managers.',
-  },
-  {
-    question: 'Can employees access WorkPulse?',
-    answer:
-      'Yes. Through Employee Self-Service (ESS), staff and faculty can securely access their individual profiles, view scheduled shifts and attendance logs, and submit leave requests directly from any web browser without access to administrative dashboards.',
-  },
-  {
-    question: 'Which modules are available now?',
-    answer:
-      'The currently live modules include AI-assisted recruitment, applicant tracking, interview workflows, digital onboarding, employee records, probation management, schedule-aware attendance, leave management, and Employee Self-Service (ESS).',
-  },
-  {
-    question: 'Which features are planned for future releases?',
-    answer:
-      'Planned roadmap modules include H6 Payroll calculation and payslip distribution, RFID hardware clock-in integration, Workforce Analytics reporting, and structured Exit / Post-Employment management.',
-  },
+  ['What is WorkPulse?', 'WorkPulse is a multi-tenant workforce platform that connects recruitment, employee records, employment management, attendance, leave, and employee self-service.'],
+  ['Can each organization have its own workspace?', 'Yes. Each organization operates in its own WorkPulse workspace with server-enforced organization boundaries.'],
+  ['Can organizations customize their branding?', 'Yes. Organizations can use their own display name, logo, primary color, and accent color within the WorkPulse platform structure.'],
+  ['Does AI make hiring decisions?', 'No. AI helps organize resume information and compare evidence with job requirements. HR staff and Hiring Managers review the evidence and make the final decision.'],
+  ['Can employees access WorkPulse?', 'Yes. Employee Self-Service lets employees view their profile, attendance, and leave requests without access to administrative tools.'],
+  ['Which modules are available now?', 'Current modules include AI-assisted recruitment, applicant tracking, interview workflows, digital onboarding, employee records, probation and employment management, attendance, leave management, and Employee Self-Service.'],
+  ['Which features are planned?', 'Payroll, Workforce Analytics, RFID hardware integration, and Exit / Post-Employment are planned and are not currently available.'],
 ] as const;
 
-function BrandWordmark() {
-  return (
-    <Link href="/" className={styles.brand} aria-label="WorkPulse Home">
-      <span className={styles.brandMonogram} aria-hidden="true">
-        W
-      </span>
-      <span>WorkPulse</span>
-    </Link>
-  );
+function Brand() {
+  return <Link href="/" className={styles.brand} aria-label="WorkPulse home"><span className={styles.brandMonogram}>W</span><span>WorkPulse</span></Link>;
 }
 
-function Navbar({ workspaceUrl }: { workspaceUrl: string }) {
-  return (
-    <header className={styles.header}>
-      <div className={styles.navbar}>
-        <BrandWordmark />
-
-        <nav aria-label="Primary navigation" className={styles.desktopNav}>
-          <Link href="#features">Features</Link>
-          <Link href="#lifecycle">How It Works</Link>
-          <Link href="#security">Security</Link>
-          <Link href="/features">Modules</Link>
-        </nav>
-
-        <div className={styles.navActions}>
-          <a href={workspaceUrl} className={styles.navGhostBtn}>
-            Find Workspace / Sign In
-          </a>
-          <Link href="/request-demo" className={styles.navPrimaryBtn}>
-            <span>Request Demo</span>
-            <ArrowRight size={14} />
-          </Link>
-        </div>
-
-        <details className={styles.mobileMenu}>
-          <summary aria-label="Toggle navigation menu">
-            <Menu size={20} strokeWidth={2} />
-          </summary>
-          <nav aria-label="Mobile navigation" className={styles.mobilePanel}>
-            <Link href="#features">Features</Link>
-            <Link href="#lifecycle">How It Works</Link>
-            <Link href="#security">Security</Link>
-            <Link href="/features">All Capabilities</Link>
-            <a href={workspaceUrl}>Find Workspace / Sign In</a>
-            <Link href="/request-demo" className={styles.mobilePanelPrimary}>
-              Request Demo
-            </Link>
-          </nav>
-        </details>
-      </div>
-    </header>
-  );
-}
-
-function HeroShowcase() {
-  return (
-    <div className={styles.showcaseWrapper} aria-label="WorkPulse HR Workspace Interface Preview">
-      <div className={styles.outerFrame}>
-        <div className={styles.innerCore}>
-          {/* Window Chrome */}
-          <div className={styles.windowBar}>
-            <div className={styles.windowControls} aria-hidden="true">
-              <span className={styles.windowDot} />
-              <span className={styles.windowDot} />
-              <span className={styles.windowDot} />
-            </div>
-            <div className={styles.workspaceBadge}>
-              <Building2 size={13} />
-              <span>saga.workpulse.com</span>
-              <span style={{ color: 'rgba(255,255,255,0.4)' }}>/</span>
-              <span>People Operations</span>
-            </div>
-            <div className={styles.userRolePill}>
-              <span className={styles.heroEyebrowDot} />
-              <span>HR Admin</span>
-            </div>
-          </div>
-
-          {/* Product App Layout */}
-          <div className={styles.appLayout}>
-            {/* Sidebar Rail */}
-            <aside className={styles.appSidebar} aria-label="App Preview Navigation">
-              <span className={styles.sidebarLabel}>Workforce</span>
-              <div className={`${styles.sidebarItem} ${styles.sidebarItemActive}`}>
-                <UsersRound />
-                <span>Employee Records</span>
-              </div>
-              <div className={styles.sidebarItem}>
-                <BriefcaseBusiness />
-                <span>Recruitment</span>
-              </div>
-              <div className={styles.sidebarItem}>
-                <Clock3 />
-                <span>Attendance</span>
-              </div>
-              <div className={styles.sidebarItem}>
-                <CalendarCheck2 />
-                <span>Leave</span>
-              </div>
-              <div className={styles.sidebarItem}>
-                <Fingerprint />
-                <span>Self-Service</span>
-              </div>
-            </aside>
-
-            {/* App Canvas */}
-            <div className={styles.appCanvas}>
-              {/* Directory List Card */}
-              <div className={styles.directoryCard}>
-                <div className={styles.cardHeader}>
-                  <div>
-                    <span className={styles.cardHeaderTitle}>Staff & Faculty Directory</span>
-                  </div>
-                  <span className={styles.cardHeaderBadge}>Active Department</span>
-                </div>
-
-                <div className={styles.searchMock}>
-                  <UsersRound size={14} />
-                  <span>Search employee name, department, or ID...</span>
-                </div>
-
-                <div className={styles.employeeList}>
-                  <div className={`${styles.employeeRow} ${styles.employeeRowSelected}`}>
-                    <div className={styles.employeeMeta}>
-                      <div className={styles.avatarCircle}>EV</div>
-                      <div>
-                        <div className={styles.employeeName}>Elena Vance</div>
-                        <div className={styles.employeeRole}>Systems Analyst • IT Dept</div>
-                      </div>
-                    </div>
-                    <span className={styles.statusPillActive}>
-                      <Check size={11} strokeWidth={3} /> Active
-                    </span>
-                  </div>
-
-                  <div className={styles.employeeRow}>
-                    <div className={styles.employeeMeta}>
-                      <div className={styles.avatarCircle} style={{ background: '#1e3a8a' }}>
-                        MR
-                      </div>
-                      <div>
-                        <div className={styles.employeeName}>Marcus Reyes</div>
-                        <div className={styles.employeeRole}>Faculty Instructor • Math Dept</div>
-                      </div>
-                    </div>
-                    <span className={styles.statusPillProbation}>
-                      <Clock3 size={11} /> Probation
-                    </span>
-                  </div>
-
-                  <div className={styles.employeeRow}>
-                    <div className={styles.employeeMeta}>
-                      <div className={styles.avatarCircle} style={{ background: '#334155' }}>
-                        CS
-                      </div>
-                      <div>
-                        <div className={styles.employeeName}>Carla Santos</div>
-                        <div className={styles.employeeRole}>Academic Coordinator • Admin</div>
-                      </div>
-                    </div>
-                    <span className={styles.statusPillActive}>
-                      <Check size={11} strokeWidth={3} /> Active
-                    </span>
-                  </div>
-                </div>
-              </div>
-
-              {/* Detail Dossier Card */}
-              <div className={styles.dossierCard}>
-                <div className={styles.dossierHeader}>
-                  <div className={styles.dossierProfile}>
-                    <div className={styles.dossierAvatar}>EV</div>
-                    <div>
-                      <div className={styles.dossierTitle}>Elena Vance</div>
-                      <div className={styles.dossierSubtitle}>Employee ID: WP-2024-0104 • Full-Time Regular</div>
-                    </div>
-                  </div>
-                  <span className={styles.statusPillActive}>Regular Status</span>
-                </div>
-
-                <div className={styles.tabPillRow}>
-                  <span className={`${styles.tabPill} ${styles.tabPillSelected}`}>Overview</span>
-                  <span className={styles.tabPill}>Attendance Logs</span>
-                  <span className={styles.tabPill}>Leave Balances</span>
-                </div>
-
-                <div className={styles.dossierGrid}>
-                  <div className={styles.dossierField}>
-                    <div className={styles.fieldLabel}>Department & Role</div>
-                    <div className={styles.fieldValue}>Information Technology • Analyst</div>
-                  </div>
-                  <div className={styles.dossierField}>
-                    <div className={styles.fieldLabel}>Probation Review</div>
-                    <div className={styles.fieldValue}>Completed • Regularized</div>
-                  </div>
-                  <div className={styles.dossierField}>
-                    <div className={styles.fieldLabel}>Current Schedule</div>
-                    <div className={styles.fieldValue}>Mon – Fri • 08:00 – 17:00</div>
-                  </div>
-                  <div className={styles.dossierField}>
-                    <div className={styles.fieldLabel}>ESS Portal Status</div>
-                    <div className={styles.fieldValue}>Active & Verified</div>
-                  </div>
-                </div>
-
-                <div className={styles.syncActivityBox}>
-                  <div className={styles.syncActivityItem}>
-                    <div>
-                      <div className={styles.syncActivityItemTitle}>Today’s Attendance Record</div>
-                      <div className={styles.syncActivityItemDesc}>Schedule-aware entry verified at 08:02 AM</div>
-                    </div>
-                    <span className={styles.statusPillActive}>On Time</span>
-                  </div>
-
-                  <div className={styles.syncActivityItem} style={{ borderLeftColor: '#0ea5e9' }}>
-                    <div>
-                      <div className={styles.syncActivityItemTitle}>Annual Leave Balance</div>
-                      <div className={styles.syncActivityItemDesc}>12.0 Days Available • 2 Requests Approved</div>
-                    </div>
-                    <span style={{ fontSize: '11px', fontWeight: 700, color: '#0369a1' }}>Up to date</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Floating AI Verification Insight Badge */}
-      <div className={styles.floatingInsightBadge} aria-label="AI-Assisted Recruitment Insight Preview">
-        <div className={styles.insightIconBox}>
-          <Sparkles size={20} />
-        </div>
-        <div>
-          <div className={styles.insightTitle}>
-            <span>AI-Assisted Matching</span>
-            <span className={styles.statusPillActive} style={{ padding: '2px 6px', fontSize: '10px' }}>
-              Verified
-            </span>
-          </div>
-          <div className={styles.insightDesc}>
-            Resume parsed • Requirements matched • HR review required before decision.
-          </div>
-        </div>
-      </div>
-    </div>
-  );
+function ProductPreview() {
+  return <div className={styles.productFragments} aria-label="WorkPulse product interface previews">
+    <article className={`${styles.productFragment} ${styles.employeeFragment}`}><div className={styles.fragmentHeader}><span><UsersRound size={15} /> Employee record</span><span className={styles.statusChip}>Active</span></div><div className={styles.fragmentPerson}><span>EV</span><div><strong>Elena Vance</strong><small>Information Technology</small></div></div><div className={styles.fragmentRow}><span>Employment status</span><strong>Regular</strong></div></article>
+    <article className={`${styles.productFragment} ${styles.attendanceFragment}`}><div className={styles.fragmentHeader}><span><Clock3 size={15} /> Attendance</span><small>Today</small></div><div className={styles.attendanceState}><span><Check size={17} /></span><div><strong>On Time</strong><small>08:02 AM</small></div></div><div className={styles.scheduleLine}><CalendarCheck2 size={14} /><span>Weekday schedule</span></div></article>
+    <article className={`${styles.productFragment} ${styles.hiringFragment}`}><div className={styles.fragmentHeader}><span><BriefcaseBusiness size={15} /> Candidate review</span><small>Hiring</small></div><div className={styles.hiringProgress}><div><Check size={13} /><span>Resume parsed</span></div><div><UserCheck size={13} /><strong>HR review required</strong></div></div></article>
+    <article className={`${styles.productFragment} ${styles.leaveFragment}`}><div className={styles.fragmentHeader}><span><CalendarCheck2 size={15} /> Leave request</span><span className={styles.statusChip}>Approved</span></div><div className={styles.fragmentRow}><span>Employee self-service</span><strong>Request reviewed</strong></div></article>
+  </div>;
 }
 
 function Hero({ workspaceUrl }: { workspaceUrl: string }) {
-  return (
-    <section className={styles.hero}>
-      <div className={styles.heroHeader}>
-        <div className={styles.heroEyebrow}>
-          <span className={styles.heroEyebrowDot} />
-          <span>Workforce & HR Operations SaaS</span>
-        </div>
+  return <section id="hero" className={styles.hero}><ProductPreview /><div className={styles.heroHeader}><div className={styles.heroMark}><span>W</span><span>WorkPulse workforce management</span></div><h1 className={styles.heroTitle}><span className={styles.heroLinePrimary}>Manage your workforce</span><span className={styles.heroLineSecondary}>all in one place.</span></h1><p className={styles.heroSubtitle}>From hiring and employee records to attendance, leave, and self-service, WorkPulse keeps workforce operations connected.</p><div className={styles.heroActions}><Link href="/request-demo" className={styles.primaryCtaBtn}>Request a demo <ArrowRight size={15} /></Link><a href={workspaceUrl} className={styles.secondaryCtaBtn}>Find your workspace <ArrowRight size={14} /></a></div></div></section>;
+}
 
-        <h1 className={styles.heroTitle}>Manage your workforce from hiring to exit.</h1>
-
-        <p className={styles.heroSubtitle}>
-          WorkPulse connects hiring workflows, employee records, schedule-aware attendance, leave management, and
-          employee self-service into one dependable operating system.
-        </p>
-
-        <div className={styles.heroActions}>
-          <Link href="/request-demo" className={styles.primaryCtaBtn}>
-            <span>Request Demo</span>
-            <div className={styles.btnIconCircle}>
-              <ArrowRight size={14} />
-            </div>
-          </Link>
-          <a href={workspaceUrl} className={styles.secondaryCtaBtn}>
-            Find Workspace / Sign In
-          </a>
-        </div>
-      </div>
-
-      <HeroShowcase />
-    </section>
-  );
+function SectionLabel({ children, inverse = false }: { children: React.ReactNode; inverse?: boolean }) {
+  return <p className={`${styles.sectionLabel} ${inverse ? styles.sectionLabelInverse : ''}`}>{children}</p>;
 }
 
 function RecordsSection() {
-  return (
-    <section id="features" className={styles.recordSection}>
-      <div className={styles.splitGrid}>
-        <div>
-          <span className={styles.sectionEyebrow}>
-            <UsersRound size={15} />
-            <span>Single Source of Truth</span>
-          </span>
-          <h2 className={styles.sectionHeading}>Keep every employee record connected.</h2>
-          <p className={styles.sectionParagraph}>
-            Fragmented spreadsheets and disjointed tools create administrative blind spots. WorkPulse anchors every
-            operational event to a single employee dossier that stays synchronized across shifts, leave filings, and
-            organizational milestones.
-          </p>
-
-          <div className={styles.featureBulletList}>
-            <div className={styles.featureBullet}>
-              <div className={styles.bulletIcon}>
-                <Check size={14} strokeWidth={3} />
-              </div>
-              <div>
-                <div className={styles.bulletTitle}>Employment History & Probation Tracking</div>
-                <div className={styles.bulletDesc}>
-                  Track appointment dates, job titles, department assignments, and probationary evaluation periods
-                  with timely alerts for HR review.
-                </div>
-              </div>
-            </div>
-
-            <div className={styles.featureBullet}>
-              <div className={styles.bulletIcon}>
-                <Check size={14} strokeWidth={3} />
-              </div>
-              <div>
-                <div className={styles.bulletTitle}>Schedule-Aware Attendance Verification</div>
-                <div className={styles.bulletDesc}>
-                  Attendance logs respect shift timetables, grace periods, and break policies with instant visibility for
-                  HR Admins.
-                </div>
-              </div>
-            </div>
-
-            <div className={styles.featureBullet}>
-              <div className={styles.bulletIcon}>
-                <Check size={14} strokeWidth={3} />
-              </div>
-              <div>
-                <div className={styles.bulletTitle}>Direct Employee Self-Service Access</div>
-                <div className={styles.bulletDesc}>
-                  Employees view approved records, filed leave slips, and attendance history without accessing
-                  administrative tools.
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Dossier Mockup Container */}
-        <div className={styles.splitVisualContainer} aria-label="Employee Record Dossier Preview">
-          <div className={styles.dossierCard} style={{ boxShadow: 'none', border: '1px solid #cbd5e1' }}>
-            <div className={styles.dossierHeader}>
-              <div className={styles.dossierProfile}>
-                <div className={styles.dossierAvatar} style={{ background: '#0b1528' }}>
-                  CS
-                </div>
-                <div>
-                  <div className={styles.dossierTitle}>Carla Santos</div>
-                  <div className={styles.dossierSubtitle}>Employee ID: WP-2023-0082 • Academic Coordinator</div>
-                </div>
-              </div>
-              <span className={styles.statusPillActive}>Active Regular</span>
-            </div>
-
-            <div className={styles.dossierGrid}>
-              <div className={styles.dossierField}>
-                <div className={styles.fieldLabel}>Department</div>
-                <div className={styles.fieldValue}>Academic Affairs</div>
-              </div>
-              <div className={styles.dossierField}>
-                <div className={styles.fieldLabel}>Hire Date</div>
-                <div className={styles.fieldValue}>August 15, 2023</div>
-              </div>
-              <div className={styles.dossierField}>
-                <div className={styles.fieldLabel}>Assigned Schedule</div>
-                <div className={styles.fieldValue}>08:00 – 17:00 (Standard)</div>
-              </div>
-              <div className={styles.dossierField}>
-                <div className={styles.fieldLabel}>Probation Decision</div>
-                <div className={styles.fieldValue}>Passed & Permanent</div>
-              </div>
-            </div>
-
-            <div className={styles.dossierTimelinePreview}>
-              <div className={styles.timelineHeading}>Connected Lifecycle Continuity</div>
-              <div className={styles.timelineTrack}>
-                <div className={styles.timelineNode}>
-                  <div className={styles.timelineNodeState}>Applied</div>
-                  <div className={styles.timelineNodeTitle}>Resume Parsed</div>
-                </div>
-                <div className={styles.timelineNode}>
-                  <div className={styles.timelineNodeState}>Onboarded</div>
-                  <div className={styles.timelineNodeTitle}>Contract Signed</div>
-                </div>
-                <div className={styles.timelineNode}>
-                  <div className={styles.timelineNodeState}>Probation</div>
-                  <div className={styles.timelineNodeTitle}>Regularized</div>
-                </div>
-                <div className={styles.timelineNode}>
-                  <div className={styles.timelineNodeState}>Live Ops</div>
-                  <div className={styles.timelineNodeTitle}>Attendance & Leave</div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
+  return <section id="features" className={`${styles.section} ${styles.recordsSection}`}>
+    <div className={styles.recordsFeatureLayout}>
+      <div className={styles.recordsFeatureCopy}>
+        <SectionLabel>Employee records</SectionLabel>
+        <h2 className={styles.sectionHeading}>Keep every<br />employee record<br /><span>connected.</span></h2>
+        <p className={styles.sectionParagraph}>WorkPulse keeps employment details, attendance, leave, and employee access connected in one record.</p>
       </div>
-    </section>
-  );
+      <div className={styles.recordSystem} aria-label="Employment history, attendance, leave, and employee self-service connected to one employee record">
+        <div className={styles.recordOrbit} aria-hidden="true" />
+        <div className={`${styles.recordModule} ${styles.recordModuleHistory}`}><span><History size={16} strokeWidth={1.7} /></span><div><small>Employment</small><strong>History</strong></div></div>
+        <div className={`${styles.recordModule} ${styles.recordModuleAttendance}`}><span><Clock3 size={16} strokeWidth={1.7} /></span><div><small>Attendance</small><strong>On Time</strong></div></div>
+        <div className={`${styles.recordModule} ${styles.recordModuleLeave}`}><span><CalendarCheck2 size={16} strokeWidth={1.7} /></span><div><small>Leave</small><strong>Approved</strong></div></div>
+        <div className={`${styles.recordModule} ${styles.recordModuleEss}`}><span><UserCheck size={16} strokeWidth={1.7} /></span><div><small>Self-service</small><strong>Active</strong></div></div>
+        <article className={styles.recordCore}>
+          <div className={styles.recordCoreHeader}><span><UsersRound size={16} strokeWidth={1.7} /></span><strong>Employee Record</strong></div>
+          <div className={styles.recordCorePerson}><div className={styles.recordCoreAvatar}>EV</div><div><small>Employee</small><h3>Elena Vance</h3><p>Information Technology</p></div></div>
+          <div className={styles.recordCoreDetails}><div><span>Employment</span><strong>Regular</strong></div><div><span>Schedule</span><strong>Weekday Schedule</strong></div></div>
+          <div className={styles.recordCoreStatus}><span aria-hidden="true" /><p>Records connected</p></div>
+        </article>
+      </div>
+    </div>
+  </section>;
 }
 
 function LifecycleSection() {
-  return (
-    <section id="lifecycle" className={styles.lifecycleSection}>
-      <div className={styles.lifecycleHeader}>
-        <span className={styles.sectionEyebrow}>
-          <Clock3 size={15} />
-          <span>Continuous Workforce Architecture</span>
-        </span>
-        <h2 className={styles.sectionHeading}>A continuous journey, not disconnected tools.</h2>
-        <p className={styles.sectionParagraph}>
-          WorkPulse follows the complete progression of an employee. Data gathered during candidate screening flows
-          directly into the active employment dossier, ensuring an unbroken audit history.
-        </p>
-      </div>
-
-      <div className={styles.lifecycleTrack}>
-        {lifecycleStages.map((stage) => {
-          const isPlanned = stage.status === 'Planned';
-          return (
-            <div key={stage.number} className={styles.lifecycleStepCard}>
-              <div className={styles.stepNodeHeader}>
-                <div
-                  className={`${styles.stepNumberCircle} ${isPlanned ? styles.stepNumberCirclePlanned : ''}`}
-                >
-                  {stage.number}
-                </div>
-                {isPlanned ? (
-                  <span className={styles.stepStatusPlanned}>Planned Roadmap</span>
-                ) : (
-                  <span className={styles.stepStatusLive}>Available Now</span>
-                )}
-              </div>
-
-              <h3 className={styles.stepTitle}>{stage.title}</h3>
-              <p className={styles.stepCopy}>{stage.copy}</p>
-
-              <div className={styles.stepSubitems}>
-                {stage.tags.map((tag) => (
-                  <span key={tag} className={styles.stepTag}>
-                    {tag}
-                  </span>
-                ))}
-              </div>
-            </div>
-          );
-        })}
-      </div>
-    </section>
-  );
-}
-
-function ModuleNetworkSection() {
-  return (
-    <section className={styles.moduleSection}>
-      <div className={styles.moduleGrid}>
-        <div>
-          <span className={styles.sectionEyebrow}>
-            <BriefcaseBusiness size={15} />
-            <span>Platform Ecosystem</span>
-          </span>
-          <h2 className={styles.sectionHeading}>One employee record powers every module.</h2>
-          <p className={styles.sectionParagraph}>
-            Instead of managing disconnected databases for recruitment, attendance, and leave, WorkPulse organizes
-            operations around the core Employee Record. All modules share the same authorization rules and organization
-            boundaries.
-          </p>
-
-          <div style={{ marginTop: '28px' }}>
-            <Link
-              href="/features"
-              className={styles.primaryCtaBtn}
-              style={{ background: '#0f1f38', padding: '10px 20px', fontSize: '14px' }}
-            >
-              <span>Explore All Current Capabilities</span>
-              <ArrowRight size={14} />
-            </Link>
-          </div>
-        </div>
-
-        {/* Clean Visual Hub and Spoke Network */}
-        <div className={styles.hubNetworkContainer} aria-label="WorkPulse Module Network">
-          <div className={styles.hubCenter}>
-            <div className={styles.hubCenterEyebrow}>Core Authoritative Entity</div>
-            <div className={styles.hubCenterTitle}>Employee Record</div>
-          </div>
-
-          <div className={styles.liveSpokeGrid}>
-            <div className={`${styles.spokeNode} ${styles.spokeTopLeft}`}>
-              <BriefcaseBusiness />
-              <span>Hiring & ATS</span>
-            </div>
-            <div className={`${styles.spokeNode} ${styles.spokeTopRight}`}>
-              <Clock3 />
-              <span>Attendance Tracking</span>
-            </div>
-            <div className={`${styles.spokeNode} ${styles.spokeBottomLeft}`}>
-              <CalendarCheck2 />
-              <span>Leave Management</span>
-            </div>
-            <div className={`${styles.spokeNode} ${styles.spokeBottomRight}`}>
-              <UsersRound />
-              <span>Employee Self-Service</span>
-            </div>
-          </div>
-
-          <div className={styles.plannedSpokeBar}>
-            <span className={styles.plannedSpokeTag}>
-              Payroll Engine <span className={styles.plannedBadgeMini}>Planned</span>
-            </span>
-            <span className={styles.plannedSpokeTag}>
-              RFID Clock-In <span className={styles.plannedBadgeMini}>Planned</span>
-            </span>
-            <span className={styles.plannedSpokeTag}>
-              Workforce Analytics <span className={styles.plannedBadgeMini}>Planned</span>
-            </span>
-          </div>
-        </div>
-      </div>
-    </section>
-  );
+  return <section id="lifecycle" className={`${styles.section} ${styles.lifecycleSection}`}>
+    <header className={styles.lifecycleIntro}>
+      <SectionLabel>Employee lifecycle</SectionLabel>
+      <h2 className={styles.sectionHeading}>One employee journey,<br />connected from start to finish.</h2>
+      <p className={styles.sectionParagraph}>WorkPulse keeps workforce information connected as employees move through hiring, active employment, and separation.</p>
+    </header>
+    <ol className={styles.lifecycleTrack} aria-label="Employee lifecycle stages">
+      {lifecycleStages.map((stage, index) => <li className={`${styles.lifecycleStep} ${index === 1 ? styles.lifecycleCore : ''}`} key={stage.title}>
+        <span className={styles.lifecycleNumber}>{stage.number}</span>
+        <span className={styles.lifecycleMarker} aria-hidden="true" />
+        <div className={styles.lifecycleContent}><h3>{stage.title}</h3><p>{stage.description}</p></div>
+      </li>)}
+    </ol>
+  </section>;
 }
 
 function AiHiringSection() {
-  const steps = [
-    { label: 'Resume Ingestion', desc: 'Secure PDF/DOCX upload directly to organization talent pool.', icon: FileSearch },
-    { label: 'AI Extraction', desc: 'Extraction of employment history, skills, and educational background.', icon: Sparkles },
-    { label: 'Requirement Match', desc: 'Evidence comparison against job criteria for candidate fit.', icon: Fingerprint },
-    { label: 'HR Review', desc: 'HR Admin and Hiring Manager evaluate evidence and interview notes.', icon: UserCheck },
-    { label: 'Human Decision', desc: 'Final hiring authority and offer release made strictly by people.', icon: Check },
-  ] as const;
-
-  return (
-    <section className={styles.aiSection}>
-      <div style={{ maxWidth: '780px', marginInline: 'auto', textAlign: 'center' }}>
-        <span className={styles.sectionEyebrow}>
-          <Sparkles size={15} />
-          <span>Assisted Intelligence</span>
-        </span>
-        <h2 className={styles.sectionHeading}>AI assists. HR decides.</h2>
-        <p className={styles.sectionParagraph} style={{ marginInline: 'auto' }}>
-          WorkPulse accelerates administrative screening by extracting resume data and highlighting relevant qualifications.
-          The platform never automates rejections or hiring choices: people maintain 100% accountability.
-        </p>
-      </div>
-
-      <div className={styles.aiFlowGrid}>
-        {steps.map((step, idx) => {
-          const Icon = step.icon;
-          const isFinal = idx === steps.length - 1;
-          return (
-            <div key={step.label} className={`${styles.aiStepCard} ${isFinal ? styles.humanDecisionCard : ''}`}>
-              <div className={styles.aiStepIconBox}>
-                <Icon />
-              </div>
-              <div className={styles.aiStepTitle}>{step.label}</div>
-              <div className={styles.aiStepDesc}>{step.desc}</div>
-            </div>
-          );
-        })}
-      </div>
-    </section>
-  );
+  const steps = [['Resume received', 'Candidate documents enter the hiring workflow.', FileSearch], ['Details extracted', 'Experience, education, and skills are organized.', ScanText], ['Requirements compared', 'Qualifications are compared with role requirements.', Fingerprint], ['Evidence reviewed', 'HR reviews the application and interview context.', UserCheck], ['People decide', 'The final hiring decision remains with your team.', Check]] as const;
+  return <section className={`${styles.section} ${styles.aiSection} ${styles.revealSection}`}><div className={styles.aiLayout}><div className={styles.aiIntro}><SectionLabel inverse>AI-assisted hiring</SectionLabel><h2 className={styles.sectionHeading}>Your team keeps the final say.</h2><p className={styles.sectionParagraph}>WorkPulse uses AI to organize resume information and compare qualifications with role requirements. Hiring decisions remain with HR.</p></div><ol className={styles.aiFlow}>{steps.map(([label, copy, Icon], index) => <li key={label} className={index === steps.length - 1 ? styles.aiHumanStep : ''}><span className={styles.aiNumber}>{String(index + 1).padStart(2, '0')}</span><Icon size={20} strokeWidth={1.6} /><div><strong>{label}</strong><p>{copy}</p></div></li>)}</ol></div></section>;
 }
 
-function MultiTenantSection() {
-  return (
-    <section className={styles.tenantSection}>
-      <div style={{ maxWidth: '820px', marginInline: 'auto', textAlign: 'center' }}>
-        <span className={styles.sectionEyebrow}>
-          <Building2 size={15} />
-          <span>Enterprise Multi-Tenancy</span>
-        </span>
-        <h2 className={styles.sectionHeading}>One platform. Dedicated organization workspaces.</h2>
-        <p className={styles.sectionParagraph} style={{ marginInline: 'auto' }}>
-          Each organization operates in its own isolated WorkPulse workspace, with server-enforced organization boundaries.
-          Workspaces enjoy tailored branding, distinct hostnames, and independent role authorizations.
-        </p>
-      </div>
+function WorkspacePreview({ example = false }: { example?: boolean }) {
+  return <div className={styles.workspacePreview}><div className={styles.workspaceChrome}><span>{example ? 'example.workpulse.com' : 'saga.workpulse.com'}</span>{example && <span className={styles.exampleLabel}>Illustrative example</span>}</div><div className={styles.workspaceBody}><div className={`${styles.workspaceLogo} ${example ? styles.exampleLogo : ''}`}>{example ? 'E' : 'S'}</div><div><small>Organization</small><strong>{example ? 'Example Organization' : 'St. Aloysius Gonzaga Academy, Inc.'}</strong></div><span className={`${styles.brandSwatch} ${example ? styles.exampleSwatch : ''}`} aria-label="Custom primary color" /></div></div>;
+}
 
-      <div className={styles.tenantShowcaseGrid}>
-        {/* Pilot Tenant Preview */}
-        <div className={styles.tenantPreviewPanel}>
-          <div className={styles.tenantPanelHeader}>
-            <div className={styles.tenantPanelSubdomain}>
-              <span className={styles.tenantSubdomainDot} style={{ background: '#742a2a' }} />
-              <span>saga.workpulse.com</span>
-            </div>
-            <span style={{ fontSize: '11px', fontWeight: 700, color: '#64748b' }}>Pilot Academy Workspace</span>
-          </div>
-
-          <div className={styles.tenantPanelContent}>
-            <div className={styles.tenantBrandBadge}>
-              <div className={styles.tenantOrgLogo} style={{ background: '#742a2a' }}>
-                S
-              </div>
-              <div>
-                <div className={styles.tenantOrgName}>St. Aloysius Gonzaga Academy, Inc.</div>
-                <div className={styles.tenantOrgMeta}>Dedicated Academic Workspace • 64 Active Personnel</div>
-              </div>
-            </div>
-
-            <div className={styles.tenantThemeBar}>
-              <span className={styles.tenantThemeLabel}>Applied Workspace Theme</span>
-              <div className={styles.tenantColorSwatches}>
-                <span className={styles.colorSwatch} style={{ background: '#742a2a' }} title="Primary Color" />
-                <span className={styles.colorSwatch} style={{ background: '#b68b2c' }} title="Accent Color" />
-                <span style={{ fontSize: '11px', fontWeight: 600, color: '#64748b', marginLeft: '6px' }}>
-                  Custom Institutional Brand
-                </span>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Enterprise Tenant Preview */}
-        <div className={styles.tenantPreviewPanel}>
-          <div className={styles.tenantPanelHeader}>
-            <div className={styles.tenantPanelSubdomain}>
-              <span className={styles.tenantSubdomainDot} style={{ background: '#167d77' }} />
-              <span>northfield.workpulse.com</span>
-            </div>
-            <span style={{ fontSize: '11px', fontWeight: 700, color: '#64748b' }}>Enterprise Workspace</span>
-          </div>
-
-          <div className={styles.tenantPanelContent}>
-            <div className={styles.tenantBrandBadge}>
-              <div className={styles.tenantOrgLogo} style={{ background: '#17324d' }}>
-                N
-              </div>
-              <div>
-                <div className={styles.tenantOrgName}>Northfield Manufacturing</div>
-                <div className={styles.tenantOrgMeta}>Multi-Facility Operations • 180 Active Personnel</div>
-              </div>
-            </div>
-
-            <div className={styles.tenantThemeBar}>
-              <span className={styles.tenantThemeLabel}>Applied Workspace Theme</span>
-              <div className={styles.tenantColorSwatches}>
-                <span className={styles.colorSwatch} style={{ background: '#17324d' }} title="Primary Color" />
-                <span className={styles.colorSwatch} style={{ background: '#167d77' }} title="Accent Color" />
-                <span style={{ fontSize: '11px', fontWeight: 600, color: '#64748b', marginLeft: '6px' }}>
-                  Industrial Enterprise Palette
-                </span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-  );
+function WorkspacesSection() {
+  return <section className={`${styles.section} ${styles.workspacesSection} ${styles.revealSection}`}><div className={styles.sectionIntro}><SectionLabel>Workspaces</SectionLabel><h2 className={styles.sectionHeading}>Your own WorkPulse workspace.</h2><p className={styles.sectionParagraph}>Each organization operates in its own WorkPulse workspace, with server-enforced organization boundaries.</p></div><div className={styles.workspacePanel}><div className={styles.workspacePanelHeader}><Lock size={18} /><span>Same WorkPulse platform structure. Distinct organization identity.</span></div><div className={styles.workspaceGrid}><WorkspacePreview /><WorkspacePreview example /></div><div className={styles.workspaceTraits}><span>Custom logo</span><span>Custom primary color</span><span>Organization name</span></div></div></section>;
 }
 
 function EssSection() {
-  return (
-    <section className={styles.essSection}>
-      <div className={styles.essContainer}>
-        <div>
-          <span className={styles.sectionEyebrow}>
-            <UsersRound size={15} />
-            <span>Employee Self-Service (ESS)</span>
-          </span>
-          <h2 className={styles.sectionHeading}>Self-service that stays in the employee’s lane.</h2>
-          <p className={styles.sectionParagraph}>
-            Empower your faculty and staff to take control of their own employment details without burdening HR.
-            Employees can check their clock-in records, view remaining leave credits, and submit time-off filings in
-            seconds from any device.
-          </p>
-
-          <div className={styles.featureBulletList}>
-            <div className={styles.featureBullet}>
-              <div className={styles.bulletIcon}>
-                <Check size={14} strokeWidth={3} />
-              </div>
-              <div>
-                <div className={styles.bulletTitle}>My Profile Overview</div>
-                <div className={styles.bulletDesc}>
-                  Securely view verified employment details, assigned department, and supervisor info.
-                </div>
-              </div>
-            </div>
-            <div className={styles.featureBullet}>
-              <div className={styles.bulletIcon}>
-                <Check size={14} strokeWidth={3} />
-              </div>
-              <div>
-                <div className={styles.bulletTitle}>My Attendance History</div>
-                <div className={styles.bulletDesc}>
-                  Transparent access to personal clock-in and clock-out timestamps with status indicators.
-                </div>
-              </div>
-            </div>
-            <div className={styles.featureBullet}>
-              <div className={styles.bulletIcon}>
-                <Check size={14} strokeWidth={3} />
-              </div>
-              <div>
-                <div className={styles.bulletTitle}>My Leave Requests</div>
-                <div className={styles.bulletDesc}>
-                  File sick or vacation leave applications and follow review approvals in real time.
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Lighter Employee Portal Mockup */}
-        <div className={styles.essPortalCard} aria-label="Employee Self-Service Portal Interface Preview">
-          <div className={styles.essPortalHeader}>
-            <div className={styles.essPortalTitle}>
-              <UsersRound size={18} color="#0d9488" />
-              <span>Employee Self-Service</span>
-            </div>
-            <span className={styles.statusPillActive}>Elena Vance (WP-2024-0104)</span>
-          </div>
-
-          <div className={styles.essPortalTabs}>
-            <div className={`${styles.essTabItem} ${styles.essTabItemActive}`}>
-              <UsersRound size={14} /> My Profile
-            </div>
-            <div className={styles.essTabItem}>
-              <Clock3 size={14} /> My Attendance
-            </div>
-            <div className={styles.essTabItem}>
-              <CalendarCheck2 size={14} /> My Leave
-            </div>
-          </div>
-
-          <div className={styles.essPortalBody}>
-            <div className={styles.essBalanceRow}>
-              <div className={styles.essBalanceBox}>
-                <div className={styles.essBalanceLabel}>Vacation Leave Balance</div>
-                <div className={styles.essBalanceValue}>12 Days Remaining</div>
-              </div>
-              <div className={styles.essBalanceBox}>
-                <div className={styles.essBalanceLabel}>Sick Leave Balance</div>
-                <div className={styles.essBalanceValue}>8 Days Remaining</div>
-              </div>
-            </div>
-
-            <div className={styles.syncActivityBox}>
-              <div className={styles.syncActivityItem}>
-                <div>
-                  <div className={styles.syncActivityItemTitle}>Recent Attendance Check</div>
-                  <div className={styles.syncActivityItemDesc}>Shift 08:00 – 17:00 • Clocked in at 08:02 AM</div>
-                </div>
-                <span className={styles.statusPillActive}>On Time</span>
-              </div>
-              <div className={styles.syncActivityItem} style={{ borderLeftColor: '#f59e0b' }}>
-                <div>
-                  <div className={styles.syncActivityItemTitle}>Pending Leave Request</div>
-                  <div className={styles.syncActivityItemDesc}>Vacation Leave (2 Days) • Awaiting HR Admin Review</div>
-                </div>
-                <span style={{ fontSize: '11px', fontWeight: 700, color: '#b45309' }}>In Review</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-  );
+  return <section className={`${styles.section} ${styles.essSection} ${styles.revealSection}`}><div className={styles.essLayout}><div className={styles.essCopy}><SectionLabel>Employee self-service</SectionLabel><h2 className={styles.sectionHeading}>Give employees a clear view of their own records.</h2><p className={styles.sectionParagraph}>Employees can review profile details, attendance, and leave requests without entering HR administration.</p><ul><li>My Profile</li><li>My Attendance</li><li>My Leave</li></ul></div><div className={styles.essPortal} aria-label="Employee self-service interface preview"><div className={styles.essPortalHeader}><strong>Employee self-service</strong><span>My workspace</span></div><nav className={styles.essTabs} aria-label="Employee self-service preview navigation"><span className={styles.essTabActive}>My Profile</span><span>My Attendance</span><span>My Leave</span></nav><div className={styles.essProfile}><div className={styles.essAvatar}>EV</div><div><strong>Elena Vance</strong><span>Employee record</span></div></div><div className={styles.essRows}><div><span>Employment</span><strong>Regular</strong></div><div><span>Attendance</span><strong className={styles.statusPositive}>On Time</strong></div><div><span>Leave</span><strong className={styles.statusPositive}>Request approved</strong></div></div></div></div></section>;
 }
 
 function SecuritySection() {
-  const securityItems = [
-    {
-      title: 'Tenant Isolation',
-      desc: 'Each organization operates in its own isolated WorkPulse workspace with server-enforced organization boundaries.',
-      icon: Lock,
-    },
-    {
-      title: 'Role-Based Access Control',
-      desc: 'Permissions follow designated roles: Organization Admin, HR Admin, Hiring Manager, and Employee.',
-      icon: KeyRound,
-    },
-    {
-      title: 'Audit History',
-      desc: 'Audit history for sensitive actions retains accountable evidence across employment events.',
-      icon: History,
-    },
-    {
-      title: 'Server-Side Authorization',
-      desc: 'All security policies are validated and enforced on the server for complete data integrity.',
-      icon: Server,
-    },
-  ] as const;
-
-  return (
-    <section id="security" className={styles.securitySection}>
-      <div style={{ maxWidth: '780px', marginInline: 'auto', textAlign: 'center' }}>
-        <span className={styles.sectionEyebrow}>
-          <ShieldCheck size={15} />
-          <span>Architectural Integrity</span>
-        </span>
-        <h2 className={styles.sectionHeading}>Security grounded in access control.</h2>
-        <p className={styles.sectionParagraph} style={{ marginInline: 'auto' }}>
-          Workforce data demands disciplined protection. WorkPulse enforces strict multi-tenant scoping and zero-trust
-          permission evaluation across all operations.
-        </p>
-      </div>
-
-      <div className={styles.securityGrid}>
-        {securityItems.map((item) => {
-          const Icon = item.icon;
-          return (
-            <div key={item.title} className={styles.securityCard}>
-              <div className={styles.securityIconCircle}>
-                <Icon size={20} />
-              </div>
-              <div className={styles.securityTitle}>{item.title}</div>
-              <div className={styles.securityDesc}>{item.desc}</div>
-            </div>
-          );
-        })}
-      </div>
-    </section>
-  );
+  const items = [['Tenant isolation', 'Each organization is scoped to its own WorkPulse workspace.', Lock], ['Role-based access', 'Permissions follow Organization Admin, HR Admin, Hiring Manager, and Employee roles.', KeyRound], ['Audit history', 'Sensitive actions retain an accountable history.', History], ['Server-side authorization', 'Access rules are enforced on the server.', Server]] as const;
+  return <section id="security" className={`${styles.section} ${styles.securitySection} ${styles.revealSection}`}><div className={styles.editorialSplit}><div><SectionLabel>Security</SectionLabel><h2 className={styles.sectionHeading}>Security at the organization boundary.</h2></div><div className={styles.securityRows}>{items.map(([title, copy, Icon]) => <div className={styles.securityRow} key={title}><Icon size={19} strokeWidth={1.7} /><h3>{title}</h3><p>{copy}</p></div>)}</div></div></section>;
 }
 
-function TrustSection() {
-  const trustPillars = [
-    {
-      number: '01',
-      title: 'Centralized Records',
-      desc: 'Single source of truth linking candidate applications to active employment records and attendance.',
-    },
-    {
-      number: '02',
-      title: 'Clear Workflows',
-      desc: 'Structured progression for probation evaluations, hiring approvals, and employee leave requests.',
-    },
-    {
-      number: '03',
-      title: 'Controlled Access',
-      desc: 'Strict role hierarchy ensures staff and faculty only see the information relevant to their responsibility.',
-    },
-    {
-      number: '04',
-      title: 'Organization Identity',
-      desc: 'Customizable workspace branding gives each educational or corporate tenant its own digital home.',
-    },
-  ] as const;
-
-  return (
-    <section className={styles.trustSection}>
-      <div className={styles.trustGrid}>
-        <div>
-          <span className={styles.sectionEyebrow}>
-            <Building2 size={15} />
-            <span>Operational Rigor</span>
-          </span>
-          <h2 className={styles.sectionHeading}>
-            Built for organizations that need structured workforce operations.
-          </h2>
-          <p className={styles.sectionParagraph}>
-            Whether managing a private educational institution with varied academic schedules or an enterprise with multiple
-            departments, WorkPulse delivers reliability without operational overhead.
-          </p>
-        </div>
-
-        <div className={styles.trustCardList}>
-          {trustPillars.map((pillar) => (
-            <div key={pillar.number} className={styles.trustCard}>
-              <div className={styles.trustCardNumber}>{pillar.number}</div>
-              <div className={styles.trustCardTitle}>{pillar.title}</div>
-              <div className={styles.trustCardDesc}>{pillar.desc}</div>
-            </div>
-          ))}
-        </div>
-      </div>
-    </section>
-  );
+function OperationsSection() {
+  const values = [['Connected records', 'Employee information stays connected across implemented HR workflows.'], ['Clear workflows', 'Hiring, employment, attendance, leave, and ESS follow defined processes.'], ['Controlled access', 'Users only see the information and actions available to their role.'], ['Organization identity', 'Each organization can use its own logo, display name, and brand colors.']] as const;
+  return <section className={`${styles.section} ${styles.operationsSection} ${styles.revealSection}`}><div className={styles.editorialSplit}><div><SectionLabel>Workforce operations</SectionLabel><h2 className={styles.sectionHeading}>Clear records. Clear responsibilities.</h2></div><div className={styles.operationsRows}>{values.map(([title, copy]) => <div key={title}><h3>{title}</h3><p>{copy}</p></div>)}</div></div></section>;
 }
 
 function FaqSection() {
-  return (
-    <section className={styles.faqSection}>
-      <div className={styles.faqSplitGrid}>
-        <div className={styles.faqStickyIntro}>
-          <span className={styles.sectionEyebrow}>
-            <ShieldCheck size={15} />
-            <span>Clarity & Answers</span>
-          </span>
-          <h2 className={styles.sectionHeading}>Frequently asked questions.</h2>
-          <p className={styles.sectionParagraph}>
-            Everything you need to know about WorkPulse’s multi-tenant architecture, AI assistance model, and available capabilities.
-          </p>
-        </div>
-
-        <div className={styles.faqList}>
-          {faqItems.map((item, idx) => (
-            <details key={item.question} className={styles.faqItem} open={idx === 0}>
-              <summary className={styles.faqSummary}>
-                <span>{item.question}</span>
-                <span className={styles.faqIconToggle} aria-hidden="true" />
-              </summary>
-              <div className={styles.faqAnswer}>{item.answer}</div>
-            </details>
-          ))}
-        </div>
-      </div>
-    </section>
-  );
+  return <section className={`${styles.section} ${styles.faqSection} ${styles.revealSection}`}><div className={styles.faqLayout}><div className={styles.faqIntro}><SectionLabel>Questions &amp; support</SectionLabel><h2 className={styles.sectionHeading}>Frequently asked questions.</h2></div><div className={styles.faqList}>{faqItems.map(([question, answer]) => <details key={question} className={styles.faqItem}><summary><span>{question}</span><span className={styles.faqIcon} aria-hidden="true" /></summary><div><p>{answer}</p></div></details>)}</div></div></section>;
 }
 
-function FinalCtaSection({ workspaceUrl }: { workspaceUrl: string }) {
-  return (
-    <section className={styles.finalCtaSection}>
-      <div className={styles.finalCtaBox}>
-        <div>
-          <h2 className={styles.finalCtaHeading}>Bring your workforce operations into one platform.</h2>
-          <p className={styles.finalCtaSubtitle}>
-            Connect the entire employee lifecycle with an isolated workspace engineered specifically for your
-            organization.
-          </p>
-        </div>
-
-        <div className={styles.finalCtaActions}>
-          <Link href="/request-demo" className={styles.ctaLightBtn}>
-            <span>Request Demo</span>
-            <ArrowRight size={15} />
-          </Link>
-          <a href={workspaceUrl} className={styles.ctaGhostWhiteBtn}>
-            Find Workspace / Sign In
-          </a>
-        </div>
-      </div>
-    </section>
-  );
+function FinalCta({ workspaceUrl }: { workspaceUrl: string }) {
+  return <section className={styles.finalCtaSection}><div className={styles.finalCtaBox}><div><p className={styles.ctaKicker}>WorkPulse</p><h2>Bring your workforce operations into one platform.</h2><p>Connect hiring, employee records, attendance, leave, and employee self-service in one WorkPulse workspace.</p><div className={styles.finalCtaActions}><Link href="/request-demo" className={styles.ctaLightBtn}>Request Demo <ArrowRight size={15} /></Link><a href={workspaceUrl} className={styles.ctaOutlineBtn}>Find Workspace / Sign In</a></div></div><div className={styles.ctaPreview} aria-hidden="true"><div className={styles.ctaPreviewBar}><span>WorkPulse</span><span>Employee record</span></div><div className={styles.ctaPreviewBody}><span>Employment</span><strong>Regular</strong><span>Attendance</span><strong>On Time</strong><span>Leave</span><strong>Request approved</strong></div></div></div></section>;
 }
 
 function Footer({ workspaceUrl }: { workspaceUrl: string }) {
-  return (
-    <footer className={styles.footer}>
-      <div className={styles.footerContent}>
-        <div className={styles.footerBrandColumn}>
-          <BrandWordmark />
-          <p className={styles.footerDesc}>
-            AI-Assisted Human Resource and Workforce Operations SaaS platform for educational institutions and enterprises.
-          </p>
-        </div>
-
-        <nav aria-label="Footer navigation" className={styles.footerNav}>
-          <Link href="#features">Features</Link>
-          <Link href="#lifecycle">How It Works</Link>
-          <Link href="#security">Security</Link>
-          <Link href="/features">All Modules</Link>
-          <a href={workspaceUrl}>Find Workspace</a>
-          <Link href="/request-demo">Request Demo</Link>
-        </nav>
-      </div>
-
-      <div className={styles.footerBottom}>
-        <div>&copy; {new Date().getFullYear()} WorkPulse SaaS Platform. All rights reserved.</div>
-        <div style={{ display: 'flex', gap: '20px' }}>
-          <span>Tenant Isolation</span>
-          <span>Role-Based Access</span>
-          <span>Server-Side Authorization</span>
-        </div>
-      </div>
-    </footer>
-  );
+  return <footer className={styles.footer}><div className={styles.footerContent}><div><Brand /><p>Connected workforce operations for every organization workspace.</p></div><nav aria-label="Footer navigation"><Link href="#features">Features</Link><Link href="#lifecycle">How It Works</Link><Link href="#security">Security</Link><Link href="/features">Modules</Link><a href={workspaceUrl}>Find Workspace</a><Link href="/request-demo">Request Demo</Link></nav></div><div className={styles.footerBottom}><span>&copy; {new Date().getFullYear()} WorkPulse</span><span>Workforce operations, connected.</span></div></footer>;
 }
 
 export default function HomePage() {
   const workspaceUrl = discoveryOrigin();
-
-  return (
-    <div className={`wp-public-shell ${styles.page}`}>
-      <a className={styles.skipLink} href="#main-content">
-        Skip to main content
-      </a>
-
-      <Navbar workspaceUrl={workspaceUrl} />
-
-      <main id="main-content">
-        <Hero workspaceUrl={workspaceUrl} />
-        <RecordsSection />
-        <LifecycleSection />
-        <ModuleNetworkSection />
-        <AiHiringSection />
-        <MultiTenantSection />
-        <EssSection />
-        <SecuritySection />
-        <TrustSection />
-        <FaqSection />
-        <FinalCtaSection workspaceUrl={workspaceUrl} />
-      </main>
-
-      <Footer workspaceUrl={workspaceUrl} />
-    </div>
-  );
+  return <div className={`wp-public-shell ${styles.page}`}><a className={styles.skipLink} href="#main-content">Skip to main content</a><LandingNavbar workspaceUrl={workspaceUrl} /><main id="main-content"><Hero workspaceUrl={workspaceUrl} /><RecordsSection /><LifecycleSection /><AiHiringSection /><WorkspacesSection /><EssSection /><SecuritySection /><OperationsSection /><FaqSection /><FinalCta workspaceUrl={workspaceUrl} /></main><Footer workspaceUrl={workspaceUrl} /></div>;
 }

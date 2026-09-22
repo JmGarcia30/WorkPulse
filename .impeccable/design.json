@@ -1,157 +1,59 @@
 {
   "schemaVersion": 2,
-  "generatedAt": "2026-09-21T00:00:00+08:00",
+  "generatedAt": "2026-09-22T00:00:00+08:00",
   "title": "Design System: WorkPulse",
   "extensions": {
     "colorMeta": {
-      "institutional-navy": { "role": "primary", "displayName": "Institutional Navy", "canonical": "#17324d", "tonalRamp": ["oklch(15% 0.035 250)", "oklch(25% 0.045 250)", "oklch(35% 0.052 250)", "oklch(45% 0.050 250)", "oklch(58% 0.040 250)", "oklch(70% 0.030 250)", "oklch(84% 0.018 250)", "oklch(95% 0.007 250)"] },
-      "white": { "role": "neutral", "displayName": "White", "canonical": "#ffffff", "tonalRamp": ["oklch(15% 0 0)", "oklch(28% 0 0)", "oklch(42% 0 0)", "oklch(56% 0 0)", "oklch(70% 0 0)", "oklch(82% 0 0)", "oklch(92% 0 0)", "oklch(100% 0 0)"] },
-      "operational-teal": { "role": "secondary", "displayName": "Operational Teal", "canonical": "#167d77", "tonalRamp": ["oklch(15% 0.045 190)", "oklch(25% 0.060 190)", "oklch(36% 0.075 190)", "oklch(48% 0.090 190)", "oklch(60% 0.078 190)", "oklch(72% 0.058 190)", "oklch(84% 0.034 190)", "oklch(95% 0.014 190)"] },
-      "landing-off-white": { "role": "neutral", "displayName": "Landing Off-white", "canonical": "#f7f8f8", "tonalRamp": ["oklch(15% 0.004 210)", "oklch(27% 0.004 210)", "oklch(40% 0.004 210)", "oklch(54% 0.004 210)", "oklch(68% 0.003 210)", "oklch(80% 0.003 210)", "oklch(91% 0.002 210)", "oklch(98% 0.002 210)"] },
-      "cool-canvas": { "role": "neutral", "displayName": "Cool Canvas", "canonical": "#f5f6f7", "tonalRamp": ["oklch(15% 0.006 240)", "oklch(27% 0.006 240)", "oklch(40% 0.006 240)", "oklch(54% 0.006 240)", "oklch(68% 0.005 240)", "oklch(80% 0.004 240)", "oklch(90% 0.003 240)", "oklch(97% 0.002 240)"] },
-      "quiet-surface": { "role": "neutral", "displayName": "Quiet Surface", "canonical": "#eef1f3", "tonalRamp": ["oklch(15% 0.009 235)", "oklch(27% 0.009 235)", "oklch(40% 0.009 235)", "oklch(54% 0.008 235)", "oklch(68% 0.007 235)", "oklch(80% 0.006 235)", "oklch(90% 0.005 235)", "oklch(95% 0.004 235)"] },
-      "teal-tint": { "role": "neutral", "displayName": "Teal Tint", "canonical": "color-mix(in srgb, #167d77 4%, white)", "tonalRamp": ["oklch(15% 0.014 190)", "oklch(27% 0.014 190)", "oklch(40% 0.013 190)", "oklch(54% 0.012 190)", "oklch(68% 0.011 190)", "oklch(80% 0.009 190)", "oklch(90% 0.007 190)", "oklch(97% 0.005 190)"] },
-      "soft-border": { "role": "neutral", "displayName": "Soft Border", "canonical": "#d9dee3", "tonalRamp": ["oklch(15% 0.011 240)", "oklch(27% 0.011 240)", "oklch(40% 0.011 240)", "oklch(54% 0.010 240)", "oklch(68% 0.009 240)", "oklch(78% 0.008 240)", "oklch(88% 0.007 240)", "oklch(95% 0.004 240)"] },
-      "strong-border": { "role": "neutral", "displayName": "Strong Border", "canonical": "#aeb8c2", "tonalRamp": ["oklch(15% 0.017 240)", "oklch(27% 0.017 240)", "oklch(40% 0.017 240)", "oklch(52% 0.016 240)", "oklch(64% 0.015 240)", "oklch(74% 0.014 240)", "oklch(86% 0.010 240)", "oklch(95% 0.005 240)"] },
-      "ink": { "role": "neutral", "displayName": "Ink", "canonical": "#142033", "tonalRamp": ["oklch(15% 0.025 255)", "oklch(25% 0.032 255)", "oklch(35% 0.034 255)", "oklch(46% 0.032 255)", "oklch(58% 0.027 255)", "oklch(70% 0.020 255)", "oklch(84% 0.012 255)", "oklch(95% 0.005 255)"] },
-      "muted-ink": { "role": "neutral", "displayName": "Muted Ink", "canonical": "#5f6b78", "tonalRamp": ["oklch(15% 0.015 250)", "oklch(27% 0.018 250)", "oklch(40% 0.020 250)", "oklch(52% 0.020 250)", "oklch(64% 0.018 250)", "oklch(75% 0.014 250)", "oklch(86% 0.009 250)", "oklch(95% 0.004 250)"] },
-      "success": { "role": "tertiary", "displayName": "Success Green", "canonical": "#18794e", "tonalRamp": ["oklch(15% 0.050 155)", "oklch(25% 0.068 155)", "oklch(36% 0.082 155)", "oklch(48% 0.092 155)", "oklch(60% 0.080 155)", "oklch(72% 0.060 155)", "oklch(84% 0.035 155)", "oklch(95% 0.014 155)"] },
-      "warning": { "role": "tertiary", "displayName": "Planning Amber", "canonical": "#9a6700", "tonalRamp": ["oklch(15% 0.050 75)", "oklch(25% 0.075 75)", "oklch(36% 0.100 75)", "oklch(48% 0.120 75)", "oklch(60% 0.105 75)", "oklch(72% 0.078 75)", "oklch(84% 0.045 75)", "oklch(95% 0.018 75)"] },
-      "danger": { "role": "tertiary", "displayName": "Danger Red", "canonical": "#b42318", "tonalRamp": ["oklch(15% 0.065 25)", "oklch(25% 0.095 25)", "oklch(36% 0.130 25)", "oklch(48% 0.165 25)", "oklch(60% 0.140 25)", "oklch(72% 0.100 25)", "oklch(84% 0.060 25)", "oklch(95% 0.022 25)"] },
-      "info": { "role": "tertiary", "displayName": "Information Blue", "canonical": "#245b9e", "tonalRamp": ["oklch(15% 0.050 255)", "oklch(25% 0.075 255)", "oklch(36% 0.100 255)", "oklch(48% 0.120 255)", "oklch(60% 0.105 255)", "oklch(72% 0.078 255)", "oklch(84% 0.045 255)", "oklch(95% 0.018 255)"] }
+      "warm-ivory": { "role": "neutral", "displayName": "Warm Ivory", "canonical": "#EEEBDD", "tonalRamp": ["#2A2824", "#514D45", "#777166", "#9C9689", "#BDB7A9", "#D2CCBE", "#E4DFD2", "#F5F2E9"] },
+      "muted-sand": { "role": "secondary", "displayName": "Muted Sand", "canonical": "#D8B4A0", "tonalRamp": ["#3A2823", "#66493E", "#916D5E", "#B58D7B", "#C9A594", "#D8B4A0", "#E7D1C4", "#F5EAE4"] },
+      "deep-maroon": { "role": "primary", "displayName": "Deep Maroon", "canonical": "#7A0000", "tonalRamp": ["#190000", "#330000", "#4D0000", "#660000", "#7A0000", "#A33333", "#CC7A7A", "#E8C2C2"] },
+      "black": { "role": "neutral", "displayName": "Black", "canonical": "#000000", "tonalRamp": ["#000000", "#1F1F1F", "#3D3D3D", "#5C5C5C", "#7A7A7A", "#999999", "#B8B8B8", "#D6D6D6"] },
+      "white": { "role": "neutral", "displayName": "White", "canonical": "#FFFFFF", "tonalRamp": ["#1A1A1A", "#333333", "#4D4D4D", "#666666", "#808080", "#999999", "#B3B3B3", "#FFFFFF"] },
+      "soft-white": { "role": "neutral", "displayName": "Soft White", "canonical": "#F8F7F3", "tonalRamp": ["#292927", "#50504D", "#777671", "#9E9D98", "#C4C3BD", "#D9D8D2", "#E9E8E2", "#F8F7F3"] },
+      "muted-gray": { "role": "neutral", "displayName": "Muted Gray", "canonical": "#6B6B6B", "tonalRamp": ["#161616", "#2B2B2B", "#404040", "#555555", "#6B6B6B", "#898989", "#A7A7A7", "#C5C5C5"] },
+      "divider": { "role": "neutral", "displayName": "Paper Divider", "canonical": "#DED9D0", "tonalRamp": ["#2C2A27", "#57544F", "#827E76", "#ABA69C", "#C1BCB2", "#DED9D0", "#EAE7E1", "#F6F4F0"] },
+      "semantic-green": { "role": "tertiary", "displayName": "Semantic Green", "canonical": "#18794E", "tonalRamp": ["#062416", "#0C452C", "#106541", "#148155", "#18794E", "#4D9B78", "#8BC4A9", "#C7E5D5"] }
     },
     "typographyMeta": {
-      "display": { "displayName": "Landing Display", "purpose": "The 56-88px primary landing statement, 54-76px on tablet and 44-58px on mobile." },
-      "headline": { "displayName": "Section Headline", "purpose": "Balanced 40-60px propositions and operational outcomes." },
-      "title": { "displayName": "Operational Title", "purpose": "Lifecycle stages, modules, and diagram headings." },
-      "body": { "displayName": "Explanatory Body", "purpose": "Product explanation at 17-18px desktop and 16px mobile with generous leading." },
-      "label": { "displayName": "Utility Label", "purpose": "Navigation, statuses, controls, metadata, and diagram annotations." }
+      "display": { "displayName": "Landing Display", "purpose": "The distinctive hero statement." },
+      "headline": { "displayName": "Editorial Headline", "purpose": "Section propositions in below-hero rows." },
+      "body": { "displayName": "Reading Body", "purpose": "Product explanation and supporting copy." },
+      "label": { "displayName": "Utility Label", "purpose": "Navigation, metadata, controls, and status context." }
     },
     "shadows": [
-      { "name": "mobile-navigation-overlay", "value": "0 18px 35px rgba(23, 50, 77, 0.10)", "purpose": "Separates the expanded mobile navigation from page content." },
-      { "name": "hero-product-showcase", "value": "0 22px 42px rgba(23, 50, 77, 0.10)", "purpose": "Gives the large dashboard preview credible product elevation." },
-      { "name": "product-panel", "value": "0 18px 48px rgba(23, 50, 77, 0.07)", "purpose": "Lifts employee-record and self-service product surfaces from the page plane." },
-      { "name": "attached-product-note", "value": "0 15px 38px rgba(23, 50, 77, 0.10)", "purpose": "Separates the AI-assistance annotation where it overlaps the hero dashboard." }
+      { "name": "scrolled-navbar", "value": "0 4px 16px rgba(0, 0, 0, 0.06)", "purpose": "Subtle separation after the transparent hero navbar becomes white." },
+      { "name": "product-preview", "value": "0 18px 38px rgba(0, 0, 0, 0.08)", "purpose": "Restrained lift for a genuine product preview." }
     ],
     "motion": [
-      { "name": "state-standard", "value": "160ms cubic-bezier(.16, 1, .3, 1)", "purpose": "One-pixel hover and active feedback on landing navigation and actions." },
-      { "name": "hero-copy-enter", "value": "650ms cubic-bezier(.16, 1, .3, 1)", "purpose": "Raises the hero copy by 18px on initial entry." },
-      { "name": "hero-dashboard-enter", "value": "800ms 180ms cubic-bezier(.16, 1, .3, 1)", "purpose": "Introduces the dashboard once from a 28px vertical offset and subtle scale." },
-      { "name": "hero-note-enter", "value": "600ms 520ms cubic-bezier(.16, 1, .3, 1)", "purpose": "Introduces the attached AI-assistance note after the dashboard." },
-      { "name": "view-reveal", "value": "CSS view timeline", "purpose": "Progressively reveals sections and lifecycle rules in supporting browsers." },
-      { "name": "faq-open", "value": "220ms cubic-bezier(.16, 1, .3, 1)", "purpose": "Reveals an FAQ answer once when its native disclosure opens." },
-      { "name": "reduced-motion", "value": "none", "purpose": "Removes landing animations, resets transforms, and disables transitions when reduced motion is requested." }
+      { "name": "editorial-reveal", "value": "520ms cubic-bezier(.16, 1, .3, 1)", "purpose": "One-shot below-hero row reveal." },
+      { "name": "navbar-state", "value": "180ms ease", "purpose": "Transparent-to-white navbar state." },
+      { "name": "reduced-motion", "value": "none", "purpose": "Removes reveals and transitions while preserving content." }
     ],
     "breakpoints": [
-      { "name": "mobile-reference", "value": "390px" },
-      { "name": "mobile-layout", "value": "0-767px" },
-      { "name": "tablet-reference", "value": "768px" },
-      { "name": "stacked-layout", "value": "0-1023px" },
-      { "name": "desktop-layout", "value": "1024px and above" },
-      { "name": "desktop-reference", "value": "1440px" },
+      { "name": "mobile", "value": "0-767px" },
+      { "name": "tablet", "value": "768-1199px" },
+      { "name": "desktop", "value": "1200px and above" },
       { "name": "content-maximum", "value": "1280px" }
     ]
   },
   "components": [
-    {
-      "name": "Primary Button",
-      "kind": "button",
-      "refersTo": "button-primary",
-      "description": "The authoritative 46px landing action for demo requests and sign-in destinations.",
-      "html": "<button class=\"ds-button-primary\">Request Demo <span aria-hidden=\"true\">&rarr;</span></button>",
-      "css": ".ds-button-primary { min-height: 46px; display: inline-flex; align-items: center; justify-content: center; gap: 9px; border: 0; border-radius: 8px; background: var(--wp-brand, #17324d); padding: 10px 17px; color: #fff; font-family: \"Segoe UI Variable\", \"Segoe UI\", system-ui, sans-serif; font-size: 14px; font-weight: 740; transition: transform 160ms cubic-bezier(.16,1,.3,1), background-color 160ms ease; } .ds-button-primary:hover { transform: translateY(-1px); } .ds-button-primary:focus-visible { outline: 3px solid var(--wp-focus, #167d77); outline-offset: 4px; box-shadow: 0 0 0 2px #fff; } .ds-button-primary:active { transform: translateY(1px); } @media (prefers-reduced-motion: reduce) { .ds-button-primary { transition: none; } }"
-    },
-    {
-      "name": "Secondary Button",
-      "kind": "button",
-      "refersTo": "button-secondary",
-      "description": "A bordered translucent-white alternative for workspace discovery.",
-      "html": "<button class=\"ds-button-secondary\">Find Workspace / Sign In</button>",
-      "css": ".ds-button-secondary { min-height: 46px; display: inline-flex; align-items: center; justify-content: center; border: 1px solid var(--wp-border-strong, #aeb8c2); border-radius: 8px; background: rgba(255,255,255,.56); padding: 10px 17px; color: var(--wp-text, #142033); font-family: \"Segoe UI Variable\", \"Segoe UI\", system-ui, sans-serif; font-size: 14px; font-weight: 740; transition: transform 160ms cubic-bezier(.16,1,.3,1), border-color 160ms ease; } .ds-button-secondary:hover { transform: translateY(-1px); border-color: var(--wp-brand, #17324d); } .ds-button-secondary:focus-visible { outline: 3px solid var(--wp-focus, #167d77); outline-offset: 4px; box-shadow: 0 0 0 2px #fff; } .ds-button-secondary:active { transform: translateY(1px); } @media (prefers-reduced-motion: reduce) { .ds-button-secondary { transition: none; } }"
-    },
-    {
-      "name": "Text Field",
-      "kind": "input",
-      "description": "The shared 44px public field retained for tenant discovery and public forms.",
-      "html": "<label class=\"ds-field-label\" for=\"ds-workspace\">Workspace</label><input class=\"ds-field\" id=\"ds-workspace\" placeholder=\"saga\" />",
-      "css": ".ds-field-label { display: block; margin-bottom: 8px; color: var(--wp-text, #142033); font-family: \"Segoe UI Variable\", \"Segoe UI\", system-ui, sans-serif; font-size: 13px; font-weight: 680; } .ds-field { width: 100%; min-height: 44px; border: 1px solid var(--wp-border, #d9dee3); border-radius: 8px; background: var(--wp-surface, #fff); padding: 10px 13px; color: var(--wp-text, #142033); font-family: \"Segoe UI Variable\", \"Segoe UI\", system-ui, sans-serif; font-size: 14px; } .ds-field:hover { border-color: var(--wp-border-strong, #aeb8c2); } .ds-field:focus { border-color: var(--wp-accent, #167d77); outline: 2px solid color-mix(in srgb, var(--wp-accent, #167d77) 20%, transparent); }"
-    },
-    {
-      "name": "Primary Navigation",
-      "kind": "nav",
-      "description": "Compact editorial links with a native disclosure treatment below 1024px.",
-      "html": "<nav class=\"ds-nav\" aria-label=\"Primary\"><a href=\"#\">Features</a><a href=\"#\">How It Works</a><a href=\"#\">Security</a></nav>",
-      "css": ".ds-nav { display: flex; align-items: center; gap: 32px; font-family: \"Segoe UI Variable\", \"Segoe UI\", system-ui, sans-serif; } .ds-nav a { min-height: 44px; display: inline-flex; align-items: center; color: var(--wp-text-muted, #5f6b78); font-size: 14px; font-weight: 670; text-decoration: none; text-underline-offset: 6px; } .ds-nav a:hover { color: var(--wp-text, #142033); text-decoration: underline; } .ds-nav a:focus-visible { outline: 3px solid var(--wp-focus, #167d77); outline-offset: 4px; }"
-    },
-    {
-      "name": "Hero Record Fragment",
-      "kind": "card",
-      "refersTo": "hero-fragment",
-      "description": "A compact 10px-radius record fragment that floats around the hero journey spine.",
-      "html": "<article class=\"ds-hero-fragment\"><span class=\"ds-fragment-icon\" aria-hidden=\"true\">&#10003;</span><div><strong>Applicant profile</strong><small>Matched to the employee record</small></div></article>",
-      "css": ".ds-hero-fragment { display: flex; align-items: center; gap: 12px; border: 1px solid color-mix(in srgb, var(--wp-border, #d9dee3) 72%, transparent); border-radius: 10px; background: var(--wp-surface, #fff); padding: 15px 16px; color: var(--wp-text, #142033); font-family: \"Segoe UI Variable\", \"Segoe UI\", system-ui, sans-serif; } .ds-fragment-icon { color: var(--wp-accent, #167d77); font-weight: 800; } .ds-hero-fragment strong, .ds-hero-fragment small { display: block; } .ds-hero-fragment strong { font-size: 13px; } .ds-hero-fragment small { margin-top: 3px; color: var(--wp-text-muted, #5f6b78); font-size: 12px; line-height: 1.4; }"
-    },
-    {
-      "name": "Connected Lifecycle",
-      "kind": "custom",
-      "description": "The open ruled sequence for hiring, active employment, and planned exit.",
-      "html": "<ol class=\"ds-lifecycle\"><li><b>01</b><strong>Hiring</strong><span>Applicant to onboarding</span></li><li><b>02</b><strong>Active Employment</strong><span>Records, attendance, leave, ESS</span></li><li class=\"ds-lifecycle-planned\"><b>03</b><strong>Exit</strong><span>Planned</span></li></ol>",
-      "css": ".ds-lifecycle { display: grid; grid-template-columns: .9fr 1.2fr .8fr; margin: 0; padding: 0; border-top: 1px solid var(--wp-border-strong, #aeb8c2); color: var(--wp-text, #142033); font-family: \"Segoe UI Variable\", \"Segoe UI\", system-ui, sans-serif; list-style: none; } .ds-lifecycle li { position: relative; display: grid; gap: 10px; min-height: 180px; padding: 28px 22px 0 0; } .ds-lifecycle li + li { border-left: 1px solid var(--wp-border, #d9dee3); padding-left: 22px; } .ds-lifecycle li::before { content: \"\"; position: absolute; top: -6px; left: 0; width: 11px; height: 11px; border: 3px solid #fff; border-radius: 50%; background: var(--wp-accent, #167d77); box-shadow: 0 0 0 1px var(--wp-accent, #167d77); } .ds-lifecycle li + li::before { left: -6px; } .ds-lifecycle .ds-lifecycle-planned::before { background: #fff; box-shadow: 0 0 0 1px var(--wp-warning, #9a6700); } .ds-lifecycle b { color: var(--wp-text-muted, #5f6b78); font-size: 12px; } .ds-lifecycle strong { font-size: 20px; } .ds-lifecycle span { color: var(--wp-text-muted, #5f6b78); font-size: 13px; line-height: 1.6; }"
-    },
-    {
-      "name": "Open Module Network",
-      "kind": "custom",
-      "refersTo": "diagram-core",
-      "description": "An unframed network connecting the workforce record to implemented modules and planned work.",
-      "html": "<div class=\"ds-network\"><span class=\"ds-network-item ds-hiring\">Hiring</span><span class=\"ds-network-item ds-attendance\">Attendance</span><div class=\"ds-network-core\"><small>Connected</small><strong>Employee record</strong></div><span class=\"ds-network-item ds-leave\">Leave</span><span class=\"ds-network-item ds-ess\">ESS</span></div>",
-      "css": ".ds-network { position: relative; min-height: 320px; color: var(--wp-text, #142033); font-family: \"Segoe UI Variable\", \"Segoe UI\", system-ui, sans-serif; } .ds-network::before, .ds-network::after { content: \"\"; position: absolute; top: 50%; left: 50%; width: 220px; height: 1px; background: var(--wp-border-strong, #aeb8c2); transform: translate(-50%,-50%) rotate(32deg); } .ds-network::after { transform: translate(-50%,-50%) rotate(-32deg); } .ds-network-core { position: absolute; z-index: 1; top: 50%; left: 50%; width: 170px; height: 96px; display: grid; place-content: center; transform: translate(-50%,-50%); border: 1px solid color-mix(in srgb, var(--wp-brand, #17324d) 82%, white); border-radius: 10px; background: var(--wp-brand, #17324d); color: #fff; text-align: center; } .ds-network-core small { color: rgba(255,255,255,.7); font-size: 12px; } .ds-network-core strong { margin-top: 3px; font-size: 18px; } .ds-network-item { position: absolute; z-index: 1; font-size: 14px; font-weight: 720; } .ds-hiring { top: 18%; left: 8%; } .ds-attendance { top: 18%; right: 5%; } .ds-leave { bottom: 18%; left: 10%; } .ds-ess { right: 12%; bottom: 18%; }"
-    },
-    {
-      "name": "AI Decision Sequence",
-      "kind": "custom",
-      "description": "An open five-step sequence that ends with visible human authority.",
-      "html": "<ol class=\"ds-ai-sequence\"><li>Resume</li><li aria-hidden=\"true\">&rarr;</li><li>Extract</li><li aria-hidden=\"true\">&rarr;</li><li class=\"ds-human-step\">HR decides</li></ol>",
-      "css": ".ds-ai-sequence { display: grid; grid-template-columns: repeat(5, auto); align-items: center; justify-content: space-between; gap: 10px; margin: 0; padding: 0; color: var(--wp-text-muted, #5f6b78); font-family: \"Segoe UI Variable\", \"Segoe UI\", system-ui, sans-serif; font-size: 13px; font-weight: 700; list-style: none; } .ds-ai-sequence li:nth-child(odd) { min-height: 48px; display: grid; place-items: center; border-bottom: 1px solid var(--wp-border-strong, #aeb8c2); padding: 8px 4px; } .ds-ai-sequence li:nth-child(even) { color: var(--wp-border-strong, #aeb8c2); } .ds-ai-sequence .ds-human-step { border-bottom-color: var(--wp-accent, #167d77); color: var(--wp-text, #142033); }"
-    }
+    { "name": "Primary Button", "kind": "button", "refersTo": "button-primary", "description": "Deep-maroon public landing action.", "html": "<button class=\"ds-primary\">Request a demo</button>", "css": ".ds-primary { min-height: 44px; border: 1px solid #7A0000; border-radius: 8px; background: #7A0000; padding: 12px 20px; color: #FFFFFF; font: 700 12px/1.4 \"Segoe UI Variable\", \"Segoe UI\", sans-serif; transition: transform 180ms ease; } .ds-primary:hover { transform: translateY(-1px); } .ds-primary:focus-visible { outline: 2px solid #000000; outline-offset: 3px; } @media (prefers-reduced-motion: reduce) { .ds-primary { transition: none; } }" },
+    { "name": "Secondary Button", "kind": "button", "refersTo": "button-secondary", "description": "Quiet soft-white alternative action.", "html": "<button class=\"ds-secondary\">Explore WorkPulse</button>", "css": ".ds-secondary { min-height: 44px; border: 1px solid #DED9D0; border-radius: 8px; background: #F8F7F3; padding: 12px 20px; color: #000000; font: 700 12px/1.4 \"Segoe UI Variable\", \"Segoe UI\", sans-serif; } .ds-secondary:hover { border-color: #000000; } .ds-secondary:focus-visible { outline: 2px solid #7A0000; outline-offset: 3px; }" },
+    { "name": "Scrolled Navbar", "kind": "nav", "description": "Sticky navbar state after the hero.", "html": "<nav class=\"ds-nav\"><a href=\"#product\">Product</a><a href=\"#security\">Security</a></nav>", "css": ".ds-nav { display: flex; gap: 24px; border-bottom: 1px solid #DED9D0; background: #FFFFFF; padding: 16px 24px; box-shadow: 0 4px 16px rgba(0,0,0,.06); font: 700 12px/1.4 \"Segoe UI Variable\", \"Segoe UI\", sans-serif; } .ds-nav a { color: #000000; text-decoration: none; } .ds-nav a:hover { color: #7A0000; }" },
+    { "name": "Editorial Product Card", "kind": "card", "description": "Sparse product evidence in an editorial row.", "html": "<article class=\"ds-card\"><small>WORKFORCE RECORD</small><h3>One connected source of truth</h3></article>", "css": ".ds-card { border: 1px solid #DED9D0; border-radius: 12px; background: #FFFFFF; padding: 24px; color: #000000; font-family: \"Segoe UI Variable\", \"Segoe UI\", sans-serif; } .ds-card small { color: #6B6B6B; font-size: 12px; font-weight: 700; } .ds-card h3 { margin: 12px 0 0; font-size: 22px; }" },
+    { "name": "Status Label", "kind": "chip", "description": "Semantic green reserved for real status meaning.", "html": "<span class=\"ds-status\">Available</span>", "css": ".ds-status { color: #18794E; font: 700 12px/1.4 \"Segoe UI Variable\", \"Segoe UI\", sans-serif; }" }
   ],
   "narrative": {
-    "northStar": "The Institutional Operating Ledger",
-    "overview": "WorkPulse feels like a trustworthy operational record made legible: calm, connected, and exact without becoming bureaucratic. Its public visual language is editorial B2B SaaS: decisive typographic statements, generous reading space, varied section rhythm, and open diagrams that explain how people, modules, and organizational boundaries relate.\n\nThe landing page is light without feeling sterile. An off-white canvas, white fields, and occasional low-chroma teal-tinted sections create pacing while institutional navy establishes authority and operational teal signals connection and focus. Product truth leads the composition; decoration, spectacle, and unsupported proof do not.",
-    "keyCharacteristics": [
-      "Calm institutional authority with modern SaaS clarity.",
-      "Open lifecycle, module, AI, and tenant diagrams built from nodes, rules, and branches.",
-      "Off-white, white, and subtle teal-tint surfaces that vary the reading rhythm.",
-      "Restrained navy and teal accents with semantic color reserved for real meaning.",
-      "Purposeful CSS-only motion with a complete reduced-motion fallback.",
-      "Explicit 1440px desktop, 768px tablet, and 390px mobile compositions."
-    ],
+    "northStar": "The Editorial Operations Ledger",
+    "overview": "The public WorkPulse landing page is a warm editorial identity for a serious workforce product. Warm ivory and muted sand make the page considered and human; deep maroon and black provide authority, while white, soft white, gray, and paper dividers keep information legible. The distinctive hero remains the anchor, followed by editorial rows that explain real product value without turning every capability into a card. This palette is scoped to the public landing; authenticated app and business surfaces may retain existing semantic/application tokens.",
+    "keyCharacteristics": ["Warm ivory canvas", "Deep maroon authority", "Thin rules and sparse cards", "Segoe UI Variable", "Semantic green for statuses only", "Reduced-motion-aware reveals"],
     "rules": [
-      { "name": "The Semantic Restraint Rule", "body": "Navy carries authority, teal carries connection, and status colors carry state; none are decorative fill.", "section": "colors" },
-      { "name": "The Paper-Light Surface Rule", "body": "Pace public pages with off-white, white, and subtle teal-tint fields. Do not introduce warm paper tones, glass effects, or large saturated panels.", "section": "colors" },
-      { "name": "The One Family Rule", "body": "Hierarchy comes from weight, size, measure, and spacing within the Segoe UI Variable stack, not from decorative font pairing.", "section": "typography" },
-      { "name": "The Plainspoken Rule", "body": "Headings describe operational outcomes directly; avoid hype, inflated claims, and vague transformation language.", "section": "typography" },
-      { "name": "The Connected Structure Rule", "body": "When modules describe one record or process, show their relationship with shared rules, branches, or sequence, not a grid of detached feature cards.", "section": "layout" },
-      { "name": "The Reference Width Rule", "body": "Judge the landing page at 1440px, 768px, and 390px; no reference width may introduce horizontal page overflow or break the intended reading order.", "section": "layout" },
-      { "name": "The Open Plane Rule", "body": "Sections and diagrams remain unboxed; use a shadow only when an element genuinely floats above that plane.", "section": "elevation" },
-      { "name": "The Eight-to-Ten Rule", "body": "Public landing elements stay within an 8-10px corner range. Do not wrap whole sections or open diagrams in oversized rounded frames.", "section": "shapes" }
+      { "name": "The Warm Ledger Rule", "body": "Keep the public landing palette to the named warm neutrals, maroon, black, white, and semantic green.", "section": "colors" },
+      { "name": "The Semantic Green Rule", "body": "Green appears only when it communicates a real status.", "section": "colors" },
+      { "name": "The Editorial Rhythm Rule", "body": "Use a 1200-1280px container, 100-130px section spacing, thin dividers, and varied below-hero rows.", "section": "layout" },
+      { "name": "The Earned Depth Rule", "body": "Use shadows only for the scrolled navbar or genuine product previews.", "section": "elevation" }
     ],
-    "dos": [
-      "Do use navy for authority, teal for connection, and semantic colors only for real states.",
-      "Do alternate off-white, white, and subtle teal-tint section fields to create a varied editorial rhythm.",
-      "Do explain product relationships with open lifecycle, network, sequence, and boundary diagrams.",
-      "Do keep landing actions 46px high, shared controls at least 44px high, and focus visibly outlined.",
-      "Do distinguish implemented capabilities from planned work in both language and status styling.",
-      "Do verify the public landing composition at 1440px, 768px, and 390px.",
-      "Do treat CSS motion as optional enhancement and preserve the complete reduced-motion path."
-    ],
-    "donts": [
-      "Don't use gradients, glass, heavy ambient shadows, or decorative media on the public landing page.",
-      "Don't fabricate customer logos, testimonials, performance metrics, or other proof.",
-      "Don't fragment a connected process into an excessive collection of bordered cards.",
-      "Don't place open diagrams inside oversized rounded frames.",
-      "Don't turn labels and metadata into decorative pills; reserve pills for standalone semantic states.",
-      "Don't exceed 10px corners on ordinary public landing elements.",
-      "Don't make motion necessary for comprehension or leave continuous motion active under reduced-motion preferences."
-    ]
+    "dos": ["Do preserve the distinctive hero.", "Do use sparse editorial rows and thin dividers.", "Do keep controls at 8-12px corners and the final CTA at 16px.", "Do honor reduced-motion preferences."],
+    "donts": ["Don't reintroduce the former navy/teal public palette.", "Don't use green decoratively.", "Don't make motion necessary for comprehension.", "Don't fabricate proof or product capabilities."]
   }
 }
