@@ -28,6 +28,7 @@ export function parsePlatformHost(value: string, configuredRoot = rootDomain()):
 }
 
 export function tenantOrigin(slug: string) {
+  if (usesTemporaryPathTenancy(rootDomain())) return `/${slug}`;
   const root = rootDomain();
   const protocol = root.startsWith('localhost') || root.startsWith('127.0.0.1') ? 'http' : 'https';
   return `${protocol}://${slug}.${root}`;
@@ -41,7 +42,17 @@ export function publicOrigin() {
   return process.env.PLATFORM_PUBLIC_ORIGIN || 'http://localhost:3000';
 }
 
+export function usesTemporaryPathTenancy(host: string) {
+  try {
+    const publicHost = normalizeHostname(new URL(publicOrigin()).host);
+    return publicHost.endsWith('.vercel.app') && normalizeHostname(host) === publicHost;
+  } catch {
+    return false;
+  }
+}
+
 export function discoveryOrigin() {
+  if (usesTemporaryPathTenancy(rootDomain())) return '/workspace-discovery';
   const root = rootDomain();
   const protocol = root.startsWith('localhost') || root.startsWith('127.0.0.1') ? 'http' : 'https';
   return `${protocol}://app.${root}`;

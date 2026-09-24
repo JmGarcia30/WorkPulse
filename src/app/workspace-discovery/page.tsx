@@ -1,5 +1,5 @@
 import { WorkspaceDiscoveryForm } from '@/components/public/WorkspaceDiscoveryForm';
-import { normalizeHostname, publicOrigin, rootDomain } from '@/lib/tenant/host';
+import { normalizeHostname, publicOrigin, rootDomain, usesTemporaryPathTenancy } from '@/lib/tenant/host';
 import styles from '@/components/public/WorkspaceDiscovery.module.css';
 
 export default function WorkspaceDiscoveryPage() {
@@ -33,7 +33,11 @@ export default function WorkspaceDiscoveryPage() {
             <p>Enter your workspace</p>
             <span>Provided by your organization</span>
           </div>
-          <WorkspaceDiscoveryForm publicUrl={publicOrigin()} rootSuffix={normalizeHostname(rootDomain())} />
+          <WorkspaceDiscoveryForm
+            publicUrl={publicOrigin()}
+            rootSuffix={normalizeHostname(rootDomain())}
+            pathTenantRouting={usesTemporaryPathTenancy(new URL(publicOrigin()).host)}
+          />
         </section>
       </div>
     </main>

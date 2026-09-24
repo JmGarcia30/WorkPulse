@@ -11,9 +11,11 @@ function platformRootHost(host: string) {
 export function WorkspaceDiscoveryForm({
   publicUrl = '/',
   rootSuffix = 'workpulse.com',
+  pathTenantRouting = false,
 }: {
   publicUrl?: string;
   rootSuffix?: string;
+  pathTenantRouting?: boolean;
 }) {
   const [slug, setSlug] = useState('');
   const [error, setError] = useState<string | null>(null);
@@ -33,6 +35,11 @@ export function WorkspaceDiscoveryForm({
       const result = await workspaceExists(normalized);
       if (!result.ok) {
         setError(result.message);
+        return;
+      }
+
+      if (pathTenantRouting) {
+        window.location.assign(`/${result.slug}`);
         return;
       }
 
