@@ -6,6 +6,7 @@ import { submitApplicationAction } from '@/features/careers/actions';
 import { JobStatus } from '@prisma/client';
 import { ArrowLeft, CheckCircle2 } from 'lucide-react';
 import { ApplicationForm } from '@/components/careers/ApplicationForm';
+import { databaseSlugForTenant } from '@/lib/tenant/host';
 
 interface ApplyPageProps {
   params: Promise<{ organizationSlug: string; jobSlug: string }>;
@@ -22,7 +23,7 @@ export async function generateMetadata({
       slug: jobSlug,
       status: JobStatus.PUBLISHED,
       organization: {
-        slug: organizationSlug,
+        slug: databaseSlugForTenant(organizationSlug),
         careersEnabled: true,
       },
     },
@@ -47,7 +48,7 @@ export default async function ApplyPage({ params, searchParams }: ApplyPageProps
 
   // Strict Multi-Tenant Security Check
   const org = await prisma.organization.findUnique({
-    where: { slug: organizationSlug },
+    where: { slug: databaseSlugForTenant(organizationSlug) },
     select: { id: true, name: true, slug: true, careersEnabled: true },
   });
 
@@ -96,14 +97,14 @@ export default async function ApplyPage({ params, searchParams }: ApplyPageProps
         <div className="pt-2 flex flex-col sm:flex-row justify-center gap-3">
           {appId && (
             <Link
-              href={`/careers/${org.slug}/portal/${appId}`}
+              href={`/careers/${organizationSlug}/portal/${appId}`}
               className="inline-flex items-center justify-center gap-2 rounded-xl bg-indigo-600 px-6 py-2.5 text-xs font-bold text-white hover:bg-indigo-500 transition shadow-sm"
             >
               Access Candidate Document Portal &rarr;
             </Link>
           )}
           <Link
-            href={`/careers/${org.slug}`}
+            href={`/careers/${organizationSlug}`}
             className="inline-flex items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-5 py-2.5 text-xs font-semibold text-slate-700 hover:bg-slate-50 transition dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200"
           >
             Explore Other Openings
@@ -117,7 +118,7 @@ export default async function ApplyPage({ params, searchParams }: ApplyPageProps
     <div className="max-w-3xl mx-auto space-y-6">
       {/* Back Link */}
       <Link
-        href={`/careers/${org.slug}/${job.slug}`}
+        href={`/careers/${organizationSlug}/${job.slug}`}
         className="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-500 hover:text-slate-900 dark:hover:text-slate-100"
       >
         <ArrowLeft className="h-4 w-4" /> Back to Position Details
@@ -138,7 +139,7 @@ export default async function ApplyPage({ params, searchParams }: ApplyPageProps
 
         <ApplicationForm
           job={{ id: job.id, slug: job.slug, title: job.title }}
-          org={{ slug: org.slug, name: org.name }}
+          org={{ slug: organizationSlug, name: org.name }}
           error={error}
           action={submitApplicationAction}
         />
@@ -146,4 +147,3 @@ export default async function ApplyPage({ params, searchParams }: ApplyPageProps
     </div>
   );
 }
-

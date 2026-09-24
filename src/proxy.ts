@@ -32,7 +32,7 @@ export function proxy(request: NextRequest) {
 
   if (classification.kind === 'tenant') {
     if (pathname === '/') {
-      const url = request.nextUrl.clone(); url.pathname = '/_tenant';
+      const url = request.nextUrl.clone(); url.pathname = '/tenant-entry';
       return NextResponse.rewrite(url);
     }
     if ((pathname.startsWith('/dashboard') || pathname.startsWith('/employee')) && !hasSession) {

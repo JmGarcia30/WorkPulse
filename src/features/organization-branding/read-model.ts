@@ -33,7 +33,7 @@ export const getOrganizationBranding = cache(async (organizationId: string) => m
     primaryForeground: readableForeground(primary),
     accent,
     accentForeground: readableForeground(accent),
-    hasLogo: Boolean(organization.branding?.logoStorageKey || organization.logoUrl),
+    hasLogo: Boolean(organization.branding?.logoStorageKey),
     hasLoginImage: Boolean(organization.branding?.loginImageStorageKey),
     legacyLogoUrl: organization.logoUrl?.startsWith('/') ? organization.logoUrl : null,
     address: organization.branding?.address ?? null,

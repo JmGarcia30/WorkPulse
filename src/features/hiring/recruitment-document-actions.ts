@@ -8,6 +8,7 @@ import { RecruitmentDocumentStatus, OnboardingTaskStatus } from '@prisma/client'
 import { ensureRecruitmentDocumentsExist } from './saga-requirements';
 import { RECRUITMENT_DOC_TO_ONBOARDING_TITLE_MAP } from './onboarding-pipeline';
 import { localStorageProvider } from '@/lib/storage';
+import { publicOrigin } from '@/lib/tenant/host';
 import { sendDocumentRejectedEmail, sendDocumentVerifiedEmail } from '@/lib/email';
 
 const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
@@ -148,7 +149,7 @@ export async function verifyRecruitmentDocumentAction(
   }
 
   // Free notification to candidate
-  const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
+  const baseUrl = publicOrigin();
   const orgSlug = doc.application.job.organization.slug;
   const portalUrl = `${baseUrl}/careers/${orgSlug}/portal/${doc.applicationId}`;
 
@@ -222,7 +223,7 @@ export async function rejectRecruitmentDocumentAction(
   });
 
   // Free notification to candidate with portal link
-  const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
+  const baseUrl = publicOrigin();
   const orgSlug = doc.application.job.organization.slug;
   const portalUrl = `${baseUrl}/careers/${orgSlug}/portal/${doc.applicationId}`;
 

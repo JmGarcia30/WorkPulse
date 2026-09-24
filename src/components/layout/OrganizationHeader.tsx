@@ -1,44 +1,16 @@
-import Image from 'next/image';
-import { Building2 } from 'lucide-react';
+import type { OrganizationBrandingView } from '@/features/organization-branding/read-model';
+import { TenantLogo } from './TenantLogo';
 
-interface OrganizationHeaderProps {
-  name: string;
-  slug: string;
-  description?: string | null;
-  logoUrl?: string | null;
-}
-
-export function OrganizationHeader({
-  name,
-  slug,
-  description,
-  logoUrl,
-}: OrganizationHeaderProps) {
+export function OrganizationHeader({ branding }: { branding: OrganizationBrandingView }) {
   return (
-    <div className="border-l-4 border-[var(--tenant-accent)] bg-[var(--tenant-primary)] p-8 text-[var(--tenant-primary-foreground)] sm:p-12 text-center space-y-4">
-      {/* Logo or Fallback Badge */}
-      <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-2xl bg-white/10 p-2 backdrop-blur-xs border border-white/20 shadow-md">
-        {logoUrl ? (
-          <img
-            src={logoUrl}
-            alt={`${name} Logo`}
-            className="h-full w-full object-contain rounded-xl"
-          />
-        ) : (
-          <Building2 className="h-10 w-10 text-indigo-300" />
-        )}
-      </div>
-
-      <div className="space-y-2">
-        <span className="inline-block border border-current px-3.5 py-1 text-xs font-semibold opacity-80">
-          Official Organization Career Portal
-        </span>
-        <h1 className="text-2xl sm:text-4xl font-extrabold tracking-tight">{name}</h1>
-        {description && (
-          <p className="max-w-2xl mx-auto text-xs sm:text-sm text-indigo-100/90 leading-relaxed pt-1">
-            {description}
-          </p>
-        )}
+    <div className="border-t-4 border-[var(--tenant-accent)] bg-[var(--tenant-primary)] px-6 py-10 text-[var(--tenant-primary-foreground)] sm:px-12 sm:py-12">
+      <div className="mx-auto flex max-w-3xl flex-col items-center text-center">
+        <div className="flex h-28 w-28 items-center justify-center rounded-2xl bg-white p-2 shadow-sm sm:h-32 sm:w-32">
+          <TenantLogo branding={branding} size={112} className="h-full w-full object-contain" fallbackClassName="flex h-full w-full items-center justify-center rounded-xl bg-[var(--tenant-accent)] text-xl font-black text-[var(--tenant-accent-foreground)]" />
+        </div>
+        <p className="mt-6 border-l-2 border-[var(--tenant-accent)] pl-3 text-xs font-semibold uppercase tracking-[.14em] opacity-85">Official organization career portal</p>
+        <h1 className="mt-4 text-2xl font-extrabold tracking-tight sm:text-4xl">{branding.displayName}</h1>
+        {branding.tagline && <p className="mt-4 max-w-2xl text-xs leading-relaxed opacity-78 sm:text-sm">{branding.tagline}</p>}
       </div>
     </div>
   );

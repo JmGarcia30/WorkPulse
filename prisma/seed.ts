@@ -43,7 +43,7 @@ async function main() {
       name: 'St. Aloysius Gonzaga Academy, Inc.',
       description:
         'A premier Catholic educational institution dedicated to academic excellence, character formation, and holistic student development in Senior High School and basic education.',
-      logoUrl: 'https://images.unsplash.com/photo-1546410531-bb4caa6b424d?auto=format&fit=crop&q=80&w=200',
+      logoUrl: '/branding/saga-logo.jpg',
       careersEnabled: true,
       employeeNumberPrefix: 'SAGA',
       timeZone: 'Asia/Manila',
@@ -53,7 +53,7 @@ async function main() {
       slug: 'st-aloysius',
       description:
         'A premier Catholic educational institution dedicated to academic excellence, character formation, and holistic student development in Senior High School and basic education.',
-      logoUrl: 'https://images.unsplash.com/photo-1546410531-bb4caa6b424d?auto=format&fit=crop&q=80&w=200',
+      logoUrl: '/branding/saga-logo.jpg',
       careersEnabled: true,
       employeeNumberPrefix: 'SAGA',
       timeZone: 'Asia/Manila',
@@ -61,6 +61,21 @@ async function main() {
   });
 
   console.log(`✓ Organization created/updated: ${org.name} (slug: ${org.slug})`);
+
+  await prisma.organizationBranding.upsert({
+    where: { organizationId: org.id },
+    update: {
+      displayName: 'St. Aloysius Gonzaga Academy, Inc.',
+      primaryColor: '#111111',
+      accentColor: '#D9A928',
+    },
+    create: {
+      organizationId: org.id,
+      displayName: 'St. Aloysius Gonzaga Academy, Inc.',
+      primaryColor: '#111111',
+      accentColor: '#D9A928',
+    },
+  });
 
   // 1b. Create Secondary Multi-Tenant Test Organization: Test Academy
   const testOrg = await prisma.organization.upsert({

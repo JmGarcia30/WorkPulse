@@ -6,11 +6,13 @@ import { localStorageProvider } from '@/lib/storage';
 import { JobStatus, ApplicationStatus, RecruitmentDocumentType, RecruitmentDocumentStatus } from '@prisma/client';
 import { ensureRecruitmentDocumentsExist } from '@/features/hiring/saga-requirements';
 import { sendApplicationConfirmationEmail } from '@/lib/email';
+import { databaseSlugForTenant } from '@/lib/tenant/host';
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 export async function submitApplicationAction(formData: FormData): Promise<void> {
   const jobId = formData.get('jobId') as string;
+  const requestedOrganizationSlug = (formData.get('organizationSlug') as string)?.trim().toLowerCase();
   const firstName = (formData.get('firstName') as string)?.trim();
   const lastName = (formData.get('lastName') as string)?.trim();
   const emailRaw = (formData.get('email') as string)?.trim();
@@ -31,7 +33,10 @@ export async function submitApplicationAction(formData: FormData): Promise<void>
   }
 
   const orgSlug = job.organization.slug;
-  const applyPath = `/careers/${orgSlug}/${job.slug}/apply`;
+  const publicOrganizationSlug = requestedOrganizationSlug && databaseSlugForTenant(requestedOrganizationSlug) === orgSlug
+    ? requestedOrganizationSlug
+    : orgSlug;
+  const applyPath = `/careers/${publicOrganizationSlug}/${job.slug}/apply`;
 
   if (!firstName || !lastName || !emailRaw || !phone || !coverLetter) {
     redirect(`${applyPath}?error=${encodeURIComponent('Please complete all required fields.')}`);
@@ -195,11 +200,11 @@ export async function submitApplicationAction(formData: FormData): Promise<void>
       candidateName: `${firstName} ${lastName}`,
       jobTitle: job.title,
       organizationName: job.organization.name || 'St. Aloysius Gonzaga Academy',
-      organizationSlug: orgSlug,
+      organizationSlug: publicOrganizationSlug,
       applicationId: application.id,
     });
-  } catch (error: any) {
-    if (error.code === 'P2002') {
+  } catch (error: unknown) {
+    if (typeof error === 'object' && error !== null && 'code' in error && error.code === 'P2002') {
       redirect(
         `${applyPath}?error=${encodeURIComponent(
           'You have already submitted an active application for this job opening with this email address.'

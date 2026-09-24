@@ -9,6 +9,7 @@ import {
   OnboardingTaskStatus,
 } from '@prisma/client';
 import { areRecruitmentDocumentsSatisfied } from '@/features/hiring/saga-requirements';
+import { databaseSlugForTenant } from '@/lib/tenant/host';
 
 const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
 const ALLOWED_MIME_TYPES = [
@@ -29,7 +30,7 @@ export async function getCandidatePortalData(organizationSlug: string, applicati
       id: applicationId,
       job: {
         organization: {
-          slug: organizationSlug,
+          slug: databaseSlugForTenant(organizationSlug),
         },
       },
     },
@@ -119,7 +120,7 @@ export async function submitCandidateRecruitmentDocumentAction(
       application: {
         job: {
           organization: {
-            slug: organizationSlug,
+            slug: databaseSlugForTenant(organizationSlug),
           },
         },
       },
@@ -244,7 +245,7 @@ export async function submitCandidateOnboardingDocumentAction(
         application: {
           job: {
             organization: {
-              slug: organizationSlug,
+              slug: databaseSlugForTenant(organizationSlug),
             },
           },
         },

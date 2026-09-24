@@ -16,13 +16,16 @@ import {
   Building2,
   ExternalLink,
   Settings,
+  Banknote,
 } from 'lucide-react';
+import { Role } from '@prisma/client';
 
 interface DashboardSidebarNavProps {
   orgSlug?: string;
+  role: Role;
 }
 
-export function DashboardSidebarNav({ orgSlug }: DashboardSidebarNavProps) {
+export function DashboardSidebarNav({ orgSlug, role }: DashboardSidebarNavProps) {
   const pathname = usePathname();
 
   const isLinkActive = (href: string) => {
@@ -101,6 +104,11 @@ export function DashboardSidebarNav({ orgSlug }: DashboardSidebarNavProps) {
           label: 'Leave',
           icon: Calendar,
         },
+        ...(role === Role.ORGANIZATION_ADMIN || role === Role.HR_ADMIN ? [{
+          href: '/dashboard/payroll',
+          label: 'Payroll',
+          icon: Banknote,
+        }] : []),
         {
           href: '/dashboard/hiring/onboarding',
           label: 'Onboarding',
@@ -116,7 +124,7 @@ export function DashboardSidebarNav({ orgSlug }: DashboardSidebarNavProps) {
         <div key={idx} className="space-y-1">
           {group.label && (
             <div className="pt-2 pb-1 px-3">
-              <span className="text-[10px] font-bold uppercase tracking-wider text-[#9CA3AF]">
+              <span className="text-[10px] font-bold uppercase tracking-[0.14em] text-[var(--tenant-accent)]">
                 {group.label}
               </span>
             </div>
@@ -132,22 +140,22 @@ export function DashboardSidebarNav({ orgSlug }: DashboardSidebarNavProps) {
                 href={item.href}
                 className={`group flex items-center justify-between px-3.5 py-2.5 text-xs rounded-2xl transition-all duration-150 ${
                   active
-                    ? 'bg-[#181A1C] text-white font-bold shadow-sm'
-                    : 'text-[#6B7280] hover:text-[#181A1C] hover:bg-[#F4F5F7] font-semibold'
+                    ? 'bg-[var(--tenant-primary)] text-[var(--tenant-primary-foreground)] font-bold shadow-sm'
+                    : 'text-[var(--wp-text-muted)] hover:text-[var(--wp-text)] hover:bg-[var(--tenant-tint-strong)] font-semibold'
                 }`}
               >
                 <div className="flex items-center gap-3 truncate">
                   <Icon
                     className={`h-4 w-4 shrink-0 transition-colors ${
                       active
-                        ? 'text-white'
-                        : 'text-[#9CA3AF] group-hover:text-[#181A1C]'
+                        ? 'text-[var(--tenant-primary-foreground)]'
+                        : 'text-[var(--wp-text-muted)] group-hover:text-[var(--tenant-accent)]'
                     }`}
                   />
                   <span className="truncate">{item.label}</span>
                 </div>
                 {active && (
-                  <span className="h-2 w-2 rounded-full bg-[#22C55E] shrink-0" />
+                  <span className="h-2 w-2 rounded-full bg-[var(--tenant-accent)] shrink-0" />
                 )}
               </Link>
             );

@@ -1,0 +1,39 @@
+.theme { min-height: 100dvh; color: #111111; font-family: "Segoe UI Variable", "Segoe UI", system-ui, sans-serif; }
+.theme *, .theme *::before, .theme *::after { box-sizing: border-box; }
+.page { min-height: 100dvh; display: grid; grid-template-columns: minmax(0, 1fr) minmax(430px, 42%); background: #faf8f2; }
+.identityPanel { min-height: 100dvh; padding: clamp(42px, 5vw, 72px); display: flex; flex-direction: column; justify-content: space-between; background: var(--tenant-primary); color: var(--tenant-primary-foreground); }
+.identityTop { display: flex; align-items: center; gap: 20px; }
+.identityTop p { max-width: 380px; margin: 0; font-size: 16px; font-weight: 760; line-height: 1.35; }
+.crest { width: 128px; height: 128px; border-radius: 14px; object-fit: contain; background: #ffffff; padding: 8px; }
+.crestFallback, .mobileCrestFallback { border-radius: 14px; display: grid; place-items: center; background: var(--tenant-accent); color: var(--tenant-accent-foreground); font-size: 24px; font-weight: 820; }
+.identityCopy { max-width: 690px; padding-block: 64px; }
+.identityCopy > span { border-left: 3px solid var(--tenant-accent); padding-left: 12px; font-size: 12px; font-weight: 800; letter-spacing: .16em; text-transform: uppercase; }
+.identityCopy h1 { margin: 26px 0 0; font-size: clamp(44px, 4.3vw, 66px); font-weight: 680; line-height: 1.02; letter-spacing: -.045em; }
+.identityCopy p { max-width: 610px; margin: 28px 0 0; color: color-mix(in srgb, var(--tenant-primary-foreground) 76%, transparent); font-size: 16px; line-height: 1.7; }
+.powered { margin: 0; color: color-mix(in srgb, var(--tenant-primary-foreground) 72%, transparent); font-size: 12px; }
+.powered strong { color: var(--tenant-primary-foreground); }
+.formSide { min-height: 100dvh; display: grid; place-items: center; padding: 40px; }
+.formPanel { width: min(100%, 430px); border: 1px solid #ded9cc; border-radius: 16px; background: #ffffff; padding: clamp(32px, 4vw, 48px); box-shadow: 0 22px 55px rgba(46, 38, 19, .08); }
+.mobileIdentity { display: none; }
+.eyebrow { margin: 0 0 16px; color: #625f58; font-size: 11px; font-weight: 800; letter-spacing: .15em; text-transform: uppercase; }
+.formPanel h2 { margin: 0; font-size: 40px; font-weight: 700; letter-spacing: -.04em; }
+.formIntro { margin: 12px 0 0; color: #625f58; font-size: 15px; line-height: 1.6; }
+.backLink { width: fit-content; margin: 24px auto 0; display: block; color: #514d46; font-size: 13px; font-weight: 700; text-decoration: none; }
+.backLink:hover { color: var(--tenant-primary); text-decoration: underline; text-decoration-color: var(--tenant-accent); text-underline-offset: 4px; }
+.backLink:focus-visible { outline: 3px solid color-mix(in srgb, var(--tenant-accent) 45%, transparent); outline-offset: 4px; }
+
+@media (max-width: 900px) {
+  .page { grid-template-columns: 1fr; }
+  .identityPanel { display: none; }
+  .formSide { padding: 48px 24px; }
+  .mobileIdentity { margin-bottom: 36px; display: flex; align-items: center; gap: 16px; }
+  .mobileIdentity span { font-size: 14px; font-weight: 760; line-height: 1.35; }
+  .mobileCrest { width: 76px; height: 76px; border-radius: 10px; object-fit: contain; background: #ffffff; }
+}
+
+@media (max-width: 520px) {
+  .formSide { padding: 20px 16px; }
+  .formPanel { padding: 30px 20px; border-radius: 14px; }
+  .formPanel h2 { font-size: 35px; }
+  .mobileIdentity { margin-bottom: 30px; }
+}

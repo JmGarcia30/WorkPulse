@@ -58,7 +58,7 @@ export function DashboardHeader({ orgName }: DashboardHeaderProps) {
   const breadcrumbs = generateBreadcrumbs();
 
   return (
-    <header className="h-16 border-b border-[#E8EAED] bg-white/95 backdrop-blur-md px-6 flex items-center justify-between sticky top-0 z-20 shadow-2xs">
+    <header className="wp-tenant-rule h-16 border-b bg-white/95 backdrop-blur-md px-6 flex items-center justify-between sticky top-0 z-20 shadow-2xs">
       {/* Breadcrumbs Navigation */}
       <nav aria-label="Breadcrumb" className="flex items-center gap-1.5 text-xs">
         {breadcrumbs.map((crumb, idx) => (
@@ -67,13 +67,13 @@ export function DashboardHeader({ orgName }: DashboardHeaderProps) {
               <ChevronRight className="h-3.5 w-3.5 text-[#9CA3AF] shrink-0" />
             )}
             {crumb.isLast ? (
-              <span className="font-bold text-[#181A1C] truncate max-w-[200px]">
+              <span className="font-bold text-[var(--tenant-primary)] truncate max-w-[200px]">
                 {crumb.label}
               </span>
             ) : (
               <Link
                 href={crumb.href}
-                className="text-[#6B7280] hover:text-[#181A1C] transition-colors truncate max-w-[150px] font-medium"
+                className="text-[var(--wp-text-muted)] hover:text-[var(--tenant-primary)] transition-colors truncate max-w-[150px] font-medium"
               >
                 {crumb.label}
               </Link>
@@ -84,12 +84,12 @@ export function DashboardHeader({ orgName }: DashboardHeaderProps) {
 
       {/* Right Side Organization & Status Context */}
       <div className="flex items-center gap-3">
-        <div className="hidden sm:flex items-center gap-2 px-3 py-1 rounded-full border border-[#E8EAED] bg-[#F8F9FA] text-[11px] font-semibold text-[#181A1C] shadow-2xs">
-          <span className="h-2 w-2 rounded-full bg-[#22C55E] animate-pulse" />
+        <div className="hidden sm:flex items-center gap-2 px-3 py-1 rounded-full border border-[var(--tenant-border)] bg-[var(--tenant-tint)] text-[11px] font-semibold text-[var(--tenant-primary)] shadow-2xs">
+          <span className="h-2 w-2 rounded-full bg-[var(--tenant-accent)] animate-pulse" />
           <span className="truncate max-w-[180px]">{orgName}</span>
           <span className="text-[#D1D5DB]">•</span>
           <span className="text-[10px] uppercase font-extrabold tracking-wider text-[#16A34A] flex items-center gap-1">
-            <Sparkles className="h-2.5 w-2.5 text-[#F97316]" /> AI Active
+            <Sparkles className="h-2.5 w-2.5 text-[var(--tenant-accent)]" /> AI Active
           </span>
         </div>
       </div>

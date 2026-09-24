@@ -1,0 +1,26 @@
+.scroll { overflow-x: auto; }
+.calendar { display: grid; min-width: 760px; grid-template-columns: repeat(7, minmax(0, 1fr)); }
+.weekday { border-bottom: 1px solid var(--tenant-border); padding: .7rem; color: var(--wp-text-muted); font-size: .64rem; font-weight: 800; letter-spacing: .1em; text-align: center; text-transform: uppercase; }
+.dayCell, .emptyCell { min-height: 8rem; border-right: 1px solid var(--tenant-border); border-bottom: 1px solid var(--tenant-border); }
+.dayCell { position: relative; padding: .75rem; transition: opacity 150ms ease, filter 150ms ease; }
+.dayCell:nth-child(7n), .emptyCell:nth-child(7n) { border-right: 0; }
+.dayTop { display: flex; align-items: center; justify-content: space-between; gap: .4rem; }
+.dayTop time { display: grid; width: 1.65rem; height: 1.65rem; place-items: center; border-radius: 50%; font-size: .78rem; font-weight: 800; }
+.badge { display: inline-flex; border-radius: 999px; padding: .22rem .48rem; font-size: .6rem; font-weight: 750; }
+.cellTimes { display: flex; align-items: center; gap: .35rem; margin-top: 1.3rem; color: var(--wp-text); font-size: .68rem; font-weight: 650; }
+.cellTimes b { color: var(--wp-text-muted); font-weight: 400; }
+.dayCell small { display: block; overflow: hidden; margin-top: .45rem; color: var(--wp-text-muted); font-size: .6rem; text-overflow: ellipsis; white-space: nowrap; }
+.legend { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: .55rem 1rem; margin: 0; padding: 0; list-style: none; color: var(--wp-text-muted); font-size: .68rem; font-weight: 650; }
+.legend li { display: flex; align-items: center; gap: .35rem; }
+.legend i { width: .55rem; height: .55rem; border: 0; border-radius: 50%; }
+.present { border-color: #cde9d8; background: #edf8f1; color: #17653d; }
+.late { border-color: #eadba7; background: #fbf6df; color: #765c08; }
+.absent { border-color: #efcccc; background: #fbeeee; color: #9b3232; }
+.leave { border-color: #d8d4ee; background: #f1effa; color: #625297; }
+.restday { border-color: #e2e5e8; background: #f3f4f5; color: #6d747c; }
+.noschedule, .open, .incomplete { border-color: #d8e1e8; background: #f0f5f8; color: #536778; }
+.upcoming, .norecord { border-color: #e8e5df; background: #faf9f6; color: #8a867f; }
+.emptyCell { background: color-mix(in srgb, var(--tenant-tint) 50%, white); }
+.muted { opacity: .34; filter: saturate(.35); }
+@media (max-width: 800px) { .legend { justify-content: flex-start; } }
+@media (max-width: 540px) { .calendar { min-width: 650px; } .dayCell, .emptyCell { min-height: 6.75rem; } .cellTimes { margin-top: .8rem; } }

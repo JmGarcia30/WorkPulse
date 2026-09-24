@@ -12,7 +12,8 @@
     "test:h3": "tsx scripts/test-h3-attendance.ts",
     "test:h4": "tsx scripts/test-h4-employee-self-service.ts",
     "test:h5": "tsx scripts/test-h5-leave-management.ts",
-    "test:s1": "tsx scripts/test-s1-saas-shell.ts"
+    "test:s1": "tsx scripts/test-s1-saas-shell.ts",
+    "test:h6": "tsx scripts/test-h6-payroll-foundation.ts"
   },
   "prisma": {
     "seed": "tsx prisma/seed.ts"
@@ -21,11 +22,12 @@
     "@google/generative-ai": "^0.24.1",
     "@js-temporal/polyfill": "^0.5.1",
     "@prisma/client": "^6.19.3",
+    "@vercel/blob": "^2.8.0",
     "bcryptjs": "^3.0.3",
     "jose": "^6.2.8",
     "lucide-react": "^1.31.0",
     "mammoth": "^1.12.2",
-    "next": "16.3.0",
+    "next": "^16.3.6",
     "nodemailer": "^10.0.0",
     "pdf-parse": "^1.1.1",
     "react": "19.2.8",

@@ -15,6 +15,7 @@ import {
   createEmployeeInvitation,
   isActivationTokenFormatValid,
 } from './activation';
+import { publicOrigin } from '@/lib/tenant/host';
 
 export class EmployeeAccountError extends Error {
   constructor(public readonly code: string, message: string) {
@@ -73,7 +74,7 @@ async function deliverInvitation(input: {
   expiresAt: Date;
   resent: boolean;
 }) {
-  const baseUrl = (process.env.APP_URL || process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000').replace(/\/$/, '');
+  const baseUrl = publicOrigin().replace(/\/$/, '');
   const activationUrl = `${baseUrl}/activate/employee#token=${encodeURIComponent(input.token)}`;
   const delivery = await sendEmployeeActivationEmail({
     to: input.email,

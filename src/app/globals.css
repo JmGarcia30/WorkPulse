@@ -20,6 +20,9 @@
   --tenant-primary-foreground: #ffffff;
   --tenant-accent: var(--wp-accent);
   --tenant-accent-foreground: #ffffff;
+  --tenant-tint: color-mix(in srgb, var(--tenant-primary) 5%, #f7f6f2);
+  --tenant-tint-strong: color-mix(in srgb, var(--tenant-accent) 10%, white);
+  --tenant-border: color-mix(in srgb, var(--tenant-primary) 14%, #dfe2e4);
   --font-workpulse: "Segoe UI Variable", "Segoe UI", system-ui, -apple-system, BlinkMacSystemFont, Arial, sans-serif;
 }
 
@@ -53,6 +56,10 @@ html { scroll-behavior: smooth; }
 .wp-panel { border: 1px solid var(--wp-border); background: var(--wp-surface); }
 .wp-divider-list > * + * { border-top: 1px solid var(--wp-border); }
 .wp-status { display: inline-flex; align-items: center; border-radius: 999px; padding: .2rem .55rem; font-size: .72rem; font-weight: 700; }
+.wp-tenant-shell { background: var(--tenant-tint); }
+.wp-tenant-sidebar { border-color: var(--tenant-border); background: color-mix(in srgb, var(--tenant-primary) 2%, white); }
+.wp-tenant-rule { border-color: var(--tenant-border); }
+.wp-tenant-shell > header + div { max-width: none; }
 
 ::-webkit-scrollbar { width: 8px; height: 8px; }
 ::-webkit-scrollbar-track { background: transparent; }

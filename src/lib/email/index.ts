@@ -1,4 +1,5 @@
 import nodemailer from 'nodemailer';
+import { publicOrigin } from '@/lib/tenant/host';
 
 export interface EmailLogEntry {
   id: string;
@@ -34,6 +35,15 @@ function getTransporter() {
   const pass = process.env.GMAIL_APP_PASSWORD || process.env.SMTP_PASSWORD;
 
   if (user && pass) {
+    if (process.env.SMTP_HOST) {
+      const port = Number(process.env.SMTP_PORT || '587');
+      return nodemailer.createTransport({
+        host: process.env.SMTP_HOST,
+        port,
+        secure: process.env.SMTP_SECURE === 'true' || port === 465,
+        auth: { user, pass },
+      });
+    }
     return nodemailer.createTransport({
       service: 'gmail',
       auth: { user, pass },
@@ -84,6 +94,11 @@ export async function sendEmail({ to, subject, html, text, sensitive = false }: 
     return { success: false, mode: 'preview_log', id };
   }
 
+  if (process.env.NODE_ENV === 'production') {
+    console.warn(`[WorkPulse Emailer] Email ${id} was not delivered because SMTP is unavailable.`);
+    return { success: false, mode: 'preview_log', id };
+  }
+
   // Preview / Development / Defense mode (Zero-cost, 100% reliable offline)
   const entry: EmailLogEntry = { id, to, subject, text: plainText, html, sentAt: new Date(), mode: 'preview_log' };
   emailLogQueue.push(entry);
@@ -129,7 +144,7 @@ export async function sendApplicationConfirmationEmail({
   organizationName,
   organizationSlug,
   applicationId,
-  baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000',
+  baseUrl = publicOrigin(),
 }: {
   to: string;
   candidateName: string;

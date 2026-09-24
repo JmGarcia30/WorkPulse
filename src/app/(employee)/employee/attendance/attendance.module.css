@@ -1,0 +1,63 @@
+.page { display: grid; gap: 1.5rem; width: 100%; max-width: 100rem; margin: 0 auto; }
+.pageHeader { display: flex; align-items: flex-end; justify-content: space-between; gap: 2rem; padding: .35rem 0 .5rem; }
+.eyebrow { margin: 0 0 .55rem; color: var(--tenant-accent); font-size: .7rem; font-weight: 800; letter-spacing: .15em; text-transform: uppercase; }
+.pageHeader h1 { margin: 0; color: var(--wp-text); font-size: clamp(1.8rem, 4vw, 2.65rem); font-weight: 720; letter-spacing: -.045em; line-height: 1; }
+.employeeLine { display: flex; flex-wrap: wrap; gap: .55rem; margin: .75rem 0 0; color: var(--wp-text-muted); font-size: .875rem; }
+.employeeLine span { display: inline-flex; align-items: center; gap: .5rem; }
+.employeeLine span::before { content: ''; width: 3px; height: 3px; border-radius: 50%; background: var(--tenant-accent); }
+.filterBar, .logToolbar { display: flex; flex-wrap: wrap; align-items: end; gap: .75rem; border: 1px solid var(--tenant-border); border-radius: .9rem; background: white; padding: .9rem 1rem; }
+.filterBar label, .logToolbar label { display: grid; min-width: 10rem; gap: .35rem; }
+.filterBar label > span, .logToolbar label > span { color: var(--wp-text-muted); font-size: .6rem; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; }
+.filterBar input, .filterBar select, .logToolbar input, .logToolbar select { min-height: 2.45rem; border: 1px solid var(--tenant-border); border-radius: .55rem; background: white; padding: .45rem .7rem; color: var(--wp-text); font-size: .75rem; }
+.filterBar input:focus, .filterBar select:focus, .logToolbar input:focus, .logToolbar select:focus { border-color: var(--tenant-accent); outline: 2px solid color-mix(in srgb, var(--tenant-accent) 20%, transparent); }
+.applyButton { min-height: 2.45rem; border-radius: .55rem; background: var(--tenant-primary); padding: .45rem 1rem; color: var(--tenant-primary-foreground); font-size: .72rem; font-weight: 750; }
+.resetLink { display: inline-flex; min-height: 2.45rem; align-items: center; justify-content: center; padding: .45rem .6rem; color: var(--tenant-accent); font-size: .72rem; font-weight: 750; }
+.monthControl { display: flex; min-width: 20rem; align-items: center; justify-content: space-between; border: 1px solid var(--tenant-border); border-radius: .85rem; background: white; padding: .45rem; box-shadow: 0 8px 30px rgb(20 32 51 / 5%); }
+.monthControl a { display: grid; width: 2.5rem; height: 2.5rem; place-items: center; border-radius: .55rem; color: var(--tenant-primary); transition: background 140ms ease; }
+.monthControl a:hover { background: var(--tenant-tint-strong); }
+.monthControl svg { width: 1rem; }
+.monthControl div { text-align: center; }
+.monthControl span { display: block; color: var(--wp-text-muted); font-size: .62rem; font-weight: 750; letter-spacing: .1em; text-transform: uppercase; }
+.monthControl strong { display: block; margin-top: .15rem; font-size: .95rem; }
+.calendarCard, .logsCard { overflow: hidden; border: 1px solid var(--tenant-border); border-radius: 1.15rem; background: white; box-shadow: 0 12px 40px rgb(20 32 51 / 5%); }
+.cardHeading, .logsHeading { display: flex; align-items: center; justify-content: space-between; gap: 1rem; border-bottom: 1px solid var(--tenant-border); padding: 1.1rem 1.25rem; }
+.cardHeading > div, .logsHeading > div { display: flex; align-items: center; gap: .75rem; }
+.cardHeading svg, .logsHeading svg { width: 1.15rem; color: var(--tenant-accent); }
+.cardHeading h2, .logsHeading h2 { margin: 0; font-size: .95rem; font-weight: 750; }
+.cardHeading p, .logsHeading p { margin: .18rem 0 0; color: var(--wp-text-muted); font-size: .72rem; }
+.legend { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: .55rem 1rem; margin: 0; padding: 0; list-style: none; color: var(--wp-text-muted); font-size: .68rem; font-weight: 650; }
+.legend li { display: flex; align-items: center; gap: .35rem; }
+.legend i { width: .55rem; height: .55rem; border: 0; border-radius: 50%; }
+.calendarScroll { overflow-x: auto; }
+.calendar { display: grid; min-width: 760px; grid-template-columns: repeat(7, minmax(0, 1fr)); }
+.weekday { border-bottom: 1px solid var(--tenant-border); padding: .7rem; color: var(--wp-text-muted); font-size: .64rem; font-weight: 800; letter-spacing: .1em; text-align: center; text-transform: uppercase; }
+.dayCell, .emptyCell { min-height: 8rem; border-right: 1px solid var(--tenant-border); border-bottom: 1px solid var(--tenant-border); }
+.dayCell { position: relative; padding: .75rem; background: white; }
+.dayCell:nth-child(7n), .emptyCell:nth-child(7n) { border-right: 0; }
+.dayTop { display: flex; align-items: center; justify-content: space-between; gap: .4rem; }
+.dayTop time { display: grid; width: 1.65rem; height: 1.65rem; place-items: center; border-radius: 50%; font-size: .78rem; font-weight: 800; }
+.dayTop span, .tableStatus { border-radius: 999px; padding: .22rem .48rem; font-size: .6rem; font-weight: 750; }
+.cellTimes { display: flex; align-items: center; gap: .35rem; margin-top: 1.3rem; color: var(--wp-text); font-size: .68rem; font-weight: 650; }
+.cellTimes b { color: var(--wp-text-muted); font-weight: 400; }
+.dayCell small { display: block; overflow: hidden; margin-top: .45rem; color: var(--wp-text-muted); font-size: .6rem; text-overflow: ellipsis; white-space: nowrap; }
+.present { border-color: #cde9d8; background: #edf8f1; color: #17653d; }
+.late { border-color: #eadba7; background: #fbf6df; color: #765c08; }
+.absent { border-color: #efcccc; background: #fbeeee; color: #9b3232; }
+.leave { border-color: #d8d4ee; background: #f1effa; color: #625297; }
+.weekend { border-color: #e2e5e8; background: #f3f4f5; color: #6d747c; }
+.upcoming, .unrecorded { border-color: #e8e5df; background: #faf9f6; color: #8a867f; }
+.emptyCell { background: color-mix(in srgb, var(--tenant-tint) 50%, white); }
+.logsHeading > span { color: var(--tenant-accent); font-size: .68rem; font-weight: 800; text-transform: uppercase; }
+.tableScroll { overflow-x: auto; }
+.logToolbar { border-width: 0 0 1px; border-radius: 0; background: color-mix(in srgb, var(--tenant-tint) 45%, white); }
+.tableScroll table { width: 100%; min-width: 760px; border-collapse: collapse; font-size: .78rem; text-align: left; }
+.tableScroll th { position: sticky; top: 0; z-index: 1; background: var(--tenant-tint); padding: .75rem 1.25rem; color: var(--wp-text-muted); font-size: .62rem; letter-spacing: .08em; text-transform: uppercase; }
+.tableScroll td { border-top: 1px solid var(--tenant-border); padding: .9rem 1.25rem; vertical-align: middle; }
+.tableScroll tbody tr:hover { background: color-mix(in srgb, var(--tenant-tint) 55%, white); }
+.tableScroll td strong, .tableScroll td small { display: block; }
+.tableScroll td small { margin-top: .22rem; color: var(--wp-text-muted); font-size: .65rem; }
+.tableStatus { display: inline-flex; }
+.emptyState { height: 9rem; color: var(--wp-text-muted); text-align: center; }
+.emptyState p { margin: 0 0 .5rem; }
+@media (max-width: 800px) { .pageHeader { align-items: stretch; flex-direction: column; gap: 1.2rem; } .monthControl { min-width: 0; width: 100%; } .cardHeading { align-items: flex-start; flex-direction: column; } .legend { justify-content: flex-start; } .filterBar label, .logToolbar label { flex: 1 1 10rem; } }
+@media (max-width: 540px) { .calendar { min-width: 650px; } .dayCell, .emptyCell { min-height: 6.75rem; } .cellTimes { margin-top: .8rem; } .cardHeading, .logsHeading { padding: .9rem 1rem; } }

@@ -14,7 +14,7 @@ async function ensureDirectoryExists() {
   }
 }
 
-export const localStorageProvider: StorageProvider = {
+export const fileSystemStorageProvider: StorageProvider = {
   async upload(fileBuffer: Buffer, fileName: string, mimeType: string, namespace?: string) {
     await ensureDirectoryExists();
     const safeNamespace = namespace?.replace(/[^a-zA-Z0-9_-]/g, '') || '';

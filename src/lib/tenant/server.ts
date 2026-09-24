@@ -2,6 +2,7 @@ import 'server-only';
 
 import { cache } from 'react';
 import { headers } from 'next/headers';
+import { notFound } from 'next/navigation';
 import { getOrganizationBranding } from '@/features/organization-branding/read-model';
 import { measureDevelopment } from '@/lib/performance/diagnostics';
 import { databaseSlugForTenant, parsePlatformHost } from './host';
@@ -23,6 +24,6 @@ export const getOrganizationBrandingBySlug = cache(async (slug: string) => {
 
 export async function requireRequestTenant() {
   const tenant = await resolveRequestTenant();
-  if (!tenant) throw new Error('TENANT_NOT_FOUND');
+  if (!tenant) notFound();
   return tenant;
 }

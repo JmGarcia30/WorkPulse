@@ -3,6 +3,9 @@ import Link from 'next/link';
 import { prisma } from '@/lib/db/prisma';
 import { Building2, ArrowRight, Briefcase } from 'lucide-react';
 
+// The directory is database-backed and must never make deployment builds depend on Neon availability.
+export const dynamic = 'force-dynamic';
+
 export const metadata: Metadata = {
   title: 'Careers Portal Directory | WorkPulse SaaS',
   description: 'Explore active institutional and enterprise career portals hosted on the WorkPulse SaaS platform.',

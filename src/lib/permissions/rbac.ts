@@ -145,3 +145,10 @@ export const canRetryLeaveAttendanceSync = canManageEmployees;
 export const canViewOwnLeave = canAccessEmployeeSelfService;
 export const canSubmitOwnLeave = canAccessEmployeeSelfService;
 export const canWithdrawOwnLeave = canAccessEmployeeSelfService;
+
+export function canManagePayroll(user: UserSessionPayload | null): boolean {
+  if (!user) return false;
+  return user.role === Role.ORGANIZATION_ADMIN || user.role === Role.HR_ADMIN;
+}
+
+export const canViewPayroll = canManagePayroll;

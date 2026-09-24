@@ -39,7 +39,7 @@ export function WorkspaceDiscoveryForm({
       const root = platformRootHost(window.location.host);
       // A full navigation is required because each tenant has its own origin.
       // eslint-disable-next-line @next/next/no-location-assign-relative-destination
-      window.location.assign(`${window.location.protocol}//${result.slug}.${root}/login`);
+      window.location.assign(`${window.location.protocol}//${result.slug}.${root}`);
     } catch {
       setError('We could not check that workspace right now. Please try again.');
     } finally {

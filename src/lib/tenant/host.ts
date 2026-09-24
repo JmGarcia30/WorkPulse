@@ -34,8 +34,7 @@ export function tenantOrigin(slug: string) {
 }
 
 export function databaseSlugForTenant(slug: string) {
-  const root = normalizeHostname(rootDomain());
-  return (root === 'localhost' || root === '127.0.0.1') && slug === 'saga' ? 'st-aloysius' : slug;
+  return slug === 'saga' ? 'st-aloysius' : slug;
 }
 
 export function publicOrigin() {

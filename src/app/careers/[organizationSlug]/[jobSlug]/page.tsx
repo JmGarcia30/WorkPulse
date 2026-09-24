@@ -11,6 +11,7 @@ import {
   ArrowLeft,
   Send,
 } from 'lucide-react';
+import { databaseSlugForTenant } from '@/lib/tenant/host';
 
 interface JobOpeningPageProps {
   params: Promise<{ organizationSlug: string; jobSlug: string }>;
@@ -26,7 +27,7 @@ export async function generateMetadata({
       slug: jobSlug,
       status: JobStatus.PUBLISHED,
       organization: {
-        slug: organizationSlug,
+        slug: databaseSlugForTenant(organizationSlug),
         careersEnabled: true,
       },
     },
@@ -50,7 +51,7 @@ export default async function JobOpeningPage({ params }: JobOpeningPageProps) {
 
   // Strict Multi-Tenant Security Check: Verify Organization & Job Ownership
   const org = await prisma.organization.findUnique({
-    where: { slug: organizationSlug },
+    where: { slug: databaseSlugForTenant(organizationSlug) },
     select: { id: true, name: true, slug: true, careersEnabled: true },
   });
 
@@ -77,7 +78,7 @@ export default async function JobOpeningPage({ params }: JobOpeningPageProps) {
     <div className="max-w-4xl mx-auto space-y-8">
       {/* Back Link */}
       <Link
-        href={`/careers/${org.slug}`}
+        href={`/careers/${organizationSlug}`}
         className="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-500 hover:text-slate-900 dark:hover:text-slate-100"
       >
         <ArrowLeft className="h-4 w-4" /> Back to {org.name} Careers
@@ -97,7 +98,7 @@ export default async function JobOpeningPage({ params }: JobOpeningPageProps) {
           </div>
 
           <Link
-            href={`/careers/${org.slug}/${job.slug}/apply`}
+            href={`/careers/${organizationSlug}/${job.slug}/apply`}
             className="inline-flex items-center justify-center gap-2 rounded-xl bg-indigo-600 px-6 py-3 text-xs font-bold text-white shadow-md hover:bg-indigo-500 transition shrink-0"
           >
             <Send className="h-4 w-4" /> Apply for Position
@@ -190,7 +191,7 @@ export default async function JobOpeningPage({ params }: JobOpeningPageProps) {
 
         <div className="pt-6 border-t border-slate-100 dark:border-slate-800 flex justify-center">
           <Link
-            href={`/careers/${org.slug}/${job.slug}/apply`}
+            href={`/careers/${organizationSlug}/${job.slug}/apply`}
             className="inline-flex items-center gap-2 rounded-xl bg-indigo-600 px-8 py-3.5 text-xs font-bold text-white shadow-lg hover:bg-indigo-500 transition"
           >
             <Send className="h-4 w-4" /> Apply for Position
