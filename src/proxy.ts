@@ -31,7 +31,25 @@ export function proxy(request: NextRequest) {
   const classification = parsePlatformHost(request.headers.get('x-forwarded-host') || request.headers.get('host') || '');
   const hasSession = sessionCookieNames.some((name) => Boolean(request.cookies.get(name)?.value));
   const host = request.headers.get('x-forwarded-host') || request.headers.get('host') || '';
-  const usesPathTenancy = classification.kind === 'public' && usesTemporaryPathTenancy(host);
+  const usesPathTenancy = classification.kind === 'public' && (usesTemporaryPathTenancy(host) || pathname.startsWith('/saga'));
+
+  if (pathname === '/careers/saga' || pathname === '/careers/st-aloysius' || pathname === '/careers/saga/' || pathname === '/careers/st-aloysius/') {
+    if (classification.kind === 'tenant') {
+      return NextResponse.redirect(new URL('/#careers', request.url));
+    }
+    return NextResponse.redirect(new URL('/saga#careers', request.url));
+  }
+
+  if (pathname.startsWith('/careers/st-aloysius/')) {
+    const jobSuffix = pathname.slice('/careers/st-aloysius'.length);
+    const url = request.nextUrl.clone();
+    if (classification.kind === 'tenant') {
+      url.pathname = `/careers/${classification.slug}${jobSuffix}`;
+    } else {
+      url.pathname = `/saga/careers${jobSuffix}`;
+    }
+    return NextResponse.redirect(url);
+  }
 
   if (usesPathTenancy) {
     const pathMatch = pathname.match(/^\/saga(?:\/|$)/);
@@ -39,7 +57,10 @@ export function proxy(request: NextRequest) {
       const suffix = pathname.slice('/saga'.length) || '/';
       if (suffix === '/') return pathTenantResponse(request, '/tenant-entry', 'saga');
       if (suffix === '/login') return pathTenantResponse(request, '/login', 'saga');
-      if (suffix === '/careers' || suffix.startsWith('/careers/')) {
+      if (suffix === '/careers' || suffix === '/careers/') {
+        return NextResponse.redirect(new URL('/saga#careers', request.url));
+      }
+      if (suffix.startsWith('/careers/')) {
         return pathTenantResponse(request, `/careers/saga${suffix.slice('/careers'.length)}`, 'saga');
       }
       if (suffix.startsWith('/dashboard') || suffix.startsWith('/employee')) {
@@ -59,9 +80,13 @@ export function proxy(request: NextRequest) {
         const url = request.nextUrl.clone(); url.pathname = '/saga/login';
         return NextResponse.redirect(url);
       }
-      if (pathname === '/careers' || pathname === '/careers/saga' || pathname.startsWith('/careers/saga/')) {
+      if (pathname === '/careers' || pathname === '/careers/saga' || pathname === '/careers/st-aloysius') {
+        return NextResponse.redirect(new URL('/saga#careers', request.url));
+      }
+      if (pathname.startsWith('/careers/')) {
+        const jobSuffix = pathname.replace(/^\/careers\/(?:saga\/|st-aloysius\/)?/, '');
         const url = request.nextUrl.clone();
-        url.pathname = `/saga/careers${pathname.slice('/careers/saga'.length)}`;
+        url.pathname = `/saga/careers/${jobSuffix}`;
         return NextResponse.redirect(url);
       }
       if (pathname.startsWith('/dashboard') || pathname.startsWith('/employee')) {
@@ -103,7 +128,10 @@ export function proxy(request: NextRequest) {
       login.searchParams.set('callbackUrl', pathname);
       return NextResponse.redirect(login);
     }
-    if ((pathname === '/careers' || pathname.startsWith('/careers/')) && !pathname.startsWith(`/careers/${classification.slug}`)) {
+    if (pathname === '/careers' || pathname === '/careers/') {
+      return NextResponse.redirect(new URL('/#careers', request.url));
+    }
+    if (pathname.startsWith('/careers/') && !pathname.startsWith(`/careers/${classification.slug}`)) {
       const url = request.nextUrl.clone();
       const suffix = pathname.slice('/careers'.length);
       url.pathname = `/careers/${classification.slug}${suffix}`;

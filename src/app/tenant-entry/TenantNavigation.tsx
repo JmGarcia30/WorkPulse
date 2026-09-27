@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
+import { ArrowRight } from 'lucide-react';
 import type { OrganizationBrandingView } from '@/features/organization-branding/read-model';
 import { TenantLogo } from '@/components/layout/TenantLogo';
 import styles from './tenant-entry.module.css';
@@ -25,14 +26,21 @@ export function TenantNavigation({ branding, careersEnabled, navigationName }: {
     <header className={`${styles.header} ${scrolled ? styles.headerScrolled : ''}`}>
       <div className={styles.headerInner}>
         <Link href="#top" className={styles.identity} aria-label={`${branding.displayName} home`}>
-          <TenantLogo branding={branding} size={48} className={styles.logo} fallbackClassName={styles.logoFallback} priority />
+          <div className={styles.logoRing}>
+            <TenantLogo branding={branding} size={42} className={styles.logo} fallbackClassName={styles.logoFallback} priority />
+          </div>
           <span>{navigationName || branding.displayName}</span>
         </Link>
         <nav className={styles.navigation} aria-label="Tenant navigation">
-          <Link href="#top" className={styles.homeLink}>Home</Link>
+          <Link href="#top">Home</Link>
+          <Link href="#portals">Portals</Link>
           <Link href="#announcements">Announcements</Link>
           {careersEnabled && <Link href="#careers">Careers</Link>}
-          <Link href="/login" className={styles.navLogin}>Log In</Link>
+          <Link href="#about">About SAGA</Link>
+          <Link href="/login" className={styles.navLogin}>
+            <span>Sign In</span>
+            <ArrowRight size={14} />
+          </Link>
         </nav>
       </div>
     </header>

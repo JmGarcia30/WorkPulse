@@ -120,10 +120,10 @@ export default async function CandidatePortalPage({ params }: CandidatePortalPag
       {/* Back Link */}
       <div className="flex items-center justify-between">
         <Link
-          href={`/careers/${organizationSlug}`}
+          href={organizationSlug === 'saga' || organizationSlug === 'st-aloysius' ? '/saga#careers' : `/careers/${organizationSlug}`}
           className="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-100 transition"
         >
-          <ArrowLeft className="h-4 w-4" /> Return to {org.name} Careers
+          <ArrowLeft className="h-4 w-4 text-[#D9A928]" /> Return to {org.name} Workspace
         </Link>
         <div className="flex items-center gap-1 text-[11px] font-semibold text-slate-400">
           <ShieldCheck className="h-3.5 w-3.5 text-emerald-500" />

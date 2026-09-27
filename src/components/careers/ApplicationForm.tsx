@@ -172,7 +172,7 @@ export function ApplicationForm({
               name="lastName"
               required
               placeholder="e.g. Santos"
-              className="mt-1 block w-full rounded-xl border border-slate-300 px-3.5 py-2.5 text-xs text-slate-900 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
+              className="mt-1 block w-full rounded-xl border border-slate-300 px-3.5 py-2.5 text-xs text-slate-900 focus:border-[#D9A928] focus:ring-1 focus:ring-[#D9A928] dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100 outline-none"
             />
           </div>
 
@@ -185,7 +185,7 @@ export function ApplicationForm({
               name="email"
               required
               placeholder="maria.santos@gmail.com"
-              className="mt-1 block w-full rounded-xl border border-slate-300 px-3.5 py-2.5 text-xs text-slate-900 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
+              className="mt-1 block w-full rounded-xl border border-slate-300 px-3.5 py-2.5 text-xs text-slate-900 focus:border-[#D9A928] focus:ring-1 focus:ring-[#D9A928] dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100 outline-none"
             />
           </div>
 
@@ -198,7 +198,7 @@ export function ApplicationForm({
               name="phone"
               required
               placeholder="+63 917 123 4567"
-              className="mt-1 block w-full rounded-xl border border-slate-300 px-3.5 py-2.5 text-xs text-slate-900 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
+              className="mt-1 block w-full rounded-xl border border-slate-300 px-3.5 py-2.5 text-xs text-slate-900 focus:border-[#D9A928] focus:ring-1 focus:ring-[#D9A928] dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100 outline-none"
             />
           </div>
         </div>
@@ -207,7 +207,7 @@ export function ApplicationForm({
       {/* Application Cover Letter */}
       <div className="space-y-4">
         <h2 className="text-sm font-bold text-slate-900 border-b border-slate-100 pb-2 dark:text-slate-100 dark:border-slate-800">
-          2. Cover Letter & Statement
+          2. Cover Letter &amp; Statement
         </h2>
 
         <div>
@@ -219,7 +219,7 @@ export function ApplicationForm({
             required
             rows={5}
             placeholder="Introduce yourself and explain why you are an ideal candidate for this position..."
-            className="mt-1 block w-full rounded-xl border border-slate-300 px-3.5 py-2.5 text-xs text-slate-900 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
+            className="mt-1 block w-full rounded-xl border border-slate-300 px-3.5 py-2.5 text-xs text-slate-900 focus:border-[#D9A928] focus:ring-1 focus:ring-[#D9A928] dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100 outline-none"
           />
         </div>
       </div>
@@ -255,16 +255,16 @@ export function ApplicationForm({
               onClick={() => fileInputRef.current?.click()}
               className={`cursor-pointer flex flex-col items-center justify-center rounded-2xl border-2 border-dashed p-8 text-center transition-all ${
                 isDragging
-                  ? 'border-indigo-500 bg-indigo-50/50 dark:border-indigo-400 dark:bg-indigo-950/30 ring-4 ring-indigo-500/10'
-                  : 'border-slate-300 hover:border-indigo-400 hover:bg-slate-50/50 dark:border-slate-700 dark:hover:border-indigo-500 dark:hover:bg-slate-800/30'
+                  ? 'border-[#D9A928] bg-[#FAF8F2] ring-4 ring-[#D9A928]/10'
+                  : 'border-[#E8E2D6] hover:border-[#D9A928] hover:bg-[#FAF8F2]'
               }`}
             >
-              <div className="flex h-12 w-12 items-center justify-center rounded-full bg-indigo-50 text-indigo-600 dark:bg-indigo-950/60 dark:text-indigo-400 mb-3">
-                <Upload className="h-6 w-6" />
+              <div className="flex h-12 w-12 items-center justify-center rounded-full bg-[#FAF8F2] border border-[rgba(217,169,40,0.3)] text-[#9A7415] mb-3">
+                <Upload className="h-6 w-6 text-[#D9A928]" />
               </div>
 
               <div className="text-xs text-slate-600 dark:text-slate-300">
-                <span className="font-bold text-indigo-600 dark:text-indigo-400 hover:underline">
+                <span className="font-bold text-[#9A7415] hover:underline">
                   Click to upload
                 </span>
                 <span> or drag and drop your file here</span>
@@ -333,16 +333,17 @@ export function ApplicationForm({
         <button
           type="submit"
           disabled={isSubmitting}
-          className="inline-flex items-center gap-2 rounded-xl bg-indigo-600 px-8 py-3 text-xs font-bold text-white shadow-lg hover:bg-indigo-500 disabled:opacity-60 disabled:cursor-not-allowed transition"
+          className="inline-flex items-center gap-2 rounded-lg bg-[#111111] hover:bg-[#282828] px-8 py-3 text-xs font-bold text-white shadow-sm disabled:opacity-60 disabled:cursor-not-allowed transition"
         >
           {isSubmitting ? (
             <>
-              <Loader2 className="h-4 w-4 animate-spin" /> Submitting
+              <Loader2 className="h-4 w-4 animate-spin text-[#D9A928]" /> Submitting
               Application...
             </>
           ) : (
             <>
-              <Send className="h-4 w-4" /> Submit Application
+              <span>Submit Application</span>
+              <Send className="h-4 w-4 text-[#D9A928]" />
             </>
           )}
         </button>
