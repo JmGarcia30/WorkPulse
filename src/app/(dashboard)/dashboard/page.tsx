@@ -1,477 +1,78 @@
 import Link from 'next/link';
+import { ApplicationStatus, AssessmentStatus, AttendanceStatus, EmployeeStatus, LeaveRequestStatus, OfferStatus, OnboardingTaskStatus, ProbationStatus } from '@prisma/client';
+import { ArrowRight, Banknote, CalendarCheck, ClipboardList, Clock3, FileUser, UserPlus, Users } from 'lucide-react';
 import { requireBackOfficeContext } from '@/lib/auth/guards';
+import { canViewEmployees, canViewPayroll } from '@/lib/permissions/rbac';
 import { prisma } from '@/lib/db/prisma';
-import {
-  JobStatus,
-  ApplicationStatus,
-  InterviewStatus,
-  AssessmentStatus,
-  OfferStatus,
-  OnboardingStatus,
-  OnboardingTaskStatus,
-} from '@prisma/client';
-import {
-  Briefcase,
-  CheckCircle,
-  Users,
-  Clock,
-  Plus,
-  ArrowRight,
-  History,
-  Calendar,
-  Award,
-  FileText,
-  FileCheck,
-  UserCheck,
-  Sparkles,
-  Kanban,
-} from 'lucide-react';
+import { getOrganizationBranding } from '@/features/organization-branding/read-model';
+import { attendanceDateForInstant } from '@/features/attendance/domain';
+import { formatStatusLabel } from '@/lib/ui/format-status';
+
+type AttentionItem = { label: string; href: string };
 
 export default async function DashboardPage() {
   const user = await requireBackOfficeContext();
-  if (!user) return null;
+  const branding = await getOrganizationBranding(user.organizationId);
+  if (!branding) return null;
+  const organizationId = user.organizationId;
+  const hasHrAccess = canViewEmployees(user);
+  const hasPayrollAccess = canViewPayroll(user);
+  const today = attendanceDateForInstant(new Date(), branding.timeZone);
+  const todayDate = new Date(`${today}T00:00:00.000Z`);
+  const reviewThrough = new Date();
+  reviewThrough.setUTCDate(reviewThrough.getUTCDate() + 30);
 
-  const orgId = user.organizationId;
-
-  // Real Database Metrics & Recent Activities (Strictly Organization-Scoped)
-  const [
-    totalJobs,
-    publishedJobs,
-    totalApplications,
-    awaitingReviewCount,
-    upcomingInterviewsCount,
-    completedInterviewsCount,
-    awaitingEvaluationCount,
-    activeAssessmentsCount,
-    awaitingAssessmentReviewCount,
-    activeOffersCount,
-    pendingOfferApprovalCount,
-    activeOnboardingCount,
-    pendingOnboardingReviewCount,
-    recentJobs,
-    upcomingInterviews,
-    statusHistoryEvents,
-  ] = await Promise.all([
-    prisma.job.count({ where: { organizationId: orgId } }),
-    prisma.job.count({ where: { organizationId: orgId, status: JobStatus.PUBLISHED } }),
-    prisma.application.count({ where: { job: { organizationId: orgId } } }),
-    prisma.application.count({
-      where: { job: { organizationId: orgId }, status: ApplicationStatus.APPLIED },
-    }),
-    prisma.interview.count({
-      where: {
-        application: { job: { organizationId: orgId } },
-        status: InterviewStatus.SCHEDULED,
-      },
-    }),
-    prisma.interview.count({
-      where: {
-        application: { job: { organizationId: orgId } },
-        status: InterviewStatus.COMPLETED,
-      },
-    }),
-    prisma.interview.count({
-      where: {
-        application: { job: { organizationId: orgId } },
-        status: InterviewStatus.COMPLETED,
-        evaluation: null,
-      },
-    }),
-    prisma.assessment.count({
-      where: {
-        application: { job: { organizationId: orgId } },
-        status: {
-          in: [
-            AssessmentStatus.ASSIGNED,
-            AssessmentStatus.IN_PROGRESS,
-            AssessmentStatus.SUBMITTED,
-            AssessmentStatus.UNDER_REVIEW,
-          ],
-        },
-      },
-    }),
-    prisma.assessment.count({
-      where: {
-        application: { job: { organizationId: orgId } },
-        status: AssessmentStatus.SUBMITTED,
-      },
-    }),
-    prisma.offer.count({
-      where: {
-        application: { job: { organizationId: orgId } },
-        status: {
-          in: [
-            OfferStatus.DRAFT,
-            OfferStatus.PENDING_APPROVAL,
-            OfferStatus.APPROVED,
-            OfferStatus.SENT,
-          ],
-        },
-      },
-    }),
-    prisma.offer.count({
-      where: {
-        application: { job: { organizationId: orgId } },
-        status: OfferStatus.PENDING_APPROVAL,
-      },
-    }),
-    prisma.onboardingProcess.count({
-      where: {
-        application: { job: { organizationId: orgId } },
-        status: OnboardingStatus.IN_PROGRESS,
-      },
-    }),
-    prisma.onboardingTask.count({
-      where: {
-        onboardingProcess: {
-          application: { job: { organizationId: orgId } },
-        },
-        status: OnboardingTaskStatus.SUBMITTED,
-      },
-    }),
-    prisma.job.findMany({
-      where: { organizationId: orgId },
-      orderBy: { createdAt: 'desc' },
-      take: 4,
-      include: {
-        _count: { select: { applications: true } },
-      },
-    }),
-    prisma.interview.findMany({
-      where: {
-        application: { job: { organizationId: orgId } },
-        status: InterviewStatus.SCHEDULED,
-      },
-      orderBy: { scheduledAt: 'asc' },
-      take: 4,
-      include: {
-        application: {
-          include: {
-            applicant: { select: { firstName: true, lastName: true, email: true } },
-            job: { select: { title: true } },
-          },
-        },
-        interviewer: { select: { name: true } },
-      },
-    }),
-    prisma.applicationStatusHistory.findMany({
-      where: {
-        application: {
-          job: { organizationId: orgId },
-        },
-      },
-      orderBy: { createdAt: 'desc' },
-      take: 5,
-      include: {
-        application: {
-          include: {
-            applicant: { select: { firstName: true, lastName: true } },
-            job: { select: { title: true } },
-          },
-        },
-        changedBy: { select: { name: true, role: true } },
-      },
-    }),
+  const [activeEmployees, pendingApplicants, pendingLeave, presentToday, latestPayroll, probationDue, missingCompensation, incompleteEmployeeSetup, submittedAssessments, pendingOffers, pendingOnboardingReviews] = await Promise.all([
+    hasHrAccess ? prisma.employee.count({ where: { organizationId, employeeStatus: EmployeeStatus.ACTIVE } }) : Promise.resolve(0),
+    prisma.application.count({ where: { job: { organizationId }, status: ApplicationStatus.APPLIED } }),
+    hasHrAccess ? prisma.leaveRequest.count({ where: { organizationId, status: LeaveRequestStatus.PENDING } }) : Promise.resolve(0),
+    hasHrAccess ? prisma.dailyAttendanceRecord.count({ where: { organizationId, attendanceDate: todayDate, attendanceStatus: AttendanceStatus.PRESENT } }) : Promise.resolve(0),
+    hasPayrollAccess ? prisma.payrollPeriod.findFirst({ where: { organizationId }, orderBy: [{ payDate: 'desc' }, { createdAt: 'desc' }], select: { id: true, name: true, status: true } }) : Promise.resolve(null),
+    hasHrAccess ? prisma.probationRecord.count({ where: { probationStatus: ProbationStatus.ACTIVE, expectedEndAt: { lte: reviewThrough }, employee: { organizationId } } }) : Promise.resolve(0),
+    hasPayrollAccess ? prisma.employee.count({ where: { organizationId, employeeStatus: EmployeeStatus.ACTIVE, employeeCompensations: { none: { status: 'ACTIVE' } } } }) : Promise.resolve(0),
+    hasHrAccess ? prisma.employee.count({ where: { organizationId, employeeStatus: EmployeeStatus.ACTIVE, OR: [{ employmentRecords: { none: {} } }, { employeeAccount: { is: null } }] } }) : Promise.resolve(0),
+    prisma.assessment.count({ where: { application: { job: { organizationId } }, status: AssessmentStatus.SUBMITTED } }),
+    prisma.offer.count({ where: { application: { job: { organizationId } }, status: OfferStatus.PENDING_APPROVAL } }),
+    prisma.onboardingTask.count({ where: { onboardingProcess: { application: { job: { organizationId } } }, status: OnboardingTaskStatus.SUBMITTED } }),
   ]);
 
-  return (
-    <div className="space-y-8">
-      {/* Hero Welcome Banner (matching reference image dark hero card) */}
-      <div className="relative overflow-hidden rounded-3xl bg-[#181A1C] p-7 sm:p-9 text-white shadow-md border border-[#2E3238]">
-        <div className="relative z-10 flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
-          <div className="space-y-2 max-w-2xl">
-            <div className="inline-flex items-center gap-2 rounded-full bg-white/10 px-3 py-1 text-xs font-semibold backdrop-blur-md border border-white/10 text-white">
-              <Sparkles className="h-3.5 w-3.5 text-[#F97316]" />
-              <span>AI-Powered Workforce Operations</span>
-            </div>
-            <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight">
-              Welcome back, {user.name}!
-            </h1>
-            <p className="text-xs sm:text-sm text-[#9CA3AF] leading-relaxed">
-              Track candidate pipelines, interview evaluations, and employee
-              onboarding across your organization in real time.
-            </p>
-          </div>
+  const hiringActions = submittedAssessments + pendingOffers + pendingOnboardingReviews;
+  const attention: AttentionItem[] = [];
+  if (pendingLeave > 0) attention.push({ label: `${pendingLeave} leave request${pendingLeave === 1 ? '' : 's'} need review`, href: '/dashboard/leave' });
+  if (probationDue > 0) attention.push({ label: `${probationDue} probation review${probationDue === 1 ? '' : 's'} are due soon`, href: '/dashboard/employees?needsReview=1' });
+  if (missingCompensation > 0) attention.push({ label: `Compensation setup is missing for ${missingCompensation} employee${missingCompensation === 1 ? '' : 's'}`, href: '/dashboard/payroll' });
+  if (incompleteEmployeeSetup > 0) attention.push({ label: `${incompleteEmployeeSetup} employee record${incompleteEmployeeSetup === 1 ? '' : 's'} need setup`, href: '/dashboard/employees' });
+  if (hiringActions > 0) attention.push({ label: `${hiringActions} hiring action${hiringActions === 1 ? '' : 's'} are waiting`, href: '/dashboard/hiring/applicants' });
+  if (hasPayrollAccess && !latestPayroll) attention.push({ label: 'Payroll setup has not started', href: '/dashboard/payroll' });
 
-          <div className="flex flex-wrap items-center gap-3">
-            <Link
-              href="/dashboard/hiring/jobs/new"
-              className="inline-flex items-center gap-2 rounded-2xl bg-white px-4 py-2.5 text-xs font-bold text-[#181A1C] hover:bg-slate-100 shadow-sm transition-all hover:scale-[1.02] active:scale-[0.98]"
-            >
-              <Plus className="h-4 w-4" />
-              Post New Job
-            </Link>
+  const greetingHour = Number(new Intl.DateTimeFormat('en-PH', { hour: 'numeric', hourCycle: 'h23', timeZone: branding.timeZone }).format(new Date()));
+  const greeting = greetingHour < 12 ? 'Good morning' : greetingHour < 18 ? 'Good afternoon' : 'Good evening';
+  const quickActions = hasHrAccess ? [
+    { label: 'Employee Records', href: '/dashboard/employees', icon: UserPlus },
+    { label: 'View Applicants', href: '/dashboard/hiring/applicants', icon: FileUser },
+    { label: 'Review Leave', href: '/dashboard/leave', icon: ClipboardList },
+    { label: 'Attendance', href: '/dashboard/attendance', icon: Clock3 },
+    ...(hasPayrollAccess ? [{ label: 'Payroll', href: '/dashboard/payroll', icon: Banknote }] : []),
+  ] : [
+    { label: 'Hiring Pipeline', href: '/dashboard/hiring/pipeline', icon: FileUser },
+    { label: 'View Applicants', href: '/dashboard/hiring/applicants', icon: Users },
+    { label: 'Interviews', href: '/dashboard/hiring/interviews', icon: CalendarCheck },
+  ];
+  const summaries = hasHrAccess ? [
+    { label: 'Active Employees', value: String(activeEmployees), helper: 'Current active records', href: '/dashboard/employees' },
+    { label: 'Pending Applicants', value: String(pendingApplicants), helper: 'Awaiting initial review', href: '/dashboard/hiring/applicants' },
+    { label: 'Leave Requests', value: String(pendingLeave), helper: 'Waiting for a decision', href: '/dashboard/leave' },
+    { label: 'Attendance Today', value: String(presentToday), helper: `Present of ${activeEmployees} active employees`, href: '/dashboard/attendance' },
+    ...(hasPayrollAccess ? [{ label: 'Payroll Status', value: latestPayroll ? formatStatusLabel(latestPayroll.status) : 'Not Started', helper: latestPayroll?.name ?? 'No payroll period yet', href: latestPayroll ? `/dashboard/payroll?period=${latestPayroll.id}` : '/dashboard/payroll' }] : []),
+  ] : [
+    { label: 'Pending Applicants', value: String(pendingApplicants), helper: 'Awaiting initial review', href: '/dashboard/hiring/applicants' },
+    { label: 'Hiring Actions', value: String(hiringActions), helper: 'Waiting for review', href: '/dashboard/hiring/applicants' },
+  ];
 
-            <Link
-              href="/dashboard/hiring/pipeline"
-              className="inline-flex items-center gap-2 rounded-2xl bg-white/10 hover:bg-white/15 border border-white/10 px-4 py-2.5 text-xs font-bold text-white backdrop-blur-md transition-all"
-            >
-              <Kanban className="h-4 w-4" />
-              ATS Pipeline
-            </Link>
-          </div>
-        </div>
-
-        {/* Subtle Decorative Glow */}
-        <div className="absolute -right-16 -top-16 h-64 w-64 rounded-full bg-white/5 blur-3xl pointer-events-none" />
-      </div>
-
-      {/* KPI Stat Cards Grid (Pure White Cards with Dark Icon Badges) */}
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
-        {/* Active Openings */}
-        <div className="group rounded-3xl border border-[#E8EAED] bg-white p-5 shadow-2xs hover:shadow-sm transition-all">
-          <div className="flex items-center justify-between">
-            <span className="text-[11px] font-bold text-[#6B7280] uppercase tracking-wider">
-              Active Openings
-            </span>
-            <div className="flex h-9 w-9 items-center justify-center rounded-2xl bg-[#181A1C] text-white group-hover:scale-105 transition-transform">
-              <CheckCircle className="h-4 w-4 text-[#22C55E]" />
-            </div>
-          </div>
-          <div className="mt-3">
-            <p className="text-3xl font-extrabold text-[#181A1C] tracking-tight">
-              {publishedJobs}
-            </p>
-            <p className="text-[11px] text-[#16A34A] font-bold mt-1">
-              {totalJobs} total positions created
-            </p>
-          </div>
-        </div>
-
-        {/* Total Applicants */}
-        <div className="group rounded-3xl border border-[#E8EAED] bg-white p-5 shadow-2xs hover:shadow-sm transition-all">
-          <div className="flex items-center justify-between">
-            <span className="text-[11px] font-bold text-[#6B7280] uppercase tracking-wider">
-              Candidate Pool
-            </span>
-            <div className="flex h-9 w-9 items-center justify-center rounded-2xl bg-[#181A1C] text-white group-hover:scale-105 transition-transform">
-              <Users className="h-4 w-4" />
-            </div>
-          </div>
-          <div className="mt-3">
-            <p className="text-3xl font-extrabold text-[#181A1C] tracking-tight">
-              {totalApplications}
-            </p>
-            <p className="text-[11px] text-[#6B7280] font-bold mt-1">
-              {awaitingReviewCount} awaiting initial review
-            </p>
-          </div>
-        </div>
-
-        {/* Active Assessments */}
-        <div className="group rounded-3xl border border-[#E8EAED] bg-white p-5 shadow-2xs hover:shadow-sm transition-all">
-          <div className="flex items-center justify-between">
-            <span className="text-[11px] font-bold text-[#6B7280] uppercase tracking-wider">
-              Assessments
-            </span>
-            <div className="flex h-9 w-9 items-center justify-center rounded-2xl bg-[#181A1C] text-white group-hover:scale-105 transition-transform">
-              <Award className="h-4 w-4 text-[#F97316]" />
-            </div>
-          </div>
-          <div className="mt-3">
-            <p className="text-3xl font-extrabold text-[#181A1C] tracking-tight">
-              {activeAssessmentsCount}
-            </p>
-            <p className="text-[11px] text-[#F97316] font-bold mt-1">
-              {awaitingAssessmentReviewCount} submissions pending
-            </p>
-          </div>
-        </div>
-
-        {/* Active Offers */}
-        <div className="group rounded-3xl border border-[#E8EAED] bg-white p-5 shadow-2xs hover:shadow-sm transition-all">
-          <div className="flex items-center justify-between">
-            <span className="text-[11px] font-bold text-[#6B7280] uppercase tracking-wider">
-              Job Offers
-            </span>
-            <div className="flex h-9 w-9 items-center justify-center rounded-2xl bg-[#181A1C] text-white group-hover:scale-105 transition-transform">
-              <FileCheck className="h-4 w-4 text-[#22C55E]" />
-            </div>
-          </div>
-          <div className="mt-3">
-            <p className="text-3xl font-extrabold text-[#181A1C] tracking-tight">
-              {activeOffersCount}
-            </p>
-            <p className="text-[11px] text-[#6B7280] font-bold mt-1">
-              {pendingOfferApprovalCount} pending approvals
-            </p>
-          </div>
-        </div>
-
-        {/* Onboarding */}
-        <div className="group rounded-3xl border border-[#E8EAED] bg-white p-5 shadow-2xs hover:shadow-sm transition-all">
-          <div className="flex items-center justify-between">
-            <span className="text-[11px] font-bold text-[#6B7280] uppercase tracking-wider">
-              Onboarding
-            </span>
-            <div className="flex h-9 w-9 items-center justify-center rounded-2xl bg-[#181A1C] text-white group-hover:scale-105 transition-transform">
-              <UserCheck className="h-4 w-4 text-[#22C55E]" />
-            </div>
-          </div>
-          <div className="mt-3">
-            <p className="text-3xl font-extrabold text-[#181A1C] tracking-tight">
-              {activeOnboardingCount}
-            </p>
-            <p className="text-[11px] text-[#16A34A] font-bold mt-1">
-              {pendingOnboardingReviewCount} task reviews needed
-            </p>
-          </div>
-        </div>
-      </div>
-
-      {/* Activity & Job Feed Section */}
-      <div className="grid gap-6 lg:grid-cols-3">
-        {/* Recent Job Openings */}
-        <div className="rounded-3xl border border-[#E8EAED] bg-white p-6 shadow-2xs">
-          <div className="flex items-center justify-between border-b border-[#E8EAED] pb-3">
-            <h3 className="text-sm font-bold text-[#181A1C]">
-              Job Postings
-            </h3>
-            <Link
-              href="/dashboard/hiring/jobs"
-              className="text-xs font-bold text-[#181A1C] hover:underline flex items-center gap-1"
-            >
-              View All <ArrowRight className="h-3.5 w-3.5" />
-            </Link>
-          </div>
-
-          <div className="mt-4 space-y-3">
-            {recentJobs.length === 0 ? (
-              <p className="text-xs text-[#6B7280] text-center py-6">No jobs posted yet.</p>
-            ) : (
-              recentJobs.map((job) => (
-                <div
-                  key={job.id}
-                  className="flex items-center justify-between rounded-2xl border border-[#E8EAED] bg-[#F8F9FA]/70 p-3.5"
-                >
-                  <div>
-                    <Link
-                      href={`/dashboard/hiring/jobs/${job.id}`}
-                      className="text-xs font-bold text-[#181A1C] hover:underline block truncate"
-                    >
-                      {job.title}
-                    </Link>
-                    <div className="flex items-center gap-2 text-[11px] text-[#6B7280] mt-0.5">
-                      <span>{job.department}</span>
-                      <span>•</span>
-                      <span>{job._count.applications} apps</span>
-                    </div>
-                  </div>
-
-                  <span
-                    className={`rounded-xl px-2.5 py-1 text-[10px] font-bold ${
-                      job.status === JobStatus.PUBLISHED
-                        ? 'bg-emerald-50 text-emerald-700'
-                        : job.status === JobStatus.DRAFT
-                        ? 'bg-amber-50 text-amber-700'
-                        : 'bg-slate-100 text-slate-600'
-                    }`}
-                  >
-                    {job.status}
-                  </span>
-                </div>
-              ))
-            )}
-          </div>
-        </div>
-
-        {/* Upcoming Interviews Feed */}
-        <div className="rounded-3xl border border-[#E8EAED] bg-white p-6 shadow-2xs">
-          <div className="flex items-center justify-between border-b border-[#E8EAED] pb-3">
-            <h3 className="text-sm font-bold text-[#181A1C] flex items-center gap-2">
-              <Calendar className="h-4 w-4 text-[#181A1C]" /> Upcoming Interviews
-            </h3>
-            <Link
-              href="/dashboard/hiring/interviews"
-              className="text-xs font-bold text-[#181A1C] hover:underline flex items-center gap-1"
-            >
-              All Interviews <ArrowRight className="h-3.5 w-3.5" />
-            </Link>
-          </div>
-
-          <div className="mt-4 space-y-3">
-            {upcomingInterviews.length === 0 ? (
-              <p className="text-xs text-[#6B7280] text-center py-6">
-                No upcoming interviews scheduled.
-              </p>
-            ) : (
-              upcomingInterviews.map((iv) => (
-                <div
-                  key={iv.id}
-                  className="rounded-2xl border border-[#E8EAED] bg-[#F8F9FA]/70 p-3.5 space-y-1.5"
-                >
-                  <div className="flex items-center justify-between">
-                    <Link
-                      href={`/dashboard/hiring/applicants/${iv.application.id}`}
-                      className="text-xs font-bold text-[#181A1C] hover:underline"
-                    >
-                      {iv.application.applicant.firstName} {iv.application.applicant.lastName}
-                    </Link>
-                    <span className="rounded-xl bg-[#181A1C] px-2.5 py-0.5 text-[9px] font-bold text-white">
-                      {iv.type.replace('_', ' ')}
-                    </span>
-                  </div>
-                  <p className="text-[11px] text-[#6B7280] flex items-center gap-1">
-                    <Clock className="h-3 w-3 text-[#9CA3AF]" />
-                    {new Date(iv.scheduledAt).toLocaleDateString(undefined, {
-                      month: 'short',
-                      day: 'numeric',
-                    })}{' '}
-                    at {new Date(iv.scheduledAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}{' '}
-                    • with {iv.interviewer.name}
-                  </p>
-                </div>
-              ))
-            )}
-          </div>
-        </div>
-
-        {/* Meaningful Hiring Activity Stream */}
-        <div className="rounded-3xl border border-[#E8EAED] bg-white p-6 shadow-2xs">
-          <div className="flex items-center justify-between border-b border-[#E8EAED] pb-3">
-            <h3 className="text-sm font-bold text-[#181A1C] flex items-center gap-2">
-              <History className="h-4 w-4 text-[#181A1C]" /> Recent Audit Activity
-            </h3>
-            <Link
-              href="/dashboard/hiring/applicants"
-              className="text-xs font-bold text-[#181A1C] hover:underline flex items-center gap-1"
-            >
-              All Applicants <ArrowRight className="h-3.5 w-3.5" />
-            </Link>
-          </div>
-
-          <div className="mt-4 space-y-3">
-            {statusHistoryEvents.length === 0 ? (
-              <p className="text-xs text-[#6B7280] text-center py-6">
-                No recent status modifications recorded.
-              </p>
-            ) : (
-              statusHistoryEvents.map((event) => (
-                <div
-                  key={event.id}
-                  className="flex items-start gap-3 rounded-2xl border border-[#E8EAED] bg-[#F8F9FA]/70 p-3.5"
-                >
-                  <div className="flex h-7 w-7 items-center justify-center rounded-full bg-emerald-100 text-emerald-700 font-bold text-xs shrink-0">
-                    ✓
-                  </div>
-                  <div className="text-xs space-y-0.5">
-                    <p className="font-bold text-[#181A1C]">
-                      {event.application.applicant.firstName} {event.application.applicant.lastName}{' '}
-                      <span className="font-normal text-[#6B7280]">
-                        moved to <strong className="text-[#16A34A]">{event.toStatus}</strong>
-                      </span>
-                    </p>
-                    <p className="text-[11px] text-[#6B7280]">
-                      Job: {event.application.job.title} • By {event.changedBy.name} on{' '}
-                      {new Date(event.createdAt).toLocaleDateString()}
-                    </p>
-                  </div>
-                </div>
-              ))
-            )}
-          </div>
-        </div>
-      </div>
-    </div>
-  );
+  return <div className="space-y-8">
+    <header className="space-y-2"><p className="wp-eyebrow">{branding.displayName}</p><h1 className="wp-page-title">{greeting}, {user.name.split(' ')[0]}</h1><p className="max-w-2xl text-sm leading-6 text-[var(--wp-text-muted)]">Here is what needs your attention across your organization today.</p></header>
+    <section aria-labelledby="quick-actions-title"><div className="mb-3"><h2 id="quick-actions-title" className="wp-section-title">Quick actions</h2><p className="mt-1 text-sm text-[var(--wp-text-muted)]">Go directly to the tasks you use most.</p></div><div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-5">{quickActions.map(({ label, href, icon: Icon }, index) => <Link key={href} href={href} className={`${index === 0 ? 'bg-[var(--tenant-primary)] text-[var(--tenant-primary-foreground)]' : 'border border-[var(--tenant-border)] bg-white text-[var(--wp-text)]'} group flex min-h-20 items-center gap-3 rounded-2xl px-4 py-4 font-bold transition hover:-translate-y-0.5 hover:shadow-sm`}><span className={`${index === 0 ? 'bg-white/15' : 'bg-[var(--tenant-tint-strong)] text-[var(--tenant-primary)]'} flex h-10 w-10 shrink-0 items-center justify-center rounded-xl`}><Icon className="h-5 w-5" aria-hidden="true" /></span><span>{label}</span></Link>)}</div></section>
+    <section aria-labelledby="summary-title"><h2 id="summary-title" className="wp-section-title">At a glance</h2><div className={`mt-3 grid gap-px overflow-hidden rounded-2xl border border-[var(--tenant-border)] bg-[var(--tenant-border)] sm:grid-cols-2 ${summaries.length >= 5 ? 'xl:grid-cols-5' : 'lg:grid-cols-3'}`}>{summaries.map(item => <Link key={item.label} href={item.href} className="min-h-28 bg-white p-5 transition hover:bg-[var(--tenant-tint)]"><p className="text-sm font-semibold text-[var(--wp-text-muted)]">{item.label}</p><p className="mt-2 text-2xl font-bold tracking-tight text-[var(--wp-text)]">{item.value}</p><p className="mt-1 text-xs leading-5 text-[var(--wp-text-muted)]">{item.helper}</p></Link>)}</div></section>
+    <section aria-labelledby="attention-title" className="rounded-2xl bg-white p-5 shadow-sm sm:p-6"><div><h2 id="attention-title" className="wp-section-title">Needs attention</h2><p className="mt-1 text-sm text-[var(--wp-text-muted)]">Real tasks that may need action from your team.</p></div>{attention.length === 0 ? <div className="mt-5 rounded-xl bg-[var(--tenant-tint)] px-4 py-5 text-sm text-[var(--wp-text-muted)]">Nothing needs immediate attention.</div> : <ul className="mt-4 divide-y divide-[var(--tenant-border)]">{attention.map(item => <li key={item.label}><Link href={item.href} className="group flex min-h-14 items-center justify-between gap-4 py-3 text-sm font-semibold"><span>{item.label}</span><span className="flex items-center gap-1 text-xs font-bold text-[var(--tenant-primary)]">Review <ArrowRight className="h-4 w-4 transition group-hover:translate-x-0.5" aria-hidden="true" /></span></Link></li>)}</ul>}</section>
+  </div>;
 }

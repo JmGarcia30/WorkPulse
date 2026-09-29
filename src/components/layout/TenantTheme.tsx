@@ -7,6 +7,7 @@ export function TenantTheme({ branding, children, className = '' }: { branding: 
     '--tenant-primary-foreground': branding.primaryForeground,
     '--tenant-accent': branding.accent,
     '--tenant-accent-foreground': branding.accentForeground,
+    '--wp-focus': branding.accent,
   } as CSSProperties;
   return <div style={style} className={className}>{children}</div>;
 }

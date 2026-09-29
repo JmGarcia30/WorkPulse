@@ -63,7 +63,14 @@ export async function getAttendanceFilterOptions(organizationId: string) {
   const [employees, employment] = await Promise.all([
     prisma.employee.findMany({
       where: { organizationId },
-      select: { id: true, employeeNumber: true, firstName: true, lastName: true },
+      select: {
+        id: true, employeeNumber: true, firstName: true, lastName: true,
+        employmentRecords: {
+          orderBy: { effectiveFrom: 'desc' },
+          take: 1,
+          select: { department: true, employmentCategory: true },
+        },
+      },
       orderBy: [{ lastName: 'asc' }, { firstName: 'asc' }],
     }),
     prisma.employmentRecord.findMany({

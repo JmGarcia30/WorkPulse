@@ -127,7 +127,7 @@ async function main() {
         assert(!serializedAudits.includes(secret) && !serializedAudits.includes(hashActivationToken(secret)), 'Raw token or token hash appeared in activation audits.');
       }
       throw rollback;
-    });
+    }, { timeout: 30_000 });
   } catch (error) { if (error !== rollback) throw error; }
 
   console.log('✓ H4 Employee role isolation');

@@ -303,6 +303,45 @@ enum PayrollEntryStatus {
   FINALIZED
 }
 
+enum PayrollPolicyStatus {
+  ACTIVE
+  INACTIVE
+}
+
+enum DailyPayBasis {
+  SCHEDULED_PAYABLE_DAYS
+  ACTUAL_PRESENT_DAYS
+  PRESENT_PLUS_PAID_LEAVE
+}
+
+enum LateDeductionRule {
+  NONE
+  PER_MINUTE
+  FIXED_PER_OCCURRENCE
+}
+
+enum AbsenceDeductionRule {
+  NONE
+  DAILY_RATE_PER_ABSENT_DAY
+  FIXED_PER_ABSENCE
+}
+
+enum UndertimeDeductionRule {
+  NONE
+  PER_MINUTE
+  FIXED_PER_OCCURRENCE
+}
+
+enum PayrollRoundingRule {
+  STANDARD_2_DECIMAL
+}
+
+enum LeavePayrollTreatment {
+  PAID
+  UNPAID
+  NO_PAYROLL_EFFECT
+}
+
 model Organization {
   id                   String   @id @default(cuid())
   name                 String
@@ -336,6 +375,8 @@ model Organization {
   employeeCompensations   EmployeeCompensation[]
   payrollPeriods          PayrollPeriod[]
   payrollEntries          PayrollEntry[]
+  payrollPolicies         OrganizationPayrollPolicy[]
+  payrollLeaveTreatments  PayrollPolicyLeaveTreatment[]
   branding                OrganizationBranding?
   brandingAudits          OrganizationBrandingAudit[]
 }
@@ -378,6 +419,8 @@ model User {
   leaveRequestAudits           LeaveRequestAudit[]
   leaveDocumentsUploaded       LeaveDocument[]
   organizationBrandingAudits   OrganizationBrandingAudit[]
+  payrollPoliciesCreated       OrganizationPayrollPolicy[] @relation("PayrollPolicyCreatedBy")
+  payrollPeriodsFinalized     PayrollPeriod[]              @relation("PayrollPeriodFinalizedBy")
 
   @@index([organizationId])
 }
@@ -802,15 +845,19 @@ model PayrollPeriod {
   periodEnd      DateTime            @db.Date
   payDate        DateTime            @db.Date
   status         PayrollPeriodStatus @default(DRAFT)
+  finalizedById String?
+  finalizedAt   DateTime?
   createdAt      DateTime            @default(now())
   updatedAt      DateTime            @updatedAt
 
   organization   Organization   @relation(fields: [organizationId], references: [id], onDelete: Restrict)
+  finalizedBy    User?          @relation("PayrollPeriodFinalizedBy", fields: [finalizedById], references: [id], onDelete: Restrict)
   payrollEntries PayrollEntry[]
 
   @@unique([organizationId, name])
   @@index([organizationId, periodStart, periodEnd])
   @@index([organizationId, status])
+  @@index([finalizedById])
 }
 
 model PayrollEntry {
@@ -823,6 +870,7 @@ model PayrollEntry {
   grossAmount            Decimal            @default(0) @db.Decimal(12, 2)
   totalDeductions        Decimal            @default(0) @db.Decimal(12, 2)
   netAmount              Decimal            @default(0) @db.Decimal(12, 2)
+  calculationSnapshot    Json?
   status                 PayrollEntryStatus @default(DRAFT)
   createdAt              DateTime           @default(now())
   updatedAt              DateTime           @updatedAt
@@ -836,6 +884,50 @@ model PayrollEntry {
   @@index([organizationId, payrollPeriodId, status])
   @@index([organizationId, employeeId])
   @@index([employeeCompensationId])
+}
+
+model OrganizationPayrollPolicy {
+  id                          String                 @id @default(cuid())
+  organizationId              String
+  version                     Int
+  effectiveFrom               DateTime               @db.Date
+  effectiveTo                 DateTime?              @db.Date
+  status                      PayrollPolicyStatus    @default(ACTIVE)
+  dailyPayBasis               DailyPayBasis          @default(SCHEDULED_PAYABLE_DAYS)
+  lateDeductionRule           LateDeductionRule      @default(NONE)
+  lateDeductionParameter      Decimal?               @db.Decimal(12, 4)
+  absenceDeductionRule        AbsenceDeductionRule   @default(NONE)
+  absenceDeductionParameter   Decimal?               @db.Decimal(12, 4)
+  undertimeDeductionRule      UndertimeDeductionRule @default(NONE)
+  undertimeDeductionParameter Decimal?               @db.Decimal(12, 4)
+  roundingRule                PayrollRoundingRule    @default(STANDARD_2_DECIMAL)
+  createdById                 String
+  createdAt                   DateTime               @default(now())
+  updatedAt                   DateTime               @updatedAt
+
+  organization    Organization                  @relation(fields: [organizationId], references: [id], onDelete: Restrict)
+  createdBy       User                          @relation("PayrollPolicyCreatedBy", fields: [createdById], references: [id], onDelete: Restrict)
+  leaveTreatments PayrollPolicyLeaveTreatment[]
+
+  @@unique([organizationId, version])
+  @@index([organizationId, status, effectiveFrom, effectiveTo])
+  @@index([createdById])
+}
+
+model PayrollPolicyLeaveTreatment {
+  id              String                @id @default(cuid())
+  organizationId  String
+  payrollPolicyId String
+  leaveTypeId     String
+  treatment       LeavePayrollTreatment
+  createdAt       DateTime              @default(now())
+
+  organization  Organization              @relation(fields: [organizationId], references: [id], onDelete: Restrict)
+  payrollPolicy OrganizationPayrollPolicy @relation(fields: [payrollPolicyId], references: [id], onDelete: Restrict)
+  leaveType     LeaveType                 @relation(fields: [leaveTypeId], references: [id], onDelete: Restrict)
+
+  @@unique([payrollPolicyId, leaveTypeId])
+  @@index([organizationId, leaveTypeId])
 }
 
 model ProbationRecord {
@@ -1100,6 +1192,7 @@ model LeaveType {
   cycles        LeaveCycle[]
   requests      LeaveRequest[]
   ledgerEntries LeaveLedgerEntry[]
+  payrollTreatments PayrollPolicyLeaveTreatment[]
 
   @@unique([organizationId, code])
   @@index([organizationId, isActive])

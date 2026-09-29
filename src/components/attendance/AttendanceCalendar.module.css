@@ -3,6 +3,10 @@
 .weekday { border-bottom: 1px solid var(--tenant-border); padding: .7rem; color: var(--wp-text-muted); font-size: .64rem; font-weight: 800; letter-spacing: .1em; text-align: center; text-transform: uppercase; }
 .dayCell, .emptyCell { min-height: 8rem; border-right: 1px solid var(--tenant-border); border-bottom: 1px solid var(--tenant-border); }
 .dayCell { position: relative; padding: .75rem; transition: opacity 150ms ease, filter 150ms ease; }
+.dayLink { display: block; min-height: 6.5rem; color: inherit; text-decoration: none; }
+.dayLink:focus-visible { border-radius: .55rem; outline: 3px solid var(--wp-focus, var(--tenant-accent)); outline-offset: 3px; }
+.dayCell:has(.dayLink):hover { box-shadow: inset 0 0 0 2px var(--tenant-accent); }
+.selected { box-shadow: inset 0 0 0 3px var(--tenant-accent); }
 .dayCell:nth-child(7n), .emptyCell:nth-child(7n) { border-right: 0; }
 .dayTop { display: flex; align-items: center; justify-content: space-between; gap: .4rem; }
 .dayTop time { display: grid; width: 1.65rem; height: 1.65rem; place-items: center; border-radius: 50%; font-size: .78rem; font-weight: 800; }

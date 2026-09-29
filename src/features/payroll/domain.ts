@@ -1,4 +1,5 @@
 import { CompensationType, PayFrequency } from '@prisma/client';
+import { Prisma } from '@prisma/client';
 
 export class PayrollError extends Error {
   constructor(public readonly code: string, message: string) {
@@ -30,4 +31,43 @@ export function parseCompensationType(value: string): CompensationType {
 export function parsePayFrequency(value: string): PayFrequency {
   if (!Object.values(PayFrequency).includes(value as PayFrequency)) throw new PayrollError('INVALID_PAY_FREQUENCY', 'Unsupported pay frequency.');
   return value as PayFrequency;
+}
+
+export function inclusiveCalendarDays(start: Date, end: Date): number {
+  return Math.floor((end.getTime() - start.getTime()) / 86_400_000) + 1;
+}
+
+function isFullCalendarMonth(start: Date, end: Date): boolean {
+  return start.getUTCDate() === 1
+    && end.getUTCFullYear() === start.getUTCFullYear()
+    && end.getUTCMonth() === start.getUTCMonth()
+    && end.getUTCDate() === new Date(Date.UTC(start.getUTCFullYear(), start.getUTCMonth() + 1, 0)).getUTCDate();
+}
+
+function isFullCalendarYear(start: Date, end: Date): boolean {
+  return start.getUTCMonth() === 0 && start.getUTCDate() === 1
+    && end.getUTCFullYear() === start.getUTCFullYear()
+    && end.getUTCMonth() === 11 && end.getUTCDate() === 31;
+}
+
+export function calculateMonthlyCompensationBase(input: {
+  baseRate: Prisma.Decimal;
+  payFrequency: PayFrequency;
+  periodStart: Date;
+  periodEnd: Date;
+}): Prisma.Decimal {
+  const days = inclusiveCalendarDays(input.periodStart, input.periodEnd);
+  const matches = input.payFrequency === PayFrequency.MONTHLY
+    ? isFullCalendarMonth(input.periodStart, input.periodEnd)
+    : input.payFrequency === PayFrequency.WEEKLY
+      ? days === 7
+      : input.payFrequency === PayFrequency.BIWEEKLY
+        ? days === 14
+        : input.payFrequency === PayFrequency.ANNUAL
+          ? isFullCalendarYear(input.periodStart, input.periodEnd)
+          : false;
+  if (!matches) {
+    throw new PayrollError('SETUP_REQUIRED', `The selected period does not exactly match the ${input.payFrequency.toLowerCase()} compensation frequency.`);
+  }
+  return input.baseRate.toDecimalPlaces(2);
 }

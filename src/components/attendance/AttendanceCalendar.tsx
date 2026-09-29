@@ -1,4 +1,5 @@
 import { AttendanceDisposition, AttendanceStatus } from '@prisma/client';
+import Link from 'next/link';
 import styles from './AttendanceCalendar.module.css';
 
 export type AttendanceFilter = 'ALL' | 'PRESENT' | 'LATE' | 'ABSENT' | 'LEAVE' | 'REST_DAY' | 'NO_SCHEDULE' | 'OPEN';
@@ -50,7 +51,7 @@ export function AttendanceLegend() {
   return <ul className={styles.legend} aria-label="Attendance status legend">{states.map((state) => <li key={state}><i className={stateClass(state)} />{labels[state]}</li>)}</ul>;
 }
 
-export function AttendanceCalendar({ month, monthLabel, today, records, activeFilter = 'ALL' }: { month: string; monthLabel: string; today: string; records: CalendarAttendanceRecord[]; activeFilter?: AttendanceFilter }) {
+export function AttendanceCalendar({ month, monthLabel, today, records, activeFilter = 'ALL', dayHref, selectedDate }: { month: string; monthLabel: string; today: string; records: CalendarAttendanceRecord[]; activeFilter?: AttendanceFilter; dayHref?: (date: string) => string; selectedDate?: string }) {
   const [year, monthNumber] = month.split('-').map(Number);
   const daysInMonth = new Date(Date.UTC(year, monthNumber, 0)).getUTCDate();
   const firstDate = `${month}-01`;
@@ -59,6 +60,6 @@ export function AttendanceCalendar({ month, monthLabel, today, records, activeFi
   return <div className={styles.scroll}><div className={styles.calendar} role="grid" aria-label={`${monthLabel} attendance calendar`}>
     {['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'].map((day) => <div className={styles.weekday} role="columnheader" key={day}>{day}</div>)}
     {Array.from({ length: leadingDays }, (_, index) => <div key={`empty-${index}`} className={styles.emptyCell} aria-hidden="true" />)}
-    {Array.from({ length: daysInMonth }, (_, index) => { const date = `${month}-${String(index + 1).padStart(2, '0')}`; const record = byDate.get(date); const state = visualStateFor(record, date, today); const muted = activeFilter !== 'ALL' && (!record || !matchesAttendanceFilter(record, activeFilter)); return <article key={date} role="gridcell" aria-label={`${date}: ${labels[state]}`} className={`${styles.dayCell} ${stateClass(state)} ${muted ? styles.muted : ''}`}><div className={styles.dayTop}><time dateTime={date}>{index + 1}</time><AttendanceStatusBadge state={state} /></div>{record && state !== 'REST_DAY' && state !== 'UPCOMING' && <div className={styles.cellTimes}><span>{time(record.firstTimeIn, record.timeZone)}</span><b aria-hidden="true">→</b><span>{time(record.lastTimeOut, record.timeZone)}</span></div>}{record?.leaveTypeName && <small>{record.leaveTypeName}</small>}{record?.corrected && <small>Corrected record</small>}</article>; })}
+    {Array.from({ length: daysInMonth }, (_, index) => { const date = `${month}-${String(index + 1).padStart(2, '0')}`; const record = byDate.get(date); const state = visualStateFor(record, date, today); const muted = activeFilter !== 'ALL' && (!record || !matchesAttendanceFilter(record, activeFilter)); const content = <><div className={styles.dayTop}><time dateTime={date}>{index + 1}</time><AttendanceStatusBadge state={state} /></div>{record && state !== 'REST_DAY' && state !== 'UPCOMING' && <div className={styles.cellTimes}><span>{time(record.firstTimeIn, record.timeZone)}</span><b aria-hidden="true">→</b><span>{time(record.lastTimeOut, record.timeZone)}</span></div>}{record?.leaveTypeName && <small>{record.leaveTypeName}</small>}{record?.corrected && <small>Corrected record</small>}</>; return <article key={date} role="gridcell" aria-label={`${date}: ${labels[state]}`} aria-selected={selectedDate === date || undefined} className={`${styles.dayCell} ${stateClass(state)} ${muted ? styles.muted : ''} ${selectedDate === date ? styles.selected : ''}`}>{dayHref ? <Link className={styles.dayLink} href={dayHref(date)} aria-label={`View attendance details for ${date}, ${labels[state]}`}>{content}</Link> : content}</article>; })}
   </div></div>;
 }

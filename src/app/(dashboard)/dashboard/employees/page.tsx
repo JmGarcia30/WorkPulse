@@ -6,6 +6,7 @@ import { canViewEmployees } from '@/lib/permissions/rbac';
 import { getOrganizationEmployees } from '@/features/employees/queries';
 import { deriveProbationReviewState } from '@/features/employees/domain';
 import { Search, Users } from 'lucide-react';
+import { formatStatusLabel } from '@/lib/ui/format-status';
 
 interface EmployeesPageProps {
   searchParams: Promise<{ search?: string; category?: string; status?: string; needsReview?: string }>;
@@ -35,32 +36,33 @@ export default async function EmployeesPage({ searchParams }: EmployeesPageProps
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-xl font-bold text-slate-900">Employee Directory</h1>
-        <p className="text-xs text-slate-500">
-          Active institutional employee identities and current employment terms
+        <p className="wp-eyebrow">Employees</p>
+        <h1 className="wp-page-title mt-1">Employee Records</h1>
+        <p className="mt-2 text-sm text-[var(--wp-text-muted)]">
+          Find employees, review current work details, and see upcoming probation reviews.
         </p>
       </div>
 
-      <form className="grid gap-3 rounded-3xl border border-[#E8EAED] bg-white p-5 shadow-2xs sm:grid-cols-5">
+      <form className="wp-filter-bar sm:grid-cols-5">
         <div className="relative sm:col-span-2">
           <Search className="absolute left-3.5 top-3 h-4 w-4 text-slate-400" />
           <input
             name="search"
             defaultValue={params.search ?? ''}
             placeholder="Search name, email, or employee number"
-            className="w-full rounded-2xl border border-[#E8EAED] bg-[#F8F9FA] py-2.5 pl-10 pr-3 text-xs"
+            className="wp-input py-2.5 pl-10 pr-3"
           />
         </div>
         <select
           name="category"
           defaultValue={category ?? ''}
-          className="rounded-2xl border border-[#E8EAED] bg-[#F8F9FA] px-3 py-2.5 text-xs font-semibold"
+          className="wp-input"
         >
           <option value="">All categories</option>
           <option value={EmploymentCategory.TEACHING}>Teaching</option>
           <option value={EmploymentCategory.NON_TEACHING}>Non-Teaching</option>
         </select>
-        <label className="flex items-center gap-2 rounded-2xl border border-[#E8EAED] bg-[#F8F9FA] px-3 py-2.5 text-xs font-semibold">
+        <label className="flex min-h-11 items-center gap-2 rounded-lg border border-[var(--wp-border)] bg-white px-3 text-xs font-semibold">
           <input type="checkbox" name="needsReview" value="1" defaultChecked={params.needsReview === '1'} />
           Needs probation review
         </label>
@@ -68,23 +70,22 @@ export default async function EmployeesPage({ searchParams }: EmployeesPageProps
           <select
             name="status"
             defaultValue={status ?? ''}
-            className="min-w-0 flex-1 rounded-2xl border border-[#E8EAED] bg-[#F8F9FA] px-3 py-2.5 text-xs font-semibold"
+            className="wp-input min-w-0 flex-1"
           >
             <option value="">All statuses</option>
             {Object.values(EmployeeStatus).map((value) => (
-              <option key={value} value={value}>{value}</option>
+              <option key={value} value={value}>{formatStatusLabel(value)}</option>
             ))}
           </select>
-          <button className="rounded-2xl bg-[#181A1C] px-4 text-xs font-bold text-white">
+          <button className="wp-button-primary px-4">
             Filter
           </button>
         </div>
       </form>
 
-      <div className="overflow-hidden rounded-3xl border border-[#E8EAED] bg-white shadow-2xs">
-        <div className="overflow-x-auto">
-          <table className="w-full text-left text-xs">
-            <thead className="border-b border-[#E8EAED] bg-[#F8F9FA] uppercase tracking-wider text-slate-500">
+      <div className="wp-table-wrap">
+          <table className="wp-table">
+            <thead>
               <tr>
                 <th className="px-5 py-4">Employee</th>
                 <th className="px-5 py-4">Employee Number</th>
@@ -95,12 +96,12 @@ export default async function EmployeesPage({ searchParams }: EmployeesPageProps
                 <th className="px-5 py-4">Status</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-[#E8EAED]">
+            <tbody>
               {employees.length === 0 ? (
                 <tr>
-                  <td colSpan={7} className="px-5 py-12 text-center text-slate-500">
+                  <td colSpan={7} className="wp-empty">
                     <Users className="mx-auto mb-2 h-8 w-8 text-slate-400" />
-                    No employees found.
+                    No employees match the selected filters.
                   </td>
                 </tr>
               ) : employees.map((employee) => {
@@ -113,7 +114,7 @@ export default async function EmployeesPage({ searchParams }: EmployeesPageProps
                     })
                   : null;
                 return (
-                  <tr key={employee.id} className="hover:bg-[#F8F9FA]">
+                  <tr key={employee.id}>
                     <td className="px-5 py-4">
                       <Link href={`/dashboard/employees/${employee.id}`} className="font-bold hover:underline">
                         {employee.firstName} {employee.lastName}
@@ -122,18 +123,18 @@ export default async function EmployeesPage({ searchParams }: EmployeesPageProps
                     </td>
                     <td className="px-5 py-4 font-bold">{employee.employeeNumber}</td>
                     <td className="px-5 py-4">{employment?.department ?? '—'}</td>
-                    <td className="px-5 py-4">{employment?.employmentCategory.replace('_', '-') ?? '—'}</td>
-                    <td className="px-5 py-4">{employment?.employmentStatus ?? '—'}</td>
+                    <td className="px-5 py-4">{employment ? formatStatusLabel(employment.employmentCategory) : '—'}</td>
+                    <td className="px-5 py-4">{employment ? formatStatusLabel(employment.employmentStatus) : '—'}</td>
                     <td className="px-5 py-4">
                       {review ? (
                         <span className={`rounded-full px-2.5 py-1 font-bold ${review.needsAttention ? 'bg-amber-50 text-amber-700' : 'bg-slate-100 text-slate-600'}`}>
-                          {review.state.replaceAll('_', ' ')}
+                          {formatStatusLabel(review.state)}
                         </span>
                       ) : '—'}
                     </td>
                     <td className="px-5 py-4">
                       <span className="rounded-full bg-emerald-50 px-2.5 py-1 font-bold text-emerald-700">
-                        {employee.employeeStatus}
+                        {formatStatusLabel(employee.employeeStatus)}
                       </span>
                     </td>
                   </tr>
@@ -141,7 +142,6 @@ export default async function EmployeesPage({ searchParams }: EmployeesPageProps
               })}
             </tbody>
           </table>
-        </div>
       </div>
     </div>
   );

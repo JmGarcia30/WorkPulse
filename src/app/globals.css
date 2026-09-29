@@ -52,6 +52,16 @@ html { scroll-behavior: smooth; }
 .wp-button-primary:active { transform: translateY(1px); }
 .wp-button-primary:disabled { cursor: not-allowed; opacity: .55; }
 .wp-button-secondary { display: inline-flex; min-height: 2.65rem; align-items: center; justify-content: center; gap: .5rem; border: 1px solid var(--wp-border-strong); border-radius: .45rem; background: var(--wp-surface); padding: .65rem 1rem; color: var(--wp-text); font-size: .875rem; font-weight: 700; }
+.wp-card { border: 1px solid var(--tenant-border); border-radius: 1rem; background: var(--wp-surface); }
+.wp-filter-bar { display: grid; gap: .75rem; border: 1px solid var(--tenant-border); border-radius: 1rem; background: var(--wp-surface); padding: 1rem; }
+.wp-table-wrap { overflow-x: auto; border: 1px solid var(--tenant-border); border-radius: 1rem; background: var(--wp-surface); }
+.wp-table { width: 100%; border-collapse: separate; border-spacing: 0; text-align: left; font-size: .82rem; }
+.wp-table thead { background: var(--tenant-tint); color: var(--wp-text-muted); }
+.wp-table th { position: sticky; top: 0; z-index: 1; white-space: nowrap; padding: .85rem 1rem; font-size: .72rem; font-weight: 750; letter-spacing: .035em; }
+.wp-table td { padding: .9rem 1rem; vertical-align: middle; }
+.wp-table tbody tr + tr td { border-top: 1px solid var(--tenant-border); }
+.wp-table tbody tr:hover { background: color-mix(in srgb, var(--tenant-primary) 2.5%, white); }
+.wp-empty { padding: 2.5rem 1rem; text-align: center; color: var(--wp-text-muted); font-size: .875rem; }
 .wp-alert-danger { border-left: 3px solid var(--wp-danger); background: color-mix(in srgb, var(--wp-danger) 7%, white); padding: .75rem; color: var(--wp-danger); font-size: .85rem; }
 .wp-panel { border: 1px solid var(--wp-border); background: var(--wp-surface); }
 .wp-divider-list > * + * { border-top: 1px solid var(--wp-border); }
@@ -66,4 +76,4 @@ html { scroll-behavior: smooth; }
 ::-webkit-scrollbar-thumb { border: 2px solid transparent; border-radius: 999px; background: #aeb8c2; background-clip: padding-box; }
 
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; } }
-@media print { body { background: white !important; } body > * { visibility: hidden; } .leave-form, .leave-form * { visibility: visible; } .leave-form { position: absolute; inset: 0; max-width: none !important; border-color: #000 !important; } .no-print { display: none !important; } }
+@media print { body { background: white !important; } body > * { visibility: hidden; } .leave-form, .leave-form *, .payslip-print, .payslip-print * { visibility: visible; } .leave-form, .payslip-print { position: absolute; inset: 0; max-width: none !important; border-color: #000 !important; box-shadow: none !important; } .no-print { display: none !important; } }

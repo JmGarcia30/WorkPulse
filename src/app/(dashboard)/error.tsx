@@ -3,7 +3,6 @@
 import { ErrorState } from '@/components/ui/ErrorState';
 
 export default function DashboardError({
-  error,
   reset,
 }: {
   error: Error & { digest?: string };
@@ -12,8 +11,8 @@ export default function DashboardError({
   return (
     <div className="p-8">
       <ErrorState
-        title="Dashboard Request Error"
-        message={error?.message || 'An error occurred while rendering the dashboard. Please refresh or try again.'}
+        title="We couldn’t load this page"
+        message="Something went wrong while loading this page. Please try again."
         onRetry={reset}
         resetHref="/dashboard"
       />
