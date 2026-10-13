@@ -95,20 +95,25 @@ export function CandidateOnboardingSection({
 
   const [isSyncing, startSyncTransition] = useTransition();
   const [syncFeedback, setSyncFeedback] = useState<string | null>(null);
+  const [syncError, setSyncError] = useState<string | null>(null);
+  const onboardingId = onboarding?.id;
 
   const acceptedOffer = offers.find((o) => o.status === OfferStatus.ACCEPTED);
   const isTeaching = category === 'TEACHING';
 
   // Automatic synchronization: auto-recognize verified credentials on mount
   useEffect(() => {
-    if (onboarding && applicationId) {
-      syncOnboardingWithRecruitmentDocsAction(applicationId).then((res) => {
-        if (res.success && res.updatedCount && res.updatedCount > 0) {
-          router.refresh();
-        }
+    if (!canManage || !onboardingId || !applicationId) return;
+    let cancelled = false;
+    syncOnboardingWithRecruitmentDocsAction(applicationId)
+      .then((res) => {
+        if (!cancelled && res.success && res.updatedCount && res.updatedCount > 0) router.refresh();
+      })
+      .catch(() => {
+        if (!cancelled) setSyncError('Unable to refresh recruitment document checks. Use Reconcile with Recruitment Docs to retry.');
       });
-    }
-  }, [applicationId, onboarding?.id, router]);
+    return () => { cancelled = true; };
+  }, [applicationId, onboardingId, canManage, router]);
 
   const handleInitialize = async () => {
     setIsInitializing(true);
@@ -131,49 +136,55 @@ export function CandidateOnboardingSection({
   };
 
   const handleManualSync = () => {
+    setSyncError(null);
+    setSyncFeedback(null);
     startSyncTransition(async () => {
-      const res = await syncOnboardingWithRecruitmentDocsAction(applicationId);
-      if (res.error) {
-        setSyncFeedback(`Sync failed: ${res.error}`);
-      } else {
-        setSyncFeedback(
-          res.updatedCount && res.updatedCount > 0
-            ? `Successfully reconciled ${res.updatedCount} credential(s) from SAGA Recruitment Documents.`
-            : 'Checklist is up to date. All verified recruitment documents are already recognized.'
-        );
-        router.refresh();
+      try {
+        const res = await syncOnboardingWithRecruitmentDocsAction(applicationId);
+        if (res.error) {
+          setSyncError(`Sync failed: ${res.error}`);
+        } else {
+          setSyncFeedback(
+            res.updatedCount && res.updatedCount > 0
+              ? `Successfully reconciled ${res.updatedCount} credential(s) from Recruitment Documents.`
+              : 'Checklist is up to date. All verified recruitment documents are already recognized.'
+          );
+          router.refresh();
+        }
+        setTimeout(() => setSyncFeedback(null), 4500);
+      } catch {
+        setSyncError('Unable to reconcile recruitment documents. Please try again.');
       }
-      setTimeout(() => setSyncFeedback(null), 4500);
     });
   };
 
   if (!onboarding) {
     return (
-      <div className="rounded-3xl border border-[#E8EAED] bg-white p-6 shadow-2xs dark:border-slate-800 dark:bg-slate-900 space-y-4">
+      <div className="rounded-lg border border-[var(--wp-border)] bg-white p-6 space-y-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2.5">
-            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-[#181A1C] text-white">
+            <div className="flex h-9 w-9 items-center justify-center rounded-md bg-[var(--tenant-primary)] text-[var(--tenant-primary-foreground)]">
               <UserCheck className="h-5 w-5" />
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <h3 className="text-sm font-bold text-[#181A1C] dark:text-slate-100">
+                <h3 className="text-sm font-bold text-[var(--wp-text)]">
                   Pre-Employment & Onboarding Checklist
                 </h3>
                 {category && (
                   <span
-                    className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-bold ${
+                    className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-xs font-bold ${
                       isTeaching
-                        ? 'bg-purple-100 text-purple-800 dark:bg-purple-950 dark:text-purple-300'
-                        : 'bg-blue-100 text-blue-800 dark:bg-blue-950 dark:text-blue-300'
+                        ? 'bg-purple-100 text-purple-800 '
+                        : 'bg-blue-100 text-blue-800 '
                     }`}
                   >
                     {isTeaching ? <GraduationCap className="h-3 w-3" /> : <Briefcase className="h-3 w-3" />}
-                    {isTeaching ? 'SAGA Faculty' : 'SAGA Staff'}
+                    {isTeaching ? 'Faculty' : 'Staff'}
                   </span>
                 )}
               </div>
-              <p className="text-xs text-[#6B7280] dark:text-slate-400">
+              <p className="text-sm text-[var(--wp-text-muted)]">
                 Institutional onboarding, document clearance, and Day 1 readiness.
               </p>
             </div>
@@ -181,21 +192,21 @@ export function CandidateOnboardingSection({
         </div>
 
         {initError && (
-          <div className="flex items-center gap-2 rounded-xl bg-rose-50 dark:bg-rose-950/60 p-3 text-xs text-rose-700 dark:text-rose-300 border border-rose-200 dark:border-rose-800">
+          <div className="flex items-center gap-2 rounded-md bg-rose-50 p-3 text-sm text-rose-700 border border-rose-200">
             <AlertCircle className="h-4 w-4 shrink-0" />
             <span>{initError}</span>
           </div>
         )}
 
-        <div className="rounded-2xl border border-dashed border-[#E8EAED] bg-[#F8F9FA] p-6 text-center dark:border-slate-800 dark:bg-slate-800/20 space-y-3">
-          <UserCheck className="mx-auto h-8 w-8 text-[#9CA3AF]" />
+        <div className="rounded-lg border border-dashed border-[var(--wp-border)] bg-[var(--wp-surface-subtle)] p-6 text-center space-y-3">
+          <UserCheck className="mx-auto h-8 w-8 text-[var(--wp-text-muted)]" />
           <div>
-            <p className="text-xs font-bold text-[#181A1C] dark:text-slate-300">
+            <p className="text-sm font-bold text-[var(--wp-text)]">
               Onboarding Process Not Yet Initialized
             </p>
-            <p className="text-[11px] text-[#6B7280] dark:text-slate-400 mt-0.5">
+            <p className="text-xs text-[var(--wp-text-muted)] mt-0.5">
               {acceptedOffer
-                ? `Candidate has an accepted offer. Click below to initialize the category-aware SAGA checklist (${isTeaching ? 'Faculty with LET requirement' : 'Staff without LET'}).`
+                ? `Candidate has an accepted offer. Click below to initialize the category-aware checklist (${isTeaching ? 'Faculty with LET requirement' : 'Staff without LET'}).`
                 : 'An offer must be created and marked as Accepted before starting employee onboarding.'}
             </p>
           </div>
@@ -204,10 +215,10 @@ export function CandidateOnboardingSection({
             <button
               onClick={handleInitialize}
               disabled={isInitializing}
-              className="inline-flex items-center gap-2 rounded-xl bg-[#181A1C] px-4 py-2 text-xs font-bold text-white hover:bg-[#2A2E33] transition shadow-2xs disabled:opacity-50"
+              className="inline-flex items-center gap-2 rounded-md bg-[var(--tenant-primary)] px-4 py-2 text-sm font-bold text-[var(--tenant-primary-foreground)] hover:brightness-95 transition disabled:opacity-50"
             >
               <CheckSquare className="h-4 w-4" />
-              <span>{isInitializing ? 'Initializing SAGA Onboarding...' : 'Initialize Onboarding Checklist'}</span>
+              <span>{isInitializing ? 'Initializing Onboarding...' : 'Initialize Onboarding Checklist'}</span>
             </button>
           )}
         </div>
@@ -239,58 +250,58 @@ export function CandidateOnboardingSection({
     return (
       <div
         key={task.id}
-        className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 rounded-2xl border border-[#E8EAED] bg-white p-4 dark:border-slate-800 dark:bg-slate-900/90 hover:border-[#181A1C]/30 transition"
+        className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 rounded-lg border border-[var(--wp-border)] bg-white p-4 hover:border-[#181A1C]/30 transition"
       >
         <div className="space-y-1.5 min-w-0 max-w-2xl">
           <div className="flex items-center gap-2 flex-wrap">
             <span
-              className={`inline-flex items-center rounded-md px-2 py-0.5 text-[10px] font-semibold ${typeConf.badgeBg} ${typeConf.badgeText}`}
+              className={`inline-flex items-center rounded-md px-2 py-0.5 text-xs font-semibold ${typeConf.badgeBg} ${typeConf.badgeText}`}
             >
               {typeConf.label}
             </span>
             <span
-              className={`inline-flex items-center rounded-md px-2 py-0.5 text-[10px] font-semibold ${statusConf.badgeBg} ${statusConf.badgeText}`}
+              className={`inline-flex items-center rounded-md px-2 py-0.5 text-xs font-semibold ${statusConf.badgeBg} ${statusConf.badgeText}`}
             >
               {statusConf.label}
             </span>
             {task.isRequired ? (
-              <span className="rounded-md bg-amber-50 dark:bg-amber-950/60 px-1.5 py-0.5 text-[9px] font-bold text-amber-700 dark:text-amber-300">
+              <span className="rounded-md bg-amber-50 px-1.5 py-0.5 text-[9px] font-bold text-amber-700">
                 REQUIRED
               </span>
             ) : (
-              <span className="rounded-md bg-slate-100 dark:bg-slate-800 px-1.5 py-0.5 text-[9px] font-semibold text-slate-600 dark:text-slate-400">
+              <span className="rounded-md bg-slate-100 px-1.5 py-0.5 text-[9px] font-semibold text-slate-600">
                 CONDITIONAL
               </span>
             )}
 
             {isAutoVerified && (
-              <span className="inline-flex items-center gap-1 rounded-md bg-emerald-50 dark:bg-emerald-950/60 px-2 py-0.5 text-[9px] font-bold text-emerald-700 dark:text-emerald-300 ring-1 ring-emerald-500/20">
+              <span className="inline-flex items-center gap-1 rounded-md bg-emerald-50 px-2 py-0.5 text-[9px] font-bold text-emerald-700 ring-1 ring-emerald-500/20">
                 <ShieldCheck className="h-3 w-3" />
                 Carried from Recruitment
               </span>
             )}
 
             {isContractVerified && (
-              <span className="inline-flex items-center gap-1 rounded-md bg-indigo-50 dark:bg-indigo-950/60 px-2 py-0.5 text-[9px] font-bold text-indigo-700 dark:text-indigo-300 ring-1 ring-indigo-500/20">
+              <span className="inline-flex items-center gap-1 rounded-md bg-[var(--tenant-tint)] px-2 py-0.5 text-[9px] font-bold text-indigo-700 ring-1 ring-indigo-500/20">
                 <FileCheck2 className="h-3 w-3" />
                 Contract Executed
               </span>
             )}
           </div>
 
-          <h4 className="text-xs font-bold text-[#181A1C] dark:text-slate-100">
+          <h4 className="text-sm font-bold text-[var(--wp-text)]">
             {task.title}
           </h4>
 
           {task.description && (
-            <p className="text-[11px] text-[#6B7280] dark:text-slate-400 line-clamp-1">
+            <p className="text-xs text-[var(--wp-text-muted)] line-clamp-1">
               {task.description}
             </p>
           )}
 
           {/* Uploaded File Info */}
           {task.fileName && (
-            <div className="flex items-center gap-2 flex-wrap text-[11px] text-slate-700 dark:text-slate-300 font-medium pt-0.5">
+            <div className="flex items-center gap-2 flex-wrap text-xs text-slate-700 font-medium pt-0.5">
               <FileCheck2 className="h-3.5 w-3.5 text-slate-400 shrink-0" />
               <span className="truncate max-w-[280px]">File: {task.fileName}</span>
               {task.fileSize && (
@@ -301,7 +312,7 @@ export function CandidateOnboardingSection({
                   href={`/api/onboarding-documents/${task.id}`}
                   target="_blank"
                   rel="noreferrer"
-                  className="inline-flex items-center gap-1 text-blue-600 hover:text-blue-700 dark:text-blue-400 font-semibold underline underline-offset-2 ml-1"
+                  className="inline-flex items-center gap-1 text-blue-600 hover:text-blue-700 font-semibold underline underline-offset-2 ml-1"
                 >
                   <Eye className="h-3 w-3" />
                   <span>View</span>
@@ -311,8 +322,8 @@ export function CandidateOnboardingSection({
           )}
 
           {task.reviewerNotes && (
-            <div className="text-[11px] text-slate-700 dark:text-slate-300 bg-slate-50 dark:bg-slate-800/60 px-2.5 py-1 rounded-md border border-slate-100 dark:border-slate-800">
-              <span className="font-semibold text-slate-900 dark:text-slate-200">Review Note:</span> {task.reviewerNotes}
+            <div className="text-xs text-slate-700 bg-slate-50 px-2.5 py-1 rounded-md border border-slate-100">
+              <span className="font-semibold text-slate-900">Review Note:</span> {task.reviewerNotes}
             </div>
           )}
         </div>
@@ -325,7 +336,7 @@ export function CandidateOnboardingSection({
                 href={`/api/onboarding-documents/${task.id}`}
                 target="_blank"
                 rel="noreferrer"
-                className="inline-flex items-center gap-1.5 rounded-xl border border-blue-200 bg-blue-50/70 text-blue-700 dark:border-blue-900/60 dark:bg-blue-950/40 dark:text-blue-300 px-3 py-1.5 text-xs font-bold hover:bg-blue-100 transition shadow-2xs"
+                className="inline-flex items-center gap-1.5 rounded-md border border-blue-200 bg-blue-50/70 text-blue-700 px-3 py-1.5 text-sm font-bold hover:bg-blue-100 transition"
               >
                 <Download className="h-3.5 w-3.5" />
                 <span>View / Download</span>
@@ -333,7 +344,7 @@ export function CandidateOnboardingSection({
               <button
                 onClick={() => setUploadTask(task)}
                 title="Replace or re-upload document file"
-                className="inline-flex items-center gap-1 rounded-xl border border-[#E8EAED] dark:border-slate-700 bg-white dark:bg-slate-800 px-2.5 py-1.5 text-xs font-semibold text-slate-600 dark:text-slate-400 hover:bg-slate-50 transition"
+                className="inline-flex items-center gap-1 rounded-md border border-[var(--wp-border)] bg-white px-2.5 py-1.5 text-sm font-semibold text-slate-600 hover:bg-slate-50 transition"
               >
                 <UploadCloud className="h-3.5 w-3.5 text-slate-400" />
                 <span>Replace</span>
@@ -342,9 +353,9 @@ export function CandidateOnboardingSection({
           ) : (
             <button
               onClick={() => setUploadTask(task)}
-              className="inline-flex items-center gap-1.5 rounded-xl border border-[#E8EAED] dark:border-slate-700 bg-white dark:bg-slate-800 px-3 py-1.5 text-xs font-bold text-[#181A1C] dark:text-slate-300 hover:bg-[#F8F9FA] transition shadow-2xs"
+              className="inline-flex items-center gap-1.5 rounded-md border border-[var(--wp-border)] bg-white px-3 py-1.5 text-sm font-bold text-[var(--wp-text)] hover:bg-[#F8F9FA] transition"
             >
-              <UploadCloud className="h-3.5 w-3.5 text-[#6B7280]" />
+              <UploadCloud className="h-3.5 w-3.5 text-[var(--wp-text-muted)]" />
               <span>Upload Document</span>
             </button>
           )}
@@ -352,7 +363,7 @@ export function CandidateOnboardingSection({
           {canManage && (
             <button
               onClick={() => setReviewTask(task)}
-              className="inline-flex items-center gap-1 rounded-xl bg-[#181A1C] px-3.5 py-1.5 text-xs font-bold text-white hover:bg-[#2A2E33] transition shadow-2xs"
+              className="inline-flex items-center gap-1 rounded-md bg-[var(--tenant-primary)] px-3.5 py-1.5 text-sm font-bold text-[var(--tenant-primary-foreground)] hover:brightness-95 transition"
             >
               <CheckCircle2 className="h-3.5 w-3.5" />
               <span>Review / Verify</span>
@@ -364,39 +375,39 @@ export function CandidateOnboardingSection({
   };
 
   return (
-    <div className="rounded-3xl border border-[#E8EAED] bg-white p-6 shadow-2xs dark:border-slate-800 dark:bg-slate-900 space-y-6">
+    <div className="rounded-lg border border-[var(--wp-border)] bg-white p-6 space-y-6">
       {/* Top Header & Progress */}
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between border-b border-[#E8EAED] dark:border-slate-800 pb-4">
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between border-b border-[var(--wp-border)] pb-4">
         <div className="flex items-center gap-2.5">
-          <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-[#181A1C] text-white">
+          <div className="flex h-9 w-9 items-center justify-center rounded-md bg-[var(--tenant-primary)] text-[var(--tenant-primary-foreground)]">
             <UserCheck className="h-5 w-5" />
           </div>
           <div>
             <div className="flex items-center gap-2 flex-wrap">
-              <h3 className="text-sm font-bold text-[#181A1C] dark:text-slate-100">
+              <h3 className="text-sm font-bold text-[var(--wp-text)]">
                 Pre-Employment & Onboarding Checklist
               </h3>
               <span
-                className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-[11px] font-semibold ${statusConfig.badgeBg} ${statusConfig.badgeText}`}
+                className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold ${statusConfig.badgeBg} ${statusConfig.badgeText}`}
               >
                 {statusConfig.label}
               </span>
               {category && (
                 <span
-                  className={`inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-[10px] font-bold ${
+                  className={`inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-xs font-bold ${
                     isTeaching
-                      ? 'bg-purple-100 text-purple-800 dark:bg-purple-950 dark:text-purple-300'
-                      : 'bg-blue-100 text-blue-800 dark:bg-blue-950 dark:text-blue-300'
+                      ? 'bg-purple-100 text-purple-800 '
+                      : 'bg-blue-100 text-blue-800 '
                   }`}
                 >
                   {isTeaching ? <GraduationCap className="h-3 w-3" /> : <Briefcase className="h-3 w-3" />}
-                  {isTeaching ? 'SAGA Faculty (Teaching)' : 'SAGA Staff (Non-Teaching)'}
+                  {isTeaching ? 'Faculty (Teaching)' : 'Staff (Non-Teaching)'}
                 </span>
               )}
             </div>
-            <p className="text-xs text-[#6B7280] dark:text-slate-400 mt-0.5">
+            <p className="text-sm text-[var(--wp-text-muted)] mt-0.5">
               Start Date:{' '}
-              <span className="font-bold text-[#181A1C] dark:text-slate-300">
+              <span className="font-bold text-[var(--wp-text)]">
                 {new Date(onboarding.startDate).toLocaleDateString()}
               </span>
               {onboarding.targetCompletionDate && (
@@ -419,7 +430,7 @@ export function CandidateOnboardingSection({
               onClick={handleManualSync}
               disabled={isSyncing}
               title="Reconcile and pull in credentials verified during the recruitment stage"
-              className="inline-flex items-center gap-1.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 px-3 py-1.5 text-xs font-semibold text-slate-700 dark:text-slate-300 hover:bg-slate-100 transition disabled:opacity-50"
+              className="inline-flex items-center gap-1.5 rounded-md border border-slate-200 bg-slate-50 px-3 py-1.5 text-sm font-semibold text-slate-700 hover:bg-slate-100 transition disabled:opacity-50"
             >
               <RefreshCw className={`h-3.5 w-3.5 ${isSyncing ? 'animate-spin' : ''}`} />
               <span>{isSyncing ? 'Reconciling...' : 'Reconcile with Recruitment Docs'}</span>
@@ -429,7 +440,7 @@ export function CandidateOnboardingSection({
           {canManage && (
             <button
               onClick={() => setIsCustomModalOpen(true)}
-              className="inline-flex items-center gap-1.5 rounded-xl border border-[#E8EAED] dark:border-slate-700 bg-[#F8F9FA] dark:bg-slate-800 px-3.5 py-1.5 text-xs font-bold text-[#181A1C] dark:text-slate-300 hover:bg-[#181A1C] hover:text-white transition shadow-2xs"
+              className="inline-flex items-center gap-1.5 rounded-md border border-[var(--wp-border)] bg-[var(--wp-surface-subtle)] px-3.5 py-1.5 text-sm font-bold text-[var(--wp-text)] hover:bg-[var(--tenant-primary)] hover:text-[var(--tenant-primary-foreground)] transition"
             >
               <Plus className="h-3.5 w-3.5" />
               <span>Add Custom Task</span>
@@ -439,32 +450,33 @@ export function CandidateOnboardingSection({
       </div>
 
       {/* Sync Feedback Message */}
+      {syncError && <p role="alert" className="wp-alert-danger">{syncError}</p>}
       {syncFeedback && (
-        <div className="flex items-center gap-2 rounded-2xl bg-emerald-50 dark:bg-emerald-950/60 p-3 text-xs text-emerald-800 dark:text-emerald-200 border border-emerald-200 dark:border-emerald-800">
+        <div role="status" className="flex items-center gap-2 rounded-lg bg-emerald-50 p-3 text-sm text-emerald-800 border border-emerald-200">
           <CheckCircle2 className="h-4 w-4 shrink-0 text-emerald-600" />
           <span>{syncFeedback}</span>
         </div>
       )}
 
       {/* Progress Bar Card */}
-      <div className="rounded-2xl bg-[#F8F9FA] dark:bg-slate-800/40 p-4 border border-[#E8EAED] dark:border-slate-800 space-y-2">
-        <div className="flex items-center justify-between text-xs">
-          <span className="font-bold text-[#181A1C] dark:text-slate-300">
+      <div className="rounded-lg bg-[var(--wp-surface-subtle)] p-4 border border-[var(--wp-border)] space-y-2">
+        <div className="flex items-center justify-between text-sm">
+          <span className="font-bold text-[var(--wp-text)]">
             Checklist Completion Progress
           </span>
-          <span className="font-extrabold text-[#181A1C] dark:text-slate-100">
+          <span className="font-semibold text-[var(--wp-text)]">
             {progress.completedTasks} of {progress.totalTasks} tasks verified ({progress.percentComplete}%)
           </span>
         </div>
-        <div className="h-2.5 w-full overflow-hidden rounded-full bg-[#E8EAED] dark:bg-slate-700">
+        <div className="h-2.5 w-full overflow-hidden rounded-full bg-[#E8EAED]">
           <div
             className={`h-full transition-all duration-300 ${
-              progress.percentComplete === 100 ? 'bg-emerald-500' : 'bg-[#181A1C]'
+              progress.percentComplete === 100 ? 'bg-emerald-500' : 'bg-[var(--tenant-primary)]'
             }`}
             style={{ width: `${progress.percentComplete}%` }}
           />
         </div>
-        <div className="flex items-center justify-between text-[11px] text-[#6B7280] dark:text-slate-400 pt-1">
+        <div className="flex items-center justify-between text-xs text-[var(--wp-text-muted)] pt-1">
           <span>{progress.verifiedCount} Verified</span>
           <span>{progress.submittedCount} Awaiting Review</span>
           <span>{progress.pendingCount} Pending</span>
@@ -477,17 +489,17 @@ export function CandidateOnboardingSection({
 
       {/* SECTION A: PRE-EMPLOYMENT INSTITUTIONAL CREDENTIALS */}
       <div className="space-y-3">
-        <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-2">
+        <div className="flex items-center justify-between border-b border-slate-100 pb-2">
           <div>
-            <h4 className="text-xs font-bold uppercase tracking-wider text-slate-800 dark:text-slate-200 flex items-center gap-1.5">
+            <h4 className="text-sm font-bold uppercase tracking-wider text-slate-800 flex items-center gap-1.5">
               <ShieldCheck className="h-4 w-4 text-emerald-600" />
               Pre-Employment Institutional Credentials
             </h4>
-            <p className="text-[11px] text-slate-500 dark:text-slate-400">
-              Credentials verified from SAGA recruitment submissions, government identification, and medical clearance.
+            <p className="text-xs text-slate-500">
+              Credentials verified from recruitment submissions, government identification, and medical clearance.
             </p>
           </div>
-          <span className="text-[11px] font-semibold text-slate-400">
+          <span className="text-xs font-semibold text-slate-400">
             {preEmploymentTasks.filter((t) => t.status === OnboardingTaskStatus.VERIFIED || t.status === OnboardingTaskStatus.WAIVED).length} of {preEmploymentTasks.length} Cleared
           </span>
         </div>
@@ -499,17 +511,17 @@ export function CandidateOnboardingSection({
 
       {/* SECTION B: INSTITUTIONAL ONBOARDING & INDUCTION ACTIVITIES */}
       <div className="space-y-3 pt-2">
-        <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-2">
+        <div className="flex items-center justify-between border-b border-slate-100 pb-2">
           <div>
-            <h4 className="text-xs font-bold uppercase tracking-wider text-slate-800 dark:text-slate-200 flex items-center gap-1.5">
-              <GraduationCap className="h-4 w-4 text-indigo-600" />
+            <h4 className="text-sm font-bold uppercase tracking-wider text-slate-800 flex items-center gap-1.5">
+              <GraduationCap className="h-4 w-4 text-[var(--tenant-primary)]" />
               Institutional Onboarding & Induction Activities
             </h4>
-            <p className="text-[11px] text-slate-500 dark:text-slate-400">
-              Contract execution, institutional IT provisioning, campus access credentials, and SAGA rules & policies briefing.
+            <p className="text-xs text-slate-500">
+              Contract execution, institutional IT provisioning, campus access credentials, and rules & policies briefing.
             </p>
           </div>
-          <span className="text-[11px] font-semibold text-slate-400">
+          <span className="text-xs font-semibold text-slate-400">
             {activityTasks.filter((t) => t.status === OnboardingTaskStatus.VERIFIED || t.status === OnboardingTaskStatus.WAIVED).length} of {activityTasks.length} Completed
           </span>
         </div>

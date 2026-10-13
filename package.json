@@ -14,7 +14,8 @@
     "test:h4": "tsx scripts/test-h4-employee-self-service.ts",
     "test:h5": "tsx scripts/test-h5-leave-management.ts",
     "test:s1": "tsx scripts/test-s1-saas-shell.ts",
-    "test:h6": "tsx scripts/test-h6-payroll-foundation.ts"
+    "test:h6": "tsx scripts/test-h6-payroll-foundation.ts",
+    "test:h8": "tsx scripts/test-h8-analytics.ts"
   },
   "prisma": {
     "seed": "tsx prisma/seed.ts"

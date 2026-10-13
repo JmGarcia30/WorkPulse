@@ -1,5 +1,7 @@
 'use client';
 
+import { DialogFrame } from '@/components/ui/DialogFrame';
+
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { AssessmentType } from '@prisma/client';
@@ -71,60 +73,60 @@ export function AssessmentModal({
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 p-4 backdrop-blur-xs overflow-y-auto">
-      <div className="w-full max-w-lg rounded-2xl border border-slate-200 bg-white p-6 shadow-2xl dark:border-slate-800 dark:bg-slate-900 my-8">
-        <div className="flex items-center justify-between border-b border-slate-100 pb-4 dark:border-slate-800">
+    <DialogFrame label="Assign assessment" onClose={onClose} busy={loading}>
+      <div className="w-full max-w-lg rounded-lg border border-slate-200 bg-white p-6 shadow-2xl my-8">
+        <div className="flex items-center justify-between border-b border-slate-100 pb-4">
           <div>
-            <h3 className="text-base font-bold text-[#181A1C] dark:text-slate-100 flex items-center gap-2">
-              <Award className="h-5 w-5 text-[#181A1C] dark:text-white" />
+            <h3 className="text-base font-bold text-[var(--wp-text)] flex items-center gap-2">
+              <Award className="h-5 w-5 text-[var(--wp-text)]" />
               Assign Pre-Employment Assessment
             </h3>
-            <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
-              Candidate: <span className="font-semibold text-slate-700 dark:text-slate-300">{candidateName}</span> ({jobTitle})
+            <p className="text-sm text-slate-500 mt-0.5">
+              Candidate: <span className="font-semibold text-slate-700">{candidateName}</span> ({jobTitle})
             </p>
           </div>
           <button
             type="button"
-            onClick={onClose}
-            className="rounded-lg p-1.5 text-slate-400 hover:bg-slate-100 hover:text-slate-600 dark:hover:bg-slate-800 dark:hover:text-slate-200 transition"
+            onClick={onClose} aria-label="Close dialog"
+            className="rounded-lg p-1.5 text-slate-400 hover:bg-slate-100 hover:text-slate-600 transition"
           >
             <X className="h-5 w-5" />
           </button>
         </div>
 
         {error && (
-          <div className="mt-4 flex items-center gap-2 rounded-xl bg-rose-50 p-3 text-xs text-rose-700 border border-rose-200 dark:bg-rose-950/60 dark:border-rose-900 dark:text-rose-300">
+          <div className="mt-4 flex items-center gap-2 rounded-md bg-rose-50 p-3 text-sm text-rose-700 border border-rose-200">
             <AlertCircle className="h-4 w-4 shrink-0" />
             <p>{error}</p>
           </div>
         )}
 
-        <form onSubmit={handleSubmit} className="mt-4 space-y-4 text-xs">
+        <form onSubmit={handleSubmit} className="mt-4 space-y-4 text-sm">
           {/* Assessment Title */}
           <div>
-            <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">
+            <label className="block font-semibold text-slate-700 mb-1">
               Assessment Title *
             </label>
-            <input
+            <input aria-label="Assessment Title"
               type="text"
               required
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               placeholder="e.g. Senior High Physics Demonstration & Pedagogy Exam"
-              className="w-full rounded-lg border border-slate-300 px-3 py-2 text-xs text-slate-900 focus:border-[#181A1C] focus:ring-1 focus:ring-[#181A1C] dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
+              className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm text-slate-900 focus:border-[var(--tenant-accent)] focus:ring-1 focus:ring-[var(--tenant-accent)]"
             />
           </div>
 
           {/* Assessment Type & Evaluator Grid */}
           <div className="grid gap-3 sm:grid-cols-2">
             <div>
-              <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">
+              <label className="block font-semibold text-slate-700 mb-1">
                 Assessment Type *
               </label>
-              <select
+              <select aria-label="Assessment Type"
                 value={type}
                 onChange={(e) => setType(e.target.value as AssessmentType)}
-                className="w-full rounded-lg border border-slate-300 px-3 py-2 text-xs text-slate-900 focus:border-[#181A1C] focus:ring-1 focus:ring-[#181A1C] dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
+                className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm text-slate-900 focus:border-[var(--tenant-accent)] focus:ring-1 focus:ring-[var(--tenant-accent)]"
               >
                 {Object.values(AssessmentType).map((t) => (
                   <option key={t} value={t}>
@@ -135,13 +137,13 @@ export function AssessmentModal({
             </div>
 
             <div>
-              <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">
+              <label className="block font-semibold text-slate-700 mb-1">
                 Designated Evaluator
               </label>
-              <select
+              <select aria-label="Designated Evaluator"
                 value={evaluatorId}
                 onChange={(e) => setEvaluatorId(e.target.value)}
-                className="w-full rounded-lg border border-slate-300 px-3 py-2 text-xs text-slate-900 focus:border-[#181A1C] focus:ring-1 focus:ring-[#181A1C] dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
+                className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm text-slate-900 focus:border-[var(--tenant-accent)] focus:ring-1 focus:ring-[var(--tenant-accent)]"
               >
                 <option value="">Unassigned / Open Evaluation</option>
                 {evaluators.map((ev) => (
@@ -156,82 +158,82 @@ export function AssessmentModal({
           {/* Max Score & Passing Score */}
           <div className="grid gap-3 sm:grid-cols-2">
             <div>
-              <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">
+              <label className="block font-semibold text-slate-700 mb-1">
                 Maximum Score (Points) *
               </label>
-              <input
+              <input aria-label="Maximum Score (Points)"
                 type="number"
                 min="1"
                 max="1000"
                 required
                 value={maxScore}
                 onChange={(e) => setMaxScore(e.target.value)}
-                className="w-full rounded-lg border border-slate-300 px-3 py-2 text-xs text-slate-900 focus:border-[#181A1C] focus:ring-1 focus:ring-[#181A1C] dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
+                className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm text-slate-900 focus:border-[var(--tenant-accent)] focus:ring-1 focus:ring-[var(--tenant-accent)]"
               />
             </div>
 
             <div>
-              <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">
+              <label className="block font-semibold text-slate-700 mb-1">
                 Passing Score Threshold *
               </label>
-              <input
+              <input aria-label="Passing Score Threshold"
                 type="number"
                 min="0"
                 max={maxScore || 100}
                 required
                 value={passingScore}
                 onChange={(e) => setPassingScore(e.target.value)}
-                className="w-full rounded-lg border border-slate-300 px-3 py-2 text-xs text-slate-900 focus:border-[#181A1C] focus:ring-1 focus:ring-[#181A1C] dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
+                className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm text-slate-900 focus:border-[var(--tenant-accent)] focus:ring-1 focus:ring-[var(--tenant-accent)]"
               />
             </div>
           </div>
 
           {/* Due Date */}
           <div>
-            <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1 flex items-center gap-1.5">
+            <label className="block font-semibold text-slate-700 mb-1 flex items-center gap-1.5">
               <Calendar className="h-3.5 w-3.5 text-slate-500" /> Due Date (Optional)
             </label>
-            <input
+            <input aria-label="Due Date (Optional)"
               type="date"
               value={dueDate}
               onChange={(e) => setDueDate(e.target.value)}
-              className="w-full rounded-lg border border-slate-300 px-3 py-2 text-xs text-slate-900 focus:border-[#181A1C] focus:ring-1 focus:ring-[#181A1C] dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
+              className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm text-slate-900 focus:border-[var(--tenant-accent)] focus:ring-1 focus:ring-[var(--tenant-accent)]"
             />
           </div>
 
           {/* Instructions / Description */}
           <div>
-            <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">
+            <label className="block font-semibold text-slate-700 mb-1">
               Instructions & Assessment Details
             </label>
-            <textarea
+            <textarea aria-label="Instructions & Assessment Details"
               rows={3}
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               placeholder="Provide instructions, project brief, or submission expectations for this assessment..."
-              className="w-full rounded-lg border border-slate-300 px-3 py-2 text-xs text-slate-900 focus:border-[#181A1C] focus:ring-1 focus:ring-[#181A1C] dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
+              className="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm text-slate-900 focus:border-[var(--tenant-accent)] focus:ring-1 focus:ring-[var(--tenant-accent)]"
             />
           </div>
 
-          <div className="flex items-center justify-end gap-2 border-t border-slate-100 pt-4 dark:border-slate-800">
+          <div className="flex items-center justify-end gap-2 border-t border-slate-100 pt-4">
             <button
               type="button"
               onClick={onClose}
               disabled={loading}
-              className="rounded-lg border border-slate-200 px-4 py-2 text-xs font-semibold text-slate-600 hover:bg-slate-100 dark:border-slate-800 dark:text-slate-400"
+              className="rounded-lg border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-600 hover:bg-slate-100"
             >
               Cancel
             </button>
             <button
               type="submit"
               disabled={loading}
-              className="rounded-xl bg-[#181A1C] px-4 py-2 text-xs font-bold text-white hover:bg-[#2A2E33] disabled:opacity-50 transition shadow-2xs"
+              className="rounded-md bg-[var(--tenant-primary)] px-4 py-2 text-sm font-bold text-[var(--tenant-primary-foreground)] hover:brightness-95 disabled:opacity-50 transition"
             >
               {loading ? 'Assigning...' : 'Assign Assessment'}
             </button>
           </div>
         </form>
       </div>
-    </div>
+    </DialogFrame>
   );
 }

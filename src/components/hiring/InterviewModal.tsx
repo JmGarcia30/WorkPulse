@@ -1,5 +1,7 @@
 'use client';
 
+import { DialogFrame } from '@/components/ui/DialogFrame';
+
 import { useState, useTransition, useEffect } from 'react';
 import { InterviewType } from '@prisma/client';
 import {
@@ -60,24 +62,24 @@ export function InterviewModal({
   const [success, setSuccess] = useState(false);
 
   useEffect(() => {
-    if (isOpen) {
-      setError(null);
-      setSuccess(false);
-      setLoadingInterviewers(true);
-      getOrganizationInterviewers()
-        .then((users) => {
-          setInterviewers(users);
-          if (users.length > 0) {
-            setInterviewerId(users[0].id);
-          }
-        })
-        .finally(() => setLoadingInterviewers(false));
-
-      // Default date to tomorrow
-      const tomorrow = new Date();
-      tomorrow.setDate(tomorrow.getDate() + 1);
-      setDate(tomorrow.toISOString().split('T')[0]);
-    }
+    if (!isOpen) return;
+    let cancelled = false;
+    getOrganizationInterviewers()
+      .then((users) => {
+        if (cancelled) return;
+        setError(null);
+        setSuccess(false);
+        setInterviewers(users);
+        if (users.length > 0) setInterviewerId(users[0].id);
+        const tomorrow = new Date();
+        tomorrow.setDate(tomorrow.getDate() + 1);
+        setDate(tomorrow.toISOString().split('T')[0]);
+      })
+      .catch(() => {
+        if (!cancelled) setError('Unable to load interviewers. Close this dialog and try again.');
+      })
+      .finally(() => { if (!cancelled) setLoadingInterviewers(false); });
+    return () => { cancelled = true; };
   }, [isOpen]);
 
   if (!isOpen) return null;
@@ -122,52 +124,52 @@ export function InterviewModal({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 p-4 backdrop-blur-xs overflow-y-auto">
-      <div className="relative w-full max-w-lg rounded-2xl bg-white p-6 shadow-2xl dark:bg-slate-900 border border-slate-200 dark:border-slate-800 space-y-5 my-8">
+    <DialogFrame label="Schedule interview" onClose={onClose} busy={isPending}>
+      <div className="relative w-full max-w-lg rounded-lg bg-white p-6 shadow-2xl border border-slate-200 space-y-5 my-8">
         {/* Header */}
-        <div className="flex items-center justify-between border-b border-slate-100 pb-4 dark:border-slate-800">
+        <div className="flex items-center justify-between border-b border-slate-100 pb-4">
           <div>
-            <h2 className="text-base font-bold text-[#181A1C] dark:text-slate-100 flex items-center gap-2">
-              <Calendar className="h-5 w-5 text-[#181A1C] dark:text-white" />
+            <h2 className="text-base font-bold text-[var(--wp-text)] flex items-center gap-2">
+              <Calendar className="h-5 w-5 text-[var(--wp-text)]" />
               Schedule Candidate Interview
             </h2>
-            <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
-              Candidate: <span className="font-semibold text-slate-700 dark:text-slate-300">{candidateName}</span> • Position: {jobTitle}
+            <p className="text-sm text-slate-500 mt-0.5">
+              Candidate: <span className="font-semibold text-slate-700">{candidateName}</span> • Position: {jobTitle}
             </p>
           </div>
           <button
             type="button"
-            onClick={onClose}
-            className="rounded-lg p-1.5 text-slate-400 hover:bg-slate-100 hover:text-slate-700 dark:hover:bg-slate-800 dark:hover:text-slate-200 transition"
+            onClick={onClose} aria-label="Close dialog"
+            className="rounded-lg p-1.5 text-slate-400 hover:bg-slate-100 hover:text-slate-700 transition"
           >
             <X className="h-5 w-5" />
           </button>
         </div>
 
         {error && (
-          <div className="rounded-xl border border-rose-200 bg-rose-50 p-3.5 text-xs text-rose-800 dark:border-rose-900/60 dark:bg-rose-950/40 dark:text-rose-300 flex items-start gap-2.5">
+          <div className="rounded-md border border-rose-200 bg-rose-50 p-3.5 text-sm text-rose-800 flex items-start gap-2.5">
             <AlertCircle className="h-4 w-4 shrink-0 text-rose-600 mt-0.5" />
             <span>{error}</span>
           </div>
         )}
 
         {success && (
-          <div className="rounded-xl border border-emerald-200 bg-emerald-50 p-3.5 text-xs text-emerald-800 dark:border-emerald-900/60 dark:bg-emerald-950/40 dark:text-emerald-300 flex items-center gap-2.5">
+          <div className="rounded-md border border-emerald-200 bg-emerald-50 p-3.5 text-sm text-emerald-800 flex items-center gap-2.5">
             <CheckCircle2 className="h-4 w-4 shrink-0 text-emerald-600" />
             <span>Interview scheduled successfully!</span>
           </div>
         )}
 
-        <form onSubmit={handleSubmit} className="space-y-4 text-xs">
+        <form onSubmit={handleSubmit} className="space-y-4 text-sm">
           {/* Interview Type */}
           <div>
-            <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">
+            <label className="block font-semibold text-slate-700 mb-1">
               Interview Stage / Type
             </label>
-            <select
+            <select aria-label="Interview Stage / Type"
               value={type}
               onChange={(e) => setType(e.target.value as InterviewType)}
-              className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs text-slate-900 focus:border-[#181A1C] focus:ring-1 focus:ring-[#181A1C] dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
+              className="w-full rounded-md border border-slate-200 bg-white px-3 py-2 text-sm text-slate-900 focus:border-[var(--tenant-accent)] focus:ring-1 focus:ring-[var(--tenant-accent)]"
             >
               <option value={InterviewType.INITIAL_SCREENING}>Initial Screening Interview</option>
               <option value={InterviewType.TEACHING_DEMONSTRATION}>
@@ -188,7 +190,7 @@ export function InterviewModal({
 
           {/* Interviewer Picker (Strictly Organization Users) */}
           <div>
-            <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1 flex items-center gap-1.5">
+            <label className="block font-semibold text-slate-700 mb-1 flex items-center gap-1.5">
               <User className="h-3.5 w-3.5 text-slate-400" /> Assigned Interviewer
             </label>
             {loadingInterviewers ? (
@@ -199,7 +201,7 @@ export function InterviewModal({
               <select
                 value={interviewerId}
                 onChange={(e) => setInterviewerId(e.target.value)}
-                className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs text-slate-900 focus:border-[#181A1C] focus:ring-1 focus:ring-[#181A1C] dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
+                className="w-full rounded-md border border-slate-200 bg-white px-3 py-2 text-sm text-slate-900 focus:border-[var(--tenant-accent)] focus:ring-1 focus:ring-[var(--tenant-accent)]"
               >
                 {interviewers.map((u) => (
                   <option key={u.id} value={u.id}>
@@ -213,39 +215,39 @@ export function InterviewModal({
           {/* Date, Time & Duration */}
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
             <div>
-              <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1 flex items-center gap-1">
+              <label className="block font-semibold text-slate-700 mb-1 flex items-center gap-1">
                 <Calendar className="h-3.5 w-3.5 text-slate-400" /> Date
               </label>
-              <input
+              <input aria-label="Date"
                 type="date"
                 value={date}
                 onChange={(e) => setDate(e.target.value)}
                 required
-                className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs text-slate-900 focus:border-[#181A1C] focus:ring-1 focus:ring-[#181A1C] dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
+                className="w-full rounded-md border border-slate-200 bg-white px-3 py-2 text-sm text-slate-900 focus:border-[var(--tenant-accent)] focus:ring-1 focus:ring-[var(--tenant-accent)]"
               />
             </div>
 
             <div>
-              <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1 flex items-center gap-1">
+              <label className="block font-semibold text-slate-700 mb-1 flex items-center gap-1">
                 <Clock className="h-3.5 w-3.5 text-slate-400" /> Time
               </label>
-              <input
+              <input aria-label="Time"
                 type="time"
                 value={time}
                 onChange={(e) => setTime(e.target.value)}
                 required
-                className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs text-slate-900 focus:border-[#181A1C] focus:ring-1 focus:ring-[#181A1C] dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
+                className="w-full rounded-md border border-slate-200 bg-white px-3 py-2 text-sm text-slate-900 focus:border-[var(--tenant-accent)] focus:ring-1 focus:ring-[var(--tenant-accent)]"
               />
             </div>
 
             <div>
-              <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">
+              <label className="block font-semibold text-slate-700 mb-1">
                 Duration (Min)
               </label>
-              <select
+              <select aria-label="Duration (Min)"
                 value={durationMinutes}
                 onChange={(e) => setDurationMinutes(Number(e.target.value))}
-                className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs text-slate-900 focus:border-[#181A1C] focus:ring-1 focus:ring-[#181A1C] dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
+                className="w-full rounded-md border border-slate-200 bg-white px-3 py-2 text-sm text-slate-900 focus:border-[var(--tenant-accent)] focus:ring-1 focus:ring-[var(--tenant-accent)]"
               >
                 <option value={15}>15 mins</option>
                 <option value={30}>30 mins</option>
@@ -260,59 +262,59 @@ export function InterviewModal({
           {/* Meeting URL & Location */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div>
-              <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1 flex items-center gap-1">
+              <label className="block font-semibold text-slate-700 mb-1 flex items-center gap-1">
                 <Video className="h-3.5 w-3.5 text-slate-400" /> Meeting Link (Optional)
               </label>
-              <input
+              <input aria-label="Meeting Link (Optional)"
                 type="url"
                 placeholder="https://meet.google.com/..."
                 value={meetingUrl}
                 onChange={(e) => setMeetingUrl(e.target.value)}
-                className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs text-slate-900 focus:border-[#181A1C] focus:ring-1 focus:ring-[#181A1C] dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
+                className="w-full rounded-md border border-slate-200 bg-white px-3 py-2 text-sm text-slate-900 focus:border-[var(--tenant-accent)] focus:ring-1 focus:ring-[var(--tenant-accent)]"
               />
             </div>
 
             <div>
-              <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1 flex items-center gap-1">
+              <label className="block font-semibold text-slate-700 mb-1 flex items-center gap-1">
                 <MapPin className="h-3.5 w-3.5 text-slate-400" /> Physical Location (Optional)
               </label>
-              <input
+              <input aria-label="Physical Location (Optional)"
                 type="text"
                 placeholder="e.g. Conference Room A"
                 value={location}
                 onChange={(e) => setLocation(e.target.value)}
-                className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs text-slate-900 focus:border-[#181A1C] focus:ring-1 focus:ring-[#181A1C] dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
+                className="w-full rounded-md border border-slate-200 bg-white px-3 py-2 text-sm text-slate-900 focus:border-[var(--tenant-accent)] focus:ring-1 focus:ring-[var(--tenant-accent)]"
               />
             </div>
           </div>
 
           {/* Notes / Agenda */}
           <div>
-            <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1 flex items-center gap-1">
+            <label className="block font-semibold text-slate-700 mb-1 flex items-center gap-1">
               <FileText className="h-3.5 w-3.5 text-slate-400" /> Notes & Instructions (Optional)
             </label>
-            <textarea
+            <textarea aria-label="Notes & Instructions (Optional)"
               rows={3}
               placeholder="Topics to evaluate, instructions for candidate or interviewer..."
               value={notes}
               onChange={(e) => setNotes(e.target.value)}
-              className="w-full rounded-xl border border-slate-200 bg-white p-3 text-xs text-slate-900 focus:border-[#181A1C] focus:ring-1 focus:ring-[#181A1C] dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
+              className="w-full rounded-md border border-slate-200 bg-white p-3 text-sm text-slate-900 focus:border-[var(--tenant-accent)] focus:ring-1 focus:ring-[var(--tenant-accent)]"
             />
           </div>
 
           {/* Action Buttons */}
-          <div className="flex items-center justify-end gap-2.5 pt-3 border-t border-slate-100 dark:border-slate-800">
+          <div className="flex items-center justify-end gap-2.5 pt-3 border-t border-slate-100">
             <button
               type="button"
               onClick={onClose}
-              className="rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-xs font-semibold text-slate-700 hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300 dark:hover:bg-slate-700 transition"
+              className="rounded-md border border-slate-200 bg-white px-4 py-2.5 text-sm font-semibold text-slate-700 hover:bg-slate-50 transition"
             >
               Cancel
             </button>
             <button
               type="submit"
               disabled={isPending || loadingInterviewers}
-              className="inline-flex items-center gap-2 rounded-xl bg-[#181A1C] px-5 py-2.5 text-xs font-bold text-white shadow-sm hover:bg-[#2A2E33] disabled:opacity-50 transition"
+              className="inline-flex items-center gap-2 rounded-md bg-[var(--tenant-primary)] px-5 py-2.5 text-sm font-bold text-[var(--tenant-primary-foreground)] hover:brightness-95 disabled:opacity-50 transition"
             >
               {isPending && <Loader2 className="h-3.5 w-3.5 animate-spin" />}
               Confirm & Schedule Interview
@@ -320,6 +322,6 @@ export function InterviewModal({
           </div>
         </form>
       </div>
-    </div>
+    </DialogFrame>
   );
 }

@@ -1,5 +1,7 @@
 'use client';
 
+import { DialogFrame } from '@/components/ui/DialogFrame';
+
 import { useState, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { OnboardingTaskType } from '@prisma/client';
@@ -71,29 +73,29 @@ export function OnboardingTaskUploadModal({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 p-4 backdrop-blur-xs">
-      <div className="w-full max-w-md rounded-2xl border border-slate-200 bg-white p-6 shadow-xl dark:border-slate-800 dark:bg-slate-900 space-y-5 animate-in fade-in zoom-in-95 duration-150">
-        <div className="flex items-start justify-between border-b border-slate-100 dark:border-slate-800 pb-3">
+    <DialogFrame label="Upload onboarding document" onClose={onClose} busy={isUploading}>
+      <div className="w-full max-w-md rounded-lg border border-slate-200 bg-white p-6 shadow-xl space-y-5 animate-in fade-in zoom-in-95 duration-150">
+        <div className="flex items-start justify-between border-b border-slate-100 pb-3">
           <div>
             <span
-              className={`inline-flex items-center rounded-md px-2 py-0.5 text-[10px] font-semibold ${typeConfig.badgeBg} ${typeConfig.badgeText}`}
+              className={`inline-flex items-center rounded-md px-2 py-0.5 text-xs font-semibold ${typeConfig.badgeBg} ${typeConfig.badgeText}`}
             >
               {typeConfig.label}
             </span>
-            <h3 className="text-base font-bold text-slate-900 dark:text-slate-100 mt-1 leading-snug">
+            <h3 className="text-base font-bold text-slate-900 mt-1 leading-snug">
               Submit: {task.title}
             </h3>
           </div>
           <button
-            onClick={onClose}
-            className="rounded-lg p-1.5 text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 transition"
+            onClick={onClose} aria-label="Close dialog"
+            className="rounded-lg p-1.5 text-slate-400 hover:bg-slate-100 transition"
           >
             <X className="h-4 w-4" />
           </button>
         </div>
 
         {error && (
-          <div className="flex items-center gap-2 rounded-xl bg-rose-50 dark:bg-rose-950/60 p-3 text-xs text-rose-700 dark:text-rose-300 border border-rose-200 dark:border-rose-800">
+          <div className="flex items-center gap-2 rounded-md bg-rose-50 p-3 text-sm text-rose-700 border border-rose-200">
             <AlertCircle className="h-4 w-4 shrink-0" />
             <span>{error}</span>
           </div>
@@ -102,7 +104,7 @@ export function OnboardingTaskUploadModal({
         <form onSubmit={handleSubmit} className="space-y-4">
           <div
             onClick={() => fileInputRef.current?.click()}
-            className="flex flex-col items-center justify-center rounded-2xl border-2 border-dashed border-[#E8EAED] dark:border-slate-700 bg-[#F8F9FA] dark:bg-slate-800/30 p-6 text-center hover:border-[#181A1C] transition cursor-pointer"
+            className="flex flex-col items-center justify-center rounded-lg border-2 border-dashed border-[var(--wp-border)] bg-[var(--wp-surface-subtle)] p-6 text-center hover:border-[#181A1C] transition cursor-pointer"
           >
             <input
               ref={fileInputRef}
@@ -113,49 +115,49 @@ export function OnboardingTaskUploadModal({
             />
             {selectedFile ? (
               <div className="space-y-1">
-                <div className="mx-auto rounded-full bg-emerald-100 dark:bg-emerald-950/60 p-3 text-emerald-600 dark:text-emerald-400 w-12 h-12 flex items-center justify-center">
+                <div className="mx-auto rounded-full bg-emerald-100 p-3 text-emerald-600 w-12 h-12 flex items-center justify-center">
                   <CheckCircle2 className="h-6 w-6" />
                 </div>
-                <p className="text-xs font-bold text-[#181A1C] dark:text-slate-100 truncate max-w-[250px]">
+                <p className="text-sm font-bold text-[var(--wp-text)] truncate max-w-[250px]">
                   {selectedFile.name}
                 </p>
-                <p className="text-[10px] text-[#9CA3AF]">
+                <p className="text-xs text-[var(--wp-text-muted)]">
                   {Math.round(selectedFile.size / 1024)} KB
                 </p>
               </div>
             ) : (
               <div className="space-y-1">
-                <div className="mx-auto rounded-full bg-white border border-[#E8EAED] dark:bg-slate-800 p-3 text-[#181A1C] dark:text-slate-200 w-12 h-12 flex items-center justify-center shadow-2xs">
+                <div className="mx-auto rounded-full bg-white border border-[var(--wp-border)] p-3 text-[var(--wp-text)] w-12 h-12 flex items-center justify-center">
                   <UploadCloud className="h-6 w-6" />
                 </div>
-                <p className="text-xs font-bold text-[#181A1C] dark:text-slate-300">
+                <p className="text-sm font-bold text-[var(--wp-text)]">
                   Click to select file or document
                 </p>
-                <p className="text-[10px] text-[#9CA3AF]">
+                <p className="text-xs text-[var(--wp-text-muted)]">
                   Supports PDF, DOCX, PNG, JPG (up to 10MB)
                 </p>
               </div>
             )}
           </div>
 
-          <div className="flex items-center justify-end gap-2 pt-2 border-t border-[#E8EAED] dark:border-slate-800">
+          <div className="flex items-center justify-end gap-2 pt-2 border-t border-[var(--wp-border)]">
             <button
               type="button"
               onClick={onClose}
-              className="rounded-xl border border-[#E8EAED] dark:border-slate-700 px-4 py-2 text-xs font-semibold text-[#6B7280] hover:text-[#181A1C] hover:bg-[#F8F9FA] transition"
+              className="rounded-md border border-[var(--wp-border)] px-4 py-2 text-sm font-semibold text-[var(--wp-text-muted)] hover:text-[var(--wp-text)] hover:bg-[#F8F9FA] transition"
             >
               Cancel
             </button>
             <button
               type="submit"
               disabled={isUploading || !selectedFile}
-              className="inline-flex items-center gap-1.5 rounded-xl bg-[#181A1C] px-4 py-2 text-xs font-bold text-white hover:bg-[#2A2E33] transition shadow-2xs disabled:opacity-50"
+              className="inline-flex items-center gap-1.5 rounded-md bg-[var(--tenant-primary)] px-4 py-2 text-sm font-bold text-[var(--tenant-primary-foreground)] hover:brightness-95 transition disabled:opacity-50"
             >
               {isUploading ? 'Uploading...' : 'Submit Document'}
             </button>
           </div>
         </form>
       </div>
-    </div>
+    </DialogFrame>
   );
 }

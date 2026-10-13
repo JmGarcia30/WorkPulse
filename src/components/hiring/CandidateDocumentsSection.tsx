@@ -1,5 +1,7 @@
 'use client';
 
+import { DialogFrame } from '@/components/ui/DialogFrame';
+
 import React, { useState, useTransition } from 'react';
 import {
   RecruitmentDocumentType,
@@ -51,7 +53,7 @@ interface CandidateDocumentsSectionProps {
   category: EmploymentCategory;
   documents: RecruitmentDocItem[];
   canManage: boolean;
-  organizationSlug?: string;
+  organizationSlug: string;
 }
 
 const REJECTION_PRESETS = [
@@ -82,7 +84,7 @@ export function CandidateDocumentsSection({
   category,
   documents,
   canManage,
-  organizationSlug = 'st-aloysius',
+  organizationSlug,
 }: CandidateDocumentsSectionProps) {
   const [isPending, startTransition] = useTransition();
   const [feedbackMessage, setFeedbackMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
@@ -172,25 +174,25 @@ export function CandidateDocumentsSection({
       if (res.error) {
         setFeedbackMessage({ type: 'error', text: res.error });
       } else {
-        setFeedbackMessage({ type: 'success', text: 'SAGA recruitment document requirements initialized.' });
+        setFeedbackMessage({ type: 'success', text: 'recruitment document requirements initialized.' });
       }
       setTimeout(() => setFeedbackMessage(null), 3000);
     });
   };
 
   return (
-    <div className="rounded-3xl border border-[#E8EAED] bg-white p-6 shadow-2xs dark:border-slate-800 dark:bg-slate-900 space-y-4">
+    <div className="rounded-lg border border-[var(--wp-border)] bg-white p-6 space-y-4">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-2 border-b border-[#E8EAED] dark:border-slate-800">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-2 border-b border-[var(--wp-border)]">
         <div>
           <div className="flex items-center gap-2">
-            <FileText className="h-4 w-4 text-[#181A1C] dark:text-white" />
-            <h3 className="text-xs font-bold text-[#181A1C] uppercase tracking-wider dark:text-slate-100">
-              SAGA Recruitment Document Requirements
+            <FileText className="h-4 w-4 text-[var(--wp-text)]" />
+            <h3 className="text-sm font-bold text-[var(--wp-text)] uppercase tracking-wider">
+              Recruitment Document Requirements
             </h3>
           </div>
-          <p className="text-[11px] text-[#6B7280] dark:text-slate-400 mt-0.5">
-            Submitted to the <span className="font-semibold text-slate-700 dark:text-slate-200">Head of the Department</span> for {category === 'TEACHING' ? 'Faculty' : 'Non-Teaching'} hiring.
+          <p className="text-xs text-[var(--wp-text-muted)] mt-0.5">
+            Submitted to the <span className="font-semibold text-slate-700">Head of the Department</span> for {category === 'TEACHING' ? 'Faculty' : 'Non-Teaching'} hiring.
           </p>
         </div>
 
@@ -200,7 +202,7 @@ export function CandidateDocumentsSection({
             href={`/careers/${organizationSlug}/portal/${applicationId}`}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-1 rounded-xl border border-slate-200 bg-slate-50 px-3 py-1.5 text-xs font-semibold text-slate-700 hover:bg-slate-100 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200 transition"
+            className="inline-flex items-center gap-1 rounded-md border border-slate-200 bg-slate-50 px-3 py-1.5 text-sm font-semibold text-slate-700 hover:bg-slate-100 transition"
           >
             <span>Candidate Portal</span>
             <ExternalLink className="h-3 w-3 text-slate-400" />
@@ -212,17 +214,17 @@ export function CandidateDocumentsSection({
                 type="button"
                 onClick={handleInitialize}
                 disabled={isPending}
-                className="inline-flex items-center gap-1.5 rounded-xl bg-[#181A1C] px-3 py-1.5 text-xs font-bold text-white hover:bg-[#2A2E33] transition disabled:opacity-50"
+                className="inline-flex items-center gap-1.5 rounded-md bg-[var(--tenant-primary)] px-3 py-1.5 text-sm font-bold text-[var(--tenant-primary-foreground)] hover:brightness-95 transition disabled:opacity-50"
               >
                 Initialize Checklist
               </button>
             )
           ) : (
             <span
-              className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-bold ${
+              className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-sm font-bold ${
                 evaluation.isSatisfied
-                  ? 'bg-emerald-50 text-emerald-700 dark:bg-emerald-950/60 dark:text-emerald-300 ring-1 ring-emerald-500/20'
-                  : 'bg-amber-50 text-amber-700 dark:bg-amber-950/60 dark:text-amber-300 ring-1 ring-amber-500/20'
+                  ? 'bg-emerald-50 text-emerald-700 ring-1 ring-emerald-500/20'
+                  : 'bg-amber-50 text-amber-700 ring-1 ring-amber-500/20'
               }`}
             >
               {evaluation.isSatisfied ? (
@@ -245,10 +247,10 @@ export function CandidateDocumentsSection({
 
       {feedbackMessage && (
         <div
-          className={`rounded-2xl border p-3 text-xs flex items-center gap-2 ${
+          className={`rounded-lg border p-3 text-sm flex items-center gap-2 ${
             feedbackMessage.type === 'success'
-              ? 'border-emerald-200 bg-emerald-50 text-emerald-800 dark:border-emerald-900/50 dark:bg-emerald-950/60 dark:text-emerald-200'
-              : 'border-rose-200 bg-rose-50 text-rose-800 dark:border-rose-900/50 dark:bg-rose-950/60 dark:text-rose-200'
+              ? 'border-emerald-200 bg-emerald-50 text-emerald-800 '
+              : 'border-rose-200 bg-rose-50 text-rose-800 '
           }`}
         >
           {feedbackMessage.type === 'success' ? (
@@ -262,21 +264,21 @@ export function CandidateDocumentsSection({
 
       {/* Document Items List */}
       {documents.length === 0 ? (
-        <div className="rounded-2xl border border-dashed border-[#E8EAED] p-8 text-center text-xs text-[#6B7280] dark:border-slate-800">
+        <div className="rounded-lg border border-dashed border-[var(--wp-border)] p-8 text-center text-sm text-[var(--wp-text-muted)]">
           <p>No document checklist records initialized for this candidate.</p>
           {canManage && (
             <button
               type="button"
               onClick={handleInitialize}
               disabled={isPending}
-              className="mt-3 inline-flex items-center gap-1.5 rounded-xl bg-[#181A1C] px-4 py-2 text-xs font-bold text-white hover:bg-[#2A2E33] transition"
+              className="mt-3 inline-flex items-center gap-1.5 rounded-md bg-[var(--tenant-primary)] px-4 py-2 text-sm font-bold text-[var(--tenant-primary-foreground)] hover:brightness-95 transition"
             >
-              Load SAGA Document Requirements
+              Load Document Requirements
             </button>
           )}
         </div>
       ) : (
-        <div className="divide-y divide-[#E8EAED] dark:divide-slate-800">
+        <div className="divide-y divide-[var(--wp-border)]">
           {documents.map((doc) => {
             const isVerified = doc.status === RecruitmentDocumentStatus.VERIFIED;
             const isSubmitted = doc.status === RecruitmentDocumentStatus.SUBMITTED;
@@ -288,47 +290,47 @@ export function CandidateDocumentsSection({
               <div
                 key={doc.id}
                 className={`py-3.5 first:pt-0 last:pb-0 flex flex-col sm:flex-row sm:items-start justify-between gap-3 ${
-                  isRejected ? 'bg-rose-50/30 dark:bg-rose-950/10 px-2 rounded-xl' : ''
+                  isRejected ? 'bg-rose-50/30 px-2 rounded-md' : ''
                 }`}
               >
                 <div className="space-y-1 max-w-xl">
                   <div className="flex items-center gap-2 flex-wrap">
-                    <span className="text-xs font-bold text-[#181A1C] dark:text-slate-100">
+                    <span className="text-sm font-bold text-[var(--wp-text)]">
                       {doc.title}
                     </span>
                     {doc.isRequired && !doc.isConditional ? (
-                      <span className="rounded-md bg-rose-50 px-1.5 py-0.5 text-[10px] font-extrabold text-rose-700 dark:bg-rose-950/60 dark:text-rose-300">
+                      <span className="rounded-md bg-rose-50 px-1.5 py-0.5 text-xs font-semibold text-rose-700">
                         REQUIRED
                       </span>
                     ) : (
-                      <span className="rounded-md bg-slate-100 px-1.5 py-0.5 text-[10px] font-semibold text-slate-600 dark:bg-slate-800 dark:text-slate-400">
+                      <span className="rounded-md bg-slate-100 px-1.5 py-0.5 text-xs font-semibold text-slate-600">
                         CONDITIONAL
                       </span>
                     )}
 
                     {/* Status Badge */}
                     {isVerified && (
-                      <span className="inline-flex items-center gap-1 rounded-full bg-emerald-50 px-2 py-0.5 text-[10px] font-bold text-emerald-700 dark:bg-emerald-950/60 dark:text-emerald-300">
+                      <span className="inline-flex items-center gap-1 rounded-full bg-emerald-50 px-2 py-0.5 text-xs font-bold text-emerald-700">
                         <CheckCircle2 className="h-3 w-3" /> Verified
                       </span>
                     )}
                     {isSubmitted && (
-                      <span className="inline-flex items-center gap-1 rounded-full bg-blue-50 px-2 py-0.5 text-[10px] font-bold text-blue-700 dark:bg-blue-950/60 dark:text-blue-300">
+                      <span className="inline-flex items-center gap-1 rounded-full bg-blue-50 px-2 py-0.5 text-xs font-bold text-blue-700">
                         <Clock className="h-3 w-3" /> Submitted
                       </span>
                     )}
                     {isRejected && (
-                      <span className="inline-flex items-center gap-1 rounded-full bg-rose-100 px-2 py-0.5 text-[10px] font-extrabold text-rose-800 dark:bg-rose-950 dark:text-rose-300">
+                      <span className="inline-flex items-center gap-1 rounded-full bg-rose-100 px-2 py-0.5 text-xs font-semibold text-rose-800">
                         <AlertTriangle className="h-3 w-3" /> Rejected / Action Required
                       </span>
                     )}
                     {isNA && (
-                      <span className="inline-flex items-center gap-1 rounded-full bg-slate-100 px-2 py-0.5 text-[10px] font-semibold text-slate-600 dark:bg-slate-800 dark:text-slate-400">
+                      <span className="inline-flex items-center gap-1 rounded-full bg-slate-100 px-2 py-0.5 text-xs font-semibold text-slate-600">
                         <Ban className="h-3 w-3" /> Not Applicable / Waived
                       </span>
                     )}
                     {isPendingDoc && (
-                      <span className="inline-flex items-center gap-1 rounded-full bg-amber-50 px-2 py-0.5 text-[10px] font-semibold text-amber-700 dark:bg-amber-950 dark:text-amber-300">
+                      <span className="inline-flex items-center gap-1 rounded-full bg-amber-50 px-2 py-0.5 text-xs font-semibold text-amber-700">
                         ○ Awaiting Submission
                       </span>
                     )}
@@ -336,29 +338,29 @@ export function CandidateDocumentsSection({
 
                   {/* If Rejected, display reason prominently */}
                   {isRejected && doc.notes && (
-                    <div className="rounded-lg border border-rose-200 bg-rose-50 p-2 text-[11px] text-rose-900 dark:border-rose-900/40 dark:bg-rose-950/40 dark:text-rose-200">
+                    <div className="rounded-lg border border-rose-200 bg-rose-50 p-2 text-xs text-rose-900">
                       <span className="font-bold">Rejection Note: </span>
                       <span className="italic">{doc.notes}</span>
                     </div>
                   )}
 
                   {!isRejected && doc.notes && (
-                    <p className="text-[11px] text-[#6B7280] dark:text-slate-400">
+                    <p className="text-xs text-[var(--wp-text-muted)]">
                       {doc.notes}
                     </p>
                   )}
 
                   {doc.fileName && (
-                    <div className="flex items-center gap-2 flex-wrap text-[11px] text-[#181A1C] dark:text-slate-300 font-medium">
+                    <div className="flex items-center gap-2 flex-wrap text-xs text-[var(--wp-text)] font-medium">
                       <span className="truncate max-w-[280px]">File: {doc.fileName}</span>
                       {doc.fileSize && (
-                        <span className="text-[#9CA3AF]">({(doc.fileSize / 1024).toFixed(1)} KB)</span>
+                        <span className="text-[var(--wp-text-muted)]">({(doc.fileSize / 1024).toFixed(1)} KB)</span>
                       )}
                       <a
                         href={`/api/recruitment-documents/${doc.id}`}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="inline-flex items-center gap-1 text-blue-600 hover:text-blue-700 dark:text-blue-400 font-semibold underline underline-offset-2 ml-1"
+                        className="inline-flex items-center gap-1 text-blue-600 hover:text-blue-700 font-semibold underline underline-offset-2 ml-1"
                       >
                         <Eye className="h-3 w-3" />
                         <span>View / Download</span>
@@ -371,7 +373,7 @@ export function CandidateDocumentsSection({
                 {canManage && (
                   <div className="flex items-center gap-1.5 shrink-0 flex-wrap justify-end">
                     {/* Upload button (HR override) */}
-                    <label className="cursor-pointer inline-flex items-center gap-1 rounded-xl border border-[#E8EAED] bg-[#F8F9FA] px-2.5 py-1.5 text-xs font-semibold text-slate-700 hover:bg-slate-100 transition dark:border-slate-800 dark:bg-slate-950 dark:text-slate-300">
+                    <label className="cursor-pointer inline-flex items-center gap-1 rounded-md border border-[var(--wp-border)] bg-[var(--wp-surface-subtle)] px-2.5 py-1.5 text-sm font-semibold text-slate-700 hover:bg-slate-100 transition">
                       <Upload className="h-3 w-3" />
                       <span>{uploadingDocId === doc.id ? 'Uploading...' : 'Scan / Upload'}</span>
                       <input
@@ -388,7 +390,7 @@ export function CandidateDocumentsSection({
                         type="button"
                         onClick={() => handleVerify(doc.id)}
                         disabled={isPending}
-                        className="inline-flex items-center gap-1 rounded-xl bg-emerald-600 px-2.5 py-1.5 text-xs font-bold text-white hover:bg-emerald-700 transition disabled:opacity-50 shadow-xs"
+                        className="inline-flex items-center gap-1 rounded-md bg-emerald-600 px-2.5 py-1.5 text-sm font-bold text-white hover:bg-emerald-700 transition disabled:opacity-50"
                       >
                         <ShieldCheck className="h-3 w-3" />
                         <span>Verify</span>
@@ -401,7 +403,7 @@ export function CandidateDocumentsSection({
                         type="button"
                         onClick={() => handleOpenRejectModal(doc)}
                         disabled={isPending}
-                        className="inline-flex items-center gap-1 rounded-xl border border-rose-200 bg-rose-50 px-2.5 py-1.5 text-xs font-semibold text-rose-700 hover:bg-rose-100 transition dark:border-rose-900/50 dark:bg-rose-950/50 dark:text-rose-300"
+                        className="inline-flex items-center gap-1 rounded-md border border-rose-200 bg-rose-50 px-2.5 py-1.5 text-sm font-semibold text-rose-700 hover:bg-rose-100 transition"
                         title="Flag or reject blurry/illegible document"
                       >
                         <AlertTriangle className="h-3 w-3" />
@@ -422,7 +424,7 @@ export function CandidateDocumentsSection({
                           )
                         }
                         disabled={isPending}
-                        className="inline-flex items-center gap-1 rounded-xl border border-slate-200 bg-white px-2.5 py-1.5 text-[11px] font-semibold text-slate-600 hover:bg-slate-50 transition dark:border-slate-800 dark:bg-slate-900 dark:text-slate-400"
+                        className="inline-flex items-center gap-1 rounded-md border border-slate-200 bg-white px-2.5 py-1.5 text-xs font-semibold text-slate-600 hover:bg-slate-50 transition"
                       >
                         {isNA ? 'Re-enable' : 'Mark N/A'}
                       </button>
@@ -437,18 +439,18 @@ export function CandidateDocumentsSection({
 
       {/* HR Rejection Modal */}
       {rejectingDoc && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 backdrop-blur-xs">
-          <div className="w-full max-w-lg rounded-3xl border border-slate-200 bg-white p-6 shadow-2xl dark:border-slate-800 dark:bg-slate-900 space-y-4">
-            <div className="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800">
+        <DialogFrame label="Reject recruitment document" onClose={() => setRejectingDoc(null)} busy={isPending}>
+          <div className="w-full max-w-lg rounded-lg border border-slate-200 bg-white p-6 shadow-2xl space-y-4">
+            <div className="flex items-center justify-between pb-3 border-b border-slate-100">
               <div className="flex items-center gap-2">
-                <div className="p-2 rounded-xl bg-rose-100 text-rose-700 dark:bg-rose-950 dark:text-rose-300">
+                <div className="p-2 rounded-md bg-rose-100 text-rose-700">
                   <AlertTriangle className="h-5 w-5" />
                 </div>
                 <div>
-                  <h3 className="text-sm font-bold text-slate-900 dark:text-slate-100">
+                  <h3 className="text-sm font-bold text-slate-900">
                     Flag / Reject Document
                   </h3>
-                  <p className="text-xs text-slate-500 truncate max-w-sm">
+                  <p className="text-sm text-slate-500 truncate max-w-sm">
                     {rejectingDoc.title}
                   </p>
                 </div>
@@ -456,20 +458,20 @@ export function CandidateDocumentsSection({
               <button
                 type="button"
                 onClick={() => setRejectingDoc(null)}
-                className="rounded-lg p-1.5 text-slate-400 hover:bg-slate-100 hover:text-slate-600 dark:hover:bg-slate-800"
+                className="rounded-lg p-1.5 text-slate-400 hover:bg-slate-100 hover:text-slate-600"
               >
                 <X className="h-4 w-4" />
               </button>
             </div>
 
             <div className="space-y-3">
-              <p className="text-xs text-slate-600 dark:text-slate-400">
+              <p className="text-sm text-slate-600">
                 Select a standard rejection reason or provide specific feedback. An email notification will be dispatched to the candidate with instructions to re-upload via their portal:
               </p>
 
               {/* Quick Preset Reason Chips */}
               <div className="space-y-1.5">
-                <label className="text-[11px] font-bold uppercase tracking-wider text-slate-500">
+                <label className="text-xs font-bold uppercase tracking-wider text-slate-500">
                   Quick Institutional Presets
                 </label>
                 <div className="flex flex-wrap gap-1.5">
@@ -478,7 +480,7 @@ export function CandidateDocumentsSection({
                       key={preset.label}
                       type="button"
                       onClick={() => setRejectionReason(preset.reason)}
-                      className="rounded-lg border border-slate-200 bg-slate-50 px-2.5 py-1 text-[11px] font-medium text-slate-700 hover:bg-indigo-50 hover:text-indigo-700 hover:border-indigo-300 transition dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300"
+                      className="rounded-lg border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs font-medium text-slate-700 hover:bg-indigo-50 hover:text-indigo-700 hover:border-indigo-300 transition"
                     >
                       {preset.label}
                     </button>
@@ -488,24 +490,24 @@ export function CandidateDocumentsSection({
 
               {/* Textarea */}
               <div className="space-y-1">
-                <label className="text-[11px] font-bold uppercase tracking-wider text-slate-500">
+                <label className="text-xs font-bold uppercase tracking-wider text-slate-500">
                   Reviewer Feedback Note
                 </label>
-                <textarea
+                <textarea aria-label="Reviewer Feedback Note"
                   rows={3}
                   value={rejectionReason}
                   onChange={(e) => setRejectionReason(e.target.value)}
                   placeholder="e.g. The photo/scan is blurry or illegible. Please re-upload a clear copy..."
-                  className="w-full rounded-xl border border-slate-300 p-3 text-xs focus:border-rose-500 focus:outline-hidden dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
+                  className="w-full rounded-md border border-slate-300 p-3 text-sm focus:border-rose-500 focus:outline-hidden"
                 />
               </div>
             </div>
 
-            <div className="flex items-center justify-end gap-2 pt-2 border-t border-slate-100 dark:border-slate-800">
+            <div className="flex items-center justify-end gap-2 pt-2 border-t border-slate-100">
               <button
                 type="button"
                 onClick={() => setRejectingDoc(null)}
-                className="rounded-xl border border-slate-200 px-4 py-2 text-xs font-semibold text-slate-600 hover:bg-slate-50 dark:border-slate-700 dark:text-slate-300"
+                className="rounded-md border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-600 hover:bg-slate-50"
               >
                 Cancel
               </button>
@@ -513,14 +515,14 @@ export function CandidateDocumentsSection({
                 type="button"
                 onClick={handleConfirmReject}
                 disabled={isPending || !rejectionReason.trim()}
-                className="inline-flex items-center gap-1.5 rounded-xl bg-rose-600 px-4 py-2 text-xs font-bold text-white hover:bg-rose-700 transition disabled:opacity-50 shadow-sm"
+                className="inline-flex items-center gap-1.5 rounded-md bg-rose-600 px-4 py-2 text-sm font-bold text-white hover:bg-rose-700 transition disabled:opacity-50"
               >
                 <AlertTriangle className="h-3.5 w-3.5" />
                 <span>Confirm Rejection & Notify Candidate</span>
               </button>
             </div>
           </div>
-        </div>
+        </DialogFrame>
       )}
     </div>
   );

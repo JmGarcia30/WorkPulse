@@ -49,21 +49,21 @@ export function StatusChangeDialog({
 
   const currentConfig = STAGE_CONFIG[currentStatus] || {
     label: currentStatus,
-    badgeBg: 'bg-slate-100 dark:bg-slate-800',
-    badgeText: 'text-slate-700 dark:text-slate-300',
+    badgeBg: 'bg-slate-100 ',
+    badgeText: 'text-slate-700 ',
   };
 
   return (
-    <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-xs dark:border-slate-800 dark:bg-slate-900 space-y-4">
-      <div className="flex items-center justify-between border-b border-slate-100 pb-3 dark:border-slate-800">
+    <div className="rounded-lg border border-slate-200 bg-white p-5 space-y-4">
+      <div className="flex items-center justify-between border-b border-slate-100 pb-3">
         <div>
-          <h3 className="text-xs font-semibold text-slate-500 uppercase tracking-wider dark:text-slate-400">
+          <h3 className="text-sm font-semibold text-slate-500 uppercase tracking-wider">
             Candidate Pipeline Status
           </h3>
-          <p className="text-xs text-slate-600 dark:text-slate-300 mt-1 flex items-center gap-1.5">
+          <p className="text-sm text-slate-600 mt-1 flex items-center gap-1.5">
             Current Stage:{' '}
             <span
-              className={`inline-block rounded-md px-2 py-0.5 text-[11px] font-bold ${currentConfig.badgeBg} ${currentConfig.badgeText}`}
+              className={`inline-block rounded-md px-2 py-0.5 text-xs font-bold ${currentConfig.badgeBg} ${currentConfig.badgeText}`}
             >
               {currentConfig.label}
             </span>
@@ -73,31 +73,31 @@ export function StatusChangeDialog({
 
       {feedback && (
         <div
-          className={`rounded-lg p-3 text-xs font-medium flex items-center gap-2 ${
+          className={`rounded-lg p-3 text-sm font-medium flex items-center gap-2 ${
             feedback.type === 'success'
-              ? 'bg-emerald-50 text-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-900'
-              : 'bg-rose-50 text-rose-800 dark:bg-rose-950/60 dark:text-rose-300 border border-rose-200 dark:border-rose-900'
+              ? 'bg-emerald-50 text-emerald-800 border border-emerald-200 '
+              : 'bg-rose-50 text-rose-800 border border-rose-200 '
           }`}
         >
           {feedback.type === 'success' ? (
-            <Check className="h-4 w-4 shrink-0 text-emerald-600 dark:text-emerald-400" />
+            <Check className="h-4 w-4 shrink-0 text-emerald-600" />
           ) : (
-            <AlertCircle className="h-4 w-4 shrink-0 text-rose-600 dark:text-rose-400" />
+            <AlertCircle className="h-4 w-4 shrink-0 text-rose-600" />
           )}
           <span>{feedback.message}</span>
         </div>
       )}
 
       {isTerminal ? (
-        <div className="rounded-xl border border-amber-200 bg-amber-50/60 p-3.5 text-xs text-amber-800 dark:border-amber-900/60 dark:bg-amber-950/40 dark:text-amber-300 flex items-start gap-2.5">
-          <ShieldAlert className="h-4 w-4 text-amber-600 dark:text-amber-400 shrink-0 mt-0.5" />
+        <div className="rounded-md border border-amber-200 bg-amber-50/60 p-3.5 text-sm text-amber-800 flex items-start gap-2.5">
+          <ShieldAlert className="h-4 w-4 text-amber-600 shrink-0 mt-0.5" />
           <div>
             <p className="font-semibold">
               {currentStatus === ApplicationStatus.OFFER
                 ? 'Final Hiring Conversion'
                 : 'Terminal Application State'}
             </p>
-            <p className="text-[11px] opacity-90 mt-0.5">
+            <p className="text-xs opacity-90 mt-0.5">
               {currentStatus === ApplicationStatus.OFFER
                 ? 'Use the Hiring Readiness card to complete the atomic Employee conversion.'
                 : `Candidate is in terminal state (${currentStatus}). No further stage transitions allowed.`}
@@ -106,7 +106,7 @@ export function StatusChangeDialog({
         </div>
       ) : (
         <div className="space-y-3">
-          <p className="text-xs font-medium text-slate-700 dark:text-slate-300">
+          <p className="text-sm font-medium text-slate-700">
             Select Next Pipeline Stage:
           </p>
 
@@ -120,15 +120,15 @@ export function StatusChangeDialog({
                   key={status}
                   type="button"
                   onClick={() => setSelectedStatus(status)}
-                  className={`flex items-center justify-between rounded-xl border px-3 py-2.5 text-xs font-bold transition-all ${
+                  className={`flex items-center justify-between rounded-md border px-3 py-2.5 text-sm font-bold transition-all ${
                     isSelected
-                      ? 'border-[#181A1C] bg-[#F8F9FA] text-[#181A1C] ring-2 ring-[#181A1C] dark:border-white dark:bg-slate-800 dark:text-white'
-                      : 'border-[#E8EAED] bg-white text-[#6B7280] hover:border-[#181A1C] hover:text-[#181A1C] dark:border-slate-800 dark:bg-slate-950 dark:text-slate-300 dark:hover:bg-slate-900'
+                      ? 'border-[#181A1C] bg-[var(--wp-surface-subtle)] text-[var(--wp-text)] ring-2 ring-[#181A1C] '
+                      : 'border-[var(--wp-border)] bg-white text-[var(--wp-text-muted)] hover:border-[#181A1C] hover:text-[var(--wp-text)] '
                   }`}
                 >
                   <span>{config?.label || status}</span>
                   {isSelected && (
-                    <Check className="h-4 w-4 text-[#181A1C] dark:text-white shrink-0" />
+                    <Check className="h-4 w-4 text-[var(--wp-text)] shrink-0" />
                   )}
                 </button>
               );
@@ -141,7 +141,7 @@ export function StatusChangeDialog({
                 type="button"
                 onClick={handleUpdate}
                 disabled={isPending}
-                className="inline-flex items-center gap-2 rounded-xl bg-[#181A1C] px-4 py-2.5 text-xs font-bold text-white shadow-sm hover:bg-[#2A2E33] disabled:opacity-50 disabled:cursor-not-allowed transition"
+                className="inline-flex items-center gap-2 rounded-md bg-[var(--tenant-primary)] px-4 py-2.5 text-sm font-bold text-[var(--tenant-primary-foreground)] hover:brightness-95 disabled:opacity-50 disabled:cursor-not-allowed transition"
               >
                 {isPending && <Loader2 className="h-3.5 w-3.5 animate-spin" />}
                 Move Candidate to {STAGE_CONFIG[selectedStatus]?.label || selectedStatus}

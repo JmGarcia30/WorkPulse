@@ -1,6 +1,7 @@
 import 'server-only';
 
 import { prisma } from '@/lib/db/prisma';
+import { getOwnLeaveRequest } from '@/features/employee-self-service/read-model';
 import { requireEmployeeSelfContext } from '@/features/employee-self-service/context';
 import { decimalNumber } from './domain';
 import { getEmployeeLeaveOverviewData } from './read-model';
@@ -12,10 +13,7 @@ export async function getMyLeaveOverview() {
 
 export async function getMyLeaveRequest(requestId: string) {
   const context = await requireEmployeeSelfContext();
-  const request = await prisma.leaveRequest.findFirst({
-    where: { id: requestId, organizationId: context.organization.id, employeeId: context.employee.id },
-    include: { days: { orderBy: { attendanceDate: 'asc' } }, documents: { where: { removedAt: null }, select: { id: true, kindCode: true, fileName: true, fileType: true, fileSize: true, createdAt: true } } },
-  });
+  const request = await getOwnLeaveRequest(context, prisma, requestId);
   if (!request) return null;
   return { id: request.id, type: request.leaveTypeNameSnapshot, category: request.requestCategoryCode, from: request.requestedStartDate.toISOString().slice(0, 10), to: request.requestedEndDate.toISOString().slice(0, 10), expectedReturnDate: request.expectedReturnDateSnapshot?.toISOString().slice(0, 10) ?? null, units: request.requestedUnits == null ? null : decimalNumber(request.requestedUnits), reason: request.reason, status: request.status, submittedAt: request.submittedAt.toISOString(), reviewedAt: request.reviewedAt?.toISOString() ?? null, reviewerName: request.reviewerNameSnapshot, employeeName: request.employeeNameSnapshot ?? `${context.employee.firstName} ${context.employee.lastName}`.trim(), organizationName: request.organizationNameSnapshot ?? context.organization.name, organizationTimeZone: request.organizationTimeZoneSnapshot ?? context.organization.timeZone, reviewerRemarks: request.reviewerRemarks, attendanceSyncStatus: request.attendanceSyncStatus, days: request.days.map((day) => ({ date: day.attendanceDate.toISOString().slice(0, 10), charged: decimalNumber(day.chargeUnits), scheduled: day.isScheduledWorkday })), documents: request.documents };
 }

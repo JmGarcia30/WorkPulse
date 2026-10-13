@@ -52,12 +52,12 @@ export default async function JobsPage({ searchParams }: JobsPageProps) {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between border-b border-[#E8EAED] pb-5">
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between border-b border-[var(--wp-border)] pb-5">
         <div>
-          <h1 className="text-xl font-black text-[#181A1C]">
+          <h1 className="wp-page-title text-xl font-semibold text-[var(--wp-text)]">
             Job Postings
           </h1>
-          <p className="text-xs text-[#6B7280]">
+          <p className="text-sm text-[var(--wp-text-muted)]">
             Manage organization recruitment requisitions and career openings
           </p>
         </div>
@@ -65,7 +65,7 @@ export default async function JobsPage({ searchParams }: JobsPageProps) {
         {canEdit && (
           <Link
             href="/dashboard/hiring/jobs/new"
-            className="inline-flex items-center gap-2 rounded-2xl bg-[#181A1C] px-5 py-2.5 text-xs font-bold text-white hover:bg-[#2A2E33] shadow-md transition"
+            className="inline-flex items-center gap-2 rounded-lg bg-[var(--tenant-primary)] px-5 py-2.5 text-sm font-bold text-[var(--tenant-primary-foreground)] hover:brightness-95 transition"
           >
             <Plus className="h-4 w-4" />
             Create Job Posting
@@ -74,22 +74,22 @@ export default async function JobsPage({ searchParams }: JobsPageProps) {
       </div>
 
       {/* Search & Filter Bar */}
-      <div className="flex flex-col sm:flex-row items-center justify-between gap-3 rounded-3xl border border-[#E8EAED] bg-white p-5 shadow-2xs">
+      <div className="flex flex-col sm:flex-row items-center justify-between gap-3 rounded-lg border border-[var(--wp-border)] bg-white p-5">
         <form method="GET" className="flex-1 w-full flex items-center gap-2">
-          {statusFilter && <input type="hidden" name="status" value={statusFilter} />}
+          {statusFilter && <input type="hidden" aria-label="Status" name="status" value={statusFilter} />}
           <div className="relative flex-1">
-            <Search className="absolute left-3.5 top-3 h-4 w-4 text-[#9CA3AF]" />
+            <Search className="absolute left-3.5 top-3 h-4 w-4 text-[var(--wp-text-muted)]" />
             <input
               type="text"
-              name="search"
+              aria-label="Search records" name="search"
               defaultValue={searchQuery || ''}
               placeholder="Search by job title or department..."
-              className="w-full rounded-2xl border border-[#E8EAED] bg-[#F8F9FA] pl-10 pr-4 py-2.5 text-xs font-semibold text-[#181A1C] focus:border-[#181A1C] focus:bg-white focus:ring-1 focus:ring-[#181A1C] transition shadow-2xs"
+              className="w-full rounded-lg border border-[var(--wp-border)] bg-[var(--wp-surface-subtle)] pl-10 pr-4 py-2.5 text-sm font-semibold text-[var(--wp-text)] focus:border-[var(--tenant-accent)] focus:bg-white focus:ring-1 focus:ring-[var(--tenant-accent)] transition"
             />
           </div>
           <button
             type="submit"
-            className="rounded-2xl bg-[#181A1C] px-5 py-2.5 text-xs font-bold text-white hover:bg-[#2A2E33] shadow-md transition"
+            className="rounded-lg bg-[var(--tenant-primary)] px-5 py-2.5 text-sm font-bold text-[var(--tenant-primary-foreground)] hover:brightness-95 transition"
           >
             Search
           </button>
@@ -106,10 +106,10 @@ export default async function JobsPage({ searchParams }: JobsPageProps) {
                   ...(searchQuery ? { search: searchQuery } : {}),
                   status: st,
                 }).toString()}`}
-                className={`rounded-xl px-4 py-1.5 text-xs font-bold transition-all ${
+                className={`rounded-md px-4 py-1.5 text-sm font-bold transition-all ${
                   isActive
-                    ? 'bg-[#181A1C] text-white shadow-sm'
-                    : 'bg-[#F8F9FA] text-[#6B7280] hover:text-[#181A1C] hover:bg-slate-100'
+                    ? 'bg-[var(--tenant-primary)] text-[var(--tenant-primary-foreground)] '
+                    : 'bg-[var(--wp-surface-subtle)] text-[var(--wp-text-muted)] hover:text-[var(--wp-text)] hover:bg-slate-100'
                 }`}
               >
                 {st}
@@ -120,10 +120,10 @@ export default async function JobsPage({ searchParams }: JobsPageProps) {
       </div>
 
       {/* Jobs Data Table */}
-      <div className="rounded-3xl border border-[#E8EAED] bg-white shadow-2xs overflow-hidden">
+      <div className="rounded-lg border border-[var(--wp-border)] bg-white overflow-hidden">
         <div className="overflow-x-auto">
-          <table className="w-full text-left text-xs">
-            <thead className="border-b border-[#E8EAED] bg-[#F8F9FA] text-[#6B7280] uppercase tracking-wider">
+          <table className="w-full text-left text-sm">
+            <thead className="border-b border-[var(--wp-border)] bg-[var(--wp-surface-subtle)] text-[var(--wp-text-muted)] uppercase tracking-wider">
               <tr>
                 <th className="px-5 py-4 font-bold">Job Title</th>
                 <th className="px-5 py-4 font-bold">Department</th>
@@ -134,12 +134,12 @@ export default async function JobsPage({ searchParams }: JobsPageProps) {
                 <th className="px-5 py-4 font-bold text-right">Actions</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-[#E8EAED]">
+            <tbody className="divide-y divide-[var(--wp-border)]">
               {jobs.length === 0 ? (
                 <tr>
-                  <td colSpan={7} className="px-5 py-12 text-center text-[#6B7280]">
-                    <Briefcase className="mx-auto h-8 w-8 text-[#9CA3AF]" />
-                    <p className="mt-2 text-xs font-semibold">No job postings found.</p>
+                  <td colSpan={7} className="px-5 py-12 text-center text-[var(--wp-text-muted)]">
+                    <Briefcase className="mx-auto h-8 w-8 text-[var(--wp-text-muted)]" />
+                    <p className="mt-2 text-sm font-semibold">No job postings found.</p>
                   </td>
                 </tr>
               ) : (
@@ -148,7 +148,7 @@ export default async function JobsPage({ searchParams }: JobsPageProps) {
                     key={job.id}
                     className="hover:bg-[#F8F9FA]/70 transition"
                   >
-                    <td className="px-5 py-4 font-bold text-[#181A1C]">
+                    <td className="px-5 py-4 font-bold text-[var(--wp-text)]">
                       <Link
                         href={`/dashboard/hiring/jobs/${job.id}`}
                         className="hover:underline"
@@ -156,15 +156,15 @@ export default async function JobsPage({ searchParams }: JobsPageProps) {
                         {job.title}
                       </Link>
                     </td>
-                    <td className="px-5 py-4 text-[#181A1C] font-medium">
+                    <td className="px-5 py-4 text-[var(--wp-text)] font-medium">
                       {job.department}
                     </td>
-                    <td className="px-5 py-4 text-[#6B7280]">
+                    <td className="px-5 py-4 text-[var(--wp-text-muted)]">
                       {job.location}
                     </td>
                     <td className="px-5 py-4">
                       <span
-                        className={`inline-block rounded-xl px-3 py-1 text-[10px] font-extrabold ${
+                        className={`inline-block rounded-md px-3 py-1 text-xs font-semibold ${
                           job.status === JobStatus.PUBLISHED
                             ? 'bg-emerald-100 text-emerald-800'
                             : job.status === JobStatus.DRAFT
@@ -175,10 +175,10 @@ export default async function JobsPage({ searchParams }: JobsPageProps) {
                         {job.status}
                       </span>
                     </td>
-                    <td className="px-5 py-4 font-bold text-[#181A1C]">
+                    <td className="px-5 py-4 font-bold text-[var(--wp-text)]">
                       {job._count.applications}
                     </td>
-                    <td className="px-5 py-4 text-[#6B7280] font-medium">
+                    <td className="px-5 py-4 text-[var(--wp-text-muted)] font-medium">
                       {job.closingDate
                         ? new Date(job.closingDate).toLocaleDateString()
                         : 'No deadline'}
@@ -187,7 +187,7 @@ export default async function JobsPage({ searchParams }: JobsPageProps) {
                       <div className="flex items-center justify-end gap-1.5">
                         <Link
                           href={`/dashboard/hiring/jobs/${job.id}`}
-                          className="rounded-xl border border-[#E8EAED] bg-[#F8F9FA] p-2 text-[#181A1C] hover:bg-[#181A1C] hover:text-white transition shadow-2xs"
+                          className="rounded-md border border-[var(--wp-border)] bg-[var(--wp-surface-subtle)] p-2 text-[var(--wp-text)] hover:bg-[var(--tenant-primary)] hover:text-[var(--tenant-primary-foreground)] transition"
                           title="View Details"
                         >
                           <Eye className="h-4 w-4" />
@@ -196,7 +196,7 @@ export default async function JobsPage({ searchParams }: JobsPageProps) {
                         {canEdit && (
                           <Link
                             href={`/dashboard/hiring/jobs/${job.id}/edit`}
-                            className="rounded-xl border border-[#E8EAED] bg-[#F8F9FA] p-2 text-[#181A1C] hover:bg-[#181A1C] hover:text-white transition shadow-2xs"
+                            className="rounded-md border border-[var(--wp-border)] bg-[var(--wp-surface-subtle)] p-2 text-[var(--wp-text)] hover:bg-[var(--tenant-primary)] hover:text-[var(--tenant-primary-foreground)] transition"
                             title="Edit Job"
                           >
                             <Edit className="h-4 w-4" />

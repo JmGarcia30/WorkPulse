@@ -98,41 +98,41 @@ export default async function AssessmentsPage({ searchParams }: AssessmentsPageP
   return (
     <div className="space-y-6">
       {/* Page Header */}
-      <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between border-b border-[#E8EAED] pb-5">
+      <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between border-b border-[var(--wp-border)] pb-5">
         <div>
-          <h1 className="text-xl font-black text-[#181A1C] flex items-center gap-2">
-            <Award className="h-5 w-5 text-[#181A1C]" />
+          <h1 className="wp-page-title text-xl font-semibold text-[var(--wp-text)] flex items-center gap-2">
+            <Award className="h-5 w-5 text-[var(--wp-text)]" />
             Pre-Employment Assessment Center
           </h1>
-          <p className="text-xs text-[#6B7280] mt-0.5">
+          <p className="text-sm text-[var(--wp-text-muted)] mt-0.5">
             Monitor candidate technical tests, skill challenges, and evaluation outcomes
           </p>
         </div>
       </div>
 
       {/* Search & Filters */}
-      <div className="rounded-3xl border border-[#E8EAED] bg-white p-5 shadow-2xs space-y-4">
+      <div className="rounded-lg border border-[var(--wp-border)] bg-white p-5 space-y-4">
         <form method="GET" className="grid gap-3 sm:grid-cols-4 items-center">
-          {statusFilter && <input type="hidden" name="status" value={statusFilter} />}
+          {statusFilter && <input type="hidden" aria-label="Status" name="status" value={statusFilter} />}
 
           {/* Search Box */}
           <div className="relative sm:col-span-1">
-            <Search className="absolute left-3.5 top-3 h-4 w-4 text-[#9CA3AF]" />
+            <Search className="absolute left-3.5 top-3 h-4 w-4 text-[var(--wp-text-muted)]" />
             <input
               type="text"
-              name="search"
+              aria-label="Search records" name="search"
               defaultValue={searchQuery || ''}
               placeholder="Search candidate or title..."
-              className="w-full rounded-2xl border border-[#E8EAED] bg-[#F8F9FA] pl-10 pr-3 py-2.5 text-xs font-semibold text-[#181A1C] focus:border-[#181A1C] focus:bg-white focus:ring-1 focus:ring-[#181A1C] transition shadow-2xs"
+              className="w-full rounded-lg border border-[var(--wp-border)] bg-[var(--wp-surface-subtle)] pl-10 pr-3 py-2.5 text-sm font-semibold text-[var(--wp-text)] focus:border-[var(--tenant-accent)] focus:bg-white focus:ring-1 focus:ring-[var(--tenant-accent)] transition"
             />
           </div>
 
           {/* Job Filter */}
           <div>
             <select
-              name="jobId"
+              aria-label="Job opening" name="jobId"
               defaultValue={jobIdFilter || ''}
-              className="w-full rounded-2xl border border-[#E8EAED] bg-[#F8F9FA] px-3.5 py-2.5 text-xs font-bold text-[#181A1C] focus:border-[#181A1C] focus:ring-1 focus:ring-[#181A1C] transition shadow-2xs"
+              className="w-full rounded-lg border border-[var(--wp-border)] bg-[var(--wp-surface-subtle)] px-3.5 py-2.5 text-sm font-bold text-[var(--wp-text)] focus:border-[var(--tenant-accent)] focus:ring-1 focus:ring-[var(--tenant-accent)] transition"
             >
               <option value="">All Job Positions</option>
               {organizationJobs.map((j) => (
@@ -148,7 +148,7 @@ export default async function AssessmentsPage({ searchParams }: AssessmentsPageP
             <select
               name="type"
               defaultValue={typeFilter || ''}
-              className="w-full rounded-2xl border border-[#E8EAED] bg-[#F8F9FA] px-3.5 py-2.5 text-xs font-bold text-[#181A1C] focus:border-[#181A1C] focus:ring-1 focus:ring-[#181A1C] transition shadow-2xs"
+              className="w-full rounded-lg border border-[var(--wp-border)] bg-[var(--wp-surface-subtle)] px-3.5 py-2.5 text-sm font-bold text-[var(--wp-text)] focus:border-[var(--tenant-accent)] focus:ring-1 focus:ring-[var(--tenant-accent)] transition"
             >
               <option value="">All Assessment Types</option>
               {Object.values(AssessmentType).map((t) => (
@@ -163,13 +163,13 @@ export default async function AssessmentsPage({ searchParams }: AssessmentsPageP
           <div className="flex items-center gap-2">
             <button
               type="submit"
-              className="rounded-2xl bg-[#181A1C] px-5 py-2.5 text-xs font-bold text-white hover:bg-[#2A2E33] shadow-md transition"
+              className="rounded-lg bg-[var(--tenant-primary)] px-5 py-2.5 text-sm font-bold text-[var(--tenant-primary-foreground)] hover:brightness-95 transition"
             >
               Filter
             </button>
             <Link
               href="/dashboard/hiring/assessments"
-              className="rounded-2xl border border-[#E8EAED] bg-[#F8F9FA] px-4 py-2.5 text-xs font-bold text-[#6B7280] hover:text-[#181A1C] hover:bg-slate-100 transition shadow-2xs"
+              className="rounded-lg border border-[var(--wp-border)] bg-[var(--wp-surface-subtle)] px-4 py-2.5 text-sm font-bold text-[var(--wp-text-muted)] hover:text-[var(--wp-text)] hover:bg-slate-100 transition"
             >
               Reset
             </Link>
@@ -177,7 +177,7 @@ export default async function AssessmentsPage({ searchParams }: AssessmentsPageP
         </form>
 
         {/* Status Pills */}
-        <div className="flex items-center gap-1.5 overflow-x-auto pt-3 border-t border-[#E8EAED]">
+        <div className="flex items-center gap-1.5 overflow-x-auto pt-3 border-t border-[var(--wp-border)]">
           {['ALL', ...Object.values(AssessmentStatus)].map((st) => {
             const isActive = (statusFilter || 'ALL') === st;
             return (
@@ -189,10 +189,10 @@ export default async function AssessmentsPage({ searchParams }: AssessmentsPageP
                   ...(typeFilter ? { type: typeFilter } : {}),
                   status: st,
                 }).toString()}`}
-                className={`rounded-xl px-4 py-1.5 text-xs font-bold transition-all shrink-0 ${
+                className={`rounded-md px-4 py-1.5 text-sm font-bold transition-all shrink-0 ${
                   isActive
-                    ? 'bg-[#181A1C] text-white shadow-sm'
-                    : 'bg-[#F8F9FA] text-[#6B7280] hover:text-[#181A1C] hover:bg-slate-100'
+                    ? 'bg-[var(--tenant-primary)] text-[var(--tenant-primary-foreground)] '
+                    : 'bg-[var(--wp-surface-subtle)] text-[var(--wp-text-muted)] hover:text-[var(--wp-text)] hover:bg-slate-100'
                 }`}
               >
                 {st.replace('_', ' ')}
@@ -203,10 +203,10 @@ export default async function AssessmentsPage({ searchParams }: AssessmentsPageP
       </div>
 
       {/* Assessments Data Table */}
-      <div className="rounded-3xl border border-[#E8EAED] bg-white shadow-2xs overflow-hidden">
+      <div className="rounded-lg border border-[var(--wp-border)] bg-white overflow-hidden">
         <div className="overflow-x-auto">
-          <table className="w-full text-left text-xs">
-            <thead className="border-b border-[#E8EAED] bg-[#F8F9FA] text-[#6B7280] uppercase tracking-wider">
+          <table className="w-full text-left text-sm">
+            <thead className="border-b border-[var(--wp-border)] bg-[var(--wp-surface-subtle)] text-[var(--wp-text-muted)] uppercase tracking-wider">
               <tr>
                 <th className="px-5 py-4 font-bold">Candidate</th>
                 <th className="px-5 py-4 font-bold">Assessment Title</th>
@@ -218,12 +218,12 @@ export default async function AssessmentsPage({ searchParams }: AssessmentsPageP
                 <th className="px-5 py-4 font-bold text-right">Action</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-[#E8EAED]">
+            <tbody className="divide-y divide-[var(--wp-border)]">
               {assessments.length === 0 ? (
                 <tr>
-                  <td colSpan={8} className="px-5 py-12 text-center text-[#6B7280]">
-                    <Award className="mx-auto h-8 w-8 text-[#9CA3AF]" />
-                    <p className="mt-2 text-xs font-semibold">No assessments found matching criteria.</p>
+                  <td colSpan={8} className="px-5 py-12 text-center text-[var(--wp-text-muted)]">
+                    <Award className="mx-auto h-8 w-8 text-[var(--wp-text-muted)]" />
+                    <p className="mt-2 text-sm font-semibold">No assessments found matching criteria.</p>
                   </td>
                 </tr>
               ) : (
@@ -236,9 +236,9 @@ export default async function AssessmentsPage({ searchParams }: AssessmentsPageP
                       className="hover:bg-[#F8F9FA]/70 transition"
                     >
                       {/* Candidate */}
-                      <td className="px-5 py-4 font-bold text-[#181A1C]">
+                      <td className="px-5 py-4 font-bold text-[var(--wp-text)]">
                         <div className="flex items-center gap-3">
-                          <div className="flex h-9 w-9 items-center justify-center rounded-2xl bg-[#181A1C] text-white font-bold text-xs shrink-0 shadow-2xs">
+                          <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-[var(--tenant-primary)] text-[var(--tenant-primary-foreground)] font-bold text-sm shrink-0">
                             {a.application.applicant.firstName[0]}
                             {a.application.applicant.lastName[0]}
                           </div>
@@ -250,7 +250,7 @@ export default async function AssessmentsPage({ searchParams }: AssessmentsPageP
                               {a.application.applicant.firstName}{' '}
                               {a.application.applicant.lastName}
                             </Link>
-                            <p className="text-[11px] font-normal text-[#6B7280]">
+                            <p className="text-xs font-normal text-[var(--wp-text-muted)]">
                               {a.application.applicant.email}
                             </p>
                           </div>
@@ -258,41 +258,41 @@ export default async function AssessmentsPage({ searchParams }: AssessmentsPageP
                       </td>
 
                       {/* Assessment Title */}
-                      <td className="px-5 py-4 text-[#181A1C] font-semibold max-w-xs truncate">
+                      <td className="px-5 py-4 text-[var(--wp-text)] font-semibold max-w-xs truncate">
                         {a.title}
                       </td>
 
                       {/* Position */}
-                      <td className="px-5 py-4 text-[#181A1C]">
+                      <td className="px-5 py-4 text-[var(--wp-text)]">
                         <p className="font-bold">{a.application.job.title}</p>
-                        <p className="text-[11px] text-[#6B7280]">{a.application.job.department}</p>
+                        <p className="text-xs text-[var(--wp-text-muted)]">{a.application.job.department}</p>
                       </td>
 
                       {/* Type */}
                       <td className="px-5 py-4">
                         <span
-                          className={`rounded-xl px-2.5 py-1 text-[10px] font-extrabold ${typeCfg.badgeBg} ${typeCfg.badgeText}`}
+                          className={`rounded-md px-2.5 py-1 text-xs font-semibold ${typeCfg.badgeBg} ${typeCfg.badgeText}`}
                         >
                           {typeCfg.label}
                         </span>
                       </td>
 
                       {/* Due Date */}
-                      <td className="px-5 py-4 text-[#6B7280] font-medium">
+                      <td className="px-5 py-4 text-[var(--wp-text-muted)] font-medium">
                         {a.dueDate ? (
                           <div className="flex items-center gap-1">
-                            <Calendar className="h-3 w-3 text-[#9CA3AF]" />
+                            <Calendar className="h-3 w-3 text-[var(--wp-text-muted)]" />
                             <span>{new Date(a.dueDate).toLocaleDateString()}</span>
                           </div>
                         ) : (
-                          <span className="text-[#9CA3AF]">—</span>
+                          <span className="text-[var(--wp-text-muted)]">—</span>
                         )}
                       </td>
 
                       {/* Status */}
                       <td className="px-5 py-4">
                         <span
-                          className={`rounded-xl px-3 py-1 text-[10px] font-extrabold ${statusCfg.badgeBg} ${statusCfg.badgeText}`}
+                          className={`rounded-md px-3 py-1 text-xs font-semibold ${statusCfg.badgeBg} ${statusCfg.badgeText}`}
                         >
                           {statusCfg.label}
                         </span>
@@ -307,12 +307,12 @@ export default async function AssessmentsPage({ searchParams }: AssessmentsPageP
                             ) : (
                               <XCircle className="h-3.5 w-3.5 text-rose-600" />
                             )}
-                            <span className="text-[#181A1C]">
+                            <span className="text-[var(--wp-text)]">
                               {a.score} / {a.maxScore ?? 100} pts
                             </span>
                           </div>
                         ) : (
-                          <span className="text-[#9CA3AF] text-[11px]">Pending Score</span>
+                          <span className="text-[var(--wp-text-muted)] text-xs">Pending Score</span>
                         )}
                       </td>
 
@@ -320,7 +320,7 @@ export default async function AssessmentsPage({ searchParams }: AssessmentsPageP
                       <td className="px-5 py-4 text-right">
                         <Link
                           href={`/dashboard/hiring/applicants/${a.application.id}`}
-                          className="inline-flex items-center gap-1 rounded-xl border border-[#E8EAED] bg-[#F8F9FA] px-3.5 py-1.5 text-xs font-bold text-[#181A1C] hover:bg-[#181A1C] hover:text-white transition shadow-2xs"
+                          className="inline-flex items-center gap-1 rounded-md border border-[var(--wp-border)] bg-[var(--wp-surface-subtle)] px-3.5 py-1.5 text-sm font-bold text-[var(--wp-text)] hover:bg-[var(--tenant-primary)] hover:text-[var(--tenant-primary-foreground)] transition"
                         >
                           <Eye className="h-3.5 w-3.5" /> Detail →
                         </Link>

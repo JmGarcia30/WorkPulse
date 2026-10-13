@@ -1,3 +1,4 @@
+import { MetricStrip, WorkspacePanel } from '@/components/ui/Workspace';
 import Link from 'next/link';
 import { ApplicationStatus, AssessmentStatus, AttendanceStatus, EmployeeStatus, LeaveRequestStatus, OfferStatus, OnboardingTaskStatus, ProbationStatus } from '@prisma/client';
 import { ArrowRight, Banknote, CalendarCheck, ClipboardList, Clock3, FileUser, UserPlus, Users } from 'lucide-react';
@@ -22,7 +23,7 @@ export default async function DashboardPage() {
   const reviewThrough = new Date();
   reviewThrough.setUTCDate(reviewThrough.getUTCDate() + 30);
 
-  const [activeEmployees, pendingApplicants, pendingLeave, presentToday, latestPayroll, probationDue, missingCompensation, incompleteEmployeeSetup, submittedAssessments, pendingOffers, pendingOnboardingReviews] = await Promise.all([
+  const [activeEmployees, pendingApplicants, pendingLeave, presentToday, latestPayroll, probationDue, missingCompensation, incompleteEmployeeSetup, submittedAssessments, pendingOffers, pendingOnboardingReviews, hiringStages] = await Promise.all([
     hasHrAccess ? prisma.employee.count({ where: { organizationId, employeeStatus: EmployeeStatus.ACTIVE } }) : Promise.resolve(0),
     prisma.application.count({ where: { job: { organizationId }, status: ApplicationStatus.APPLIED } }),
     hasHrAccess ? prisma.leaveRequest.count({ where: { organizationId, status: LeaveRequestStatus.PENDING } }) : Promise.resolve(0),
@@ -34,6 +35,7 @@ export default async function DashboardPage() {
     prisma.assessment.count({ where: { application: { job: { organizationId } }, status: AssessmentStatus.SUBMITTED } }),
     prisma.offer.count({ where: { application: { job: { organizationId } }, status: OfferStatus.PENDING_APPROVAL } }),
     prisma.onboardingTask.count({ where: { onboardingProcess: { application: { job: { organizationId } } }, status: OnboardingTaskStatus.SUBMITTED } }),
+    prisma.application.groupBy({ by: ['status'], where: { job: { organizationId } }, _count: { _all: true } }),
   ]);
 
   const hiringActions = submittedAssessments + pendingOffers + pendingOnboardingReviews;
@@ -63,16 +65,42 @@ export default async function DashboardPage() {
     { label: 'Pending Applicants', value: String(pendingApplicants), helper: 'Awaiting initial review', href: '/dashboard/hiring/applicants' },
     { label: 'Leave Requests', value: String(pendingLeave), helper: 'Waiting for a decision', href: '/dashboard/leave' },
     { label: 'Attendance Today', value: String(presentToday), helper: `Present of ${activeEmployees} active employees`, href: '/dashboard/attendance' },
-    ...(hasPayrollAccess ? [{ label: 'Payroll Status', value: latestPayroll ? formatStatusLabel(latestPayroll.status) : 'Not Started', helper: latestPayroll?.name ?? 'No payroll period yet', href: latestPayroll ? `/dashboard/payroll?period=${latestPayroll.id}` : '/dashboard/payroll' }] : []),
   ] : [
     { label: 'Pending Applicants', value: String(pendingApplicants), helper: 'Awaiting initial review', href: '/dashboard/hiring/applicants' },
     { label: 'Hiring Actions', value: String(hiringActions), helper: 'Waiting for review', href: '/dashboard/hiring/applicants' },
   ];
 
-  return <div className="space-y-8">
-    <header className="space-y-2"><p className="wp-eyebrow">{branding.displayName}</p><h1 className="wp-page-title">{greeting}, {user.name.split(' ')[0]}</h1><p className="max-w-2xl text-sm leading-6 text-[var(--wp-text-muted)]">Here is what needs your attention across your organization today.</p></header>
-    <section aria-labelledby="quick-actions-title"><div className="mb-3"><h2 id="quick-actions-title" className="wp-section-title">Quick actions</h2><p className="mt-1 text-sm text-[var(--wp-text-muted)]">Go directly to the tasks you use most.</p></div><div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-5">{quickActions.map(({ label, href, icon: Icon }, index) => <Link key={href} href={href} className={`${index === 0 ? 'bg-[var(--tenant-primary)] text-[var(--tenant-primary-foreground)]' : 'border border-[var(--tenant-border)] bg-white text-[var(--wp-text)]'} group flex min-h-20 items-center gap-3 rounded-2xl px-4 py-4 font-bold transition hover:-translate-y-0.5 hover:shadow-sm`}><span className={`${index === 0 ? 'bg-white/15' : 'bg-[var(--tenant-tint-strong)] text-[var(--tenant-primary)]'} flex h-10 w-10 shrink-0 items-center justify-center rounded-xl`}><Icon className="h-5 w-5" aria-hidden="true" /></span><span>{label}</span></Link>)}</div></section>
-    <section aria-labelledby="summary-title"><h2 id="summary-title" className="wp-section-title">At a glance</h2><div className={`mt-3 grid gap-px overflow-hidden rounded-2xl border border-[var(--tenant-border)] bg-[var(--tenant-border)] sm:grid-cols-2 ${summaries.length >= 5 ? 'xl:grid-cols-5' : 'lg:grid-cols-3'}`}>{summaries.map(item => <Link key={item.label} href={item.href} className="min-h-28 bg-white p-5 transition hover:bg-[var(--tenant-tint)]"><p className="text-sm font-semibold text-[var(--wp-text-muted)]">{item.label}</p><p className="mt-2 text-2xl font-bold tracking-tight text-[var(--wp-text)]">{item.value}</p><p className="mt-1 text-xs leading-5 text-[var(--wp-text-muted)]">{item.helper}</p></Link>)}</div></section>
-    <section aria-labelledby="attention-title" className="rounded-2xl bg-white p-5 shadow-sm sm:p-6"><div><h2 id="attention-title" className="wp-section-title">Needs attention</h2><p className="mt-1 text-sm text-[var(--wp-text-muted)]">Real tasks that may need action from your team.</p></div>{attention.length === 0 ? <div className="mt-5 rounded-xl bg-[var(--tenant-tint)] px-4 py-5 text-sm text-[var(--wp-text-muted)]">Nothing needs immediate attention.</div> : <ul className="mt-4 divide-y divide-[var(--tenant-border)]">{attention.map(item => <li key={item.label}><Link href={item.href} className="group flex min-h-14 items-center justify-between gap-4 py-3 text-sm font-semibold"><span>{item.label}</span><span className="flex items-center gap-1 text-xs font-bold text-[var(--tenant-primary)]">Review <ArrowRight className="h-4 w-4 transition group-hover:translate-x-0.5" aria-hidden="true" /></span></Link></li>)}</ul>}</section>
+  return <div className="space-y-6">
+    <header className="flex flex-wrap items-end justify-between gap-4">
+      <div><p className="wp-eyebrow">{branding.displayName} / HR workspace</p><h1 className="wp-page-title mt-1">{greeting}, {user.name.split(' ')[0]}</h1><p className="mt-2 text-sm text-[var(--wp-text-muted)]">Your workforce, hiring progress, and outstanding reviews in one place.</p></div>
+      <p className="text-sm text-[var(--wp-text-muted)]">{new Intl.DateTimeFormat('en-PH', { dateStyle: 'full', timeZone: branding.timeZone }).format(new Date())}</p>
+    </header>
+    <section aria-label="Workforce summary"><MetricStrip items={summaries} /></section>
+    <div className="grid items-start gap-5 xl:grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)]">
+      <div className="space-y-5">
+        <WorkspacePanel title="Needs attention" description="Outstanding reviews and setup tasks from current records.">
+          {attention.length === 0 ? <p className="rounded-md bg-[var(--wp-surface-subtle)] p-4 text-sm text-[var(--wp-text-muted)]">No outstanding items in the tracked queues.</p> : <div>{attention.map(item => <Link key={item.label} href={item.href} className="wp-queue-row"><span>{item.label}</span><ArrowRight className="h-4 w-4 shrink-0 text-[var(--tenant-primary)]" aria-hidden="true" /></Link>)}</div>}
+        </WorkspacePanel>
+        <WorkspacePanel title="Hiring overview" description="Application counts across your organization's hiring stages." href="/dashboard/hiring/pipeline">
+          {hiringStages.length === 0 ? <p className="text-sm text-[var(--wp-text-muted)]">No applications received yet.</p> : <div className="grid grid-cols-2 gap-x-5 sm:grid-cols-3">{hiringStages.map(stage => <Link key={stage.status} href={`/dashboard/hiring/applicants?status=${stage.status}`} className="flex items-center justify-between gap-3 border-b py-3 text-sm"><span className="text-[var(--wp-text-muted)]">{formatStatusLabel(stage.status)}</span><span className="font-semibold tabular-nums">{stage._count._all}</span></Link>)}</div>}
+          <div className="mt-4 divide-y border-t">
+            {[{ label: 'Submitted assessments', count: submittedAssessments, href: '/dashboard/hiring/assessments' }, { label: 'Offers awaiting approval', count: pendingOffers, href: '/dashboard/hiring/offers' }, { label: 'Onboarding submissions to verify', count: pendingOnboardingReviews, href: '/dashboard/hiring/onboarding' }].map(item => <Link key={item.href} href={item.href} className="wp-queue-row"><span>{item.label}</span><span className="font-semibold tabular-nums">{item.count}</span></Link>)}
+          </div>
+        </WorkspacePanel>
+      </div>
+      <div className="space-y-5">
+        {hasHrAccess && <WorkspacePanel title="Workforce operations" description="Today's attendance and upcoming employee reviews.">
+          <Link href="/dashboard/attendance" className="wp-queue-row"><span>Present today <span className="block text-sm text-[var(--wp-text-muted)]">Recorded present attendance / active employees</span></span><span className="whitespace-nowrap font-semibold tabular-nums">{presentToday} / {activeEmployees}</span></Link>
+          <Link href="/dashboard/leave" className="wp-queue-row"><span>Leave approvals</span><span className="font-semibold tabular-nums">{pendingLeave}</span></Link>
+          <Link href="/dashboard/employees?needsReview=1" className="wp-queue-row"><span>Probation reviews <span className="block text-sm text-[var(--wp-text-muted)]">Overdue or ending within 30 days</span></span><span className="font-semibold tabular-nums">{probationDue}</span></Link>
+        </WorkspacePanel>}
+        {hasPayrollAccess && <WorkspacePanel title="Payroll readiness" href="/dashboard/payroll">
+          <div className="rounded-md bg-[var(--wp-surface-subtle)] p-3"><p className="text-sm font-semibold">{latestPayroll?.name ?? 'No payroll period yet'}</p><p className="mt-1 text-sm text-[var(--wp-text-muted)]">{latestPayroll ? formatStatusLabel(latestPayroll.status) : 'Create a period to begin payroll preparation.'}</p></div>
+          <Link href="/dashboard/payroll" className="wp-queue-row"><span>Missing active compensation</span><span className="font-semibold tabular-nums">{missingCompensation}</span></Link>
+          <p className="text-sm text-[var(--wp-text-muted)]">Open payroll to review period validation and readiness.</p>
+        </WorkspacePanel>}
+        <WorkspacePanel title="Quick actions"><div className="grid gap-2 sm:grid-cols-2 xl:grid-cols-1">{quickActions.map(({ label, href, icon: Icon }) => <Link key={href} href={href} className="wp-button-secondary justify-start"><Icon className="h-4 w-4 text-[var(--tenant-primary)]" aria-hidden="true" />{label}</Link>)}</div></WorkspacePanel>
+      </div>
+    </div>
   </div>;
 }

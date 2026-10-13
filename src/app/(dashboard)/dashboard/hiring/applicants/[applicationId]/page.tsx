@@ -1,3 +1,4 @@
+import { SectionNav } from '@/components/layout/WorkspaceNav';
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import { requireBackOfficeContext } from '@/lib/auth/guards';
@@ -11,6 +12,7 @@ import {
   canApproveOffer,
   canManageOnboarding,
   canManageJobs,
+  canViewEmployees,
 } from '@/lib/permissions/rbac';
 import { ApplicationStatus, OfferStatus } from '@prisma/client';
 import { StatusChangeDialog } from '@/components/hiring/StatusChangeDialog';
@@ -147,7 +149,7 @@ export default async function CandidateProfilePage({ params }: CandidateProfileP
       application.id,
       application.job.category
     );
-    application.recruitmentDocuments = seededDocs as any;
+    application.recruitmentDocuments = seededDocs as typeof application.recruitmentDocuments;
   }
 
   const canEditStatus = canUpdateApplicationStatus(user);
@@ -209,8 +211,8 @@ export default async function CandidateProfilePage({ params }: CandidateProfileP
 
   const stageConfig = STAGE_CONFIG[application.status] || {
     label: application.status,
-    badgeBg: 'bg-slate-100 dark:bg-slate-800',
-    badgeText: 'text-slate-700 dark:text-slate-300',
+    badgeBg: 'bg-slate-100 ',
+    badgeText: 'text-slate-700 ',
   };
 
   const hasAcceptedOffer = application.offers.some(
@@ -218,26 +220,26 @@ export default async function CandidateProfilePage({ params }: CandidateProfileP
   );
 
   return (
-    <div className="max-w-6xl mx-auto space-y-6">
+    <div className="mx-auto space-y-5">
       {/* Top Breadcrumb / Nav */}
-      <div className="flex items-center justify-between">
+      <div className="wp-profile-header flex flex-wrap items-center justify-between gap-3">
         <div className="flex items-center gap-3">
           <Link
             href="/dashboard/hiring/applicants"
-            className="flex items-center gap-1.5 rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs font-semibold text-slate-700 shadow-2xs hover:bg-slate-50 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-300 dark:hover:bg-slate-800 transition"
+            className="flex items-center gap-1.5 rounded-md border border-slate-200 bg-white px-3 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-50 transition"
           >
             <ArrowLeft className="h-3.5 w-3.5" />
             <span>Applicants Directory</span>
           </Link>
-          <span className="text-slate-300 dark:text-slate-700">/</span>
-          <span className="text-xs font-medium text-slate-500 dark:text-slate-400">
+          <span className="text-slate-300">/</span>
+          <span className="text-sm font-medium text-slate-500">
             Application #{application.id.slice(0, 8)}
           </span>
         </div>
 
         <div className="flex items-center gap-2">
           <span
-            className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-bold ${stageConfig.badgeBg} ${stageConfig.badgeText}`}
+            className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-sm font-bold ${stageConfig.badgeBg} ${stageConfig.badgeText}`}
           >
             <span className="h-1.5 w-1.5 rounded-full bg-current" />
             Stage: {stageConfig.label}
@@ -246,22 +248,22 @@ export default async function CandidateProfilePage({ params }: CandidateProfileP
       </div>
 
       {/* Candidate Command Center Header Card */}
-      <div className="rounded-3xl border border-[#E8EAED] bg-white p-6 shadow-2xs dark:border-slate-800 dark:bg-slate-900 space-y-5">
+      <div className="rounded-lg border border-[var(--wp-border)] bg-white p-6 space-y-5">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div className="flex items-start gap-4">
             {/* Candidate Avatar Initials */}
-            <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-[#181A1C] text-white font-extrabold text-lg shadow-sm">
+            <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-lg bg-[var(--tenant-primary)] text-[var(--tenant-primary-foreground)] font-semibold text-lg">
               {application.applicant.firstName[0]}
               {application.applicant.lastName[0]}
             </div>
 
             <div className="space-y-1">
               <div className="flex flex-wrap items-center gap-2.5">
-                <h1 className="text-xl font-bold text-[#181A1C] dark:text-slate-100">
+                <h1 className="wp-page-title text-xl font-bold text-[var(--wp-text)]">
                   {candidateFullName}
                 </h1>
                 <span
-                  className={`inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-[11px] ${readiness.badgeBg} ${readiness.badgeText}`}
+                  className={`inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-xs ${readiness.badgeBg} ${readiness.badgeText}`}
                 >
                   <span className="h-1.5 w-1.5 rounded-full bg-current" />
                   {readiness.badgeLabel}
@@ -269,22 +271,22 @@ export default async function CandidateProfilePage({ params }: CandidateProfileP
               </div>
 
                 {/* Role & Department & Category */}
-                <div className="flex flex-wrap items-center gap-2 text-xs text-[#6B7280] dark:text-slate-300">
-                  <span className="flex items-center gap-1 font-bold text-[#181A1C] dark:text-slate-100">
-                    <Briefcase className="h-3.5 w-3.5 text-[#181A1C] dark:text-white" />
+                <div className="flex flex-wrap items-center gap-2 text-sm text-[var(--wp-text-muted)]">
+                  <span className="flex items-center gap-1 font-bold text-[var(--wp-text)]">
+                    <Briefcase className="h-3.5 w-3.5 text-[var(--wp-text)]" />
                     {application.job.title}
                   </span>
-                  <span className="text-[#E8EAED] dark:text-slate-700">•</span>
+                  <span className="text-[#E8EAED]">•</span>
                   <span className="flex items-center gap-1">
-                    <Building2 className="h-3.5 w-3.5 text-[#9CA3AF]" />
+                    <Building2 className="h-3.5 w-3.5 text-[var(--wp-text-muted)]" />
                     {application.job.department}
                   </span>
-                  <span className="text-[#E8EAED] dark:text-slate-700">•</span>
+                  <span className="text-[#E8EAED]">•</span>
                   <span
-                    className={`inline-flex items-center rounded-lg px-2 py-0.5 text-[10px] font-bold ${
+                    className={`inline-flex items-center rounded-lg px-2 py-0.5 text-xs font-bold ${
                       application.job.category === 'TEACHING'
-                        ? 'bg-indigo-50 text-indigo-700 dark:bg-indigo-950/60 dark:text-indigo-300 ring-1 ring-indigo-500/20'
-                        : 'bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300'
+                        ? 'bg-[var(--tenant-tint)] text-indigo-700   ring-1 ring-indigo-500/20'
+                        : 'bg-slate-100 text-slate-700  '
                     }`}
                   >
                     {application.job.category === 'TEACHING'
@@ -293,9 +295,9 @@ export default async function CandidateProfilePage({ params }: CandidateProfileP
                   </span>
                   {application.job.location && (
                     <>
-                      <span className="text-[#E8EAED] dark:text-slate-700">•</span>
+                      <span className="text-[#E8EAED]">•</span>
                       <span className="flex items-center gap-1">
-                        <MapPin className="h-3.5 w-3.5 text-[#9CA3AF]" />
+                        <MapPin className="h-3.5 w-3.5 text-[var(--wp-text-muted)]" />
                         {application.job.location}
                       </span>
                     </>
@@ -305,12 +307,12 @@ export default async function CandidateProfilePage({ params }: CandidateProfileP
           </div>
 
           {/* Quick Stats / Timestamps */}
-          <div className="flex flex-wrap sm:flex-col items-start sm:items-end gap-1.5 text-xs text-[#6B7280] dark:text-slate-400">
+          <div className="flex flex-wrap sm:flex-col items-start sm:items-end gap-1.5 text-sm text-[var(--wp-text-muted)]">
             <div className="flex items-center gap-1.5">
-              <Calendar className="h-3.5 w-3.5 text-[#9CA3AF]" />
+              <Calendar className="h-3.5 w-3.5 text-[var(--wp-text-muted)]" />
               <span>Applied {new Date(application.appliedAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</span>
             </div>
-            <div className="flex items-center gap-1.5 text-[11px] text-[#9CA3AF]">
+            <div className="flex items-center gap-1.5 text-xs text-[var(--wp-text-muted)]">
               <Clock className="h-3 w-3" />
               <span>{application.interviews.length} Interview(s) • {application.assessments.length} Assessment(s)</span>
             </div>
@@ -318,10 +320,10 @@ export default async function CandidateProfilePage({ params }: CandidateProfileP
         </div>
 
         {/* Contact Strip */}
-        <div className="flex flex-wrap items-center gap-3 pt-4 border-t border-[#E8EAED] dark:border-slate-800 text-xs">
+        <div className="flex flex-wrap items-center gap-3 pt-4 border-t border-[var(--wp-border)] text-sm">
           <a
             href={`mailto:${application.applicant.email}`}
-            className="inline-flex items-center gap-2 rounded-xl border border-[#E8EAED] bg-[#F8F9FA] px-3 py-1.5 font-semibold text-[#181A1C] hover:bg-[#181A1C] hover:text-white transition dark:border-slate-800 dark:bg-slate-950 dark:text-slate-300 dark:hover:bg-slate-800"
+            className="inline-flex items-center gap-2 rounded-md border border-[var(--wp-border)] bg-[var(--wp-surface-subtle)] px-3 py-1.5 font-semibold text-[var(--wp-text)] hover:bg-[var(--tenant-primary)] hover:text-[var(--tenant-primary-foreground)] transition"
           >
             <Mail className="h-3.5 w-3.5" />
             <span>{application.applicant.email}</span>
@@ -330,7 +332,7 @@ export default async function CandidateProfilePage({ params }: CandidateProfileP
           {application.applicant.phone && (
             <a
               href={`tel:${application.applicant.phone}`}
-              className="inline-flex items-center gap-2 rounded-xl border border-[#E8EAED] bg-[#F8F9FA] px-3 py-1.5 font-semibold text-[#181A1C] hover:bg-[#181A1C] hover:text-white transition dark:border-slate-800 dark:bg-slate-950 dark:text-slate-300 dark:hover:bg-slate-800"
+              className="inline-flex items-center gap-2 rounded-md border border-[var(--wp-border)] bg-[var(--wp-surface-subtle)] px-3 py-1.5 font-semibold text-[var(--wp-text)] hover:bg-[var(--tenant-primary)] hover:text-[var(--tenant-primary-foreground)] transition"
             >
               <Phone className="h-3.5 w-3.5" />
               <span>{application.applicant.phone}</span>
@@ -369,10 +371,15 @@ export default async function CandidateProfilePage({ params }: CandidateProfileP
         isReadyToHire={readiness.isReadyToHire}
       />
 
+      <SectionNav label="Candidate sections" items={[
+        { id: 'candidate-review', label: 'Resume & documents' }, { id: 'candidate-interviews', label: 'Interviews & evaluations' },
+        { id: 'candidate-assessments', label: 'Assessments' }, { id: 'candidate-offers', label: 'Offers' },
+        { id: 'candidate-onboarding', label: 'Onboarding' }, { id: 'candidate-readiness', label: 'Readiness & history' },
+      ]} />
       {/* Main Command Center 2-Column Grid */}
       <div className="grid gap-6 lg:grid-cols-3">
         {/* Left Column (2 Cols): Core Evaluation Details & Sub-pipelines */}
-        <div className="lg:col-span-2 space-y-6">
+        <div id="candidate-review" className="min-w-0 lg:col-span-2 space-y-5">
           {/* AI-Assisted Resume Analysis Section */}
           {application.documents.some(
             (doc) => doc.fileType === 'application/pdf' || doc.fileType.includes('wordprocessingml')
@@ -437,17 +444,17 @@ export default async function CandidateProfilePage({ params }: CandidateProfileP
             category={application.job.category}
             documents={application.recruitmentDocuments}
             canManage={canManageOnb}
-            organizationSlug={application.job.organization?.slug || 'st-aloysius'}
+            organizationSlug={application.job.organization.slug}
           />
 
           {/* Cover Letter & Statement */}
           {application.coverLetter && (
-            <div className="rounded-3xl border border-[#E8EAED] bg-white p-6 shadow-2xs dark:border-slate-800 dark:bg-slate-900 space-y-3">
-              <h3 className="text-xs font-bold text-[#6B7280] uppercase tracking-wider dark:text-slate-400 flex items-center gap-2">
-                <FileText className="h-4 w-4 text-[#181A1C] dark:text-white" />
+            <div className="rounded-lg border border-[var(--wp-border)] bg-white p-6 space-y-3">
+              <h3 className="text-sm font-bold text-[var(--wp-text-muted)] uppercase tracking-wider flex items-center gap-2">
+                <FileText className="h-4 w-4 text-[var(--wp-text)]" />
                 Cover Letter & Statement
               </h3>
-              <div className="rounded-2xl border border-[#E8EAED] bg-[#F8F9FA] p-4 text-xs text-[#181A1C] leading-relaxed whitespace-pre-line dark:border-slate-800 dark:bg-slate-950 dark:text-slate-300">
+              <div className="rounded-lg border border-[var(--wp-border)] bg-[var(--wp-surface-subtle)] p-4 text-sm text-[var(--wp-text)] leading-relaxed whitespace-pre-line">
                 {application.coverLetter}
               </div>
             </div>
@@ -455,22 +462,22 @@ export default async function CandidateProfilePage({ params }: CandidateProfileP
 
           {/* Job Requirement Criteria Checklist */}
           {application.job.structuredReqs.length > 0 && (
-            <div className="rounded-3xl border border-[#E8EAED] bg-white p-6 shadow-2xs dark:border-slate-800 dark:bg-slate-900 space-y-3">
-              <h3 className="text-xs font-bold text-[#6B7280] uppercase tracking-wider dark:text-slate-400">
+            <div className="rounded-lg border border-[var(--wp-border)] bg-white p-6 space-y-3">
+              <h3 className="text-sm font-bold text-[var(--wp-text-muted)] uppercase tracking-wider">
                 Job Qualification Criteria
               </h3>
               <div className="grid gap-2.5 sm:grid-cols-2">
                 {application.job.structuredReqs.map((req) => (
                   <div
                     key={req.id}
-                    className="flex items-start gap-2.5 rounded-2xl border border-[#E8EAED] bg-[#F8F9FA] p-3 text-xs dark:border-slate-800 dark:bg-slate-950"
+                    className="flex items-start gap-2.5 rounded-lg border border-[var(--wp-border)] bg-[var(--wp-surface-subtle)] p-3 text-sm"
                   >
-                    <CheckCircle2 className="mt-0.5 h-4 w-4 text-[#181A1C] shrink-0 dark:text-white" />
+                    <CheckCircle2 className="mt-0.5 h-4 w-4 text-[var(--wp-text)] shrink-0" />
                     <div>
-                      <span className="font-bold text-[#181A1C] dark:text-slate-100">
+                      <span className="font-bold text-[var(--wp-text)]">
                         {req.name}
                       </span>
-                      <p className="text-[11px] text-[#6B7280]">{req.type}</p>
+                      <p className="text-xs text-[var(--wp-text-muted)]">{req.type}</p>
                     </div>
                   </div>
                 ))}
@@ -479,16 +486,16 @@ export default async function CandidateProfilePage({ params }: CandidateProfileP
           )}
 
           {/* Candidate Interview Management & Evaluation Section */}
-          <CandidateInterviewsSection
+          <section id="candidate-interviews" aria-label="interviews"><CandidateInterviewsSection
             applicationId={application.id}
             candidateName={candidateFullName}
             jobTitle={application.job.title}
             interviews={application.interviews}
             canManage={canManageIv}
-          />
+          /></section>
 
           {/* Pre-Employment Assessments Section */}
-          <CandidateAssessmentsSection
+          <section id="candidate-assessments" aria-label="assessments"><CandidateAssessmentsSection
             applicationId={application.id}
             candidateName={candidateFullName}
             jobTitle={application.job.title}
@@ -496,31 +503,31 @@ export default async function CandidateProfilePage({ params }: CandidateProfileP
             organizationEvaluators={organizationUsers}
             canManage={canManageAss}
             canRecordResult={canRecordScore}
-          />
+          /></section>
 
           {/* Employment Offers Section */}
-          <CandidateOffersSection
+          <section id="candidate-offers" aria-label="offers"><CandidateOffersSection
             applicationId={application.id}
             candidateName={candidateFullName}
             jobTitle={application.job.title}
             offers={application.offers}
             canManage={canManageOff}
             canApprove={canApproveOff}
-          />
+          /></section>
 
           {/* Pre-Employment Onboarding Checklist Section */}
-          <CandidateOnboardingSection
+          <section id="candidate-onboarding" aria-label="onboarding"><CandidateOnboardingSection
             applicationId={application.id}
             candidateName={candidateFullName}
             offers={application.offers}
             onboarding={application.onboarding}
             canManage={canManageOnb}
             category={application.job.category}
-          />
+          /></section>
         </div>
 
         {/* Right Column (1 Col): Hiring Readiness Gate, Status Controller & History Timeline */}
-        <div className="space-y-6">
+        <aside id="candidate-readiness" aria-label="Hiring readiness and history" className="min-w-0 space-y-5">
           {/* Prominent Hiring Readiness Gate Card */}
           <HiringReadinessCard
             applicationId={application.id}
@@ -530,7 +537,7 @@ export default async function CandidateProfilePage({ params }: CandidateProfileP
             canManage={canEditStatus}
             currentStatus={application.status}
             employmentCategory={application.job.category}
-            employeeId={application.employee?.id}
+            employeeId={canViewEmployees(user) ? application.employee?.id : undefined}
           />
 
           {/* Status Change Control Dialog */}
@@ -540,29 +547,29 @@ export default async function CandidateProfilePage({ params }: CandidateProfileP
               currentStatus={application.status}
             />
           ) : (
-            <div className="rounded-2xl border border-slate-200 bg-white p-4 text-xs text-slate-500 dark:border-slate-800 dark:bg-slate-900">
+            <div className="rounded-lg border border-slate-200 bg-white p-4 text-sm text-slate-500">
               You are signed in with read-only permissions for status modifications.
             </div>
           )}
 
           {/* Uploaded Resume Document Card */}
-          <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-xs dark:border-slate-800 dark:bg-slate-900 space-y-3">
-            <h3 className="text-xs font-semibold text-slate-500 uppercase tracking-wider dark:text-slate-400">
+          <div className="rounded-lg border border-slate-200 bg-white p-6 space-y-3">
+            <h3 className="text-sm font-semibold text-slate-500 uppercase tracking-wider">
               Uploaded Resume Document
             </h3>
             {application.documents.length === 0 ? (
-              <p className="text-xs text-slate-500">No resume file attached.</p>
+              <p className="text-sm text-slate-500">No resume file attached.</p>
             ) : (
               application.documents.map((doc) => (
                 <div
                   key={doc.id}
-                  className="flex items-center justify-between rounded-xl border border-slate-200 bg-slate-50 p-3.5 dark:border-slate-800 dark:bg-slate-950"
+                  className="flex items-center justify-between rounded-md border border-slate-200 bg-slate-50 p-3.5"
                 >
                   <div className="truncate pr-2">
-                    <p className="text-xs font-semibold text-slate-900 dark:text-slate-100 truncate">
+                    <p className="text-sm font-semibold text-slate-900 truncate">
                       {doc.fileName}
                     </p>
-                    <p className="text-[10px] text-slate-500">
+                    <p className="text-xs text-slate-500">
                       {(doc.fileSize / 1024).toFixed(1)} KB • {doc.fileType.split('/')[1] || 'doc'}
                     </p>
                   </div>
@@ -571,7 +578,7 @@ export default async function CandidateProfilePage({ params }: CandidateProfileP
                     href={`/api/resumes/${doc.id}`}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center gap-1 rounded-xl bg-[#181A1C] px-3.5 py-1.5 text-xs font-bold text-white hover:bg-[#2A2E33] shrink-0 transition shadow-2xs"
+                    className="inline-flex items-center gap-1 rounded-md bg-[var(--tenant-primary)] px-3.5 py-1.5 text-sm font-bold text-[var(--tenant-primary-foreground)] hover:brightness-95 shrink-0 transition"
                   >
                     <Download className="h-3.5 w-3.5" /> Download
                   </a>
@@ -590,7 +597,7 @@ export default async function CandidateProfilePage({ params }: CandidateProfileP
             offers={application.offers}
             onboarding={application.onboarding}
           />
-        </div>
+        </aside>
       </div>
     </div>
   );

@@ -37,15 +37,15 @@ export default async function EditJobPage({ params }: EditJobPageProps) {
       <div className="flex items-center gap-3">
         <Link
           href={`/dashboard/hiring/jobs/${jobId}`}
-          className="rounded-lg p-2 text-slate-500 hover:bg-slate-100 hover:text-slate-900 dark:hover:bg-slate-800"
+          className="rounded-lg p-2 text-slate-500 hover:bg-slate-100 hover:text-slate-900"
         >
           <ArrowLeft className="h-4 w-4" />
         </Link>
         <div>
-          <h1 className="text-xl font-bold text-slate-900 dark:text-slate-100">
+          <h1 className="wp-page-title text-xl font-bold text-slate-900">
             Edit Job Posting: {job.title}
           </h1>
-          <p className="text-xs text-slate-500 dark:text-slate-400">
+          <p className="text-sm text-slate-500">
             Update job description, parameters, or structured requirement tags
           </p>
         </div>
@@ -53,47 +53,47 @@ export default async function EditJobPage({ params }: EditJobPageProps) {
 
       <form action={updateJobWithId} className="space-y-6">
         {/* Basic Information */}
-        <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-xs dark:border-slate-800 dark:bg-slate-900 space-y-4">
-          <h2 className="text-sm font-semibold text-slate-900 dark:text-slate-100 border-b border-slate-100 pb-2 dark:border-slate-800">
+        <div className="rounded-md border border-slate-200 bg-white p-6 space-y-4">
+          <h2 className="text-sm font-semibold text-slate-900 border-b border-slate-100 pb-2">
             Basic Information
           </h2>
 
           <div className="grid gap-4 sm:grid-cols-2">
             <div className="sm:col-span-2">
-              <label className="block text-xs font-medium text-slate-700 dark:text-slate-300">
+              <label className="block text-sm font-medium text-slate-700">
                 Job Title *
               </label>
-              <input
+              <input aria-label="Job Title"
                 type="text"
                 name="title"
                 required
                 defaultValue={job.title}
-                className="mt-1 block w-full rounded-lg border border-slate-300 px-3.5 py-2 text-xs text-slate-900 focus:border-[#181A1C] focus:ring-1 focus:ring-[#181A1C] dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
+                className="mt-1 block w-full rounded-lg border border-slate-300 px-3.5 py-2 text-sm text-slate-900 focus:border-[var(--tenant-accent)] focus:ring-1 focus:ring-[var(--tenant-accent)]"
               />
             </div>
 
             <div>
-              <label className="block text-xs font-medium text-slate-700 dark:text-slate-300">
+              <label className="block text-sm font-medium text-slate-700">
                 Department *
               </label>
-              <input
+              <input aria-label="Department"
                 type="text"
                 name="department"
                 required
                 defaultValue={job.department}
-                className="mt-1 block w-full rounded-lg border border-slate-300 px-3.5 py-2 text-xs text-slate-900 focus:border-[#181A1C] focus:ring-1 focus:ring-[#181A1C] dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
+                className="mt-1 block w-full rounded-lg border border-slate-300 px-3.5 py-2 text-sm text-slate-900 focus:border-[var(--tenant-accent)] focus:ring-1 focus:ring-[var(--tenant-accent)]"
               />
             </div>
 
             <div>
-              <label className="block text-xs font-medium text-slate-700 dark:text-slate-300">
+              <label className="block text-sm font-medium text-slate-700">
                 Employment Type *
               </label>
-              <select
+              <select aria-label="Employment Type"
                 name="employmentType"
                 required
                 defaultValue={job.employmentType}
-                className="mt-1 block w-full rounded-lg border border-slate-300 px-3.5 py-2 text-xs text-slate-900 focus:border-[#181A1C] focus:ring-1 focus:ring-[#181A1C] dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
+                className="mt-1 block w-full rounded-lg border border-slate-300 px-3.5 py-2 text-sm text-slate-900 focus:border-[var(--tenant-accent)] focus:ring-1 focus:ring-[var(--tenant-accent)]"
               >
                 <option value="Full-time">Full-time</option>
                 <option value="Part-time">Part-time</option>
@@ -103,74 +103,74 @@ export default async function EditJobPage({ params }: EditJobPageProps) {
             </div>
 
             <div>
-              <label className="block text-xs font-medium text-slate-700 dark:text-slate-300">
+              <label className="block text-sm font-medium text-slate-700">
                 Location *
               </label>
-              <input
+              <input aria-label="Location"
                 type="text"
                 name="location"
                 required
                 defaultValue={job.location}
-                className="mt-1 block w-full rounded-lg border border-slate-300 px-3.5 py-2 text-xs text-slate-900 focus:border-[#181A1C] focus:ring-1 focus:ring-[#181A1C] dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
+                className="mt-1 block w-full rounded-lg border border-slate-300 px-3.5 py-2 text-sm text-slate-900 focus:border-[var(--tenant-accent)] focus:ring-1 focus:ring-[var(--tenant-accent)]"
               />
             </div>
 
             <div>
-              <label className="block text-xs font-medium text-slate-700 dark:text-slate-300">
+              <label className="block text-sm font-medium text-slate-700">
                 Application Closing Date
               </label>
-              <input
+              <input aria-label="Application Closing Date"
                 type="date"
                 name="closingDate"
                 defaultValue={
                   job.closingDate ? new Date(job.closingDate).toISOString().split('T')[0] : ''
                 }
-                className="mt-1 block w-full rounded-lg border border-slate-300 px-3.5 py-2 text-xs text-slate-900 focus:border-[#181A1C] focus:ring-1 focus:ring-[#181A1C] dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
+                className="mt-1 block w-full rounded-lg border border-slate-300 px-3.5 py-2 text-sm text-slate-900 focus:border-[var(--tenant-accent)] focus:ring-1 focus:ring-[var(--tenant-accent)]"
               />
             </div>
           </div>
         </div>
 
         {/* Detailed Descriptions */}
-        <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-xs dark:border-slate-800 dark:bg-slate-900 space-y-4">
-          <h2 className="text-sm font-semibold text-slate-900 dark:text-slate-100 border-b border-slate-100 pb-2 dark:border-slate-800">
+        <div className="rounded-md border border-slate-200 bg-white p-6 space-y-4">
+          <h2 className="text-sm font-semibold text-slate-900 border-b border-slate-100 pb-2">
             Description & Responsibilities
           </h2>
 
           <div>
-            <label className="block text-xs font-medium text-slate-700 dark:text-slate-300">
+            <label className="block text-sm font-medium text-slate-700">
               Job Overview / Description *
             </label>
-            <textarea
+            <textarea aria-label="Job Overview / Description"
               name="description"
               required
               rows={4}
               defaultValue={job.description}
-              className="mt-1 block w-full rounded-lg border border-slate-300 px-3.5 py-2 text-xs text-slate-900 focus:border-[#181A1C] focus:ring-1 focus:ring-[#181A1C] dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
+              className="mt-1 block w-full rounded-lg border border-slate-300 px-3.5 py-2 text-sm text-slate-900 focus:border-[var(--tenant-accent)] focus:ring-1 focus:ring-[var(--tenant-accent)]"
             />
           </div>
 
           <div>
-            <label className="block text-xs font-medium text-slate-700 dark:text-slate-300">
+            <label className="block text-sm font-medium text-slate-700">
               Key Responsibilities
             </label>
-            <textarea
+            <textarea aria-label="Key Responsibilities"
               name="responsibilities"
               rows={4}
               defaultValue={job.responsibilities}
-              className="mt-1 block w-full rounded-lg border border-slate-300 px-3.5 py-2 text-xs text-slate-900 focus:border-[#181A1C] focus:ring-1 focus:ring-[#181A1C] dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
+              className="mt-1 block w-full rounded-lg border border-slate-300 px-3.5 py-2 text-sm text-slate-900 focus:border-[var(--tenant-accent)] focus:ring-1 focus:ring-[var(--tenant-accent)]"
             />
           </div>
 
           <div>
-            <label className="block text-xs font-medium text-slate-700 dark:text-slate-300">
+            <label className="block text-sm font-medium text-slate-700">
               General Qualifications
             </label>
-            <textarea
+            <textarea aria-label="General Qualifications"
               name="qualifications"
               rows={4}
               defaultValue={job.qualifications}
-              className="mt-1 block w-full rounded-lg border border-slate-300 px-3.5 py-2 text-xs text-slate-900 focus:border-[#181A1C] focus:ring-1 focus:ring-[#181A1C] dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
+              className="mt-1 block w-full rounded-lg border border-slate-300 px-3.5 py-2 text-sm text-slate-900 focus:border-[var(--tenant-accent)] focus:ring-1 focus:ring-[var(--tenant-accent)]"
             />
           </div>
         </div>
@@ -190,7 +190,7 @@ export default async function EditJobPage({ params }: EditJobPageProps) {
         <div className="flex items-center justify-end gap-3 pt-2">
           <button
             type="submit"
-            className="inline-flex items-center gap-1.5 rounded-2xl bg-[#181A1C] px-6 py-2.5 text-xs font-bold text-white hover:bg-[#2A2E33] shadow-md transition"
+            className="inline-flex items-center gap-1.5 rounded-lg bg-[var(--tenant-primary)] px-6 py-2.5 text-sm font-bold text-[var(--tenant-primary-foreground)] hover:brightness-95 transition"
           >
             <Save className="h-4 w-4" />
             Save Changes

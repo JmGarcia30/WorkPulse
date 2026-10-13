@@ -70,16 +70,16 @@ export function CandidateOffersSection({
   const hasActiveOffer = offers.some((o) => isActiveOfferStatus(o.status));
 
   return (
-    <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-xs dark:border-slate-800 dark:bg-slate-900 space-y-4">
+    <div className="rounded-lg border border-slate-200 bg-white p-6 space-y-4">
       {/* Section Header */}
-      <div className="flex items-center justify-between border-b border-[#E8EAED] pb-4 dark:border-slate-800">
+      <div className="flex items-center justify-between border-b border-[var(--wp-border)] pb-4">
         <div>
-          <h3 className="text-xs font-bold text-[#6B7280] uppercase tracking-wider dark:text-slate-400 flex items-center gap-2">
-            <FileText className="h-4 w-4 text-[#181A1C] dark:text-white" />
+          <h3 className="text-sm font-bold text-[var(--wp-text-muted)] uppercase tracking-wider flex items-center gap-2">
+            <FileText className="h-4 w-4 text-[var(--wp-text)]" />
             Employment Offer / Contract
           </h3>
-          <p className="text-[11px] text-[#6B7280] mt-0.5">
-            SAGA institutional contract executed by the employee and the President with probationary terms
+          <p className="text-xs text-[var(--wp-text-muted)] mt-0.5">
+            institutional contract executed by the employee and the President with probationary terms
           </p>
         </div>
 
@@ -89,7 +89,7 @@ export function CandidateOffersSection({
             onClick={() => setIsCreateOpen(true)}
             disabled={hasActiveOffer}
             title={hasActiveOffer ? 'An active offer is currently open' : 'Draft new offer'}
-            className="inline-flex items-center gap-1.5 rounded-xl bg-[#181A1C] px-3.5 py-1.5 text-xs font-bold text-white hover:bg-[#2A2E33] transition shadow-2xs disabled:opacity-40 disabled:cursor-not-allowed"
+            className="inline-flex items-center gap-1.5 rounded-md bg-[var(--tenant-primary)] px-3.5 py-1.5 text-sm font-bold text-[var(--tenant-primary-foreground)] hover:brightness-95 transition disabled:opacity-40 disabled:cursor-not-allowed"
           >
             <Plus className="h-3.5 w-3.5" />
             Create Offer Package
@@ -99,12 +99,12 @@ export function CandidateOffersSection({
 
       {/* Offer Cards */}
       {offers.length === 0 ? (
-        <div className="rounded-2xl border border-dashed border-[#E8EAED] p-8 text-center dark:border-slate-800">
-          <FileText className="mx-auto h-8 w-8 text-[#9CA3AF] dark:text-slate-700" />
-          <p className="mt-2 text-xs font-bold text-[#181A1C] dark:text-slate-300">
+        <div className="rounded-lg border border-dashed border-[var(--wp-border)] p-8 text-center">
+          <FileText className="mx-auto h-8 w-8 text-[var(--wp-text-muted)]" />
+          <p className="mt-2 text-sm font-bold text-[var(--wp-text)]">
             No employment offers drafted yet
           </p>
-          <p className="text-[11px] text-[#6B7280] mt-0.5">
+          <p className="text-xs text-[var(--wp-text-muted)] mt-0.5">
             Prepare formal salary terms, benefits, and employment contracts for this applicant.
           </p>
         </div>
@@ -123,27 +123,27 @@ export function CandidateOffersSection({
             return (
               <div
                 key={offer.id}
-                className={`rounded-2xl border p-4 transition space-y-3 ${
+                className={`rounded-lg border p-4 transition space-y-3 ${
                   isActive
-                    ? 'border-[#181A1C]/40 bg-[#F8F9FA] dark:border-white/40 dark:bg-slate-900'
-                    : 'border-[#E8EAED] bg-white dark:border-slate-800 dark:bg-slate-950/50'
+                    ? 'border-[#181A1C]/40 bg-[var(--wp-surface-subtle)] '
+                    : 'border-[var(--wp-border)] bg-white '
                 }`}
               >
                 {/* Top Row: Compensation & Status */}
                 <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
                   <div>
                     <div className="flex items-center gap-2">
-                      <span className="text-base font-extrabold text-[#181A1C] dark:text-slate-100 flex items-center">
+                      <span className="text-base font-semibold text-[var(--wp-text)] flex items-center">
                         ₱{offer.salary.toLocaleString(undefined, { minimumFractionDigits: 2 })}
-                        <span className="text-xs font-normal text-[#6B7280] ml-1">
+                        <span className="text-sm font-normal text-[var(--wp-text-muted)] ml-1">
                           {payFreqConfig.suffix}
                         </span>
                       </span>
-                      <span className="rounded-md bg-slate-100 px-2 py-0.5 text-[10px] font-semibold text-slate-700 dark:bg-slate-800 dark:text-slate-300">
+                      <span className="rounded-md bg-slate-100 px-2 py-0.5 text-xs font-semibold text-slate-700">
                         {offer.employmentType}
                       </span>
                       {isActive && (
-                        <span className="rounded-full bg-emerald-100 px-2 py-0.5 text-[9px] font-bold text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300">
+                        <span className="rounded-full bg-emerald-100 px-2 py-0.5 text-[9px] font-bold text-emerald-800">
                           Active Offer
                         </span>
                       )}
@@ -152,7 +152,7 @@ export function CandidateOffersSection({
 
                   <div className="flex items-center gap-2 shrink-0">
                     <span
-                      className={`rounded-md px-2.5 py-1 text-xs font-bold ${statusConfig.badgeBg} ${statusConfig.badgeText}`}
+                      className={`rounded-md px-2.5 py-1 text-sm font-bold ${statusConfig.badgeBg} ${statusConfig.badgeText}`}
                     >
                       {statusConfig.label}
                     </span>
@@ -161,7 +161,7 @@ export function CandidateOffersSection({
                       <button
                         type="button"
                         onClick={() => setSelectedOfferForStatus(offer)}
-                        className="inline-flex items-center gap-1 rounded-xl border border-[#E8EAED] bg-white px-2.5 py-1 text-xs font-bold text-[#181A1C] hover:bg-[#181A1C] hover:text-white dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300 transition shadow-2xs"
+                        className="inline-flex items-center gap-1 rounded-md border border-[var(--wp-border)] bg-white px-2.5 py-1 text-sm font-bold text-[var(--wp-text)] hover:bg-[var(--tenant-primary)] hover:text-[var(--tenant-primary-foreground)] transition"
                       >
                         <ArrowRightLeft className="h-3 w-3" /> Update Stage
                       </button>
@@ -170,7 +170,7 @@ export function CandidateOffersSection({
                 </div>
 
                 {/* Details Grid */}
-                <div className="grid gap-2 sm:grid-cols-3 pt-2 border-t border-slate-200/60 dark:border-slate-800/60 text-[11px] text-slate-600 dark:text-slate-400">
+                <div className="grid gap-2 sm:grid-cols-3 pt-2 border-t border-slate-200/60 text-xs text-slate-600">
                   <div className="flex items-center gap-1.5">
                     <Calendar className="h-3.5 w-3.5 text-slate-400" />
                     <span>Start: {new Date(offer.startDate).toLocaleDateString()}</span>
@@ -193,7 +193,7 @@ export function CandidateOffersSection({
 
                 {/* Approved info if available */}
                 {offer.approvedBy && (
-                  <div className="flex items-center gap-1.5 text-[11px] text-emerald-700 dark:text-emerald-400">
+                  <div className="flex items-center gap-1.5 text-xs text-emerald-700">
                     <ShieldCheck className="h-3.5 w-3.5" />
                     <span>Approved by: {offer.approvedBy.name} ({offer.approvedBy.role.replace('_', ' ')})</span>
                   </div>
@@ -201,20 +201,20 @@ export function CandidateOffersSection({
 
                 {/* Benefits / Terms */}
                 {(offer.benefits || offer.allowances || offer.additionalTerms) && (
-                  <div className="rounded-lg bg-white p-3 border border-slate-100 dark:bg-slate-900 dark:border-slate-800 space-y-1.5 text-xs">
+                  <div className="rounded-lg bg-white p-3 border border-slate-100 space-y-1.5 text-sm">
                     {offer.benefits && (
-                      <p className="text-slate-600 dark:text-slate-400">
-                        <strong className="text-slate-800 dark:text-slate-200">Benefits:</strong> {offer.benefits}
+                      <p className="text-slate-600">
+                        <strong className="text-slate-800">Benefits:</strong> {offer.benefits}
                       </p>
                     )}
                     {offer.allowances && (
-                      <p className="text-slate-600 dark:text-slate-400">
-                        <strong className="text-slate-800 dark:text-slate-200">Allowances:</strong> {offer.allowances}
+                      <p className="text-slate-600">
+                        <strong className="text-slate-800">Allowances:</strong> {offer.allowances}
                       </p>
                     )}
                     {offer.additionalTerms && (
-                      <p className="text-slate-600 dark:text-slate-400">
-                        <strong className="text-slate-800 dark:text-slate-200">Terms:</strong> {offer.additionalTerms}
+                      <p className="text-slate-600">
+                        <strong className="text-slate-800">Terms:</strong> {offer.additionalTerms}
                       </p>
                     )}
                   </div>
@@ -222,7 +222,7 @@ export function CandidateOffersSection({
 
                 {/* Notes / Audit */}
                 {offer.notes && (
-                  <div className="text-[11px] text-slate-500 whitespace-pre-line italic">
+                  <div className="text-xs text-slate-500 whitespace-pre-line italic">
                     {offer.notes}
                   </div>
                 )}

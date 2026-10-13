@@ -86,21 +86,21 @@ export default async function PipelinePage({ searchParams }: PipelinePageProps) 
   return (
     <div className="space-y-6">
       {/* Page Header */}
-      <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between border-b border-[#E8EAED] pb-5">
+      <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between border-b border-[var(--wp-border)] pb-5">
         <div>
-          <h1 className="text-xl font-black text-[#181A1C] flex items-center gap-2">
-            <Users className="h-5 w-5 text-[#181A1C]" />
-            ATS Applicant Pipeline
+          <h1 className="wp-page-title text-xl font-semibold text-[var(--wp-text)] flex items-center gap-2">
+            <Users className="h-5 w-5 text-[var(--wp-text)]" />
+            Hiring pipeline
           </h1>
-          <p className="text-xs text-[#6B7280] mt-0.5">
-            Manage candidates through active hiring lifecycle stages with multi-tenant workflow controls
+          <p className="text-sm text-[var(--wp-text-muted)] mt-0.5">
+            Review candidates by stage and open a profile to take the next hiring action.
           </p>
         </div>
 
         <div className="flex items-center gap-2">
           <Link
             href="/dashboard/hiring/applicants"
-            className="inline-flex items-center gap-1.5 rounded-2xl border border-[#E8EAED] bg-white px-4 py-2 text-xs font-bold text-[#181A1C] shadow-2xs hover:bg-[#F8F9FA] transition"
+            className="inline-flex items-center gap-1.5 rounded-lg border border-[var(--wp-border)] bg-white px-4 py-2 text-sm font-bold text-[var(--wp-text)] hover:bg-[#F8F9FA] transition"
           >
             <ListFilter className="h-3.5 w-3.5" /> Table View
           </Link>

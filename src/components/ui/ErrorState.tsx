@@ -15,7 +15,7 @@ export function ErrorState({
   resetHref = '/dashboard',
 }: ErrorStateProps) {
   return (
-    <div className="max-w-md mx-auto my-8 rounded-2xl border border-rose-200 bg-rose-50/70 p-6 text-center shadow-xs dark:border-rose-900/60 dark:bg-rose-950/40 space-y-4">
+    <div role="alert" className="wp-feedback max-w-md mx-auto my-8 rounded-2xl border border-rose-200 bg-rose-50/70 p-6 text-center shadow-xs dark:border-rose-900/60 dark:bg-rose-950/40 space-y-4">
       <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-rose-100 text-rose-600 dark:bg-rose-900/60 dark:text-rose-400">
         <AlertCircle className="h-6 w-6" />
       </div>

@@ -1,5 +1,7 @@
 'use client';
 
+import { DialogFrame } from '@/components/ui/DialogFrame';
+
 import { useState } from 'react';
 import Link from 'next/link';
 import { ApplicationStatus } from '@prisma/client';
@@ -33,8 +35,8 @@ export function ApplicationCard({ application, canEditStatus }: ApplicationCardP
   const [showDialog, setShowDialog] = useState(false);
   const config = STAGE_CONFIG[application.status] || {
     label: application.status,
-    badgeBg: 'bg-slate-100 dark:bg-slate-800',
-    badgeText: 'text-slate-700 dark:text-slate-300',
+    badgeBg: 'bg-slate-100 ',
+    badgeText: 'text-slate-700 ',
   };
 
   const allowedNext = getAvailableNextStatuses(application.status);
@@ -47,19 +49,19 @@ export function ApplicationCard({ application, canEditStatus }: ApplicationCardP
   });
 
   return (
-    <div className="group relative rounded-2xl border border-[#E8EAED] bg-white p-4 shadow-2xs hover:shadow-sm transition-all flex flex-col justify-between space-y-3">
+    <div className="group relative rounded-lg border border-[var(--wp-border)] bg-white p-4 hover:shadow-sm transition-all flex flex-col justify-between space-y-3">
       {/* Top Header & Candidate Info */}
       <div className="space-y-2.5">
         <div className="flex items-start justify-between gap-2">
           <div className="flex items-center gap-2.5 min-w-0">
-            <div className="flex h-9 w-9 items-center justify-center rounded-2xl bg-[#181A1C] text-white font-bold text-xs shrink-0 shadow-2xs">
+            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-[var(--tenant-primary)] text-[var(--tenant-primary-foreground)] font-bold text-sm shrink-0">
               {initials}
             </div>
             <div className="min-w-0 truncate">
-              <h4 className="text-xs font-bold text-[#181A1C] truncate group-hover:underline transition">
+              <h4 className="text-sm font-bold text-[var(--wp-text)] truncate group-hover:underline transition">
                 {fullName}
               </h4>
-              <p className="text-[11px] text-[#6B7280] truncate">
+              <p className="text-xs text-[var(--wp-text-muted)] truncate">
                 {application.applicant.email}
               </p>
             </div>
@@ -67,25 +69,25 @@ export function ApplicationCard({ application, canEditStatus }: ApplicationCardP
         </div>
 
         {/* Job Details */}
-        <div className="rounded-xl bg-[#F8F9FA] p-2.5 border border-[#E8EAED]">
-          <div className="flex items-center gap-1.5 text-xs font-semibold text-[#181A1C] truncate">
-            <Briefcase className="h-3.5 w-3.5 text-[#6B7280] shrink-0" />
+        <div className="rounded-md bg-[var(--wp-surface-subtle)] p-2.5 border border-[var(--wp-border)]">
+          <div className="flex items-center gap-1.5 text-sm font-semibold text-[var(--wp-text)] truncate">
+            <Briefcase className="h-3.5 w-3.5 text-[var(--wp-text-muted)] shrink-0" />
             <span className="truncate">{application.job.title}</span>
           </div>
-          <p className="text-[10px] text-[#6B7280] pl-5">
+          <p className="text-xs text-[var(--wp-text-muted)] pl-5">
             {application.job.department}
           </p>
         </div>
       </div>
 
       {/* Footer Info & Actions */}
-      <div className="pt-2 border-t border-[#E8EAED] space-y-2">
-        <div className="flex items-center justify-between text-[11px] text-[#6B7280]">
+      <div className="pt-2 border-t border-[var(--wp-border)] space-y-2">
+        <div className="flex items-center justify-between text-xs text-[var(--wp-text-muted)]">
           <span className="flex items-center gap-1">
             <Calendar className="h-3 w-3" /> {appliedDate}
           </span>
           <span
-            className={`rounded-lg px-2 py-0.5 text-[10px] font-bold ${config.badgeBg} ${config.badgeText}`}
+            className={`rounded-lg px-2 py-0.5 text-xs font-bold ${config.badgeBg} ${config.badgeText}`}
           >
             {config.label}
           </span>
@@ -94,7 +96,7 @@ export function ApplicationCard({ application, canEditStatus }: ApplicationCardP
         <div className="flex items-center gap-2 pt-1">
           <Link
             href={`/dashboard/hiring/applicants/${application.id}`}
-            className="flex-1 inline-flex items-center justify-center gap-1 rounded-xl border border-[#E8EAED] bg-[#F8F9FA] px-2.5 py-1.5 text-xs font-bold text-[#181A1C] hover:bg-[#181A1C] hover:text-white transition shadow-2xs"
+            className="flex-1 inline-flex items-center justify-center gap-1 rounded-md border border-[var(--wp-border)] bg-[var(--wp-surface-subtle)] px-2.5 py-1.5 text-sm font-bold text-[var(--wp-text)] hover:bg-[var(--tenant-primary)] hover:text-[var(--tenant-primary-foreground)] transition"
           >
             <User className="h-3.5 w-3.5" /> View Profile
           </Link>
@@ -103,7 +105,7 @@ export function ApplicationCard({ application, canEditStatus }: ApplicationCardP
             <button
               type="button"
               onClick={() => setShowDialog(!showDialog)}
-              className="inline-flex items-center gap-1 rounded-xl bg-[#181A1C] px-3 py-1.5 text-xs font-bold text-white hover:bg-[#2A2E33] transition shrink-0 shadow-2xs"
+              className="inline-flex items-center gap-1 rounded-md bg-[var(--tenant-primary)] px-3 py-1.5 text-sm font-bold text-[var(--tenant-primary-foreground)] hover:brightness-95 transition shrink-0"
               title="Move Candidate Stage"
             >
               <span>Move</span>
@@ -115,13 +117,13 @@ export function ApplicationCard({ application, canEditStatus }: ApplicationCardP
 
       {/* Inline Modal Dialog for Quick Move */}
       {showDialog && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/40 backdrop-blur-xs p-4">
+        <DialogFrame label="Move candidate stage" onClose={() => setShowDialog(false)}>
           <div className="w-full max-w-md">
             <div className="flex justify-end pb-2">
               <button
                 type="button"
                 onClick={() => setShowDialog(false)}
-                className="rounded-full bg-slate-200 p-1 text-slate-700 hover:bg-slate-300 dark:bg-slate-800 dark:text-slate-300"
+                className="rounded-full bg-slate-200 p-1 text-slate-700 hover:bg-slate-300"
               >
                 ✕
               </button>
@@ -132,7 +134,7 @@ export function ApplicationCard({ application, canEditStatus }: ApplicationCardP
               onStatusUpdated={() => setShowDialog(false)}
             />
           </div>
-        </div>
+        </DialogFrame>
       )}
     </div>
   );

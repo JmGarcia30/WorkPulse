@@ -1,0 +1,786 @@
+[
+  {
+    "file": "scripts/reproduce-audit.ts",
+    "errors": 1,
+    "warnings": 1,
+    "messages": [
+      {
+        "rule": "@typescript-eslint/no-unused-vars",
+        "severity": 1,
+        "line": 4,
+        "message": "'getGeminiModel' is defined but never used."
+      },
+      {
+        "rule": "@typescript-eslint/no-explicit-any",
+        "severity": 2,
+        "line": 80,
+        "message": "Unexpected any. Specify a different type."
+      }
+    ]
+  },
+  {
+    "file": "scripts/seed-parsed-resume.ts",
+    "errors": 2,
+    "warnings": 0,
+    "messages": [
+      {
+        "rule": "@typescript-eslint/no-explicit-any",
+        "severity": 2,
+        "line": 233,
+        "message": "Unexpected any. Specify a different type."
+      },
+      {
+        "rule": "@typescript-eslint/no-explicit-any",
+        "severity": 2,
+        "line": 245,
+        "message": "Unexpected any. Specify a different type."
+      }
+    ]
+  },
+  {
+    "file": "scripts/test-candidate-onboarding-submission.ts",
+    "errors": 1,
+    "warnings": 1,
+    "messages": [
+      {
+        "rule": "@typescript-eslint/no-unused-vars",
+        "severity": 1,
+        "line": 2,
+        "message": "'OnboardingTaskType' is defined but never used."
+      },
+      {
+        "rule": "prefer-const",
+        "severity": 2,
+        "line": 22,
+        "message": "'govTask' is never reassigned. Use 'const' instead."
+      }
+    ]
+  },
+  {
+    "file": "scripts/test-candidate-portal-and-rejection.ts",
+    "errors": 1,
+    "warnings": 2,
+    "messages": [
+      {
+        "rule": "@typescript-eslint/no-unused-vars",
+        "severity": 1,
+        "line": 7,
+        "message": "'rejectRecruitmentDocumentAction' is defined but never used."
+      },
+      {
+        "rule": "@typescript-eslint/no-unused-vars",
+        "severity": 1,
+        "line": 8,
+        "message": "'verifyRecruitmentDocumentAction' is defined but never used."
+      },
+      {
+        "rule": "@typescript-eslint/no-non-null-asserted-optional-chain",
+        "severity": 2,
+        "line": 79,
+        "message": "Optional chain expressions can return undefined by design - using a non-null assertion is unsafe and wrong."
+      }
+    ]
+  },
+  {
+    "file": "scripts/test-extraction-units.ts",
+    "errors": 0,
+    "warnings": 2,
+    "messages": [
+      {
+        "rule": "@typescript-eslint/no-unused-vars",
+        "severity": 1,
+        "line": 2,
+        "message": "'fs' is defined but never used."
+      },
+      {
+        "rule": "@typescript-eslint/no-unused-vars",
+        "severity": 1,
+        "line": 3,
+        "message": "'path' is defined but never used."
+      }
+    ]
+  },
+  {
+    "file": "scripts/test-pipeline-diagnostics.ts",
+    "errors": 1,
+    "warnings": 0,
+    "messages": [
+      {
+        "rule": "@typescript-eslint/no-explicit-any",
+        "severity": 2,
+        "line": 110,
+        "message": "Unexpected any. Specify a different type."
+      }
+    ]
+  },
+  {
+    "file": "scripts/test-saga-institutional-hiring.ts",
+    "errors": 0,
+    "warnings": 9,
+    "messages": [
+      {
+        "rule": "@typescript-eslint/no-unused-vars",
+        "severity": 1,
+        "line": 5,
+        "message": "'RecruitmentDocumentStatus' is defined but never used."
+      },
+      {
+        "rule": "@typescript-eslint/no-unused-vars",
+        "severity": 1,
+        "line": 6,
+        "message": "'AssessmentType' is defined but never used."
+      },
+      {
+        "rule": "@typescript-eslint/no-unused-vars",
+        "severity": 1,
+        "line": 7,
+        "message": "'AssessmentStatus' is defined but never used."
+      },
+      {
+        "rule": "@typescript-eslint/no-unused-vars",
+        "severity": 1,
+        "line": 9,
+        "message": "'InterviewStatus' is defined but never used."
+      },
+      {
+        "rule": "@typescript-eslint/no-unused-vars",
+        "severity": 1,
+        "line": 10,
+        "message": "'EvaluationRecommendation' is defined but never used."
+      },
+      {
+        "rule": "@typescript-eslint/no-unused-vars",
+        "severity": 1,
+        "line": 11,
+        "message": "'OfferStatus' is defined but never used."
+      },
+      {
+        "rule": "@typescript-eslint/no-unused-vars",
+        "severity": 1,
+        "line": 12,
+        "message": "'OnboardingTaskType' is defined but never used."
+      },
+      {
+        "rule": "@typescript-eslint/no-unused-vars",
+        "severity": 1,
+        "line": 13,
+        "message": "'OnboardingTaskStatus' is defined but never used."
+      },
+      {
+        "rule": "@typescript-eslint/no-unused-vars",
+        "severity": 1,
+        "line": 14,
+        "message": "'OnboardingStatus' is defined but never used."
+      }
+    ]
+  },
+  {
+    "file": "scripts/test-sprint2-2-interviews.ts",
+    "errors": 0,
+    "warnings": 2,
+    "messages": [
+      {
+        "rule": "@typescript-eslint/no-unused-vars",
+        "severity": 1,
+        "line": 3,
+        "message": "'ApplicationStatus' is defined but never used."
+      },
+      {
+        "rule": "@typescript-eslint/no-unused-vars",
+        "severity": 1,
+        "line": 239,
+        "message": "'err' is defined but never used."
+      }
+    ]
+  },
+  {
+    "file": "scripts/test-sprint2-3-assessments-offers.ts",
+    "errors": 0,
+    "warnings": 3,
+    "messages": [
+      {
+        "rule": "@typescript-eslint/no-unused-vars",
+        "severity": 1,
+        "line": 4,
+        "message": "'AssessmentType' is defined but never used."
+      },
+      {
+        "rule": "@typescript-eslint/no-unused-vars",
+        "severity": 1,
+        "line": 7,
+        "message": "'ApplicationStatus' is defined but never used."
+      },
+      {
+        "rule": "@typescript-eslint/no-unused-vars",
+        "severity": 1,
+        "line": 15,
+        "message": "'getAvailableOfferTransitions' is defined but never used."
+      }
+    ]
+  },
+  {
+    "file": "scripts/test-sprint2-4-onboarding.ts",
+    "errors": 0,
+    "warnings": 1,
+    "messages": [
+      {
+        "rule": "@typescript-eslint/no-unused-vars",
+        "severity": 1,
+        "line": 12,
+        "message": "'getAvailableTaskTransitions' is defined but never used."
+      }
+    ]
+  },
+  {
+    "file": "scripts/test-vertical-slice.ts",
+    "errors": 1,
+    "warnings": 0,
+    "messages": [
+      {
+        "rule": "@typescript-eslint/no-explicit-any",
+        "severity": 2,
+        "line": 134,
+        "message": "Unexpected any. Specify a different type."
+      }
+    ]
+  },
+  {
+    "file": "src/app/(dashboard)/dashboard/hiring/applicants/[applicationId]/page.tsx",
+    "errors": 0,
+    "warnings": 2,
+    "messages": [
+      {
+        "rule": "@typescript-eslint/no-unused-vars",
+        "severity": 1,
+        "line": 17,
+        "message": "'ApplicationStatus' is defined but never used."
+      },
+      {
+        "rule": "@typescript-eslint/no-unused-vars",
+        "severity": 1,
+        "line": 41,
+        "message": "'Sparkles' is defined but never used."
+      }
+    ]
+  },
+  {
+    "file": "src/app/(dashboard)/dashboard/hiring/applicants/page.tsx",
+    "errors": 0,
+    "warnings": 4,
+    "messages": [
+      {
+        "rule": "@typescript-eslint/no-unused-vars",
+        "severity": 1,
+        "line": 9,
+        "message": "'Filter' is defined but never used."
+      },
+      {
+        "rule": "@typescript-eslint/no-unused-vars",
+        "severity": 1,
+        "line": 10,
+        "message": "'FileText' is defined but never used."
+      },
+      {
+        "rule": "@typescript-eslint/no-unused-vars",
+        "severity": 1,
+        "line": 12,
+        "message": "'Calendar' is defined but never used."
+      },
+      {
+        "rule": "@typescript-eslint/no-unused-vars",
+        "severity": 1,
+        "line": 13,
+        "message": "'Briefcase' is defined but never used."
+      }
+    ]
+  },
+  {
+    "file": "src/app/(dashboard)/dashboard/hiring/assessments/page.tsx",
+    "errors": 0,
+    "warnings": 2,
+    "messages": [
+      {
+        "rule": "@typescript-eslint/no-unused-vars",
+        "severity": 1,
+        "line": 18,
+        "message": "'User' is defined but never used."
+      },
+      {
+        "rule": "@typescript-eslint/no-unused-vars",
+        "severity": 1,
+        "line": 19,
+        "message": "'Clock' is defined but never used."
+      }
+    ]
+  },
+  {
+    "file": "src/app/(dashboard)/dashboard/hiring/interviews/page.tsx",
+    "errors": 0,
+    "warnings": 7,
+    "messages": [
+      {
+        "rule": "@typescript-eslint/no-unused-vars",
+        "severity": 1,
+        "line": 10,
+        "message": "'Users' is defined but never used."
+      },
+      {
+        "rule": "@typescript-eslint/no-unused-vars",
+        "severity": 1,
+        "line": 13,
+        "message": "'CheckCircle2' is defined but never used."
+      },
+      {
+        "rule": "@typescript-eslint/no-unused-vars",
+        "severity": 1,
+        "line": 14,
+        "message": "'AlertTriangle' is defined but never used."
+      },
+      {
+        "rule": "@typescript-eslint/no-unused-vars",
+        "severity": 1,
+        "line": 15,
+        "message": "'XCircle' is defined but never used."
+      },
+      {
+        "rule": "@typescript-eslint/no-unused-vars",
+        "severity": 1,
+        "line": 16,
+        "message": "'Clock' is defined but never used."
+      },
+      {
+        "rule": "@typescript-eslint/no-unused-vars",
+        "severity": 1,
+        "line": 17,
+        "message": "'Briefcase' is defined but never used."
+      },
+      {
+        "rule": "@typescript-eslint/no-unused-vars",
+        "severity": 1,
+        "line": 18,
+        "message": "'User' is defined but never used."
+      }
+    ]
+  },
+  {
+    "file": "src/app/(dashboard)/dashboard/hiring/jobs/[jobId]/page.tsx",
+    "errors": 0,
+    "warnings": 4,
+    "messages": [
+      {
+        "rule": "@typescript-eslint/no-unused-vars",
+        "severity": 1,
+        "line": 1,
+        "message": "'redirect' is defined but never used."
+      },
+      {
+        "rule": "@typescript-eslint/no-unused-vars",
+        "severity": 1,
+        "line": 13,
+        "message": "'MapPin' is defined but never used."
+      },
+      {
+        "rule": "@typescript-eslint/no-unused-vars",
+        "severity": 1,
+        "line": 15,
+        "message": "'Briefcase' is defined but never used."
+      },
+      {
+        "rule": "@typescript-eslint/no-unused-vars",
+        "severity": 1,
+        "line": 16,
+        "message": "'Building2' is defined but never used."
+      }
+    ]
+  },
+  {
+    "file": "src/app/(dashboard)/dashboard/hiring/jobs/page.tsx",
+    "errors": 0,
+    "warnings": 5,
+    "messages": [
+      {
+        "rule": "@typescript-eslint/no-unused-vars",
+        "severity": 1,
+        "line": 9,
+        "message": "'Filter' is defined but never used."
+      },
+      {
+        "rule": "@typescript-eslint/no-unused-vars",
+        "severity": 1,
+        "line": 12,
+        "message": "'CheckCircle' is defined but never used."
+      },
+      {
+        "rule": "@typescript-eslint/no-unused-vars",
+        "severity": 1,
+        "line": 13,
+        "message": "'XCircle' is defined but never used."
+      },
+      {
+        "rule": "@typescript-eslint/no-unused-vars",
+        "severity": 1,
+        "line": 16,
+        "message": "'publishJobAction' is defined but never used."
+      },
+      {
+        "rule": "@typescript-eslint/no-unused-vars",
+        "severity": 1,
+        "line": 16,
+        "message": "'closeJobAction' is defined but never used."
+      }
+    ]
+  },
+  {
+    "file": "src/app/(dashboard)/dashboard/hiring/offers/page.tsx",
+    "errors": 0,
+    "warnings": 3,
+    "messages": [
+      {
+        "rule": "@typescript-eslint/no-unused-vars",
+        "severity": 1,
+        "line": 17,
+        "message": "'DollarSign' is defined but never used."
+      },
+      {
+        "rule": "@typescript-eslint/no-unused-vars",
+        "severity": 1,
+        "line": 18,
+        "message": "'User' is defined but never used."
+      },
+      {
+        "rule": "@typescript-eslint/no-unused-vars",
+        "severity": 1,
+        "line": 20,
+        "message": "'Clock' is defined but never used."
+      }
+    ]
+  },
+  {
+    "file": "src/app/api/resumes/[id]/route.ts",
+    "errors": 0,
+    "warnings": 1,
+    "messages": [
+      {
+        "rule": "@typescript-eslint/no-unused-vars",
+        "severity": 1,
+        "line": 51,
+        "message": "'error' is defined but never used."
+      }
+    ]
+  },
+  {
+    "file": "src/app/product-modules-showcase.tsx",
+    "errors": 0,
+    "warnings": 2,
+    "messages": [
+      {
+        "rule": "@typescript-eslint/no-unused-vars",
+        "severity": 1,
+        "line": 4,
+        "message": "'FileText' is defined but never used."
+      },
+      {
+        "rule": "@typescript-eslint/no-unused-vars",
+        "severity": 1,
+        "line": 4,
+        "message": "'Shield' is defined but never used."
+      }
+    ]
+  },
+  {
+    "file": "src/components/careers/CandidatePortalClient.tsx",
+    "errors": 0,
+    "warnings": 10,
+    "messages": [
+      {
+        "rule": "@typescript-eslint/no-unused-vars",
+        "severity": 1,
+        "line": 18,
+        "message": "'HelpCircle' is defined but never used."
+      },
+      {
+        "rule": "@typescript-eslint/no-unused-vars",
+        "severity": 1,
+        "line": 20,
+        "message": "'ArrowRight' is defined but never used."
+      },
+      {
+        "rule": "@typescript-eslint/no-unused-vars",
+        "severity": 1,
+        "line": 25,
+        "message": "'Download' is defined but never used."
+      },
+      {
+        "rule": "@typescript-eslint/no-unused-vars",
+        "severity": 1,
+        "line": 26,
+        "message": "'GraduationCap' is defined but never used."
+      },
+      {
+        "rule": "@typescript-eslint/no-unused-vars",
+        "severity": 1,
+        "line": 27,
+        "message": "'Briefcase' is defined but never used."
+      },
+      {
+        "rule": "@typescript-eslint/no-unused-vars",
+        "severity": 1,
+        "line": 28,
+        "message": "'Layers' is defined but never used."
+      },
+      {
+        "rule": "@typescript-eslint/no-unused-vars",
+        "severity": 1,
+        "line": 82,
+        "message": "'category' is defined but never used."
+      },
+      {
+        "rule": "@typescript-eslint/no-unused-vars",
+        "severity": 1,
+        "line": 83,
+        "message": "'applicantName' is defined but never used."
+      },
+      {
+        "rule": "@typescript-eslint/no-unused-vars",
+        "severity": 1,
+        "line": 84,
+        "message": "'jobTitle' is defined but never used."
+      },
+      {
+        "rule": "@typescript-eslint/no-unused-vars",
+        "severity": 1,
+        "line": 85,
+        "message": "'orgName' is defined but never used."
+      }
+    ]
+  },
+  {
+    "file": "src/components/hiring/ApplicationCard.tsx",
+    "errors": 0,
+    "warnings": 1,
+    "messages": [
+      {
+        "rule": "@typescript-eslint/no-unused-vars",
+        "severity": 1,
+        "line": 10,
+        "message": "'ArrowRight' is defined but never used."
+      }
+    ]
+  },
+  {
+    "file": "src/components/hiring/ApplicationPipeline.tsx",
+    "errors": 0,
+    "warnings": 1,
+    "messages": [
+      {
+        "rule": "@typescript-eslint/no-unused-vars",
+        "severity": 1,
+        "line": 5,
+        "message": "'ApplicationStatus' is defined but never used."
+      }
+    ]
+  },
+  {
+    "file": "src/components/hiring/ApplicationTimeline.tsx",
+    "errors": 0,
+    "warnings": 1,
+    "messages": [
+      {
+        "rule": "@typescript-eslint/no-unused-vars",
+        "severity": 1,
+        "line": 12,
+        "message": "'ShieldCheck' is defined but never used."
+      }
+    ]
+  },
+  {
+    "file": "src/components/hiring/AssessmentResultModal.tsx",
+    "errors": 0,
+    "warnings": 1,
+    "messages": [
+      {
+        "rule": "@typescript-eslint/no-unused-vars",
+        "severity": 1,
+        "line": 39,
+        "message": "'setMaxScore' is assigned a value but never used."
+      }
+    ]
+  },
+  {
+    "file": "src/components/hiring/CandidateDocumentsSection.tsx",
+    "errors": 0,
+    "warnings": 3,
+    "messages": [
+      {
+        "rule": "@typescript-eslint/no-unused-vars",
+        "severity": 1,
+        "line": 19,
+        "message": "'HelpCircle' is defined but never used."
+      },
+      {
+        "rule": "@typescript-eslint/no-unused-vars",
+        "severity": 1,
+        "line": 21,
+        "message": "'ChevronRight' is defined but never used."
+      },
+      {
+        "rule": "@typescript-eslint/no-unused-vars",
+        "severity": 1,
+        "line": 24,
+        "message": "'Sparkles' is defined but never used."
+      }
+    ]
+  },
+  {
+    "file": "src/components/hiring/CandidateLifecycleStepper.tsx",
+    "errors": 0,
+    "warnings": 2,
+    "messages": [
+      {
+        "rule": "@typescript-eslint/no-unused-vars",
+        "severity": 1,
+        "line": 7,
+        "message": "'Search' is defined but never used."
+      },
+      {
+        "rule": "@typescript-eslint/no-unused-vars",
+        "severity": 1,
+        "line": 9,
+        "message": "'Calendar' is defined but never used."
+      }
+    ]
+  },
+  {
+    "file": "src/components/hiring/CandidateOffersSection.tsx",
+    "errors": 0,
+    "warnings": 3,
+    "messages": [
+      {
+        "rule": "@typescript-eslint/no-unused-vars",
+        "severity": 1,
+        "line": 16,
+        "message": "'DollarSign' is defined but never used."
+      },
+      {
+        "rule": "@typescript-eslint/no-unused-vars",
+        "severity": 1,
+        "line": 18,
+        "message": "'CheckCircle2' is defined but never used."
+      },
+      {
+        "rule": "@typescript-eslint/no-unused-vars",
+        "severity": 1,
+        "line": 64,
+        "message": "'canApprove' is defined but never used."
+      }
+    ]
+  },
+  {
+    "file": "src/components/hiring/CandidateOnboardingSection.tsx",
+    "errors": 0,
+    "warnings": 2,
+    "messages": [
+      {
+        "rule": "@typescript-eslint/no-unused-vars",
+        "severity": 1,
+        "line": 29,
+        "message": "'FileText' is defined but never used."
+      },
+      {
+        "rule": "@typescript-eslint/no-unused-vars",
+        "severity": 1,
+        "line": 38,
+        "message": "'ExternalLink' is defined but never used."
+      }
+    ]
+  },
+  {
+    "file": "src/components/hiring/OnboardingTaskReviewModal.tsx",
+    "errors": 0,
+    "warnings": 3,
+    "messages": [
+      {
+        "rule": "@typescript-eslint/no-unused-vars",
+        "severity": 1,
+        "line": 22,
+        "message": "'Clock' is defined but never used."
+      },
+      {
+        "rule": "@typescript-eslint/no-unused-vars",
+        "severity": 1,
+        "line": 58,
+        "message": "'selectedStatus' is assigned a value but never used."
+      },
+      {
+        "rule": "@typescript-eslint/no-unused-vars",
+        "severity": 1,
+        "line": 58,
+        "message": "'setSelectedStatus' is assigned a value but never used."
+      }
+    ]
+  },
+  {
+    "file": "src/components/hiring/OnboardingTaskUploadModal.tsx",
+    "errors": 0,
+    "warnings": 1,
+    "messages": [
+      {
+        "rule": "@typescript-eslint/no-unused-vars",
+        "severity": 1,
+        "line": 10,
+        "message": "'FileText' is defined but never used."
+      }
+    ]
+  },
+  {
+    "file": "src/components/hiring/ParsedResumeSection.tsx",
+    "errors": 0,
+    "warnings": 2,
+    "messages": [
+      {
+        "rule": "@typescript-eslint/no-unused-vars",
+        "severity": 1,
+        "line": 141,
+        "message": "'jobRequirements' is defined but never used."
+      },
+      {
+        "rule": "@typescript-eslint/no-unused-vars",
+        "severity": 1,
+        "line": 146,
+        "message": "'setLocalParsed' is assigned a value but never used."
+      }
+    ]
+  },
+  {
+    "file": "src/components/public/WorkspaceDiscoveryForm.tsx",
+    "errors": 0,
+    "warnings": 1,
+    "messages": [
+      {
+        "rule": "@next/next/no-location-assign-relative-destination",
+        "severity": 1,
+        "line": 42,
+        "message": "Do not use `window.location.assign()` to navigate to internal Next.js pages. Use `redirect()` in the render phase, or `useRouter().push()` in Client Components' event handlers instead. See: https://nextjs.org/docs/messages/no-location-assign-relative-destination"
+      }
+    ]
+  },
+  {
+    "file": "src/features/hiring/offer-actions.ts",
+    "errors": 0,
+    "warnings": 2,
+    "messages": [
+      {
+        "rule": "@typescript-eslint/no-unused-vars",
+        "severity": 1,
+        "line": 7,
+        "message": "'OnboardingStatus' is defined but never used."
+      },
+      {
+        "rule": "@typescript-eslint/no-unused-vars",
+        "severity": 1,
+        "line": 7,
+        "message": "'OnboardingTaskStatus' is defined but never used."
+      }
+    ]
+  }
+]

@@ -118,7 +118,7 @@ export async function getFinalizedPayslipForAdmin(input: { organizationId: strin
 
 async function activeEmployeeForUser(organizationId: string, userId: string, db: PayrollDb) {
   const account = await db.employeeAccount.findFirst({
-    where: { organizationId, userId, status: EmployeeAccountStatus.ACTIVE, user: { role: Role.EMPLOYEE, organizationId }, employee: { organizationId } },
+    where: { organizationId, userId, status: EmployeeAccountStatus.ACTIVE, user: { role: Role.EMPLOYEE, organizationId }, employee: { organizationId, employeeStatus: 'ACTIVE' } },
     select: { employeeId: true },
   });
   if (!account) throw new PayrollError('FORBIDDEN', 'Employee payroll access is unavailable.');
@@ -142,7 +142,7 @@ export async function listFinalizedPayslipsForEmployee(input: { organizationId: 
   });
   return entries.map(entry => {
     const payslip = toPayslip(entry);
-    return { entryId: payslip.entryId, periodStart: payslip.payroll.periodStart, periodEnd: payslip.payroll.periodEnd, payDate: payslip.payroll.payDate, currency: payslip.payroll.currency, netPay: payslip.calculation.netPay };
+    return { entryId: payslip.entryId, periodStart: payslip.payroll.periodStart, periodEnd: payslip.payroll.periodEnd, payDate: payslip.payroll.payDate, currency: payslip.payroll.currency, basePay: payslip.calculation.basePay, grossPay: payslip.calculation.grossPay, totalDeductions: payslip.calculation.totalDeductions, netPay: payslip.calculation.netPay, status: entry.status };
   });
 }
 

@@ -1,0 +1,237 @@
+[
+  {
+    "name": "HR login and operational dashboard",
+    "pass": true,
+    "detail": ""
+  },
+  {
+    "name": "HR payroll panel",
+    "pass": true,
+    "detail": ""
+  },
+  {
+    "name": "/dashboard/hiring/pipeline",
+    "pass": true,
+    "detail": ""
+  },
+  {
+    "name": "/dashboard/hiring/pipeline desktop overflow",
+    "pass": true,
+    "detail": ""
+  },
+  {
+    "name": "/dashboard/hiring/jobs",
+    "pass": true,
+    "detail": ""
+  },
+  {
+    "name": "/dashboard/hiring/jobs desktop overflow",
+    "pass": true,
+    "detail": ""
+  },
+  {
+    "name": "/dashboard/hiring/applicants",
+    "pass": true,
+    "detail": ""
+  },
+  {
+    "name": "/dashboard/hiring/applicants desktop overflow",
+    "pass": true,
+    "detail": ""
+  },
+  {
+    "name": "/dashboard/hiring/interviews",
+    "pass": true,
+    "detail": ""
+  },
+  {
+    "name": "/dashboard/hiring/interviews desktop overflow",
+    "pass": true,
+    "detail": ""
+  },
+  {
+    "name": "/dashboard/hiring/assessments",
+    "pass": true,
+    "detail": ""
+  },
+  {
+    "name": "/dashboard/hiring/assessments desktop overflow",
+    "pass": true,
+    "detail": ""
+  },
+  {
+    "name": "/dashboard/hiring/offers",
+    "pass": true,
+    "detail": ""
+  },
+  {
+    "name": "/dashboard/hiring/offers desktop overflow",
+    "pass": true,
+    "detail": ""
+  },
+  {
+    "name": "/dashboard/hiring/onboarding",
+    "pass": true,
+    "detail": ""
+  },
+  {
+    "name": "/dashboard/hiring/onboarding desktop overflow",
+    "pass": true,
+    "detail": ""
+  },
+  {
+    "name": "/dashboard/employees",
+    "pass": true,
+    "detail": ""
+  },
+  {
+    "name": "/dashboard/employees desktop overflow",
+    "pass": true,
+    "detail": ""
+  },
+  {
+    "name": "/dashboard/hiring/applicants/cmtmz81720032ujhkdh9mjmu7",
+    "pass": true,
+    "detail": ""
+  },
+  {
+    "name": "/dashboard/hiring/applicants/cmtmz81720032ujhkdh9mjmu7 desktop overflow",
+    "pass": true,
+    "detail": ""
+  },
+  {
+    "name": "/dashboard/employees/cmtrd14400046uj4wzylbftui",
+    "pass": true,
+    "detail": ""
+  },
+  {
+    "name": "/dashboard/employees/cmtrd14400046uj4wzylbftui desktop overflow",
+    "pass": true,
+    "detail": ""
+  },
+  {
+    "name": "Candidate section navigation",
+    "pass": true,
+    "detail": ""
+  },
+  {
+    "name": "Assessment dialog visible",
+    "pass": true,
+    "detail": ""
+  },
+  {
+    "name": "Dialog contains focus",
+    "pass": true,
+    "detail": ""
+  },
+  {
+    "name": "Dialog Escape closes",
+    "pass": true,
+    "detail": ""
+  },
+  {
+    "name": "ESS account action confirmation",
+    "pass": true,
+    "detail": ""
+  },
+  {
+    "name": "ESS disable reason is accessible",
+    "pass": true,
+    "detail": ""
+  },
+  {
+    "name": "ESS cannot confirm without a reason",
+    "pass": true,
+    "detail": ""
+  },
+  {
+    "name": "ESS cancellation closes without submitting",
+    "pass": true,
+    "detail": ""
+  },
+  {
+    "name": "/dashboard mobile overflow",
+    "pass": true,
+    "detail": ""
+  },
+  {
+    "name": "/dashboard/hiring/pipeline mobile overflow",
+    "pass": true,
+    "detail": ""
+  },
+  {
+    "name": "/dashboard/hiring/onboarding mobile overflow",
+    "pass": true,
+    "detail": ""
+  },
+  {
+    "name": "/dashboard/employees mobile overflow",
+    "pass": true,
+    "detail": ""
+  },
+  {
+    "name": "/dashboard/hiring/applicants/cmtmz81720032ujhkdh9mjmu7 mobile overflow",
+    "pass": true,
+    "detail": ""
+  },
+  {
+    "name": "/dashboard/employees/cmtrd14400046uj4wzylbftui mobile overflow",
+    "pass": true,
+    "detail": ""
+  },
+  {
+    "name": "Mobile navigation and sign out",
+    "pass": true,
+    "detail": ""
+  },
+  {
+    "name": "Mobile navigation Escape closes",
+    "pass": true,
+    "detail": ""
+  },
+  {
+    "name": "Tablet dashboard overflow",
+    "pass": true,
+    "detail": ""
+  },
+  {
+    "name": "Hiring Manager has hiring overview",
+    "pass": true,
+    "detail": ""
+  },
+  {
+    "name": "Hiring Manager has no workforce or payroll panels",
+    "pass": true,
+    "detail": ""
+  },
+  {
+    "name": "Hiring Manager employee route denied",
+    "pass": true,
+    "detail": ""
+  },
+  {
+    "name": "Hiring Manager cannot hire",
+    "pass": true,
+    "detail": ""
+  },
+  {
+    "name": "Second organization primary branding",
+    "pass": true,
+    "detail": ""
+  },
+  {
+    "name": "Second organization name",
+    "pass": true,
+    "detail": ""
+  },
+  {
+    "name": "Cross-tenant candidate denied",
+    "pass": true,
+    "detail": ""
+  },
+  {
+    "name": "No browser runtime errors",
+    "pass": true,
+    "detail": ""
+  }
+]

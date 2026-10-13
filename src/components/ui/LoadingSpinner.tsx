@@ -13,8 +13,8 @@ export function LoadingSpinner({ label = 'Loading...', size = 'md' }: LoadingSpi
   };
 
   return (
-    <div className="flex flex-col items-center justify-center p-8 space-y-3">
-      <Loader2 className={`${sizeClasses[size]} animate-spin text-indigo-600 dark:text-indigo-400`} />
+    <div role="status" className="wp-feedback flex flex-col items-center justify-center p-8 space-y-3">
+      <Loader2 aria-hidden="true" className={`${sizeClasses[size]} wp-loading-icon animate-spin text-indigo-600 dark:text-indigo-400`} />
       {label && <p className="text-xs font-medium text-slate-500 dark:text-slate-400">{label}</p>}
     </div>
   );

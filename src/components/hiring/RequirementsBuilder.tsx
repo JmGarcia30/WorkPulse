@@ -44,15 +44,15 @@ export function RequirementsBuilder({ initialRequirements = [] }: RequirementsBu
   };
 
   return (
-    <div className="space-y-4 rounded-xl border border-slate-200 bg-slate-50/50 p-5 dark:border-slate-800 dark:bg-slate-900/50">
+    <div className="space-y-4 rounded-md border border-slate-200 bg-slate-50/50 p-5">
       {/* Hidden input storing stringified JSON for server action */}
       <input type="hidden" name="requirementsJson" value={JSON.stringify(reqs)} />
 
       <div>
-        <h3 className="text-base font-semibold text-slate-900 dark:text-slate-100">
+        <h3 className="text-base font-semibold text-slate-900">
           Structured Job Requirements
         </h3>
-        <p className="text-xs text-slate-500 dark:text-slate-400">
+        <p className="text-sm text-slate-500">
           Define discrete criteria (Skills, Education, Certifications) to establish qualification benchmarks.
         </p>
       </div>
@@ -60,37 +60,37 @@ export function RequirementsBuilder({ initialRequirements = [] }: RequirementsBu
       {/* Requirement List */}
       <div className="space-y-2">
         {reqs.length === 0 ? (
-          <div className="rounded-lg border border-dashed border-slate-300 p-4 text-center text-xs text-slate-500 dark:border-slate-700">
+          <div className="rounded-lg border border-dashed border-slate-300 p-4 text-center text-sm text-slate-500">
             No structured requirements added yet. Use the form below to add skills or qualifications.
           </div>
         ) : (
           reqs.map((req, idx) => (
             <div
               key={idx}
-              className="flex items-center justify-between gap-3 rounded-lg border border-slate-200 bg-white p-3 shadow-xs dark:border-slate-800 dark:bg-slate-900"
+              className="flex items-center justify-between gap-3 rounded-lg border border-slate-200 bg-white p-3"
             >
               <div className="flex items-start gap-2.5">
-                <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-[#181A1C] dark:text-white" />
+                <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-[var(--wp-text)]" />
                 <div>
                   <div className="flex items-center gap-2">
-                    <span className="text-sm font-medium text-slate-900 dark:text-slate-100">
+                    <span className="text-sm font-medium text-slate-900">
                       {req.name}
                     </span>
-                    <span className="rounded-md bg-[#F8F9FA] border border-[#E8EAED] px-2 py-0.5 text-[10px] font-bold text-[#181A1C] dark:bg-slate-800 dark:border-slate-700 dark:text-slate-300">
+                    <span className="rounded-md bg-[var(--wp-surface-subtle)] border border-[var(--wp-border)] px-2 py-0.5 text-xs font-bold text-[var(--wp-text)]">
                       {req.type}
                     </span>
                     <span
-                      className={`rounded-md px-1.5 py-0.5 text-[10px] font-medium ${
+                      className={`rounded-md px-1.5 py-0.5 text-xs font-medium ${
                         req.isRequired
-                          ? 'bg-rose-50 text-rose-700 dark:bg-rose-950/60 dark:text-rose-300'
-                          : 'bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400'
+                          ? 'bg-rose-50 text-rose-700 '
+                          : 'bg-slate-100 text-slate-600 '
                       }`}
                     >
                       {req.isRequired ? 'Required' : 'Preferred'}
                     </span>
                   </div>
                   {req.description && (
-                    <p className="mt-0.5 text-xs text-slate-500 dark:text-slate-400">
+                    <p className="mt-0.5 text-sm text-slate-500">
                       {req.description}
                     </p>
                   )}
@@ -99,7 +99,7 @@ export function RequirementsBuilder({ initialRequirements = [] }: RequirementsBu
               <button
                 type="button"
                 onClick={() => removeRequirement(idx)}
-                className="rounded-md p-1.5 text-slate-400 hover:bg-slate-100 hover:text-rose-600 dark:hover:bg-slate-800"
+                className="rounded-md p-1.5 text-slate-400 hover:bg-slate-100 hover:text-rose-600"
                 title="Remove requirement"
               >
                 <Trash2 className="h-4 w-4" />
@@ -110,28 +110,28 @@ export function RequirementsBuilder({ initialRequirements = [] }: RequirementsBu
       </div>
 
       {/* Add New Requirement Form */}
-      <div className="rounded-lg border border-slate-200 bg-white p-3.5 space-y-3 dark:border-slate-800 dark:bg-slate-900">
+      <div className="rounded-lg border border-slate-200 bg-white p-3.5 space-y-3">
         <div className="grid gap-3 sm:grid-cols-3">
           <div className="sm:col-span-2">
-            <label className="block text-xs font-medium text-slate-700 dark:text-slate-300">
+            <label className="block text-sm font-medium text-slate-700">
               Requirement Name *
             </label>
-            <input
+            <input aria-label="Requirement Name"
               type="text"
               value={name}
               onChange={(e) => setName(e.target.value)}
               placeholder="e.g. Master’s Degree in Physics"
-              className="mt-1 block w-full rounded-md border border-slate-300 px-3 py-1.5 text-xs text-slate-900 focus:border-[#181A1C] focus:ring-1 focus:ring-[#181A1C] dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
+              className="mt-1 block w-full rounded-md border border-slate-300 px-3 py-1.5 text-sm text-slate-900 focus:border-[var(--tenant-accent)] focus:ring-1 focus:ring-[var(--tenant-accent)]"
             />
           </div>
           <div>
-            <label className="block text-xs font-medium text-slate-700 dark:text-slate-300">
+            <label className="block text-sm font-medium text-slate-700">
               Type
             </label>
-            <select
+            <select aria-label="Type"
               value={type}
               onChange={(e) => setType(e.target.value as RequirementType)}
-              className="mt-1 block w-full rounded-md border border-slate-300 px-3 py-1.5 text-xs text-slate-900 focus:border-[#181A1C] focus:ring-1 focus:ring-[#181A1C] dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
+              className="mt-1 block w-full rounded-md border border-slate-300 px-3 py-1.5 text-sm text-slate-900 focus:border-[var(--tenant-accent)] focus:ring-1 focus:ring-[var(--tenant-accent)]"
             >
               <option value={RequirementType.SKILL}>SKILL</option>
               <option value={RequirementType.EDUCATION}>EDUCATION</option>
@@ -144,15 +144,15 @@ export function RequirementsBuilder({ initialRequirements = [] }: RequirementsBu
 
         <div className="grid gap-3 sm:grid-cols-4 items-end">
           <div className="sm:col-span-3">
-            <label className="block text-xs font-medium text-slate-700 dark:text-slate-300">
+            <label className="block text-sm font-medium text-slate-700">
               Description (Optional)
             </label>
-            <input
+            <input aria-label="Description (Optional)"
               type="text"
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               placeholder="Additional specification or guidelines"
-              className="mt-1 block w-full rounded-md border border-slate-300 px-3 py-1.5 text-xs text-slate-900 focus:border-[#181A1C] focus:ring-1 focus:ring-[#181A1C] dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
+              className="mt-1 block w-full rounded-md border border-slate-300 px-3 py-1.5 text-sm text-slate-900 focus:border-[var(--tenant-accent)] focus:ring-1 focus:ring-[var(--tenant-accent)]"
             />
           </div>
           <div className="flex items-center gap-2 pb-1">
@@ -161,9 +161,9 @@ export function RequirementsBuilder({ initialRequirements = [] }: RequirementsBu
               id="reqMandatory"
               checked={isRequired}
               onChange={(e) => setIsRequired(e.target.checked)}
-              className="h-4 w-4 rounded border-slate-300 text-[#181A1C] focus:ring-[#181A1C] dark:border-slate-700"
+              className="h-4 w-4 rounded border-slate-300 text-[var(--wp-text)] focus:ring-[var(--tenant-accent)]"
             />
-            <label htmlFor="reqMandatory" className="text-xs text-slate-700 dark:text-slate-300">
+            <label htmlFor="reqMandatory" className="text-sm text-slate-700">
               Mandatory
             </label>
           </div>
@@ -173,7 +173,7 @@ export function RequirementsBuilder({ initialRequirements = [] }: RequirementsBu
           type="button"
           onClick={addRequirement}
           disabled={!name.trim()}
-          className="inline-flex items-center gap-1.5 rounded-xl bg-[#181A1C] px-3.5 py-1.5 text-xs font-bold text-white hover:bg-[#2A2E33] transition shadow-2xs disabled:opacity-50"
+          className="inline-flex items-center gap-1.5 rounded-md bg-[var(--tenant-primary)] px-3.5 py-1.5 text-sm font-bold text-[var(--tenant-primary-foreground)] hover:brightness-95 transition disabled:opacity-50"
         >
           <Plus className="h-3.5 w-3.5" />
           Add Requirement

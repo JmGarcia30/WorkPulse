@@ -37,7 +37,7 @@ export default async function EmployeesPage({ searchParams }: EmployeesPageProps
     <div className="space-y-6">
       <div>
         <p className="wp-eyebrow">Employees</p>
-        <h1 className="wp-page-title mt-1">Employee Records</h1>
+        <h1 className="wp-page-title wp-page-title mt-1">Employee Records</h1>
         <p className="mt-2 text-sm text-[var(--wp-text-muted)]">
           Find employees, review current work details, and see upcoming probation reviews.
         </p>
@@ -47,14 +47,14 @@ export default async function EmployeesPage({ searchParams }: EmployeesPageProps
         <div className="relative sm:col-span-2">
           <Search className="absolute left-3.5 top-3 h-4 w-4 text-slate-400" />
           <input
-            name="search"
+            aria-label="Search records" name="search"
             defaultValue={params.search ?? ''}
             placeholder="Search name, email, or employee number"
             className="wp-input py-2.5 pl-10 pr-3"
           />
         </div>
         <select
-          name="category"
+          aria-label="Employment category" name="category"
           defaultValue={category ?? ''}
           className="wp-input"
         >
@@ -62,13 +62,13 @@ export default async function EmployeesPage({ searchParams }: EmployeesPageProps
           <option value={EmploymentCategory.TEACHING}>Teaching</option>
           <option value={EmploymentCategory.NON_TEACHING}>Non-Teaching</option>
         </select>
-        <label className="flex min-h-11 items-center gap-2 rounded-lg border border-[var(--wp-border)] bg-white px-3 text-xs font-semibold">
+        <label className="flex min-h-11 items-center gap-2 rounded-lg border border-[var(--wp-border)] bg-white px-3 text-sm font-semibold">
           <input type="checkbox" name="needsReview" value="1" defaultChecked={params.needsReview === '1'} />
           Needs probation review
         </label>
         <div className="flex gap-2">
           <select
-            name="status"
+            aria-label="Status" name="status"
             defaultValue={status ?? ''}
             className="wp-input min-w-0 flex-1"
           >
@@ -83,7 +83,7 @@ export default async function EmployeesPage({ searchParams }: EmployeesPageProps
         </div>
       </form>
 
-      <div className="wp-table-wrap">
+      <div className="wp-table-wrap"><div className="flex flex-wrap items-center justify-between gap-3 border-b px-4 py-3"><p className="text-sm font-semibold">{employees.length} matching employee{employees.length === 1 ? '' : 's'}</p><Link href="/dashboard/employees" className="text-sm font-semibold text-[var(--tenant-primary)] hover:underline">Clear filters</Link></div>
           <table className="wp-table">
             <thead>
               <tr>
@@ -119,7 +119,7 @@ export default async function EmployeesPage({ searchParams }: EmployeesPageProps
                       <Link href={`/dashboard/employees/${employee.id}`} className="font-bold hover:underline">
                         {employee.firstName} {employee.lastName}
                       </Link>
-                      <p className="text-[11px] text-slate-500">{employee.email}</p>
+                      <p className="text-xs text-slate-500">{employee.email}</p>
                     </td>
                     <td className="px-5 py-4 font-bold">{employee.employeeNumber}</td>
                     <td className="px-5 py-4">{employment?.department ?? '—'}</td>
@@ -133,7 +133,7 @@ export default async function EmployeesPage({ searchParams }: EmployeesPageProps
                       ) : '—'}
                     </td>
                     <td className="px-5 py-4">
-                      <span className="rounded-full bg-emerald-50 px-2.5 py-1 font-bold text-emerald-700">
+                      <span className={`rounded-full px-2.5 py-1 font-bold ${employee.employeeStatus === EmployeeStatus.ACTIVE ? 'bg-emerald-50 text-emerald-700' : 'bg-slate-100 text-slate-600'}`}>
                         {formatStatusLabel(employee.employeeStatus)}
                       </span>
                     </td>

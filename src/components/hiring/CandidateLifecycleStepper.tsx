@@ -241,14 +241,14 @@ export function CandidateLifecycleStepper({
     currentStatus === ApplicationStatus.WITHDRAWN;
 
   return (
-    <div className="rounded-3xl border border-[#E8EAED] bg-white p-6 shadow-2xs dark:border-slate-800 dark:bg-slate-900">
+    <div className="rounded-lg border border-[var(--wp-border)] bg-white p-6">
       {/* Terminal State Alert */}
       {isTerminal && (
         <div
-          className={`mb-4 flex items-center justify-between rounded-2xl px-4 py-3 text-xs font-semibold ${
+          className={`mb-4 flex items-center justify-between rounded-lg px-4 py-3 text-sm font-semibold ${
             currentStatus === ApplicationStatus.REJECTED
-              ? 'bg-rose-50 text-rose-700 dark:bg-rose-950/60 dark:text-rose-300 ring-1 ring-rose-200 dark:ring-rose-800'
-              : 'bg-[#F8F9FA] text-[#6B7280] dark:bg-slate-800 dark:text-slate-300 ring-1 ring-[#E8EAED] dark:ring-slate-700'
+              ? 'bg-rose-50 text-rose-700 ring-1 ring-rose-200 '
+              : 'bg-[var(--wp-surface-subtle)] text-[var(--wp-text-muted)] ring-1 ring-[#E8EAED] '
           }`}
         >
           <div className="flex items-center gap-2">
@@ -258,35 +258,35 @@ export function CandidateLifecycleStepper({
               <strong className="uppercase">{currentStatus}</strong>. Pipeline lifecycle is closed.
             </span>
           </div>
-          <span className="text-[11px] opacity-75">Terminal Stage</span>
+          <span className="text-xs opacity-75">Terminal Stage</span>
         </div>
       )}
 
       {/* Stepper Header */}
-      <div className="mb-4 flex items-center justify-between border-b border-[#E8EAED] pb-3 dark:border-slate-800">
+      <div className="mb-4 flex items-center justify-between border-b border-[var(--wp-border)] pb-3">
         <div className="flex items-center gap-2">
-          <span className="text-[10px] font-extrabold uppercase tracking-wider text-[#6B7280] dark:text-slate-400">
-            SAGA Institutional Lifecycle ({isTeaching ? 'Faculty / Teaching' : 'Non-Teaching'})
+          <span className="text-xs font-semibold uppercase tracking-wider text-[var(--wp-text-muted)]">
+            Institutional Lifecycle ({isTeaching ? 'Faculty / Teaching' : 'Non-Teaching'})
           </span>
-          <span className="inline-flex items-center rounded-lg bg-[#F8F9FA] border border-[#E8EAED] px-2 py-0.5 text-[11px] font-bold text-[#181A1C] dark:bg-slate-800 dark:text-slate-300">
+          <span className="inline-flex items-center rounded-lg bg-[var(--wp-surface-subtle)] border border-[var(--wp-border)] px-2 py-0.5 text-xs font-bold text-[var(--wp-text)]">
             Stage {activeIndex + 1} of {steps.length}
           </span>
         </div>
 
         {/* Current Stage Highlight */}
         <div className="flex items-center gap-2">
-          <span className="text-xs font-semibold text-[#6B7280] dark:text-slate-400">
+          <span className="text-sm font-semibold text-[var(--wp-text-muted)]">
             Current Stage:
           </span>
           <span
-            className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-bold ${
+            className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-sm font-bold ${
               currentStatus === ApplicationStatus.HIRED
-                ? 'bg-teal-50 text-teal-700 dark:bg-teal-950 dark:text-teal-300 ring-1 ring-teal-500/30'
+                ? 'bg-teal-50 text-teal-700 ring-1 ring-teal-500/30'
                 : isReadyToHire
-                ? 'bg-emerald-50 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-300 ring-1 ring-emerald-500/30 animate-pulse'
+                ? 'bg-emerald-50 text-emerald-700 ring-1 ring-emerald-500/30 animate-pulse'
                 : isTerminal
-                ? 'bg-rose-50 text-rose-700 dark:bg-rose-950 dark:text-rose-300'
-                : 'bg-[#181A1C] text-white shadow-xs'
+                ? 'bg-rose-50 text-rose-700 '
+                : 'bg-[var(--tenant-primary)] text-[var(--tenant-primary-foreground)] '
             }`}
           >
             <span className="h-1.5 w-1.5 rounded-full bg-current" />
@@ -311,14 +311,14 @@ export function CandidateLifecycleStepper({
                 {/* Step Node */}
                 <div className="flex flex-col items-center group relative cursor-default">
                   <div
-                    className={`flex h-9 w-9 items-center justify-center rounded-2xl border transition-all ${
+                    className={`flex h-9 w-9 items-center justify-center rounded-lg border transition-all ${
                       isCompleted
-                        ? 'border-emerald-600 bg-emerald-600 text-white shadow-2xs'
+                        ? 'border-emerald-600 bg-emerald-600 text-white '
                         : isCurrent
-                        ? 'border-[#181A1C] bg-[#181A1C] text-white ring-4 ring-slate-100 dark:border-white dark:bg-white dark:text-[#181A1C] dark:ring-slate-800'
+                        ? 'border-[#181A1C] bg-[var(--tenant-primary)] text-[var(--tenant-primary-foreground)] ring-4 ring-slate-100 '
                         : isGate
-                        ? 'border-dashed border-amber-300 bg-amber-50/50 text-amber-600 dark:border-amber-700 dark:bg-amber-950/20'
-                        : 'border-[#E8EAED] bg-[#F8F9FA] text-[#9CA3AF] dark:border-slate-800 dark:bg-slate-900'
+                        ? 'border-dashed border-amber-300 bg-amber-50/50 text-amber-600 '
+                        : 'border-[var(--wp-border)] bg-[var(--wp-surface-subtle)] text-[var(--wp-text-muted)] '
                     }`}
                   >
                     {isCompleted ? (
@@ -330,19 +330,19 @@ export function CandidateLifecycleStepper({
 
                   {/* Label */}
                   <span
-                    className={`mt-1.5 text-[11px] font-bold text-center leading-tight whitespace-nowrap ${
+                    className={`mt-1.5 text-xs font-bold text-center leading-tight whitespace-nowrap ${
                       isCurrent
-                        ? 'text-[#181A1C] dark:text-white font-extrabold'
+                        ? 'text-[var(--wp-text)] font-semibold'
                         : isCompleted
-                        ? 'text-emerald-700 dark:text-emerald-400'
-                        : 'text-[#9CA3AF] dark:text-slate-500'
+                        ? 'text-emerald-700 '
+                        : 'text-[var(--wp-text-muted)] '
                     }`}
                   >
                     {step.shortLabel}
                   </span>
 
                   {/* Tooltip on hover */}
-                  <div className="pointer-events-none absolute -bottom-8 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity z-20 whitespace-nowrap rounded-lg bg-[#181A1C] px-2 py-1 text-[10px] text-white shadow-lg">
+                  <div className="pointer-events-none absolute -bottom-8 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity z-20 whitespace-nowrap rounded-lg bg-[var(--tenant-primary)] px-2 py-1 text-xs text-[var(--tenant-primary-foreground)] shadow-lg">
                     {step.description}
                   </div>
                 </div>
@@ -353,7 +353,7 @@ export function CandidateLifecycleStepper({
                     className={`h-[2px] flex-1 mx-1.5 transition-colors ${
                       idx < activeIndex
                         ? 'bg-emerald-600'
-                        : 'bg-[#E8EAED] dark:bg-slate-800'
+                        : 'bg-[#E8EAED] '
                     }`}
                   />
                 )}
