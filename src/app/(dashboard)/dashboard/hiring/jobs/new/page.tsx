@@ -5,6 +5,7 @@ import { canManageJobs } from '@/lib/permissions/rbac';
 import { createJobAction } from '@/features/hiring/actions';
 import { RequirementsBuilder } from '@/components/hiring/RequirementsBuilder';
 import { ArrowLeft, Save, Send } from 'lucide-react';
+import { HiringPageHeader } from '@/components/hiring/HiringPageHeader';
 
 export default async function NewJobPage() {
   const user = await getSession();
@@ -14,23 +15,29 @@ export default async function NewJobPage() {
 
   return (
     <div className="max-w-4xl mx-auto space-y-6">
-      {/* Top Header */}
-      <div className="flex items-center gap-3">
-        <Link
-          href="/dashboard/hiring/jobs"
-          className="rounded-lg p-2 text-slate-500 hover:bg-slate-100 hover:text-slate-900"
-        >
-          <ArrowLeft className="h-4 w-4" />
-        </Link>
-        <div>
-          <h1 className="wp-page-title text-xl font-bold text-slate-900">
-            Create New Job Posting
-          </h1>
-          <p className="text-sm text-slate-500">
-            Fill in job opening details and add structured qualification criteria
-          </p>
-        </div>
-      </div>
+      {/* Top Header with Breadcrumb and Title */}
+      <HiringPageHeader
+        breadcrumbs={[
+          { label: 'Hiring', href: '/dashboard/hiring/pipeline' },
+          { label: 'Job Openings', href: '/dashboard/hiring/jobs' },
+          { label: 'New Job' },
+        ]}
+        title={
+          <div className="flex items-center gap-2.5">
+            <Link
+              href="/dashboard/hiring/jobs"
+              className="rounded-lg p-1.5 text-slate-500 hover:bg-slate-100 hover:text-slate-900 transition"
+              aria-label="Back to Job Openings"
+            >
+              <ArrowLeft className="h-4 w-4" />
+            </Link>
+            <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-slate-900">
+              Create New Job Posting
+            </h1>
+          </div>
+        }
+        description="Fill in job opening details and add structured qualification criteria"
+      />
 
       <form action={createJobAction} className="space-y-6">
         {/* Basic Information */}

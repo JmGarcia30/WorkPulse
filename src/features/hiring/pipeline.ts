@@ -64,62 +64,116 @@ export function getAvailableNextStatuses(fromStatus: ApplicationStatus): Applica
   return ALLOWED_TRANSITIONS[fromStatus] || [];
 }
 
-export const STAGE_CONFIG: Record<
-  ApplicationStatus,
-  { label: string; badgeBg: string; badgeText: string; borderColor: string }
-> = {
+export interface StageStyleConfig {
+  label: string;
+  badgeBg: string;
+  badgeText: string;
+  borderColor: string;
+  headerPillBg: string;
+  headerPillText: string;
+  headerCountBg: string;
+  headerCountText: string;
+  dotColor: string;
+}
+
+export const STAGE_CONFIG: Record<ApplicationStatus, StageStyleConfig> = {
   [ApplicationStatus.APPLIED]: {
     label: 'Applied',
-    badgeBg: 'bg-[#F8F9FA] dark:bg-slate-800',
-    badgeText: 'text-[#181A1C] dark:text-slate-100',
-    borderColor: 'border-[#E8EAED] dark:border-slate-700',
+    badgeBg: 'bg-slate-100 border border-slate-200/80',
+    badgeText: 'text-slate-700',
+    borderColor: 'border-slate-300',
+    headerPillBg: 'bg-slate-600',
+    headerPillText: 'text-white',
+    headerCountBg: 'bg-white',
+    headerCountText: 'text-slate-800',
+    dotColor: 'bg-slate-400',
   },
   [ApplicationStatus.SCREENING]: {
     label: 'Screening',
-    badgeBg: 'bg-amber-50 dark:bg-amber-950/60',
-    badgeText: 'text-amber-800 dark:text-amber-300',
-    borderColor: 'border-amber-200 dark:border-amber-800',
+    badgeBg: 'bg-amber-50 border border-amber-200/80',
+    badgeText: 'text-amber-800',
+    borderColor: 'border-amber-300',
+    headerPillBg: 'bg-amber-600',
+    headerPillText: 'text-white',
+    headerCountBg: 'bg-white',
+    headerCountText: 'text-amber-900',
+    dotColor: 'bg-amber-500',
   },
   [ApplicationStatus.SHORTLISTED]: {
     label: 'Shortlisted',
-    badgeBg: 'bg-emerald-50 dark:bg-emerald-950/60',
-    badgeText: 'text-emerald-800 dark:text-emerald-300',
-    borderColor: 'border-emerald-200 dark:border-emerald-800',
+    badgeBg: 'bg-teal-50 border border-teal-200/80',
+    badgeText: 'text-teal-800',
+    borderColor: 'border-teal-300',
+    headerPillBg: 'bg-teal-600',
+    headerPillText: 'text-white',
+    headerCountBg: 'bg-white',
+    headerCountText: 'text-teal-900',
+    dotColor: 'bg-teal-500',
   },
   [ApplicationStatus.INTERVIEW]: {
     label: 'Interview',
-    badgeBg: 'bg-purple-50 dark:bg-purple-950/60',
-    badgeText: 'text-purple-700 dark:text-purple-300',
-    borderColor: 'border-purple-200 dark:border-purple-800',
+    badgeBg: 'bg-purple-50 border border-purple-200/80',
+    badgeText: 'text-purple-700',
+    borderColor: 'border-purple-300',
+    headerPillBg: 'bg-purple-600',
+    headerPillText: 'text-white',
+    headerCountBg: 'bg-white',
+    headerCountText: 'text-purple-900',
+    dotColor: 'bg-purple-500',
   },
   [ApplicationStatus.ASSESSMENT]: {
     label: 'Assessment',
-    badgeBg: 'bg-amber-50 dark:bg-amber-950/60',
-    badgeText: 'text-amber-700 dark:text-amber-300',
-    borderColor: 'border-amber-200 dark:border-amber-800',
+    badgeBg: 'bg-blue-50 border border-blue-200/80',
+    badgeText: 'text-blue-700',
+    borderColor: 'border-blue-300',
+    headerPillBg: 'bg-blue-600',
+    headerPillText: 'text-white',
+    headerCountBg: 'bg-white',
+    headerCountText: 'text-blue-900',
+    dotColor: 'bg-blue-500',
   },
   [ApplicationStatus.OFFER]: {
     label: 'Offer',
-    badgeBg: 'bg-emerald-50 dark:bg-emerald-950/60',
-    badgeText: 'text-emerald-700 dark:text-emerald-300',
-    borderColor: 'border-emerald-200 dark:border-emerald-800',
+    badgeBg: 'bg-amber-50 border border-amber-200/80',
+    badgeText: 'text-amber-800',
+    borderColor: 'border-amber-300',
+    headerPillBg: 'bg-amber-500',
+    headerPillText: 'text-white',
+    headerCountBg: 'bg-white',
+    headerCountText: 'text-amber-950',
+    dotColor: 'bg-amber-500',
   },
   [ApplicationStatus.HIRED]: {
     label: 'Hired',
-    badgeBg: 'bg-teal-50 dark:bg-teal-950/60',
-    badgeText: 'text-teal-700 dark:text-teal-300',
-    borderColor: 'border-teal-200 dark:border-teal-800',
+    badgeBg: 'bg-emerald-50 border border-emerald-200/80',
+    badgeText: 'text-emerald-800',
+    borderColor: 'border-emerald-300',
+    headerPillBg: 'bg-emerald-600',
+    headerPillText: 'text-white',
+    headerCountBg: 'bg-white',
+    headerCountText: 'text-emerald-950',
+    dotColor: 'bg-emerald-500',
   },
   [ApplicationStatus.REJECTED]: {
     label: 'Rejected',
-    badgeBg: 'bg-rose-50 dark:bg-rose-950/60',
-    badgeText: 'text-rose-700 dark:text-rose-300',
-    borderColor: 'border-rose-200 dark:border-rose-800',
+    badgeBg: 'bg-rose-50 border border-rose-200/80',
+    badgeText: 'text-rose-700',
+    borderColor: 'border-rose-300',
+    headerPillBg: 'bg-rose-600',
+    headerPillText: 'text-white',
+    headerCountBg: 'bg-white',
+    headerCountText: 'text-rose-950',
+    dotColor: 'bg-rose-500',
   },
   [ApplicationStatus.WITHDRAWN]: {
     label: 'Withdrawn',
-    badgeBg: 'bg-slate-100 dark:bg-slate-800',
-    badgeText: 'text-slate-600 dark:text-slate-400',
-    borderColor: 'border-slate-200 dark:border-slate-800',
+    badgeBg: 'bg-slate-100 border border-slate-200/80',
+    badgeText: 'text-slate-600',
+    borderColor: 'border-slate-300',
+    headerPillBg: 'bg-slate-500',
+    headerPillText: 'text-white',
+    headerCountBg: 'bg-white',
+    headerCountText: 'text-slate-800',
+    dotColor: 'bg-slate-400',
   },
 };

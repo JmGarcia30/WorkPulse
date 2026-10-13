@@ -6,6 +6,7 @@ import { canManageJobs } from '@/lib/permissions/rbac';
 import { updateJobAction } from '@/features/hiring/actions';
 import { RequirementsBuilder } from '@/components/hiring/RequirementsBuilder';
 import { ArrowLeft, Save } from 'lucide-react';
+import { HiringPageHeader } from '@/components/hiring/HiringPageHeader';
 
 interface EditJobPageProps {
   params: Promise<{ jobId: string }>;
@@ -33,23 +34,30 @@ export default async function EditJobPage({ params }: EditJobPageProps) {
 
   return (
     <div className="max-w-4xl mx-auto space-y-6">
-      {/* Top Header */}
-      <div className="flex items-center gap-3">
-        <Link
-          href={`/dashboard/hiring/jobs/${jobId}`}
-          className="rounded-lg p-2 text-slate-500 hover:bg-slate-100 hover:text-slate-900"
-        >
-          <ArrowLeft className="h-4 w-4" />
-        </Link>
-        <div>
-          <h1 className="wp-page-title text-xl font-bold text-slate-900">
-            Edit Job Posting: {job.title}
-          </h1>
-          <p className="text-sm text-slate-500">
-            Update job description, parameters, or structured requirement tags
-          </p>
-        </div>
-      </div>
+      {/* Top Header with Breadcrumb and Title */}
+      <HiringPageHeader
+        breadcrumbs={[
+          { label: 'Hiring', href: '/dashboard/hiring/pipeline' },
+          { label: 'Job Openings', href: '/dashboard/hiring/jobs' },
+          { label: job.title, href: `/dashboard/hiring/jobs/${jobId}` },
+          { label: 'Edit' },
+        ]}
+        title={
+          <div className="flex items-center gap-2.5">
+            <Link
+              href={`/dashboard/hiring/jobs/${jobId}`}
+              className="rounded-lg p-1.5 text-slate-500 hover:bg-slate-100 hover:text-slate-900 transition"
+              aria-label="Back to Job Details"
+            >
+              <ArrowLeft className="h-4 w-4" />
+            </Link>
+            <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-slate-900">
+              Edit Job Posting: {job.title}
+            </h1>
+          </div>
+        }
+        description="Update job description, parameters, or structured requirement tags"
+      />
 
       <form action={updateJobWithId} className="space-y-6">
         {/* Basic Information */}

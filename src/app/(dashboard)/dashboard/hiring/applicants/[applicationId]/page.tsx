@@ -1,6 +1,4 @@
-import { SectionNav } from '@/components/layout/WorkspaceNav';
 import { notFound } from 'next/navigation';
-import Link from 'next/link';
 import { requireBackOfficeContext } from '@/lib/auth/guards';
 import { prisma } from '@/lib/db/prisma';
 import {
@@ -14,44 +12,24 @@ import {
   canManageJobs,
   canViewEmployees,
 } from '@/lib/permissions/rbac';
-import { ApplicationStatus, OfferStatus } from '@prisma/client';
-import { StatusChangeDialog } from '@/components/hiring/StatusChangeDialog';
-import { ApplicationTimeline } from '@/components/hiring/ApplicationTimeline';
-import { CandidateInterviewsSection } from '@/components/hiring/CandidateInterviewsSection';
-import { CandidateAssessmentsSection } from '@/components/hiring/CandidateAssessmentsSection';
-import { CandidateOffersSection } from '@/components/hiring/CandidateOffersSection';
-import { CandidateOnboardingSection } from '@/components/hiring/CandidateOnboardingSection';
-import { CandidateDocumentsSection } from '@/components/hiring/CandidateDocumentsSection';
-import { ParsedResumeSection } from '@/components/hiring/ParsedResumeSection';
-import { CandidateLifecycleStepper } from '@/components/hiring/CandidateLifecycleStepper';
-import { HiringReadinessCard } from '@/components/hiring/HiringReadinessCard';
 import { calculateHiringReadiness } from '@/features/hiring/readiness';
 import { ensureRecruitmentDocumentsExist } from '@/features/hiring/saga-requirements';
-import { STAGE_CONFIG } from '@/features/hiring/pipeline';
-import {
-  ArrowLeft,
-  Mail,
-  Phone,
-  FileText,
-  Download,
-  CheckCircle2,
-  Briefcase,
-  Building2,
-  Calendar,
-  Sparkles,
-  MapPin,
-  Clock,
-} from 'lucide-react';
+import { ApplicantProfileView } from '@/components/hiring/ApplicantProfileView';
 
 interface CandidateProfilePageProps {
   params: Promise<{ applicationId: string }>;
+  searchParams: Promise<{ tab?: string }>;
 }
 
-export default async function CandidateProfilePage({ params }: CandidateProfilePageProps) {
+export default async function CandidateProfilePage({
+  params,
+  searchParams,
+}: CandidateProfilePageProps) {
   const user = await requireBackOfficeContext();
   if (!user) return null;
 
   const { applicationId } = await params;
+  const { tab } = await searchParams;
 
   // Multi-tenant check: Verify application belongs to user's Organization via Job relationship
   const [application, organizationUsers] = await Promise.all([
@@ -159,8 +137,8 @@ export default async function CandidateProfilePage({ params }: CandidateProfileP
   const canManageOff = canManageOffers(user);
   const canApproveOff = canApproveOffer(user);
   const canManageOnb = canManageOnboarding(user);
-
-  const candidateFullName = `${application.applicant.firstName} ${application.applicant.lastName}`;
+  const canManageJob = canManageJobs(user);
+  const canViewEmp = canViewEmployees(user);
 
   // Evaluate Hiring Readiness
   const readiness = calculateHiringReadiness({
@@ -209,396 +187,23 @@ export default async function CandidateProfilePage({ params }: CandidateProfileP
       : null,
   });
 
-  const stageConfig = STAGE_CONFIG[application.status] || {
-    label: application.status,
-    badgeBg: 'bg-slate-100 ',
-    badgeText: 'text-slate-700 ',
-  };
-
-  const hasAcceptedOffer = application.offers.some(
-    (o) => o.status === OfferStatus.ACCEPTED
-  );
-
   return (
-    <div className="mx-auto space-y-5">
-      {/* Top Breadcrumb / Nav */}
-      <div className="wp-profile-header flex flex-wrap items-center justify-between gap-3">
-        <div className="flex items-center gap-3">
-          <Link
-            href="/dashboard/hiring/applicants"
-            className="flex items-center gap-1.5 rounded-md border border-slate-200 bg-white px-3 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-50 transition"
-          >
-            <ArrowLeft className="h-3.5 w-3.5" />
-            <span>Applicants Directory</span>
-          </Link>
-          <span className="text-slate-300">/</span>
-          <span className="text-sm font-medium text-slate-500">
-            Application #{application.id.slice(0, 8)}
-          </span>
-        </div>
-
-        <div className="flex items-center gap-2">
-          <span
-            className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-sm font-bold ${stageConfig.badgeBg} ${stageConfig.badgeText}`}
-          >
-            <span className="h-1.5 w-1.5 rounded-full bg-current" />
-            Stage: {stageConfig.label}
-          </span>
-        </div>
-      </div>
-
-      {/* Candidate Command Center Header Card */}
-      <div className="rounded-lg border border-[var(--wp-border)] bg-white p-6 space-y-5">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-          <div className="flex items-start gap-4">
-            {/* Candidate Avatar Initials */}
-            <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-lg bg-[var(--tenant-primary)] text-[var(--tenant-primary-foreground)] font-semibold text-lg">
-              {application.applicant.firstName[0]}
-              {application.applicant.lastName[0]}
-            </div>
-
-            <div className="space-y-1">
-              <div className="flex flex-wrap items-center gap-2.5">
-                <h1 className="wp-page-title text-xl font-bold text-[var(--wp-text)]">
-                  {candidateFullName}
-                </h1>
-                <span
-                  className={`inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-xs ${readiness.badgeBg} ${readiness.badgeText}`}
-                >
-                  <span className="h-1.5 w-1.5 rounded-full bg-current" />
-                  {readiness.badgeLabel}
-                </span>
-              </div>
-
-                {/* Role & Department & Category */}
-                <div className="flex flex-wrap items-center gap-2 text-sm text-[var(--wp-text-muted)]">
-                  <span className="flex items-center gap-1 font-bold text-[var(--wp-text)]">
-                    <Briefcase className="h-3.5 w-3.5 text-[var(--wp-text)]" />
-                    {application.job.title}
-                  </span>
-                  <span className="text-[#E8EAED]">•</span>
-                  <span className="flex items-center gap-1">
-                    <Building2 className="h-3.5 w-3.5 text-[var(--wp-text-muted)]" />
-                    {application.job.department}
-                  </span>
-                  <span className="text-[#E8EAED]">•</span>
-                  <span
-                    className={`inline-flex items-center rounded-lg px-2 py-0.5 text-xs font-bold ${
-                      application.job.category === 'TEACHING'
-                        ? 'bg-[var(--tenant-tint)] text-indigo-700   ring-1 ring-indigo-500/20'
-                        : 'bg-slate-100 text-slate-700  '
-                    }`}
-                  >
-                    {application.job.category === 'TEACHING'
-                      ? 'Faculty / Teaching'
-                      : 'Non-Teaching Personnel'}
-                  </span>
-                  {application.job.location && (
-                    <>
-                      <span className="text-[#E8EAED]">•</span>
-                      <span className="flex items-center gap-1">
-                        <MapPin className="h-3.5 w-3.5 text-[var(--wp-text-muted)]" />
-                        {application.job.location}
-                      </span>
-                    </>
-                  )}
-                </div>
-            </div>
-          </div>
-
-          {/* Quick Stats / Timestamps */}
-          <div className="flex flex-wrap sm:flex-col items-start sm:items-end gap-1.5 text-sm text-[var(--wp-text-muted)]">
-            <div className="flex items-center gap-1.5">
-              <Calendar className="h-3.5 w-3.5 text-[var(--wp-text-muted)]" />
-              <span>Applied {new Date(application.appliedAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</span>
-            </div>
-            <div className="flex items-center gap-1.5 text-xs text-[var(--wp-text-muted)]">
-              <Clock className="h-3 w-3" />
-              <span>{application.interviews.length} Interview(s) • {application.assessments.length} Assessment(s)</span>
-            </div>
-          </div>
-        </div>
-
-        {/* Contact Strip */}
-        <div className="flex flex-wrap items-center gap-3 pt-4 border-t border-[var(--wp-border)] text-sm">
-          <a
-            href={`mailto:${application.applicant.email}`}
-            className="inline-flex items-center gap-2 rounded-md border border-[var(--wp-border)] bg-[var(--wp-surface-subtle)] px-3 py-1.5 font-semibold text-[var(--wp-text)] hover:bg-[var(--tenant-primary)] hover:text-[var(--tenant-primary-foreground)] transition"
-          >
-            <Mail className="h-3.5 w-3.5" />
-            <span>{application.applicant.email}</span>
-          </a>
-
-          {application.applicant.phone && (
-            <a
-              href={`tel:${application.applicant.phone}`}
-              className="inline-flex items-center gap-2 rounded-md border border-[var(--wp-border)] bg-[var(--wp-surface-subtle)] px-3 py-1.5 font-semibold text-[var(--wp-text)] hover:bg-[var(--tenant-primary)] hover:text-[var(--tenant-primary-foreground)] transition"
-            >
-              <Phone className="h-3.5 w-3.5" />
-              <span>{application.applicant.phone}</span>
-            </a>
-          )}
-        </div>
-      </div>
-
-      {/* Visual SAGA Institutional Lifecycle Stepper */}
-      <CandidateLifecycleStepper
-        currentStatus={application.status}
-        category={application.job.category}
-        documentsSatisfied={
-          readiness.checklist.find((c) => c.key === 'documents')?.isComplete
-        }
-        writtenExamPassed={
-          readiness.checklist.find((c) => c.key === 'assessment')?.isComplete
-        }
-        teachingDemoSatisfactory={
-          readiness.checklist.find((c) => c.key === 'teaching_demo')?.isComplete
-        }
-        hodInterviewCompleted={
-          readiness.checklist.find((c) => c.key === 'hod_interview')?.isComplete
-        }
-        presidentInterviewCompleted={
-          readiness.checklist.find((c) => c.key === 'president_interview')?.isComplete
-        }
-        hasInterviews={application.interviews.length > 0}
-        hasEvaluations={application.interviews.some((i) => Boolean(i.evaluation))}
-        hasAssessments={application.assessments.length > 0}
-        assessmentsPassed={application.assessments.every((a) => a.status === 'PASSED')}
-        hasOffer={application.offers.length > 0}
-        offerAccepted={hasAcceptedOffer}
-        isOnboarding={Boolean(application.onboarding)}
-        onboardingCompleted={application.onboarding?.status === 'COMPLETED'}
-        isReadyToHire={readiness.isReadyToHire}
-      />
-
-      <SectionNav label="Candidate sections" items={[
-        { id: 'candidate-review', label: 'Resume & documents' }, { id: 'candidate-interviews', label: 'Interviews & evaluations' },
-        { id: 'candidate-assessments', label: 'Assessments' }, { id: 'candidate-offers', label: 'Offers' },
-        { id: 'candidate-onboarding', label: 'Onboarding' }, { id: 'candidate-readiness', label: 'Readiness & history' },
-      ]} />
-      {/* Main Command Center 2-Column Grid */}
-      <div className="grid gap-6 lg:grid-cols-3">
-        {/* Left Column (2 Cols): Core Evaluation Details & Sub-pipelines */}
-        <div id="candidate-review" className="min-w-0 lg:col-span-2 space-y-5">
-          {/* AI-Assisted Resume Analysis Section */}
-          {application.documents.some(
-            (doc) => doc.fileType === 'application/pdf' || doc.fileType.includes('wordprocessingml')
-          ) && (
-            <ParsedResumeSection
-              documentId={
-                application.documents.find(
-                  (doc) => doc.fileType === 'application/pdf' || doc.fileType.includes('wordprocessingml')
-                )!.id
-              }
-              parsedResume={(() => {
-                const doc = application.documents.find((d) => d.parsedResume);
-                if (!doc?.parsedResume) return null;
-                const pr = doc.parsedResume;
-                return {
-                  summary: pr.summary,
-                  skills: pr.skills as unknown as string[],
-                  education: pr.education as unknown as Array<{
-                    institution: string;
-                    degree: string;
-                    fieldOfStudy: string;
-                    startDate: string;
-                    endDate: string;
-                  }>,
-                  workExperience: pr.workExperience as unknown as Array<{
-                    company: string;
-                    position: string;
-                    startDate: string;
-                    endDate: string;
-                    description: string;
-                  }>,
-                  certifications: pr.certifications as unknown as string[],
-                  languages: pr.languages as unknown as string[],
-                  totalExperienceYears: pr.totalExperienceYears,
-                  matchScore: pr.matchScore,
-                  matchDetails: pr.matchDetails as unknown as Array<{
-                    requirementId: string;
-                    requirementName: string;
-                    requirementType: string;
-                    isRequired: boolean;
-                    matched: boolean;
-                    confidence: 'high' | 'medium' | 'low';
-                    evidence: string;
-                  }> | null,
-                  parsedAt: pr.parsedAt.toISOString(),
-                  parseError: pr.parseError,
-                };
-              })()}
-              jobRequirements={application.job.structuredReqs.map((req) => ({
-                id: req.id,
-                name: req.name,
-                type: req.type,
-                isRequired: req.isRequired,
-              }))}
-              canManage={canManageJobs(user)}
-            />
-          )}
-
-          {/* SAGA Document Requirements Checklist */}
-          <CandidateDocumentsSection
-            applicationId={application.id}
-            category={application.job.category}
-            documents={application.recruitmentDocuments}
-            canManage={canManageOnb}
-            organizationSlug={application.job.organization.slug}
-          />
-
-          {/* Cover Letter & Statement */}
-          {application.coverLetter && (
-            <div className="rounded-lg border border-[var(--wp-border)] bg-white p-6 space-y-3">
-              <h3 className="text-sm font-bold text-[var(--wp-text-muted)] uppercase tracking-wider flex items-center gap-2">
-                <FileText className="h-4 w-4 text-[var(--wp-text)]" />
-                Cover Letter & Statement
-              </h3>
-              <div className="rounded-lg border border-[var(--wp-border)] bg-[var(--wp-surface-subtle)] p-4 text-sm text-[var(--wp-text)] leading-relaxed whitespace-pre-line">
-                {application.coverLetter}
-              </div>
-            </div>
-          )}
-
-          {/* Job Requirement Criteria Checklist */}
-          {application.job.structuredReqs.length > 0 && (
-            <div className="rounded-lg border border-[var(--wp-border)] bg-white p-6 space-y-3">
-              <h3 className="text-sm font-bold text-[var(--wp-text-muted)] uppercase tracking-wider">
-                Job Qualification Criteria
-              </h3>
-              <div className="grid gap-2.5 sm:grid-cols-2">
-                {application.job.structuredReqs.map((req) => (
-                  <div
-                    key={req.id}
-                    className="flex items-start gap-2.5 rounded-lg border border-[var(--wp-border)] bg-[var(--wp-surface-subtle)] p-3 text-sm"
-                  >
-                    <CheckCircle2 className="mt-0.5 h-4 w-4 text-[var(--wp-text)] shrink-0" />
-                    <div>
-                      <span className="font-bold text-[var(--wp-text)]">
-                        {req.name}
-                      </span>
-                      <p className="text-xs text-[var(--wp-text-muted)]">{req.type}</p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {/* Candidate Interview Management & Evaluation Section */}
-          <section id="candidate-interviews" aria-label="interviews"><CandidateInterviewsSection
-            applicationId={application.id}
-            candidateName={candidateFullName}
-            jobTitle={application.job.title}
-            interviews={application.interviews}
-            canManage={canManageIv}
-          /></section>
-
-          {/* Pre-Employment Assessments Section */}
-          <section id="candidate-assessments" aria-label="assessments"><CandidateAssessmentsSection
-            applicationId={application.id}
-            candidateName={candidateFullName}
-            jobTitle={application.job.title}
-            assessments={application.assessments}
-            organizationEvaluators={organizationUsers}
-            canManage={canManageAss}
-            canRecordResult={canRecordScore}
-          /></section>
-
-          {/* Employment Offers Section */}
-          <section id="candidate-offers" aria-label="offers"><CandidateOffersSection
-            applicationId={application.id}
-            candidateName={candidateFullName}
-            jobTitle={application.job.title}
-            offers={application.offers}
-            canManage={canManageOff}
-            canApprove={canApproveOff}
-          /></section>
-
-          {/* Pre-Employment Onboarding Checklist Section */}
-          <section id="candidate-onboarding" aria-label="onboarding"><CandidateOnboardingSection
-            applicationId={application.id}
-            candidateName={candidateFullName}
-            offers={application.offers}
-            onboarding={application.onboarding}
-            canManage={canManageOnb}
-            category={application.job.category}
-          /></section>
-        </div>
-
-        {/* Right Column (1 Col): Hiring Readiness Gate, Status Controller & History Timeline */}
-        <aside id="candidate-readiness" aria-label="Hiring readiness and history" className="min-w-0 space-y-5">
-          {/* Prominent Hiring Readiness Gate Card */}
-          <HiringReadinessCard
-            applicationId={application.id}
-            candidateName={candidateFullName}
-            jobTitle={application.job.title}
-            readiness={readiness}
-            canManage={canEditStatus}
-            currentStatus={application.status}
-            employmentCategory={application.job.category}
-            employeeId={canViewEmployees(user) ? application.employee?.id : undefined}
-          />
-
-          {/* Status Change Control Dialog */}
-          {canEditStatus ? (
-            <StatusChangeDialog
-              applicationId={application.id}
-              currentStatus={application.status}
-            />
-          ) : (
-            <div className="rounded-lg border border-slate-200 bg-white p-4 text-sm text-slate-500">
-              You are signed in with read-only permissions for status modifications.
-            </div>
-          )}
-
-          {/* Uploaded Resume Document Card */}
-          <div className="rounded-lg border border-slate-200 bg-white p-6 space-y-3">
-            <h3 className="text-sm font-semibold text-slate-500 uppercase tracking-wider">
-              Uploaded Resume Document
-            </h3>
-            {application.documents.length === 0 ? (
-              <p className="text-sm text-slate-500">No resume file attached.</p>
-            ) : (
-              application.documents.map((doc) => (
-                <div
-                  key={doc.id}
-                  className="flex items-center justify-between rounded-md border border-slate-200 bg-slate-50 p-3.5"
-                >
-                  <div className="truncate pr-2">
-                    <p className="text-sm font-semibold text-slate-900 truncate">
-                      {doc.fileName}
-                    </p>
-                    <p className="text-xs text-slate-500">
-                      {(doc.fileSize / 1024).toFixed(1)} KB • {doc.fileType.split('/')[1] || 'doc'}
-                    </p>
-                  </div>
-
-                  <a
-                    href={`/api/resumes/${doc.id}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center gap-1 rounded-md bg-[var(--tenant-primary)] px-3.5 py-1.5 text-sm font-bold text-[var(--tenant-primary-foreground)] hover:brightness-95 shrink-0 transition"
-                  >
-                    <Download className="h-3.5 w-3.5" /> Download
-                  </a>
-                </div>
-              ))
-            )}
-          </div>
-
-          {/* Reusable Unified Activity & Status Timeline */}
-          <ApplicationTimeline
-            initialStatus={application.status}
-            appliedAt={application.appliedAt}
-            history={application.history}
-            interviews={application.interviews}
-            assessments={application.assessments}
-            offers={application.offers}
-            onboarding={application.onboarding}
-          />
-        </aside>
-      </div>
-    </div>
+    <ApplicantProfileView
+      application={application}
+      organizationUsers={organizationUsers}
+      readiness={readiness}
+      initialTab={tab}
+      permissions={{
+        canEditStatus,
+        canManageIv,
+        canManageAss,
+        canRecordScore,
+        canManageOff,
+        canApproveOff,
+        canManageOnb,
+        canManageJobs: canManageJob,
+        canViewEmployees: canViewEmp,
+      }}
+    />
   );
 }

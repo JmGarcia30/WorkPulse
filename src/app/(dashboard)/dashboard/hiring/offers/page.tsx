@@ -1,32 +1,26 @@
-import Link from 'next/link';
 import { getSession } from '@/lib/auth/session';
 import { prisma } from '@/lib/db/prisma';
 import { canViewHiringData } from '@/lib/permissions/rbac';
 import { OfferStatus } from '@prisma/client';
 import { ErrorState } from '@/components/ui/ErrorState';
-import {
-  OFFER_STAGE_CONFIG,
-  PAY_FREQUENCY_CONFIG,
-  isActiveOfferStatus,
-} from '@/features/hiring/offer-pipeline';
-import {
-  FileText,
-  Search,
-  Eye,
-  Calendar,
-  DollarSign,
-  User,
-  ShieldCheck,
-  Clock,
-} from 'lucide-react';
+import { FileText } from 'lucide-react';
+import { HiringPageHeader } from '@/components/hiring/HiringPageHeader';
+import { HiringFilterToolbar, FilterPill } from '@/components/hiring/HiringFilterToolbar';
+import { HiringPagination } from '@/components/hiring/HiringPagination';
+import { HiringCardWorkspace, WorkspaceCandidateItem } from '@/components/hiring/HiringCardWorkspace';
+import { formatStatusLabel } from '@/lib/ui/format-status';
 
 interface OffersPageProps {
   searchParams: Promise<{
     status?: string;
     jobId?: string;
     search?: string;
+    sort?: string;
+    page?: string;
   }>;
 }
+
+const PAGE_SIZE = 9;
 
 export default async function OffersPage({ searchParams }: OffersPageProps) {
   const user = await getSession();
@@ -36,7 +30,7 @@ export default async function OffersPage({ searchParams }: OffersPageProps) {
     return (
       <ErrorState
         title="Access Denied"
-        message="You do not have permission to view organization employment offers."
+        message="You do not have permission to view organization offers."
       />
     );
   }
@@ -45,276 +39,306 @@ export default async function OffersPage({ searchParams }: OffersPageProps) {
   const statusFilter = params.status;
   const jobIdFilter = params.jobId;
   const searchQuery = params.search?.trim();
+  const sort = params.sort || 'newest';
 
-  // Multi-tenant query: Derive offers via Offer -> Application -> Job -> Organization
-  const offers = await prisma.offer.findMany({
-    where: {
-      application: {
-        job: {
-          organizationId: user.organizationId,
-          id: jobIdFilter || undefined,
-        },
-        OR: searchQuery
-          ? [
-              { applicant: { firstName: { contains: searchQuery, mode: 'insensitive' } } },
-              { applicant: { lastName: { contains: searchQuery, mode: 'insensitive' } } },
-              { applicant: { email: { contains: searchQuery, mode: 'insensitive' } } },
-              { job: { title: { contains: searchQuery, mode: 'insensitive' } } },
-            ]
-          : undefined,
+  // Validate pagination
+  const rawPage = parseInt(params.page || '1', 10);
+  const currentPage = isNaN(rawPage) || rawPage < 1 ? 1 : rawPage;
+
+  // Sorting
+  let orderByClause: Record<string, unknown> = { createdAt: 'desc' };
+  if (sort === 'oldest') {
+    orderByClause = { createdAt: 'asc' };
+  } else if (sort === 'name_asc') {
+    orderByClause = { application: { applicant: { firstName: 'asc' } } };
+  } else if (sort === 'name_desc') {
+    orderByClause = { application: { applicant: { firstName: 'desc' } } };
+  }
+
+  // Where clause enforcing tenant isolation
+  const whereClause = {
+    application: {
+      job: {
+        organizationId: user.organizationId,
+        id: jobIdFilter || undefined,
       },
-      status:
-        statusFilter && statusFilter !== 'ALL' ? (statusFilter as OfferStatus) : undefined,
+      OR: searchQuery
+        ? [
+            { applicant: { firstName: { contains: searchQuery, mode: 'insensitive' as const } } },
+            { applicant: { lastName: { contains: searchQuery, mode: 'insensitive' as const } } },
+            { applicant: { email: { contains: searchQuery, mode: 'insensitive' as const } } },
+            { job: { title: { contains: searchQuery, mode: 'insensitive' as const } } },
+          ]
+        : undefined,
     },
-    orderBy: { createdAt: 'desc' },
-    include: {
-      application: {
-        include: {
-          applicant: {
-            select: { id: true, firstName: true, lastName: true, email: true },
-          },
-          job: {
-            select: { id: true, title: true, department: true },
+    status:
+      statusFilter && statusFilter !== 'ALL' ? (statusFilter as OfferStatus) : undefined,
+  };
+
+  // Parallel Queries: Paginated Offers, Total Count, Jobs, Status Counts
+  const [offers, totalCount, organizationJobs, statusCounts] = await Promise.all([
+    prisma.offer.findMany({
+      where: whereClause,
+      orderBy: orderByClause,
+      skip: (currentPage - 1) * PAGE_SIZE,
+      take: PAGE_SIZE,
+      include: {
+        application: {
+          include: {
+            applicant: {
+              select: { id: true, firstName: true, lastName: true, email: true, phone: true },
+            },
+            job: {
+              select: { id: true, title: true, department: true },
+            },
           },
         },
+        createdBy: {
+          select: { id: true, name: true, email: true, role: true },
+        },
+        approvedBy: {
+          select: { id: true, name: true, email: true, role: true },
+        },
       },
-      createdBy: {
-        select: { id: true, name: true, email: true, role: true },
-      },
-      approvedBy: {
-        select: { id: true, name: true, email: true, role: true },
-      },
-    },
+    }),
+    prisma.offer.count({ where: whereClause }),
+    prisma.job.findMany({
+      where: { organizationId: user.organizationId },
+      select: { id: true, title: true, department: true },
+      orderBy: { title: 'asc' },
+    }),
+    prisma.offer.groupBy({
+      by: ['status'],
+      where: { application: { job: { organizationId: user.organizationId } } },
+      _count: { _all: true },
+    }),
+  ]);
+
+  const totalPages = Math.ceil(totalCount / PAGE_SIZE) || 1;
+
+  // Build Status Counts Map
+  const statusCountsMap = new Map<string, number>();
+  let allOrgOffers = 0;
+  statusCounts.forEach((sc) => {
+    statusCountsMap.set(sc.status, sc._count._all);
+    allOrgOffers += sc._count._all;
   });
 
-  // Fetch filter options strictly for authenticated organization
-  const organizationJobs = await prisma.job.findMany({
-    where: { organizationId: user.organizationId },
-    select: { id: true, title: true },
-    orderBy: { title: 'asc' },
+  const baseParams = {
+    ...(searchQuery ? { search: searchQuery } : {}),
+    ...(jobIdFilter ? { jobId: jobIdFilter } : {}),
+    ...(sort !== 'newest' ? { sort } : {}),
+  };
+
+  const metricPills: FilterPill[] = [
+    {
+      label: 'All Offers',
+      count: allOrgOffers,
+      value: 'ALL',
+      isActive: !statusFilter || statusFilter === 'ALL',
+      href: `/dashboard/hiring/offers?${new URLSearchParams({ ...baseParams, status: 'ALL' }).toString()}`,
+    },
+    {
+      label: 'Draft',
+      count: statusCountsMap.get(OfferStatus.DRAFT) || 0,
+      value: OfferStatus.DRAFT,
+      isActive: statusFilter === OfferStatus.DRAFT,
+      href: `/dashboard/hiring/offers?${new URLSearchParams({ ...baseParams, status: OfferStatus.DRAFT }).toString()}`,
+    },
+    {
+      label: 'Pending Approval',
+      count: statusCountsMap.get(OfferStatus.PENDING_APPROVAL) || 0,
+      value: OfferStatus.PENDING_APPROVAL,
+      isActive: statusFilter === OfferStatus.PENDING_APPROVAL,
+      href: `/dashboard/hiring/offers?${new URLSearchParams({ ...baseParams, status: OfferStatus.PENDING_APPROVAL }).toString()}`,
+    },
+    {
+      label: 'Approved',
+      count: statusCountsMap.get(OfferStatus.APPROVED) || 0,
+      value: OfferStatus.APPROVED,
+      isActive: statusFilter === OfferStatus.APPROVED,
+      href: `/dashboard/hiring/offers?${new URLSearchParams({ ...baseParams, status: OfferStatus.APPROVED }).toString()}`,
+    },
+    {
+      label: 'Sent',
+      count: statusCountsMap.get(OfferStatus.SENT) || 0,
+      value: OfferStatus.SENT,
+      isActive: statusFilter === OfferStatus.SENT,
+      href: `/dashboard/hiring/offers?${new URLSearchParams({ ...baseParams, status: OfferStatus.SENT }).toString()}`,
+    },
+    {
+      label: 'Accepted',
+      count: statusCountsMap.get(OfferStatus.ACCEPTED) || 0,
+      value: OfferStatus.ACCEPTED,
+      isActive: statusFilter === OfferStatus.ACCEPTED,
+      href: `/dashboard/hiring/offers?${new URLSearchParams({ ...baseParams, status: OfferStatus.ACCEPTED }).toString()}`,
+    },
+  ];
+
+  // Map database offer items to Workspace candidate items
+  const candidateItems: WorkspaceCandidateItem[] = offers.map((offer) => {
+    const fullName = `${offer.application.applicant.firstName} ${offer.application.applicant.lastName}`;
+    const initials = `${offer.application.applicant.firstName[0] || ''}${offer.application.applicant.lastName[0] || ''}`.toUpperCase();
+    const formattedSalary = Number(offer.salary).toLocaleString('en-US');
+
+    const checklist = [
+      {
+        id: 'drafted',
+        title: 'Offer Package Drafted',
+        subtitle: `Created by ${offer.createdBy.name}`,
+        isComplete: true,
+      },
+      {
+        id: 'approved',
+        title: 'Compensation Approval',
+        subtitle: offer.approvedBy
+          ? `Approved by ${offer.approvedBy.name}`
+          : 'Pending management approval',
+        isComplete: Boolean(offer.approvedById),
+      },
+      {
+        id: 'sent',
+        title: 'Formal Offer Dispatched',
+        subtitle:
+          offer.status === OfferStatus.SENT ||
+          offer.status === OfferStatus.ACCEPTED ||
+          offer.status === OfferStatus.REJECTED
+            ? 'Delivered to candidate'
+            : 'Pending dispatch',
+        isComplete:
+          offer.status === OfferStatus.SENT ||
+          offer.status === OfferStatus.ACCEPTED ||
+          offer.status === OfferStatus.REJECTED,
+      },
+      {
+        id: 'employee_sign',
+        title: 'Candidate Acceptance Signature',
+        subtitle: offer.contractSignedByEmployee
+          ? 'Signed and confirmed by candidate'
+          : 'Awaiting candidate acceptance',
+        isComplete: offer.contractSignedByEmployee,
+      },
+      {
+        id: 'president_sign',
+        title: 'Institutional President Signature',
+        subtitle: offer.contractSignedByPresident
+          ? 'Counter-signed by President'
+          : 'Awaiting institutional sign-off',
+        isComplete: offer.contractSignedByPresident,
+      },
+    ];
+
+    return {
+      id: offer.id,
+      applicationId: offer.application.id,
+      name: fullName,
+      position: offer.application.job.title,
+      email: offer.application.applicant.email,
+      phone: offer.application.applicant.phone,
+      department: offer.application.job.department,
+      appliedDate: new Date(offer.createdAt).toLocaleDateString('en-US', {
+        month: 'short',
+        day: 'numeric',
+        year: 'numeric',
+      }),
+      status: offer.status,
+      statusLabel: formatStatusLabel(offer.status),
+      avatarInitials: initials,
+      workflowInfo: `PHP ${formattedSalary} / ${offer.payFrequency.toLowerCase()} • ${formatStatusLabel(offer.status)}`,
+      workflowIcon: 'checklist',
+      checklistTitle: 'Offer Approval & Execution Milestones',
+      checklist,
+      stageDetails: [
+        { label: 'Offered Compensation', value: `PHP ${formattedSalary}` },
+        { label: 'Pay Frequency', value: offer.payFrequency.replace(/_/g, ' ') },
+        {
+          label: 'Proposed Start Date',
+          value: new Date(offer.startDate).toLocaleDateString('en-US', {
+            month: 'short',
+            day: 'numeric',
+            year: 'numeric',
+          }),
+        },
+        { label: 'Compensation Drafted By', value: offer.createdBy.name },
+        {
+          label: 'Executive Approver',
+          value: offer.approvedBy ? offer.approvedBy.name : 'Pending Approval',
+        },
+        {
+          label: 'Candidate Agreement',
+          value: offer.contractSignedByEmployee ? 'Signed' : 'Pending',
+        },
+        {
+          label: 'President Agreement',
+          value: offer.contractSignedByPresident ? 'Signed' : 'Pending',
+        },
+      ],
+      workflowTabLabel: 'Offer',
+    };
   });
 
   return (
     <div className="space-y-6">
-      {/* Page Header */}
-      <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between border-b border-[var(--wp-border)] pb-5">
-        <div>
-          <h1 className="wp-page-title text-xl font-semibold text-[var(--wp-text)] flex items-center gap-2">
-            <FileText className="h-5 w-5 text-[var(--wp-text)]" />
-            Offer & Compensation Management Center
-          </h1>
-          <p className="text-sm text-[var(--wp-text-muted)] mt-0.5">
-            Track candidate employment packages, salary approvals, and signed agreements
-          </p>
-        </div>
-      </div>
-
-      {/* Search & Multi-criteria Filters */}
-      <div className="rounded-lg border border-[var(--wp-border)] bg-white p-5 space-y-4">
-        <form method="GET" className="grid gap-3 sm:grid-cols-4 items-center">
-          {statusFilter && <input type="hidden" aria-label="Status" name="status" value={statusFilter} />}
-
-          {/* Search Box */}
-          <div className="relative sm:col-span-2">
-            <Search className="absolute left-3.5 top-3 h-4 w-4 text-[var(--wp-text-muted)]" />
-            <input
-              type="text"
-              aria-label="Search records" name="search"
-              defaultValue={searchQuery || ''}
-              placeholder="Search candidate name, email, or position..."
-              className="w-full rounded-lg border border-[var(--wp-border)] bg-[var(--wp-surface-subtle)] pl-10 pr-3 py-2.5 text-sm font-semibold text-[var(--wp-text)] focus:border-[var(--tenant-accent)] focus:bg-white focus:ring-1 focus:ring-[var(--tenant-accent)] transition"
-            />
-          </div>
-
-          {/* Job Filter */}
-          <div>
-            <select
-              aria-label="Job opening" name="jobId"
-              defaultValue={jobIdFilter || ''}
-              className="w-full rounded-lg border border-[var(--wp-border)] bg-[var(--wp-surface-subtle)] px-3.5 py-2.5 text-sm font-bold text-[var(--wp-text)] focus:border-[var(--tenant-accent)] focus:ring-1 focus:ring-[var(--tenant-accent)] transition"
-            >
-              <option value="">All Job Positions</option>
-              {organizationJobs.map((j) => (
-                <option key={j.id} value={j.id}>
-                  {j.title}
-                </option>
-              ))}
-            </select>
-          </div>
-
-          {/* Buttons */}
+      {/* Header with Breadcrumb and Title */}
+      <HiringPageHeader
+        breadcrumbs={[
+          { label: 'Hiring', href: '/dashboard/hiring/pipeline' },
+          { label: 'Offers' },
+        ]}
+        title={
           <div className="flex items-center gap-2">
-            <button
-              type="submit"
-              className="rounded-lg bg-[var(--tenant-primary)] px-5 py-2.5 text-sm font-bold text-[var(--tenant-primary-foreground)] hover:brightness-95 transition"
-            >
-              Filter
-            </button>
-            <Link
-              href="/dashboard/hiring/offers"
-              className="rounded-lg border border-[var(--wp-border)] bg-[var(--wp-surface-subtle)] px-4 py-2.5 text-sm font-bold text-[var(--wp-text-muted)] hover:text-[var(--wp-text)] hover:bg-slate-100 transition"
-            >
-              Reset
-            </Link>
+            <FileText className="h-5 w-5 text-slate-700" />
+            <span>Offer & Compensation Management Center</span>
           </div>
-        </form>
+        }
+        badge={
+          <span className="flex h-5 items-center justify-center rounded-full bg-slate-100 px-2 text-[11px] font-bold text-slate-700 border border-slate-200/80 tabular-nums">
+            {totalCount} Total
+          </span>
+        }
+        description="Track candidate employment packages, salary approvals, and signed agreements."
+      />
 
-        {/* Status Pills */}
-        <div className="flex items-center gap-1.5 overflow-x-auto pt-3 border-t border-[var(--wp-border)]">
-          {['ALL', ...Object.values(OfferStatus)].map((st) => {
-            const isActive = (statusFilter || 'ALL') === st;
-            return (
-              <Link
-                key={st}
-                href={`/dashboard/hiring/offers?${new URLSearchParams({
-                  ...(searchQuery ? { search: searchQuery } : {}),
-                  ...(jobIdFilter ? { jobId: jobIdFilter } : {}),
-                  status: st,
-                }).toString()}`}
-                className={`rounded-md px-4 py-1.5 text-sm font-bold transition-all shrink-0 ${
-                  isActive
-                    ? 'bg-[var(--tenant-primary)] text-[var(--tenant-primary-foreground)] '
-                    : 'bg-[var(--wp-surface-subtle)] text-[var(--wp-text-muted)] hover:text-[var(--wp-text)] hover:bg-slate-100'
-                }`}
-              >
-                {st.replace('_', ' ')}
-              </Link>
-            );
-          })}
-        </div>
-      </div>
+      {/* Filter Toolbar */}
+      <HiringFilterToolbar
+        searchQuery={searchQuery}
+        selectedJobId={jobIdFilter}
+        selectedStatus={statusFilter}
+        selectedSort={sort}
+        jobs={organizationJobs}
+        statuses={[
+          { value: 'ALL', label: 'All Statuses' },
+          ...Object.values(OfferStatus).map((st) => ({
+            value: st,
+            label: formatStatusLabel(st),
+          })),
+        ]}
+        metricPills={metricPills}
+        searchPlaceholder="Search candidate or job role..."
+        baseUrl="/dashboard/hiring/offers"
+      />
 
-      {/* Offers Data Table */}
-      <div className="rounded-lg border border-[var(--wp-border)] bg-white overflow-hidden">
-        <div className="overflow-x-auto">
-          <table className="w-full text-left text-sm">
-            <thead className="border-b border-[var(--wp-border)] bg-[var(--wp-surface-subtle)] text-[var(--wp-text-muted)] uppercase tracking-wider">
-              <tr>
-                <th className="px-5 py-4 font-bold">Candidate</th>
-                <th className="px-5 py-4 font-bold">Position</th>
-                <th className="px-5 py-4 font-bold">Base Compensation</th>
-                <th className="px-5 py-4 font-bold">Start Date</th>
-                <th className="px-5 py-4 font-bold">Offer Status</th>
-                <th className="px-5 py-4 font-bold">Created / Approved By</th>
-                <th className="px-5 py-4 font-bold text-right">Action</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-[var(--wp-border)]">
-              {offers.length === 0 ? (
-                <tr>
-                  <td colSpan={7} className="px-5 py-12 text-center text-[var(--wp-text-muted)]">
-                    <FileText className="mx-auto h-8 w-8 text-[var(--wp-text-muted)]" />
-                    <p className="mt-2 text-sm font-semibold">No employment offers found matching criteria.</p>
-                  </td>
-                </tr>
-              ) : (
-                offers.map((offer) => {
-                  const statusCfg = OFFER_STAGE_CONFIG[offer.status];
-                  const payFreqCfg = PAY_FREQUENCY_CONFIG[offer.payFrequency];
-                  const isActive = isActiveOfferStatus(offer.status);
-
-                  return (
-                    <tr
-                      key={offer.id}
-                      className="hover:bg-[#F8F9FA]/70 transition"
-                    >
-                      {/* Candidate */}
-                      <td className="px-5 py-4 font-bold text-[var(--wp-text)]">
-                        <div className="flex items-center gap-3">
-                          <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-[var(--tenant-primary)] text-[var(--tenant-primary-foreground)] font-bold text-sm shrink-0">
-                            {offer.application.applicant.firstName[0]}
-                            {offer.application.applicant.lastName[0]}
-                          </div>
-                          <div>
-                            <Link
-                              href={`/dashboard/hiring/applicants/${offer.application.id}`}
-                              className="hover:underline"
-                            >
-                              {offer.application.applicant.firstName}{' '}
-                              {offer.application.applicant.lastName}
-                            </Link>
-                            <p className="text-xs font-normal text-[var(--wp-text-muted)]">
-                              {offer.application.applicant.email}
-                            </p>
-                          </div>
-                        </div>
-                      </td>
-
-                      {/* Position */}
-                      <td className="px-5 py-4 text-[var(--wp-text)]">
-                        <p className="font-bold">{offer.application.job.title}</p>
-                        <p className="text-xs text-[var(--wp-text-muted)]">{offer.application.job.department}</p>
-                      </td>
-
-                      {/* Compensation */}
-                      <td className="px-5 py-4 font-bold text-[var(--wp-text)]">
-                        ₱{offer.salary.toLocaleString(undefined, { minimumFractionDigits: 2 })}
-                        <span className="text-xs font-normal text-[var(--wp-text-muted)] ml-1">
-                          {payFreqCfg.suffix}
-                        </span>
-                        <p className="text-xs font-normal text-[var(--wp-text-muted)]">{offer.employmentType}</p>
-                      </td>
-
-                      {/* Start Date */}
-                      <td className="px-5 py-4 text-[var(--wp-text-muted)] font-medium">
-                        <div className="flex items-center gap-1 font-bold text-[var(--wp-text)]">
-                          <Calendar className="h-3 w-3 text-[var(--wp-text-muted)]" />
-                          <span>{new Date(offer.startDate).toLocaleDateString()}</span>
-                        </div>
-                        {offer.expirationDate && (
-                          <p className="text-xs text-[var(--wp-text-muted)]">
-                            Exp: {new Date(offer.expirationDate).toLocaleDateString()}
-                          </p>
-                        )}
-                      </td>
-
-                      {/* Status */}
-                      <td className="px-5 py-4">
-                        <div className="flex items-center gap-1.5">
-                          <span
-                            className={`rounded-md px-3 py-1 text-xs font-semibold ${statusCfg.badgeBg} ${statusCfg.badgeText}`}
-                          >
-                            {statusCfg.label}
-                          </span>
-                          {isActive && (
-                            <span className="rounded-full bg-emerald-100 px-1.5 py-0.2 text-[8px] font-semibold text-emerald-800">
-                              ACTIVE
-                            </span>
-                          )}
-                        </div>
-                      </td>
-
-                      {/* Created / Approved By */}
-                      <td className="px-5 py-4 text-[var(--wp-text)]">
-                        <p className="font-bold">{offer.createdBy.name}</p>
-                        {offer.approvedBy ? (
-                          <p className="text-xs text-emerald-600 font-semibold flex items-center gap-0.5">
-                            <ShieldCheck className="h-3 w-3" /> Approved: {offer.approvedBy.name}
-                          </p>
-                        ) : (
-                          <p className="text-xs text-amber-600 font-semibold">
-                            Awaiting Approval
-                          </p>
-                        )}
-                      </td>
-
-                      {/* Action */}
-                      <td className="px-5 py-4 text-right">
-                        <Link
-                          href={`/dashboard/hiring/applicants/${offer.application.id}`}
-                          className="inline-flex items-center gap-1 rounded-md border border-[var(--wp-border)] bg-[var(--wp-surface-subtle)] px-3.5 py-1.5 text-sm font-bold text-[var(--wp-text)] hover:bg-[var(--tenant-primary)] hover:text-[var(--tenant-primary-foreground)] transition"
-                        >
-                          <Eye className="h-3.5 w-3.5" /> Detail →
-                        </Link>
-                      </td>
-                    </tr>
-                  );
-                })
-              )}
-            </tbody>
-          </table>
-        </div>
-      </div>
+      {/* Responsive Card Grid with Candidate Detail Panel and Server Pagination */}
+      <HiringCardWorkspace
+        candidates={candidateItems}
+        emptyMessage="No compensation offers found matching your filter criteria."
+        pagination={
+          <HiringPagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            totalItems={totalCount}
+            pageSize={PAGE_SIZE}
+            itemLabel="offers"
+            baseUrl="/dashboard/hiring/offers"
+            searchParams={{
+              ...(searchQuery ? { search: searchQuery } : {}),
+              ...(jobIdFilter ? { jobId: jobIdFilter } : {}),
+              ...(statusFilter ? { status: statusFilter } : {}),
+              ...(sort !== 'newest' ? { sort } : {}),
+            }}
+          />
+        }
+      />
     </div>
   );
 }

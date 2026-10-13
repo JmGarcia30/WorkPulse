@@ -2,7 +2,7 @@
 
 import { DialogFrame } from '@/components/ui/DialogFrame';
 
-import React, { useState, useTransition } from 'react';
+import React, { useState, useTransition, useEffect, useRef } from 'react';
 import {
   RecruitmentDocumentType,
   RecruitmentDocumentStatus,
@@ -11,18 +11,14 @@ import {
 import {
   FileText,
   CheckCircle2,
-  Clock,
-  Ban,
   Upload,
   ShieldCheck,
   AlertCircle,
-  HelpCircle,
-  ExternalLink,
-  ChevronRight,
   AlertTriangle,
-  X,
-  Sparkles,
-  Eye,
+  MoreHorizontal,
+  Ban,
+  Download,
+  RotateCcw,
 } from 'lucide-react';
 import {
   verifyRecruitmentDocumentAction,
@@ -79,24 +75,82 @@ const REJECTION_PRESETS = [
   },
 ];
 
+function getDocumentDisplayTitle(title: string, type: RecruitmentDocumentType): string {
+  switch (type) {
+    case RecruitmentDocumentType.LET_BASIC_EDUCATION:
+      return 'Licensure Examination for Teachers (LET)';
+    case RecruitmentDocumentType.DIPLOMA:
+      return 'Diploma';
+    case RecruitmentDocumentType.MARRIAGE_CONTRACT:
+      return 'Marriage Contract (if applicable)';
+    default:
+      return title;
+  }
+}
+
+function getDocumentSubtitle(type: RecruitmentDocumentType, fallbackNotes?: string | null): string {
+  switch (type) {
+    case RecruitmentDocumentType.RESUME_APPLICATION_LETTER:
+      return 'Cover letter and updated resume';
+    case RecruitmentDocumentType.TRANSCRIPT_OF_RECORDS:
+      return 'Official transcript';
+    case RecruitmentDocumentType.DIPLOMA:
+      return 'Photocopy of diploma';
+    case RecruitmentDocumentType.LET_BASIC_EDUCATION:
+      return 'Photocopy of PRC license (if applicable)';
+    case RecruitmentDocumentType.PROFESSIONAL_LICENSE:
+      return 'Photocopy of valid PRC license';
+    case RecruitmentDocumentType.NBI_CLEARANCE:
+      return 'Clearance copy';
+    case RecruitmentDocumentType.MARRIAGE_CONTRACT:
+      return 'For married applicants';
+    case RecruitmentDocumentType.PREVIOUS_EMPLOYMENT_CERT:
+      return 'Certificate from previous employer';
+    case RecruitmentDocumentType.RECOMMENDATION_LETTER_1:
+      return 'First letter of recommendation';
+    case RecruitmentDocumentType.RECOMMENDATION_LETTER_2:
+      return 'Second letter of recommendation';
+    case RecruitmentDocumentType.RECOMMENDATION_LETTER_3:
+      return 'Third letter of recommendation';
+    case RecruitmentDocumentType.OTHER:
+      return 'Additional institutional requirements';
+    default:
+      return fallbackNotes || 'Official credential copy';
+  }
+}
+
 export function CandidateDocumentsSection({
   applicationId,
   category,
   documents,
   canManage,
-  organizationSlug,
 }: CandidateDocumentsSectionProps) {
   const [isPending, startTransition] = useTransition();
   const [feedbackMessage, setFeedbackMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
   const [uploadingDocId, setUploadingDocId] = useState<string | null>(null);
+  const [activeMenuDocId, setActiveMenuDocId] = useState<string | null>(null);
 
   // Modal State for Rejecting / Flagging Blurry Documents
   const [rejectingDoc, setRejectingDoc] = useState<RecruitmentDocItem | null>(null);
   const [rejectionReason, setRejectionReason] = useState<string>('');
 
+  const menuRef = useRef<HTMLDivElement | null>(null);
+
+  // Close overflow menu on outside click
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
+        setActiveMenuDocId(null);
+      }
+    }
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
   const evaluation = areRecruitmentDocumentsSatisfied(documents, category);
 
   const handleVerify = (documentId: string) => {
+    setActiveMenuDocId(null);
     startTransition(async () => {
       const res = await verifyRecruitmentDocumentAction(documentId);
       if (res.error) {
@@ -109,8 +163,8 @@ export function CandidateDocumentsSection({
   };
 
   const handleOpenRejectModal = (doc: RecruitmentDocItem) => {
+    setActiveMenuDocId(null);
     setRejectingDoc(doc);
-    // Pre-populate with default blurry reason if not already specified
     setRejectionReason(
       doc.notes && doc.status === RecruitmentDocumentStatus.REJECTED
         ? doc.notes
@@ -129,7 +183,7 @@ export function CandidateDocumentsSection({
       } else {
         setFeedbackMessage({
           type: 'success',
-          text: `Document rejected as requested. Notification email sent to applicant with resubmission instructions.`,
+          text: 'Document rejected. Notification email sent to applicant with resubmission instructions.',
         });
       }
       setTimeout(() => setFeedbackMessage(null), 5000);
@@ -137,6 +191,7 @@ export function CandidateDocumentsSection({
   };
 
   const handleStatusChange = (documentId: string, status: RecruitmentDocumentStatus) => {
+    setActiveMenuDocId(null);
     startTransition(async () => {
       const res = await updateRecruitmentDocumentStatusAction(documentId, status);
       if (res.error) {
@@ -152,6 +207,7 @@ export function CandidateDocumentsSection({
     const file = e.target.files?.[0];
     if (!file) return;
 
+    setActiveMenuDocId(null);
     setUploadingDocId(documentId);
     const formData = new FormData();
     formData.append('file', file);
@@ -174,83 +230,51 @@ export function CandidateDocumentsSection({
       if (res.error) {
         setFeedbackMessage({ type: 'error', text: res.error });
       } else {
-        setFeedbackMessage({ type: 'success', text: 'recruitment document requirements initialized.' });
+        setFeedbackMessage({ type: 'success', text: 'Recruitment document requirements initialized.' });
       }
       setTimeout(() => setFeedbackMessage(null), 3000);
     });
   };
 
+  // Find first pending doc to trigger with header Upload button
+  const firstPendingDoc = documents.find(
+    (d) => d.status === RecruitmentDocumentStatus.PENDING || d.status === RecruitmentDocumentStatus.REJECTED
+  );
+
   return (
-    <div className="rounded-lg border border-[var(--wp-border)] bg-white p-6 space-y-4">
-      {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-2 border-b border-[var(--wp-border)]">
+    <div className="rounded-2xl border border-slate-200/80 bg-white p-6 shadow-xs space-y-4">
+      {/* Clean Header matching target reference */}
+      <div className="flex items-center justify-between gap-3 pb-3 border-b border-slate-100">
         <div>
-          <div className="flex items-center gap-2">
-            <FileText className="h-4 w-4 text-[var(--wp-text)]" />
-            <h3 className="text-sm font-bold text-[var(--wp-text)] uppercase tracking-wider">
-              Recruitment Document Requirements
-            </h3>
-          </div>
-          <p className="text-xs text-[var(--wp-text-muted)] mt-0.5">
-            Submitted to the <span className="font-semibold text-slate-700">Head of the Department</span> for {category === 'TEACHING' ? 'Faculty' : 'Non-Teaching'} hiring.
+          <h3 className="text-base sm:text-lg font-bold text-slate-900 tracking-tight">
+            Documents & Requirements
+          </h3>
+          <p className="text-xs text-slate-400 mt-0.5">
+            {evaluation.satisfiedMandatoryCount} of {evaluation.mandatoryCount} Mandatory Verified
           </p>
         </div>
 
-        <div className="flex items-center gap-2 flex-wrap">
-          {/* Candidate Portal Public Link */}
-          <a
-            href={`/careers/${organizationSlug}/portal/${applicationId}`}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center gap-1 rounded-md border border-slate-200 bg-slate-50 px-3 py-1.5 text-sm font-semibold text-slate-700 hover:bg-slate-100 transition"
-          >
-            <span>Candidate Portal</span>
-            <ExternalLink className="h-3 w-3 text-slate-400" />
-          </a>
-
-          {documents.length === 0 ? (
-            canManage && (
-              <button
-                type="button"
-                onClick={handleInitialize}
-                disabled={isPending}
-                className="inline-flex items-center gap-1.5 rounded-md bg-[var(--tenant-primary)] px-3 py-1.5 text-sm font-bold text-[var(--tenant-primary-foreground)] hover:brightness-95 transition disabled:opacity-50"
-              >
-                Initialize Checklist
-              </button>
-            )
-          ) : (
-            <span
-              className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-sm font-bold ${
-                evaluation.isSatisfied
-                  ? 'bg-emerald-50 text-emerald-700 ring-1 ring-emerald-500/20'
-                  : 'bg-amber-50 text-amber-700 ring-1 ring-amber-500/20'
-              }`}
-            >
-              {evaluation.isSatisfied ? (
-                <>
-                  <CheckCircle2 className="h-3.5 w-3.5" />
-                  <span>Requirements Satisfied</span>
-                </>
-              ) : (
-                <>
-                  <Clock className="h-3.5 w-3.5" />
-                  <span>
-                    {evaluation.satisfiedMandatoryCount} of {evaluation.mandatoryCount} Mandatory Verified
-                  </span>
-                </>
-              )}
-            </span>
-          )}
-        </div>
+        {canManage && firstPendingDoc && (
+          <label className="inline-flex items-center gap-1.5 rounded-xl border border-slate-200/80 bg-white px-3.5 py-2 text-xs font-semibold text-slate-800 hover:bg-slate-50 hover:border-slate-300 transition cursor-pointer shadow-2xs">
+            <Upload className="h-3.5 w-3.5 text-slate-500" />
+            <span>Upload Document</span>
+            <input
+              type="file"
+              className="hidden"
+              onChange={(e) => handleFileUpload(firstPendingDoc.id, e)}
+              disabled={isPending || uploadingDocId === firstPendingDoc.id}
+            />
+          </label>
+        )}
       </div>
 
+      {/* Feedback Message Banner */}
       {feedbackMessage && (
         <div
-          className={`rounded-lg border p-3 text-sm flex items-center gap-2 ${
+          className={`rounded-xl border p-3 text-xs sm:text-sm flex items-center gap-2 ${
             feedbackMessage.type === 'success'
-              ? 'border-emerald-200 bg-emerald-50 text-emerald-800 '
-              : 'border-rose-200 bg-rose-50 text-rose-800 '
+              ? 'border-emerald-200 bg-emerald-50 text-emerald-800'
+              : 'border-rose-200 bg-rose-50 text-rose-800'
           }`}
         >
           {feedbackMessage.type === 'success' ? (
@@ -262,120 +286,102 @@ export function CandidateDocumentsSection({
         </div>
       )}
 
-      {/* Document Items List */}
+      {/* Empty State */}
       {documents.length === 0 ? (
-        <div className="rounded-lg border border-dashed border-[var(--wp-border)] p-8 text-center text-sm text-[var(--wp-text-muted)]">
+        <div className="rounded-xl border border-dashed border-slate-200 p-8 text-center text-sm text-slate-500">
           <p>No document checklist records initialized for this candidate.</p>
           {canManage && (
             <button
               type="button"
               onClick={handleInitialize}
               disabled={isPending}
-              className="mt-3 inline-flex items-center gap-1.5 rounded-md bg-[var(--tenant-primary)] px-4 py-2 text-sm font-bold text-[var(--tenant-primary-foreground)] hover:brightness-95 transition"
+              className="mt-3 inline-flex items-center gap-1.5 rounded-xl bg-slate-900 px-4 py-2 text-xs font-bold text-white hover:bg-slate-800 transition"
             >
               Load Document Requirements
             </button>
           )}
         </div>
       ) : (
-        <div className="divide-y divide-[var(--wp-border)]">
+        /* Document Checklist Rows */
+        <div className="divide-y divide-slate-100" ref={menuRef}>
           {documents.map((doc) => {
             const isVerified = doc.status === RecruitmentDocumentStatus.VERIFIED;
             const isSubmitted = doc.status === RecruitmentDocumentStatus.SUBMITTED;
             const isRejected = doc.status === RecruitmentDocumentStatus.REJECTED;
             const isNA = doc.status === RecruitmentDocumentStatus.NOT_APPLICABLE;
-            const isPendingDoc = doc.status === RecruitmentDocumentStatus.PENDING;
+            const hasFile = Boolean(doc.fileName);
+
+            const displayTitle = getDocumentDisplayTitle(doc.title, doc.type);
+            const subtitle = getDocumentSubtitle(doc.type, doc.notes);
+
+            // Minimalist badge configuration matching target image
+            let badgeLabel = 'Pending';
+            let badgeBg = 'bg-amber-50 text-amber-700 border-amber-200/50';
+            let dotColor = 'bg-amber-500';
+
+            if (isVerified) {
+              badgeLabel = 'Completed';
+              badgeBg = 'bg-emerald-50 text-emerald-700 border-emerald-200/50';
+              dotColor = 'bg-emerald-500';
+            } else if (isSubmitted) {
+              badgeLabel = 'Submitted';
+              badgeBg = 'bg-blue-50 text-blue-700 border-blue-200/50';
+              dotColor = 'bg-blue-500';
+            } else if (isRejected) {
+              badgeLabel = 'Action Required';
+              badgeBg = 'bg-rose-50 text-rose-700 border-rose-200/50';
+              dotColor = 'bg-rose-500';
+            } else if (isNA || (!doc.isRequired && doc.isConditional)) {
+              badgeLabel = 'Optional';
+              badgeBg = 'bg-slate-100 text-slate-600 border-slate-200/50';
+              dotColor = 'bg-slate-400';
+            }
 
             return (
               <div
                 key={doc.id}
-                className={`py-3.5 first:pt-0 last:pb-0 flex flex-col sm:flex-row sm:items-start justify-between gap-3 ${
-                  isRejected ? 'bg-rose-50/30 px-2 rounded-md' : ''
-                }`}
+                className="flex items-center justify-between gap-3 sm:gap-4 py-3.5 first:pt-1 last:pb-1 group"
               >
-                <div className="space-y-1 max-w-xl">
-                  <div className="flex items-center gap-2 flex-wrap">
-                    <span className="text-sm font-bold text-[var(--wp-text)]">
-                      {doc.title}
-                    </span>
-                    {doc.isRequired && !doc.isConditional ? (
-                      <span className="rounded-md bg-rose-50 px-1.5 py-0.5 text-xs font-semibold text-rose-700">
-                        REQUIRED
-                      </span>
-                    ) : (
-                      <span className="rounded-md bg-slate-100 px-1.5 py-0.5 text-xs font-semibold text-slate-600">
-                        CONDITIONAL
-                      </span>
-                    )}
-
-                    {/* Status Badge */}
-                    {isVerified && (
-                      <span className="inline-flex items-center gap-1 rounded-full bg-emerald-50 px-2 py-0.5 text-xs font-bold text-emerald-700">
-                        <CheckCircle2 className="h-3 w-3" /> Verified
-                      </span>
-                    )}
-                    {isSubmitted && (
-                      <span className="inline-flex items-center gap-1 rounded-full bg-blue-50 px-2 py-0.5 text-xs font-bold text-blue-700">
-                        <Clock className="h-3 w-3" /> Submitted
-                      </span>
-                    )}
-                    {isRejected && (
-                      <span className="inline-flex items-center gap-1 rounded-full bg-rose-100 px-2 py-0.5 text-xs font-semibold text-rose-800">
-                        <AlertTriangle className="h-3 w-3" /> Rejected / Action Required
-                      </span>
-                    )}
-                    {isNA && (
-                      <span className="inline-flex items-center gap-1 rounded-full bg-slate-100 px-2 py-0.5 text-xs font-semibold text-slate-600">
-                        <Ban className="h-3 w-3" /> Not Applicable / Waived
-                      </span>
-                    )}
-                    {isPendingDoc && (
-                      <span className="inline-flex items-center gap-1 rounded-full bg-amber-50 px-2 py-0.5 text-xs font-semibold text-amber-700">
-                        ○ Awaiting Submission
-                      </span>
-                    )}
+                {/* Left Side: Warm Icon Box & Titles */}
+                <div className="flex items-center gap-3.5 min-w-0 flex-1">
+                  {/* Warm Ivory Document Box Icon matching target */}
+                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#F7F5EE] border border-slate-200/70 text-slate-700 shadow-2xs">
+                    <FileText className="h-5 w-5 stroke-[1.75]" />
                   </div>
 
-                  {/* If Rejected, display reason prominently */}
-                  {isRejected && doc.notes && (
-                    <div className="rounded-lg border border-rose-200 bg-rose-50 p-2 text-xs text-rose-900">
-                      <span className="font-bold">Rejection Note: </span>
-                      <span className="italic">{doc.notes}</span>
-                    </div>
-                  )}
-
-                  {!isRejected && doc.notes && (
-                    <p className="text-xs text-[var(--wp-text-muted)]">
-                      {doc.notes}
+                  <div className="min-w-0 flex-1">
+                    <h4 className="text-xs sm:text-sm font-bold text-slate-900 truncate">
+                      {displayTitle}
+                    </h4>
+                    <p className="text-[11px] sm:text-xs text-slate-400 truncate mt-0.5">
+                      {subtitle}
                     </p>
-                  )}
-
-                  {doc.fileName && (
-                    <div className="flex items-center gap-2 flex-wrap text-xs text-[var(--wp-text)] font-medium">
-                      <span className="truncate max-w-[280px]">File: {doc.fileName}</span>
-                      {doc.fileSize && (
-                        <span className="text-[var(--wp-text-muted)]">({(doc.fileSize / 1024).toFixed(1)} KB)</span>
-                      )}
-                      <a
-                        href={`/api/recruitment-documents/${doc.id}`}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="inline-flex items-center gap-1 text-blue-600 hover:text-blue-700 font-semibold underline underline-offset-2 ml-1"
-                      >
-                        <Eye className="h-3 w-3" />
-                        <span>View / Download</span>
-                      </a>
-                    </div>
-                  )}
+                  </div>
                 </div>
 
-                {/* Actions */}
-                {canManage && (
-                  <div className="flex items-center gap-1.5 shrink-0 flex-wrap justify-end">
-                    {/* Upload button (HR override) */}
-                    <label className="cursor-pointer inline-flex items-center gap-1 rounded-md border border-[var(--wp-border)] bg-[var(--wp-surface-subtle)] px-2.5 py-1.5 text-sm font-semibold text-slate-700 hover:bg-slate-100 transition">
-                      <Upload className="h-3 w-3" />
-                      <span>{uploadingDocId === doc.id ? 'Uploading...' : 'Scan / Upload'}</span>
+                {/* Right Side: Status Badge, Primary Action Button & Overflow Menu */}
+                <div className="flex items-center gap-2 sm:gap-3 shrink-0">
+                  {/* Status Badge with dot matching reference */}
+                  <span
+                    className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-xs font-semibold border ${badgeBg}`}
+                  >
+                    <span className={`h-1.5 w-1.5 rounded-full ${dotColor}`} />
+                    <span>{badgeLabel}</span>
+                  </span>
+
+                  {/* Primary Action Button (View or Upload) */}
+                  {hasFile ? (
+                    <a
+                      href={`/api/recruitment-documents/${doc.id}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center justify-center min-w-[72px] sm:min-w-[80px] rounded-xl border border-slate-200/80 bg-white px-3.5 py-1.5 text-xs font-semibold text-slate-700 hover:bg-slate-50 hover:border-slate-300 transition shadow-2xs"
+                    >
+                      View
+                    </a>
+                  ) : canManage ? (
+                    <label className="cursor-pointer inline-flex items-center justify-center min-w-[72px] sm:min-w-[80px] rounded-xl border border-slate-200/80 bg-white px-3.5 py-1.5 text-xs font-semibold text-slate-700 hover:bg-slate-50 hover:border-slate-300 transition shadow-2xs">
+                      <span>{uploadingDocId === doc.id ? '...' : 'Upload'}</span>
                       <input
                         type="file"
                         className="hidden"
@@ -383,54 +389,119 @@ export function CandidateDocumentsSection({
                         disabled={isPending || uploadingDocId === doc.id}
                       />
                     </label>
+                  ) : (
+                    <span className="min-w-[72px] text-center text-xs text-slate-400">
+                      Pending
+                    </span>
+                  )}
 
-                    {/* Verify button */}
-                    {!isVerified && (
-                      <button
-                        type="button"
-                        onClick={() => handleVerify(doc.id)}
-                        disabled={isPending}
-                        className="inline-flex items-center gap-1 rounded-md bg-emerald-600 px-2.5 py-1.5 text-sm font-bold text-white hover:bg-emerald-700 transition disabled:opacity-50"
-                      >
-                        <ShieldCheck className="h-3 w-3" />
-                        <span>Verify</span>
-                      </button>
-                    )}
+                  {/* Overflow Action Menu (•••) */}
+                  <div className="relative">
+                    <button
+                      type="button"
+                      onClick={() => setActiveMenuDocId(activeMenuDocId === doc.id ? null : doc.id)}
+                      className="inline-flex h-8 w-8 items-center justify-center rounded-xl text-slate-400 hover:bg-slate-100 hover:text-slate-700 transition"
+                      aria-label="More options"
+                    >
+                      <MoreHorizontal className="h-4 w-4" />
+                    </button>
 
-                    {/* Reject / Flag Button (Blurry scan, incomplete, etc.) */}
-                    {!isNA && (
-                      <button
-                        type="button"
-                        onClick={() => handleOpenRejectModal(doc)}
-                        disabled={isPending}
-                        className="inline-flex items-center gap-1 rounded-md border border-rose-200 bg-rose-50 px-2.5 py-1.5 text-sm font-semibold text-rose-700 hover:bg-rose-100 transition"
-                        title="Flag or reject blurry/illegible document"
-                      >
-                        <AlertTriangle className="h-3 w-3" />
-                        <span>{isRejected ? 'Edit Note' : 'Flag / Reject'}</span>
-                      </button>
-                    )}
+                    {/* Dropdown Options */}
+                    {activeMenuDocId === doc.id && (
+                      <div className="absolute right-0 top-full mt-1.5 w-48 rounded-xl border border-slate-200/80 bg-white p-1 shadow-lg z-30 space-y-0.5 text-xs">
+                        {hasFile && (
+                          <a
+                            href={`/api/recruitment-documents/${doc.id}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="flex w-full items-center gap-2 rounded-lg px-2.5 py-1.5 text-slate-700 hover:bg-slate-50 font-medium"
+                          >
+                            <Download className="h-3.5 w-3.5 text-slate-400" />
+                            <span>Download File</span>
+                          </a>
+                        )}
 
-                    {/* Conditional Toggle (N/A) */}
-                    {doc.isConditional && (
-                      <button
-                        type="button"
-                        onClick={() =>
-                          handleStatusChange(
-                            doc.id,
-                            isNA
-                              ? RecruitmentDocumentStatus.PENDING
-                              : RecruitmentDocumentStatus.NOT_APPLICABLE
-                          )
-                        }
-                        disabled={isPending}
-                        className="inline-flex items-center gap-1 rounded-md border border-slate-200 bg-white px-2.5 py-1.5 text-xs font-semibold text-slate-600 hover:bg-slate-50 transition"
-                      >
-                        {isNA ? 'Re-enable' : 'Mark N/A'}
-                      </button>
+                        {canManage && (
+                          <label className="flex w-full items-center gap-2 rounded-lg px-2.5 py-1.5 text-slate-700 hover:bg-slate-50 font-medium cursor-pointer">
+                            <Upload className="h-3.5 w-3.5 text-slate-400" />
+                            <span>{hasFile ? 'Replace File' : 'Upload File'}</span>
+                            <input
+                              type="file"
+                              className="hidden"
+                              onChange={(e) => handleFileUpload(doc.id, e)}
+                              disabled={isPending || uploadingDocId === doc.id}
+                            />
+                          </label>
+                        )}
+
+                        {canManage && !isVerified && (
+                          <button
+                            type="button"
+                            onClick={() => handleVerify(doc.id)}
+                            disabled={isPending}
+                            className="flex w-full items-center gap-2 rounded-lg px-2.5 py-1.5 text-emerald-700 hover:bg-emerald-50 font-semibold"
+                          >
+                            <ShieldCheck className="h-3.5 w-3.5 text-emerald-600" />
+                            <span>Verify Document</span>
+                          </button>
+                        )}
+
+                        {canManage && !isNA && (
+                          <button
+                            type="button"
+                            onClick={() => handleOpenRejectModal(doc)}
+                            disabled={isPending}
+                            className="flex w-full items-center gap-2 rounded-lg px-2.5 py-1.5 text-rose-700 hover:bg-rose-50 font-semibold"
+                          >
+                            <AlertTriangle className="h-3.5 w-3.5 text-rose-500" />
+                            <span>{isRejected ? 'Edit Rejection Note' : 'Flag / Reject'}</span>
+                          </button>
+                        )}
+
+                        {canManage && doc.isConditional && (
+                          <button
+                            type="button"
+                            onClick={() =>
+                              handleStatusChange(
+                                doc.id,
+                                isNA
+                                  ? RecruitmentDocumentStatus.PENDING
+                                  : RecruitmentDocumentStatus.NOT_APPLICABLE
+                              )
+                            }
+                            disabled={isPending}
+                            className="flex w-full items-center gap-2 rounded-lg px-2.5 py-1.5 text-slate-600 hover:bg-slate-50 font-medium"
+                          >
+                            {isNA ? (
+                              <>
+                                <RotateCcw className="h-3.5 w-3.5 text-slate-400" />
+                                <span>Mark as Required</span>
+                              </>
+                            ) : (
+                              <>
+                                <Ban className="h-3.5 w-3.5 text-slate-400" />
+                                <span>Mark as Not Applicable</span>
+                              </>
+                            )}
+                          </button>
+                        )}
+
+                        {/* File Details / Verified Metadata */}
+                        {doc.fileName && (
+                          <div className="pt-1 mt-1 border-t border-slate-100 px-2.5 py-1 text-[11px] text-slate-400">
+                            <p className="truncate font-medium text-slate-600">{doc.fileName}</p>
+                            {doc.fileSize && (
+                              <p>{(doc.fileSize / 1024).toFixed(1)} KB</p>
+                            )}
+                            {doc.verifiedBy && (
+                              <p className="text-emerald-700 mt-0.5">Verified by {doc.verifiedBy.name}</p>
+                            )}
+                          </div>
+                        )}
+                      </div>
                     )}
                   </div>
-                )}
+                </div>
               </div>
             );
           })}
@@ -440,74 +511,67 @@ export function CandidateDocumentsSection({
       {/* HR Rejection Modal */}
       {rejectingDoc && (
         <DialogFrame label="Reject recruitment document" onClose={() => setRejectingDoc(null)} busy={isPending}>
-          <div className="w-full max-w-lg rounded-lg border border-slate-200 bg-white p-6 shadow-2xl space-y-4">
+          <div className="w-full max-w-lg rounded-2xl border border-slate-200 bg-white p-6 shadow-2xl space-y-4">
             <div className="flex items-center justify-between pb-3 border-b border-slate-100">
               <div className="flex items-center gap-2">
-                <div className="p-2 rounded-md bg-rose-100 text-rose-700">
+                <div className="p-2 rounded-xl bg-rose-100 text-rose-700">
                   <AlertTriangle className="h-5 w-5" />
                 </div>
                 <div>
                   <h3 className="text-sm font-bold text-slate-900">
                     Flag / Reject Document
                   </h3>
-                  <p className="text-sm text-slate-500 truncate max-w-sm">
+                  <p className="text-xs text-slate-500">
                     {rejectingDoc.title}
                   </p>
                 </div>
               </div>
-              <button
-                type="button"
-                onClick={() => setRejectingDoc(null)}
-                className="rounded-lg p-1.5 text-slate-400 hover:bg-slate-100 hover:text-slate-600"
-              >
-                <X className="h-4 w-4" />
-              </button>
             </div>
 
-            <div className="space-y-3">
-              <p className="text-sm text-slate-600">
-                Select a standard rejection reason or provide specific feedback. An email notification will be dispatched to the candidate with instructions to re-upload via their portal:
-              </p>
+            <p className="text-xs text-slate-600 leading-relaxed">
+              Flagging this document marks it as <strong>Action Required</strong>. The candidate will be notified to re-upload a compliant copy.
+            </p>
 
-              {/* Quick Preset Reason Chips */}
-              <div className="space-y-1.5">
-                <label className="text-xs font-bold uppercase tracking-wider text-slate-500">
-                  Quick Institutional Presets
-                </label>
-                <div className="flex flex-wrap gap-1.5">
-                  {REJECTION_PRESETS.map((preset) => (
-                    <button
-                      key={preset.label}
-                      type="button"
-                      onClick={() => setRejectionReason(preset.reason)}
-                      className="rounded-lg border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs font-medium text-slate-700 hover:bg-indigo-50 hover:text-indigo-700 hover:border-indigo-300 transition"
-                    >
-                      {preset.label}
-                    </button>
-                  ))}
-                </div>
+            {/* Presets */}
+            <div className="space-y-1.5">
+              <label className="text-xs font-bold text-slate-700 uppercase tracking-wider">
+                Common Rejection Reasons
+              </label>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5">
+                {REJECTION_PRESETS.map((preset) => (
+                  <button
+                    key={preset.label}
+                    type="button"
+                    onClick={() => setRejectionReason(preset.reason)}
+                    className="text-left rounded-xl border border-slate-200 bg-slate-50 p-2.5 text-xs text-slate-700 hover:bg-slate-100 hover:border-slate-300 transition"
+                  >
+                    <span className="font-semibold block">{preset.label}</span>
+                    <span className="text-[11px] text-slate-500 line-clamp-1">{preset.reason}</span>
+                  </button>
+                ))}
               </div>
+            </div>
 
-              {/* Textarea */}
-              <div className="space-y-1">
-                <label className="text-xs font-bold uppercase tracking-wider text-slate-500">
-                  Reviewer Feedback Note
-                </label>
-                <textarea aria-label="Reviewer Feedback Note"
-                  rows={3}
-                  value={rejectionReason}
-                  onChange={(e) => setRejectionReason(e.target.value)}
-                  placeholder="e.g. The photo/scan is blurry or illegible. Please re-upload a clear copy..."
-                  className="w-full rounded-md border border-slate-300 p-3 text-sm focus:border-rose-500 focus:outline-hidden"
-                />
-              </div>
+            {/* Custom Notes */}
+            <div className="space-y-1.5">
+              <label className="text-xs font-bold text-slate-700 uppercase tracking-wider">
+                Instructions for Applicant
+              </label>
+              <textarea
+                value={rejectionReason}
+                onChange={(e) => setRejectionReason(e.target.value)}
+                rows={3}
+                placeholder="Explain what needs to be fixed..."
+                className="w-full rounded-xl border border-slate-200 bg-white p-3 text-xs sm:text-sm text-slate-900 focus:outline-hidden focus:ring-2 focus:ring-slate-900/10"
+              />
             </div>
 
             <div className="flex items-center justify-end gap-2 pt-2 border-t border-slate-100">
               <button
                 type="button"
                 onClick={() => setRejectingDoc(null)}
-                className="rounded-md border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-600 hover:bg-slate-50"
+                disabled={isPending}
+                className="rounded-xl border border-slate-200 px-4 py-2 text-xs font-semibold text-slate-700 hover:bg-slate-50 transition"
               >
                 Cancel
               </button>
@@ -515,10 +579,9 @@ export function CandidateDocumentsSection({
                 type="button"
                 onClick={handleConfirmReject}
                 disabled={isPending || !rejectionReason.trim()}
-                className="inline-flex items-center gap-1.5 rounded-md bg-rose-600 px-4 py-2 text-sm font-bold text-white hover:bg-rose-700 transition disabled:opacity-50"
+                className="inline-flex items-center gap-1.5 rounded-xl bg-rose-600 px-4 py-2 text-xs font-bold text-white hover:bg-rose-700 transition disabled:opacity-50"
               >
-                <AlertTriangle className="h-3.5 w-3.5" />
-                <span>Confirm Rejection & Notify Candidate</span>
+                {isPending ? 'Submitting...' : 'Reject & Notify Applicant'}
               </button>
             </div>
           </div>

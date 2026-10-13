@@ -89,10 +89,9 @@ async function runSprint21Tests() {
   // TEST 5: Valid status transition creates ApplicationStatusHistory
   console.log('\n--- TEST 5: Valid Transition & Audit Trail Recording ---');
   // Find an APPLIED application to advance to SCREENING
-  let appToTransition = stAloysiusApps.find((a) => a.status === ApplicationStatus.APPLIED);
-  if (!appToTransition) {
-    appToTransition = stAloysiusApps[0];
-  }
+  let appToTransition = stAloysiusApps.find((a) => a.status === ApplicationStatus.APPLIED)
+    || stAloysiusApps.find((a) => getAvailableNextStatuses(a.status).length > 0)
+    || stAloysiusApps[0];
   const fromStatus = appToTransition.status;
   const validNextStatuses = getAvailableNextStatuses(fromStatus);
   const targetStatus = validNextStatuses[0]; // e.g. SCREENING or SHORTLISTED

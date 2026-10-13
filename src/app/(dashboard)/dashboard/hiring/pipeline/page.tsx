@@ -4,7 +4,8 @@ import { canViewHiringData, canUpdateApplicationStatus } from '@/lib/permissions
 import { ApplicationPipeline } from '@/components/hiring/ApplicationPipeline';
 import { ErrorState } from '@/components/ui/ErrorState';
 import Link from 'next/link';
-import { Users, ListFilter } from 'lucide-react';
+import { ListFilter } from 'lucide-react';
+import { HiringPageHeader } from '@/components/hiring/HiringPageHeader';
 
 interface PipelinePageProps {
   searchParams: Promise<{
@@ -85,27 +86,29 @@ export default async function PipelinePage({ searchParams }: PipelinePageProps) 
 
   return (
     <div className="space-y-6">
-      {/* Page Header */}
-      <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between border-b border-[var(--wp-border)] pb-5">
-        <div>
-          <h1 className="wp-page-title text-xl font-semibold text-[var(--wp-text)] flex items-center gap-2">
-            <Users className="h-5 w-5 text-[var(--wp-text)]" />
-            Hiring pipeline
-          </h1>
-          <p className="text-sm text-[var(--wp-text-muted)] mt-0.5">
-            Review candidates by stage and open a profile to take the next hiring action.
-          </p>
-        </div>
-
-        <div className="flex items-center gap-2">
+      {/* Page Header with Breadcrumb and Title */}
+      <HiringPageHeader
+        breadcrumbs={[
+          { label: 'Hiring', href: '/dashboard/hiring/pipeline' },
+          { label: 'Pipeline' },
+        ]}
+        title="Hiring Pipeline"
+        badge={
+          <span className="flex h-5 items-center justify-center rounded-full bg-slate-100 px-2 text-[11px] font-bold text-slate-700 border border-slate-200/80 tabular-nums">
+            {serializedApplications.length} Candidates
+          </span>
+        }
+        description="Review candidates by stage, filter by position, and take the next hiring action."
+        actions={
           <Link
             href="/dashboard/hiring/applicants"
-            className="inline-flex items-center gap-1.5 rounded-lg border border-[var(--wp-border)] bg-white px-4 py-2 text-sm font-bold text-[var(--wp-text)] hover:bg-[#F8F9FA] transition"
+            className="inline-flex items-center gap-1.5 rounded-xl border border-slate-200 bg-white px-3.5 py-2 text-xs font-bold text-slate-700 hover:bg-slate-50 hover:border-slate-300 transition shadow-2xs"
           >
-            <ListFilter className="h-3.5 w-3.5" /> Table View
+            <ListFilter className="h-3.5 w-3.5 text-slate-400" />
+            <span>Table View</span>
           </Link>
-        </div>
-      </div>
+        }
+      />
 
       {/* Kanban Pipeline Component */}
       <ApplicationPipeline

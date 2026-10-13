@@ -1,4 +1,4 @@
-import { redirect, notFound } from 'next/navigation';
+import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import { requireBackOfficeContext } from '@/lib/auth/guards';
 import { prisma } from '@/lib/db/prisma';
@@ -10,13 +10,11 @@ import {
   CheckCircle,
   XCircle,
   Users,
-  MapPin,
   Clock,
-  Briefcase,
-  Building2,
   ExternalLink,
 } from 'lucide-react';
 import { publishJobAction, closeJobAction } from '@/features/hiring/actions';
+import { HiringPageHeader } from '@/components/hiring/HiringPageHeader';
 
 interface JobDetailPageProps {
   params: Promise<{ jobId: string }>;
@@ -59,72 +57,76 @@ export default async function JobDetailPage({ params }: JobDetailPageProps) {
 
   return (
     <div className="max-w-4xl mx-auto space-y-6">
-      {/* Header Bar */}
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between border-b border-slate-200 pb-5">
-        <div className="flex items-center gap-3">
-          <Link
-            href="/dashboard/hiring/jobs"
-            className="rounded-lg p-2 text-slate-500 hover:bg-slate-100 hover:text-slate-900"
-          >
-            <ArrowLeft className="h-4 w-4" />
-          </Link>
-          <div>
-            <div className="flex items-center gap-2">
-              <h1 className="wp-page-title text-xl font-bold text-slate-900">
-                {job.title}
-              </h1>
-              <span
-                className={`rounded-md px-2 py-0.5 text-xs font-bold ${
-                  job.status === JobStatus.PUBLISHED
-                    ? 'bg-emerald-50 text-emerald-700 '
-                    : job.status === JobStatus.DRAFT
-                    ? 'bg-amber-50 text-amber-700 '
-                    : 'bg-slate-100 text-slate-600 '
-                }`}
-              >
-                {job.status}
-              </span>
-            </div>
-            <p className="text-sm text-slate-500 mt-0.5">
-              {job.department} • {job.employmentType} • {job.location}
-            </p>
-          </div>
-        </div>
-
-        {/* Action buttons */}
-        {canEdit && (
-          <div className="flex items-center gap-2">
+      {/* Header Bar with Breadcrumb and Title */}
+      <HiringPageHeader
+        breadcrumbs={[
+          { label: 'Hiring', href: '/dashboard/hiring/pipeline' },
+          { label: 'Job Openings', href: '/dashboard/hiring/jobs' },
+          { label: job.title },
+        ]}
+        title={
+          <div className="flex items-center gap-2.5">
             <Link
-              href={`/dashboard/hiring/jobs/${job.id}/edit`}
-              className="inline-flex items-center gap-1.5 rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50"
+              href="/dashboard/hiring/jobs"
+              className="rounded-lg p-1.5 text-slate-500 hover:bg-slate-100 hover:text-slate-900 transition"
+              aria-label="Back to Job Openings"
             >
-              <Edit className="h-3.5 w-3.5" /> Edit Job
+              <ArrowLeft className="h-4 w-4" />
             </Link>
-
-            {job.status === JobStatus.DRAFT && (
-              <form action={handlePublish}>
-                <button
-                  type="submit"
-                  className="inline-flex items-center gap-1.5 rounded-lg bg-emerald-600 px-3.5 py-2 text-sm font-semibold text-white hover:bg-emerald-500"
-                >
-                  <CheckCircle className="h-3.5 w-3.5" /> Publish Job
-                </button>
-              </form>
-            )}
-
-            {job.status === JobStatus.PUBLISHED && (
-              <form action={handleClose}>
-                <button
-                  type="submit"
-                  className="inline-flex items-center gap-1.5 rounded-lg border border-rose-200 bg-rose-50 px-3.5 py-2 text-sm font-semibold text-rose-700 hover:bg-rose-100"
-                >
-                  <XCircle className="h-3.5 w-3.5" /> Close Posting
-                </button>
-              </form>
-            )}
+            <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-slate-900">
+              {job.title}
+            </h1>
           </div>
-        )}
-      </div>
+        }
+        badge={
+          <span
+            className={`rounded-md px-2 py-0.5 text-xs font-bold ${
+              job.status === JobStatus.PUBLISHED
+                ? 'bg-emerald-50 text-emerald-700 '
+                : job.status === JobStatus.DRAFT
+                ? 'bg-amber-50 text-amber-700 '
+                : 'bg-slate-100 text-slate-600 '
+            }`}
+          >
+            {job.status}
+          </span>
+        }
+        description={`${job.department} • ${job.employmentType} • ${job.location}`}
+        actions={
+          canEdit ? (
+            <div className="flex items-center gap-2">
+              <Link
+                href={`/dashboard/hiring/jobs/${job.id}/edit`}
+                className="inline-flex items-center gap-1.5 rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50"
+              >
+                <Edit className="h-3.5 w-3.5" /> Edit Job
+              </Link>
+
+              {job.status === JobStatus.DRAFT && (
+                <form action={handlePublish}>
+                  <button
+                    type="submit"
+                    className="inline-flex items-center gap-1.5 rounded-lg bg-emerald-600 px-3.5 py-2 text-sm font-semibold text-white hover:bg-emerald-500"
+                  >
+                    <CheckCircle className="h-3.5 w-3.5" /> Publish Job
+                  </button>
+                </form>
+              )}
+
+              {job.status === JobStatus.PUBLISHED && (
+                <form action={handleClose}>
+                  <button
+                    type="submit"
+                    className="inline-flex items-center gap-1.5 rounded-lg border border-rose-200 bg-rose-50 px-3.5 py-2 text-sm font-semibold text-rose-700 hover:bg-rose-100"
+                  >
+                    <XCircle className="h-3.5 w-3.5" /> Close Posting
+                  </button>
+                </form>
+              )}
+            </div>
+          ) : undefined
+        }
+      />
 
       {/* Metrics Row */}
       <div className="grid gap-4 sm:grid-cols-3">

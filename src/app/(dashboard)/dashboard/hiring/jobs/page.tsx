@@ -6,14 +6,11 @@ import { JobStatus } from '@prisma/client';
 import {
   Plus,
   Search,
-  Filter,
   Eye,
   Edit,
-  CheckCircle,
-  XCircle,
   Briefcase,
 } from 'lucide-react';
-import { publishJobAction, closeJobAction } from '@/features/hiring/actions';
+import { HiringPageHeader } from '@/components/hiring/HiringPageHeader';
 
 interface JobsPageProps {
   searchParams: Promise<{
@@ -51,27 +48,31 @@ export default async function JobsPage({ searchParams }: JobsPageProps) {
 
   return (
     <div className="space-y-6">
-      {/* Header */}
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between border-b border-[var(--wp-border)] pb-5">
-        <div>
-          <h1 className="wp-page-title text-xl font-semibold text-[var(--wp-text)]">
-            Job Postings
-          </h1>
-          <p className="text-sm text-[var(--wp-text-muted)]">
-            Manage organization recruitment requisitions and career openings
-          </p>
-        </div>
-
-        {canEdit && (
-          <Link
-            href="/dashboard/hiring/jobs/new"
-            className="inline-flex items-center gap-2 rounded-lg bg-[var(--tenant-primary)] px-5 py-2.5 text-sm font-bold text-[var(--tenant-primary-foreground)] hover:brightness-95 transition"
-          >
-            <Plus className="h-4 w-4" />
-            Create Job Posting
-          </Link>
-        )}
-      </div>
+      {/* Header with Breadcrumb and Title */}
+      <HiringPageHeader
+        breadcrumbs={[
+          { label: 'Hiring', href: '/dashboard/hiring/pipeline' },
+          { label: 'Job Openings' },
+        ]}
+        title="Job Postings"
+        badge={
+          <span className="flex h-5 items-center justify-center rounded-full bg-slate-100 px-2 text-[11px] font-bold text-slate-700 border border-slate-200/80 tabular-nums">
+            {jobs.length} Positions
+          </span>
+        }
+        description="Manage organization recruitment requisitions and career openings"
+        actions={
+          canEdit ? (
+            <Link
+              href="/dashboard/hiring/jobs/new"
+              className="inline-flex items-center gap-2 rounded-xl bg-[var(--tenant-primary)] px-4 py-2 text-xs sm:text-sm font-bold text-[var(--tenant-primary-foreground)] hover:brightness-95 transition shadow-2xs"
+            >
+              <Plus className="h-4 w-4" />
+              <span>Create Job Posting</span>
+            </Link>
+          ) : undefined
+        }
+      />
 
       {/* Search & Filter Bar */}
       <div className="flex flex-col sm:flex-row items-center justify-between gap-3 rounded-lg border border-[var(--wp-border)] bg-white p-5">
