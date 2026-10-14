@@ -5,6 +5,7 @@ import { prisma } from '@/lib/db/prisma';
 import { decimalNumber } from './domain';
 import { parseLeavePolicy } from './policy';
 import { previewLeaveCalculation } from './service';
+import { attendanceDateForInstant, parseAttendanceDate } from '@/features/attendance/domain';
 
 const requestInclude = {
   employee: { select: { id: true, employeeNumber: true, firstName: true, lastName: true } },
@@ -34,16 +35,137 @@ function serializeRequest(request: AdminRequestRecord) {
   };
 }
 
-export async function getLeaveAdminOverview(organizationId: string) {
-  const requests = await prisma.leaveRequest.findMany({ where: { organizationId }, orderBy: { submittedAt: 'desc' }, include: requestInclude });
+export type SerializedLeaveRequest = ReturnType<typeof serializeRequest>;
+
+export interface LeaveAdminOverviewData {
+  counts: {
+    pending: number;
+    approved: number;
+    closed: number;
+  };
+  summary: {
+    pending: number;
+    approvedThisMonth: number;
+    approvedLastMonth: number;
+    approvedDiff: number;
+    rejectedCancelled: number;
+    totalClosed: number;
+    onLeaveToday: number;
+  };
+  upcomingApproved: SerializedLeaveRequest[];
+  activityData: {
+    weekly: Array<{ date: string; label: string; approved: number; pending: number }>;
+    monthly: Array<{ date: string; label: string; approved: number; pending: number }>;
+  };
+  leaveTypes: Array<{ id: string; code: string; name: string }>;
+  pendingRequests: SerializedLeaveRequest[];
+  allRequests: SerializedLeaveRequest[];
+  recentRequests: SerializedLeaveRequest[];
+  timeZone: string;
+  today: string;
+}
+
+export async function getLeaveAdminOverview(organizationId: string): Promise<LeaveAdminOverviewData> {
+  const [requests, leaveTypes, organization] = await Promise.all([
+    prisma.leaveRequest.findMany({
+      where: { organizationId },
+      orderBy: { submittedAt: 'desc' },
+      include: requestInclude,
+    }),
+    prisma.leaveType.findMany({
+      where: { organizationId, isActive: true },
+      select: { id: true, code: true, name: true },
+      orderBy: { name: 'asc' },
+    }),
+    prisma.organization.findUnique({
+      where: { id: organizationId },
+      select: { timeZone: true },
+    }),
+  ]);
+
+  const timeZone = organization?.timeZone ?? 'Asia/Manila';
+  const todayStr = attendanceDateForInstant(new Date(), timeZone);
+  const currentMonth = todayStr.slice(0, 7);
+
+  const [currentYear, currentMonthNum] = currentMonth.split('-').map(Number);
+  const prevMonthDate = new Date(Date.UTC(currentYear, currentMonthNum - 2, 1));
+  const prevMonth = `${prevMonthDate.getUTCFullYear()}-${String(prevMonthDate.getUTCMonth() + 1).padStart(2, '0')}`;
+
+  const allRequests = requests.map(serializeRequest);
+  const pendingRequests = allRequests.filter((item) => item.status === 'PENDING');
+  const approvedRequests = allRequests.filter((item) => item.status === 'APPROVED');
+  const closedRequests = allRequests.filter((item) => ['REJECTED', 'CANCELLED', 'WITHDRAWN'].includes(item.status));
+
+  const approvedThisMonth = approvedRequests.filter((item) => {
+    return item.from.startsWith(currentMonth) || (item.reviewedAt ? attendanceDateForInstant(new Date(item.reviewedAt), timeZone).startsWith(currentMonth) : false);
+  }).length;
+
+  const approvedLastMonth = approvedRequests.filter((item) => {
+    return item.from.startsWith(prevMonth) || (item.reviewedAt ? attendanceDateForInstant(new Date(item.reviewedAt), timeZone).startsWith(prevMonth) : false);
+  }).length;
+
+  const approvedDiff = approvedThisMonth - approvedLastMonth;
+
+  const rejectedThisMonth = closedRequests.filter((item) => {
+    return item.from.startsWith(currentMonth) || (item.reviewedAt ? attendanceDateForInstant(new Date(item.reviewedAt), timeZone).startsWith(currentMonth) : false) || (item.submittedAt ? attendanceDateForInstant(new Date(item.submittedAt), timeZone).startsWith(currentMonth) : false);
+  }).length;
+
+  const onLeaveToday = approvedRequests.filter((item) => item.from <= todayStr && item.to >= todayStr).length;
+
+  const upcomingApproved = approvedRequests
+    .filter((item) => item.to >= todayStr)
+    .sort((a, b) => a.from.localeCompare(b.from))
+    .slice(0, 8);
+
+  const todayTemporal = parseAttendanceDate(todayStr);
+  const weeklyDays: Array<{ date: string; label: string; approved: number; pending: number }> = [];
+  for (let i = 6; i >= 0; i--) {
+    const d = todayTemporal.subtract({ days: i });
+    const dStr = d.toString();
+    const dateObj = new Date(`${dStr}T00:00:00Z`);
+    const label = new Intl.DateTimeFormat('en-US', { month: 'short', day: 'numeric', timeZone: 'UTC' }).format(dateObj);
+    const approvedCount = approvedRequests.filter((r) => r.from <= dStr && r.to >= dStr).length;
+    const pendingCount = pendingRequests.filter((r) => r.from <= dStr && r.to >= dStr).length;
+    weeklyDays.push({ date: dStr, label, approved: approvedCount, pending: pendingCount });
+  }
+
+  const monthlyDays: Array<{ date: string; label: string; approved: number; pending: number }> = [];
+  for (let i = 29; i >= 0; i--) {
+    const d = todayTemporal.subtract({ days: i });
+    const dStr = d.toString();
+    const dateObj = new Date(`${dStr}T00:00:00Z`);
+    const label = new Intl.DateTimeFormat('en-US', { month: 'short', day: 'numeric', timeZone: 'UTC' }).format(dateObj);
+    const approvedCount = approvedRequests.filter((r) => r.from <= dStr && r.to >= dStr).length;
+    const pendingCount = pendingRequests.filter((r) => r.from <= dStr && r.to >= dStr).length;
+    monthlyDays.push({ date: dStr, label, approved: approvedCount, pending: pendingCount });
+  }
+
   return {
     counts: {
-      pending: requests.filter((item) => item.status === 'PENDING').length,
-      approved: requests.filter((item) => item.status === 'APPROVED').length,
-      closed: requests.filter((item) => ['REJECTED', 'CANCELLED', 'WITHDRAWN'].includes(item.status)).length,
+      pending: pendingRequests.length,
+      approved: approvedRequests.length,
+      closed: closedRequests.length,
     },
-    pendingRequests: requests.filter((item) => item.status === 'PENDING').map(serializeRequest),
-    recentRequests: requests.map(serializeRequest),
+    summary: {
+      pending: pendingRequests.length,
+      approvedThisMonth,
+      approvedLastMonth,
+      approvedDiff,
+      rejectedCancelled: rejectedThisMonth > 0 ? rejectedThisMonth : closedRequests.length,
+      totalClosed: closedRequests.length,
+      onLeaveToday,
+    },
+    upcomingApproved,
+    activityData: {
+      weekly: weeklyDays,
+      monthly: monthlyDays,
+    },
+    leaveTypes,
+    pendingRequests,
+    allRequests,
+    recentRequests: allRequests,
+    timeZone,
+    today: todayStr,
   };
 }
 

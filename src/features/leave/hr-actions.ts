@@ -36,6 +36,11 @@ export async function deactivateLeaveTypeAction(leaveTypeId: string, confirmed: 
   try { await prisma.leaveType.update({ where: { id: leaveTypeId, organizationId: user.organizationId }, data: { isActive: false } }); revalidatePath('/dashboard/leave'); revalidatePath('/dashboard/leave/settings'); return { success: true as const }; } catch (error) { return fail(error); }
 }
 
+export async function activateLeaveTypeAction(leaveTypeId: string, confirmed: boolean) {
+  const user = await requireBackOfficeContext(); if (!canManageLeaveBalances(user) || !confirmed) return { error: 'Unauthorized or unconfirmed.' };
+  try { await prisma.leaveType.update({ where: { id: leaveTypeId, organizationId: user.organizationId }, data: { isActive: true } }); revalidatePath('/dashboard/leave'); revalidatePath('/dashboard/leave/settings'); return { success: true as const }; } catch (error) { return fail(error); }
+}
+
 export async function grantCycleEntitlementsAction(input: { leaveTypeId: string; leaveCycleId: string; employeeIds: string[]; reason: string; confirmed: boolean; eligibilityConfirmed?: boolean }) {
   const user = await requireBackOfficeContext();
   if (!canManageLeaveBalances(user) || !input.confirmed) return { error: 'Unauthorized or unconfirmed.' };
