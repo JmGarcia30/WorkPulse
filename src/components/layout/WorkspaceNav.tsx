@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { isRouteActive, resolveTenantHref } from '@/lib/tenant/navigation';
 
 export const hiringRoutes = [
   ['pipeline', 'Pipeline'], ['jobs', 'Job openings'], ['applicants', 'Applicants'],
@@ -13,8 +14,8 @@ export function HiringWorkspaceNav() {
   return <nav aria-label="Hiring workspace" className="wp-workspace-nav">
     {hiringRoutes.map(([route, label]) => {
       const href = `/dashboard/hiring/${route}`;
-      const active = pathname === href || pathname.startsWith(`${href}/`);
-      return <Link key={route} href={href} aria-current={active ? 'page' : undefined}>{label}</Link>;
+      const active = isRouteActive(href, pathname);
+      return <Link key={route} href={resolveTenantHref(href, pathname)} aria-current={active ? 'page' : undefined}>{label}</Link>;
     })}
   </nav>;
 }
