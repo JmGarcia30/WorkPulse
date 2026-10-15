@@ -1,15 +1,21 @@
-import Link from 'next/link';
 import { redirect } from 'next/navigation';
 import { EmployeeStatus, EmploymentCategory } from '@prisma/client';
 import { getSession } from '@/lib/auth/session';
 import { canViewEmployees } from '@/lib/permissions/rbac';
 import { getOrganizationEmployees } from '@/features/employees/queries';
-import { deriveProbationReviewState } from '@/features/employees/domain';
-import { Search, Users } from 'lucide-react';
-import { formatStatusLabel } from '@/lib/ui/format-status';
+import { EmployeeDirectoryHeader } from '@/components/employees/EmployeeDirectoryHeader';
+import { EmployeeDirectoryFilters } from '@/components/employees/EmployeeDirectoryFilters';
+import { EmployeeDirectoryTable } from '@/components/employees/EmployeeDirectoryTable';
+import { EmployeeDirectoryPagination } from '@/components/employees/EmployeeDirectoryPagination';
 
 interface EmployeesPageProps {
-  searchParams: Promise<{ search?: string; category?: string; status?: string; needsReview?: string }>;
+  searchParams: Promise<{
+    search?: string;
+    category?: string;
+    status?: string;
+    needsReview?: string;
+    page?: string;
+  }>;
 }
 
 export default async function EmployeesPage({ searchParams }: EmployeesPageProps) {
@@ -26,122 +32,65 @@ export default async function EmployeesPage({ searchParams }: EmployeesPageProps
   const status = Object.values(EmployeeStatus).includes(params.status as EmployeeStatus)
     ? (params.status as EmployeeStatus)
     : undefined;
-  const employees = await getOrganizationEmployees(user.organizationId, {
+
+  const rawPage = parseInt(params.page ?? '1', 10);
+  const page = Number.isInteger(rawPage) && rawPage > 0 ? rawPage : 1;
+  const pageSize = 10;
+  const needsReview = params.needsReview === '1';
+
+  const {
+    employees,
+    totalCount,
+    totalOrganizationEmployees,
+    page: validatedPage,
+    totalPages,
+  } = await getOrganizationEmployees(user.organizationId, {
     search: params.search,
     category,
     status,
-    needsReview: params.needsReview === '1',
+    needsReview,
+    page,
+    pageSize,
   });
 
+  const hasActiveFilters = Boolean(
+    params.search || category || status || needsReview
+  );
+
   return (
-    <div className="space-y-6">
-      <div>
-        <p className="wp-eyebrow">Employees</p>
-        <h1 className="wp-page-title wp-page-title mt-1">Employee Records</h1>
-        <p className="mt-2 text-sm text-[var(--wp-text-muted)]">
-          Find employees, review current work details, and see upcoming probation reviews.
-        </p>
-      </div>
+    <div className="space-y-5">
+      {/* Page Header */}
+      <EmployeeDirectoryHeader totalEmployees={totalOrganizationEmployees} />
 
-      <form className="wp-filter-bar sm:grid-cols-5">
-        <div className="relative sm:col-span-2">
-          <Search className="absolute left-3.5 top-3 h-4 w-4 text-slate-400" />
-          <input
-            aria-label="Search records" name="search"
-            defaultValue={params.search ?? ''}
-            placeholder="Search name, email, or employee number"
-            className="wp-input py-2.5 pl-10 pr-3"
-          />
-        </div>
-        <select
-          aria-label="Employment category" name="category"
-          defaultValue={category ?? ''}
-          className="wp-input"
-        >
-          <option value="">All categories</option>
-          <option value={EmploymentCategory.TEACHING}>Teaching</option>
-          <option value={EmploymentCategory.NON_TEACHING}>Non-Teaching</option>
-        </select>
-        <label className="flex min-h-11 items-center gap-2 rounded-lg border border-[var(--wp-border)] bg-white px-3 text-sm font-semibold">
-          <input type="checkbox" name="needsReview" value="1" defaultChecked={params.needsReview === '1'} />
-          Needs probation review
-        </label>
-        <div className="flex gap-2">
-          <select
-            aria-label="Status" name="status"
-            defaultValue={status ?? ''}
-            className="wp-input min-w-0 flex-1"
-          >
-            <option value="">All statuses</option>
-            {Object.values(EmployeeStatus).map((value) => (
-              <option key={value} value={value}>{formatStatusLabel(value)}</option>
-            ))}
-          </select>
-          <button className="wp-button-primary px-4">
-            Filter
-          </button>
-        </div>
-      </form>
+      {/* Search & Filter Toolbar */}
+      <EmployeeDirectoryFilters
+        initialSearch={params.search ?? ''}
+        initialCategory={category ?? ''}
+        initialStatus={status ?? ''}
+        initialNeedsReview={needsReview}
+      />
 
-      <div className="wp-table-wrap"><div className="flex flex-wrap items-center justify-between gap-3 border-b px-4 py-3"><p className="text-sm font-semibold">{employees.length} matching employee{employees.length === 1 ? '' : 's'}</p><Link href="/dashboard/employees" className="text-sm font-semibold text-[var(--tenant-primary)] hover:underline">Clear filters</Link></div>
-          <table className="wp-table">
-            <thead>
-              <tr>
-                <th className="px-5 py-4">Employee</th>
-                <th className="px-5 py-4">Employee Number</th>
-                <th className="px-5 py-4">Department</th>
-                <th className="px-5 py-4">Category</th>
-                <th className="px-5 py-4">Classification</th>
-                <th className="px-5 py-4">Probation review</th>
-                <th className="px-5 py-4">Status</th>
-              </tr>
-            </thead>
-            <tbody>
-              {employees.length === 0 ? (
-                <tr>
-                  <td colSpan={7} className="wp-empty">
-                    <Users className="mx-auto mb-2 h-8 w-8 text-slate-400" />
-                    No employees match the selected filters.
-                  </td>
-                </tr>
-              ) : employees.map((employee) => {
-                const employment = employee.employmentRecords[0];
-                const probation = employment?.probation;
-                const review = probation
-                  ? deriveProbationReviewState({
-                      probationStatus: probation.probationStatus,
-                      expectedEndAt: probation.expectedEndAt,
-                    })
-                  : null;
-                return (
-                  <tr key={employee.id}>
-                    <td className="px-5 py-4">
-                      <Link href={`/dashboard/employees/${employee.id}`} className="font-bold hover:underline">
-                        {employee.firstName} {employee.lastName}
-                      </Link>
-                      <p className="text-xs text-slate-500">{employee.email}</p>
-                    </td>
-                    <td className="px-5 py-4 font-bold">{employee.employeeNumber}</td>
-                    <td className="px-5 py-4">{employment?.department ?? '—'}</td>
-                    <td className="px-5 py-4">{employment ? formatStatusLabel(employment.employmentCategory) : '—'}</td>
-                    <td className="px-5 py-4">{employment ? formatStatusLabel(employment.employmentStatus) : '—'}</td>
-                    <td className="px-5 py-4">
-                      {review ? (
-                        <span className={`rounded-full px-2.5 py-1 font-bold ${review.needsAttention ? 'bg-amber-50 text-amber-700' : 'bg-slate-100 text-slate-600'}`}>
-                          {formatStatusLabel(review.state)}
-                        </span>
-                      ) : '—'}
-                    </td>
-                    <td className="px-5 py-4">
-                      <span className={`rounded-full px-2.5 py-1 font-bold ${employee.employeeStatus === EmployeeStatus.ACTIVE ? 'bg-emerald-50 text-emerald-700' : 'bg-slate-100 text-slate-600'}`}>
-                        {formatStatusLabel(employee.employeeStatus)}
-                      </span>
-                    </td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
+      {/* Directory Table / Mobile Cards Container */}
+      <div className="rounded-xl border border-slate-200/80 bg-white shadow-xs overflow-hidden">
+        {/* Table on desktop, stacked cards on mobile */}
+        <EmployeeDirectoryTable
+          employees={employees}
+          hasActiveFilters={hasActiveFilters}
+        />
+
+        {/* Server-Side Pagination Controls */}
+        <EmployeeDirectoryPagination
+          totalCount={totalCount}
+          page={validatedPage}
+          pageSize={pageSize}
+          totalPages={totalPages}
+          filters={{
+            search: params.search,
+            category,
+            status,
+            needsReview,
+          }}
+        />
       </div>
     </div>
   );

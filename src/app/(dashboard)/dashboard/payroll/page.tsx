@@ -1,43 +1,144 @@
 import { notFound } from 'next/navigation';
+import { Role } from '@prisma/client';
 import { requireBackOfficeContext } from '@/lib/auth/guards';
 import { canViewPayroll } from '@/lib/permissions/rbac';
-import { getPayrollFoundation } from '@/features/payroll/queries';
-import { CompensationForm, PayrollGenerationForm, PayrollPeriodForm, PayrollPolicyForm, PayrollReviewControls } from '@/components/payroll/PayrollSetupForms';
-import { formatStatusLabel } from '@/lib/ui/format-status';
+import { getPayrollDashboardData } from '@/features/payroll/queries';
+import { formatPayrollPeriodRange } from '@/features/payroll/formatters';
+import {
+  PayrollDashboardHeader,
+  PayrollTabId,
+} from '@/components/payroll/PayrollDashboardHeader';
+import { PayrollSummaryCards } from '@/components/payroll/PayrollSummaryCards';
+import { PayrollTrendChart } from '@/components/payroll/PayrollTrendChart';
+import { PayrollBreakdownPanel } from '@/components/payroll/PayrollBreakdownPanel';
+import { EmployeePayrollEntriesTable } from '@/components/payroll/EmployeePayrollEntriesTable';
+import { RecentPayrollPeriodsWidget } from '@/components/payroll/RecentPayrollPeriodsWidget';
+import { PayrollActionQueueWidget } from '@/components/payroll/PayrollActionQueueWidget';
+import { PayrollProcessingTab } from '@/components/payroll/PayrollProcessingTab';
+import { PayrollConfigurationTab } from '@/components/payroll/PayrollConfigurationTab';
 
-const dateLabel = (date: Date) => new Intl.DateTimeFormat('en-PH', { year: 'numeric', month: 'short', day: 'numeric', timeZone: 'UTC' }).format(date);
-
-type PayrollSnapshot = { attendanceSummary?: { scheduledWorkdays?: number; presentDays?: number; absentDays?: number; approvedLeaveDays?: number; lateOccurrences?: number }; leaveSummary?: { approvedDays?: number; approvedUnits?: string } };
-
-export default async function PayrollPage({ searchParams }: { searchParams: Promise<{ period?: string }> }) {
+export default async function PayrollPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ period?: string; tab?: string }>;
+}) {
   const user = await requireBackOfficeContext();
   if (!canViewPayroll(user)) notFound();
-  const { period: selectedPeriodId } = await searchParams;
-  const { employees, compensations, periods, selectedPeriod, entries, review, policies, currentPolicy, leaveTypes } = await getPayrollFoundation(user.organizationId, selectedPeriodId);
-  return <div className="space-y-7">
-    <header><p className="wp-eyebrow">Payroll</p><h1 className="wp-page-title mt-1">Payroll Workspace</h1><p className="mt-2 text-sm text-[var(--wp-text-muted)]">Set up pay, prepare a payroll period, review the results, and finalize payslips.</p></header>
-    <ol aria-label="Payroll workflow" className="grid gap-2 rounded-2xl bg-white p-4 sm:grid-cols-3 xl:grid-cols-6">{['Set Up Pay', 'Create Period', 'Generate Payroll', 'Review', 'Finalize', 'View Payslips'].map((step, index) => <li key={step} className="flex items-center gap-2 rounded-xl bg-[var(--tenant-tint)] px-3 py-3 text-xs font-bold"><span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-[var(--tenant-primary)] text-[var(--tenant-primary-foreground)]">{index + 1}</span>{step}</li>)}</ol>
-    <section className="rounded-2xl bg-white p-5 shadow-sm sm:p-6"><div><p className="wp-eyebrow">Settings</p><h2 className="wp-section-title mt-1">Payroll Policy</h2><p className="mt-1 text-sm text-[var(--wp-text-muted)]">Choose how pay and deductions should be calculated. Previous versions remain available for payroll history.</p></div>
-      <div className="mt-4 rounded-xl bg-[var(--tenant-tint)] p-4 text-sm"><p className="font-bold">Current policy: {currentPolicy ? `Version ${currentPolicy.version}` : 'Standard default'}</p><p className="mt-1 text-xs text-[var(--wp-text-muted)]">{currentPolicy ? `${formatStatusLabel(currentPolicy.dailyPayBasis)} · Late: ${formatStatusLabel(currentPolicy.lateDeductionRule)} · Absence: ${formatStatusLabel(currentPolicy.absenceDeductionRule)} · Undertime: ${formatStatusLabel(currentPolicy.undertimeDeductionRule)}` : 'Scheduled payable days · No late, absence, or undertime deductions · Standard two-decimal rounding'}</p></div>
-      <PayrollPolicyForm leaveTypes={leaveTypes} />
-      <div className="mt-5 overflow-x-auto">{policies.length === 0 ? <p className="wp-empty">The standard payroll policy is active. Create a custom version only when your organization needs one.</p> : <table className="wp-table"><thead><tr>{['Version', 'Effective', 'Daily Pay Basis', 'Late', 'Absence', 'Undertime', 'Rounding', 'Created By'].map(label => <th key={label}>{label}</th>)}</tr></thead><tbody>{policies.map(policy => <tr key={policy.id}><td className="font-bold">v{policy.version}</td><td className="whitespace-nowrap">{dateLabel(policy.effectiveFrom)}{policy.effectiveTo ? ` – ${dateLabel(policy.effectiveTo)}` : ' onward'}</td><td>{formatStatusLabel(policy.dailyPayBasis)}</td><td>{formatStatusLabel(policy.lateDeductionRule)}</td><td>{formatStatusLabel(policy.absenceDeductionRule)}</td><td>{formatStatusLabel(policy.undertimeDeductionRule)}</td><td>{formatStatusLabel(policy.roundingRule)}</td><td>{policy.createdBy.name}</td></tr>)}</tbody></table>}</div>
-    </section>
-    <section className="rounded-2xl bg-white p-5 shadow-sm sm:p-6"><div><p className="wp-eyebrow">Step 1</p><h2 className="wp-section-title mt-1">Set Up Employee Pay</h2><p className="mt-1 text-sm text-[var(--wp-text-muted)]">Add each employee’s base pay and the date it takes effect.</p></div>
-      <CompensationForm employees={employees} />
-      <div className="mt-5 overflow-x-auto">{compensations.length === 0 ? <p className="wp-empty">No employee pay has been set up yet. Use the form above to add the first record.</p> : <table className="wp-table"><thead><tr>{['Employee', 'Pay Type', 'Base Rate', 'Frequency', 'Effective', 'Status'].map(label => <th key={label}>{label}</th>)}</tr></thead><tbody>{compensations.map(record => <tr key={record.id}><td className="font-semibold">{record.employee.firstName} {record.employee.lastName}<span className="block font-normal text-[var(--wp-text-muted)]">{record.employee.employeeNumber}</span></td><td>{formatStatusLabel(record.compensationType)}</td><td>{record.currency} {record.baseRate.toFixed(2)}</td><td>{formatStatusLabel(record.payFrequency)}</td><td>{dateLabel(record.effectiveFrom)}{record.effectiveTo ? ` – ${dateLabel(record.effectiveTo)}` : ' onward'}</td><td className="font-semibold">{formatStatusLabel(record.status)}</td></tr>)}</tbody></table>}</div>
-    </section>
-    <section className="rounded-2xl bg-white p-5 shadow-sm sm:p-6"><div><p className="wp-eyebrow">Step 2</p><h2 className="wp-section-title mt-1">Create a Payroll Period</h2><p className="mt-1 text-sm text-[var(--wp-text-muted)]">Choose the coverage dates and scheduled pay date.</p></div>
-      <PayrollPeriodForm />
-      <div className="mt-5 overflow-x-auto">{periods.length === 0 ? <p className="wp-empty">No payroll periods yet. Create one above when you are ready to prepare payroll.</p> : <table className="wp-table"><thead><tr>{['Period', 'Coverage', 'Pay Date', 'Status'].map(label => <th key={label}>{label}</th>)}</tr></thead><tbody>{periods.map(period => <tr key={period.id}><td className="font-semibold">{period.name}</td><td>{dateLabel(period.periodStart)} – {dateLabel(period.periodEnd)}</td><td>{dateLabel(period.payDate)}</td><td className="font-semibold">{formatStatusLabel(period.status)}</td></tr>)}</tbody></table>}</div>
-    </section>
-    <section className="rounded-2xl bg-white p-5 shadow-sm sm:p-6"><div><p className="wp-eyebrow">Steps 3–6</p><h2 className="wp-section-title mt-1">Generate, Review, and Finalize</h2><p className="mt-1 text-sm text-[var(--wp-text-muted)]">Generate payroll, resolve any setup needs, review totals, and finalize before viewing payslips.</p></div>
-      {selectedPeriod?.status !== 'FINALIZED' ? <PayrollGenerationForm periods={periods.map(period => ({ id: period.id, name: period.name }))} selectedPeriodId={selectedPeriod?.id} /> : null}
-      {selectedPeriod ? <form method="get" className="mt-5 flex items-end gap-3"><label className="grid flex-1 gap-1 text-xs font-semibold">View period<select name="period" defaultValue={selectedPeriod.id} className="rounded-xl border bg-white px-3 py-2.5 font-normal">{periods.map(period => <option key={period.id} value={period.id}>{period.name}</option>)}</select></label><button className="rounded-xl border px-4 py-2.5 text-xs font-bold">View</button></form> : null}
-      {review ? <><div className="mt-5 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">{[['Total employees', review.summary.totalEmployees], ['Ready', review.summary.ready], ['Setup required', review.summary.setupRequired], ['Errors', review.summary.errors]].map(([label, value]) => <div key={label} className="rounded-2xl border bg-slate-50 p-4"><p className="text-xs text-slate-500">{label}</p><p className="mt-1 text-2xl font-bold">{value}</p></div>)}</div>
-        <div className="mt-3 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">{[['Entry count', review.totals.employeeCount], ['Gross total', review.totals.gross], ['Deduction total', review.totals.deductions], ['Net total', review.totals.net]].map(([label, value]) => <div key={label} className="rounded-xl border p-3"><p className="text-[11px] text-slate-500">{label}</p><p className="mt-1 text-sm font-bold">{value}</p></div>)}</div>
-        {review.issues.length ? <div role="alert" className="mt-4 rounded-2xl border border-red-200 bg-red-50 p-4 text-xs text-red-900"><p className="font-bold">What needs to be fixed</p><ul className="mt-2 list-disc space-y-1 pl-5">{review.issues.map((issue, index) => <li key={`${issue.employeeId ?? 'period'}-${index}`}><span className="font-semibold">{formatStatusLabel(issue.kind)}{issue.employeeNumber ? ` · ${issue.employeeNumber}` : ''}:</span> {issue.message}</li>)}</ul></div> : null}
-        {review.period.status === 'FINALIZED' ? <div className="mt-4 rounded-2xl border border-emerald-200 bg-emerald-50 p-4"><p className="font-bold text-emerald-900">Finalized</p><p className="mt-1 text-xs text-emerald-800">Finalized by {review.period.finalizedBy?.name ?? 'Unknown'} on {review.period.finalizedAt ? new Intl.DateTimeFormat('en-PH', { dateStyle: 'medium', timeStyle: 'short', timeZone: 'Asia/Manila' }).format(review.period.finalizedAt) : 'an unknown date'}.</p></div> : <PayrollReviewControls periodId={review.period.id} periodLabel={`${dateLabel(review.period.periodStart)}–${dateLabel(review.period.periodEnd)}`} status={review.period.status} canFinalize={review.canFinalize} />}</> : null}
-      <div className="mt-5 overflow-x-auto">{!selectedPeriod ? <p className="py-8 text-center text-sm text-slate-500">Create a payroll period to begin.</p> : entries.length === 0 ? <p className="py-8 text-center text-sm text-slate-500">No payroll entries have been generated for {selectedPeriod.name}.</p> : <table className="w-full text-left text-xs"><thead className="border-b text-slate-500"><tr>{['Employee', 'Compensation', 'Period', 'Base', 'Attendance', 'Approved leave', 'Gross', 'Deductions', 'Net', 'Status', 'Review state', 'Payslip'].map(label => <th key={label} className="whitespace-nowrap px-3 py-3">{label}</th>)}</tr></thead><tbody className="divide-y">{entries.map(entry => { const snapshot = entry.calculationSnapshot as PayrollSnapshot | null; const attendance = snapshot?.attendanceSummary; const leave = snapshot?.leaveSummary; const issue = review?.issues.find(item => item.employeeId === entry.employeeId); return <tr key={entry.id}><td className="px-3 py-3 font-semibold">{entry.employee.firstName} {entry.employee.lastName}<span className="block font-normal text-slate-500">{entry.employee.employeeNumber}</span></td><td className="whitespace-nowrap px-3 py-3">{entry.employeeCompensation.compensationType}<span className="block text-slate-500">{entry.employeeCompensation.currency} {entry.employeeCompensation.baseRate.toFixed(2)} · {entry.employeeCompensation.payFrequency}</span></td><td className="whitespace-nowrap px-3 py-3">{selectedPeriod.name}</td><td className="whitespace-nowrap px-3 py-3">{entry.employeeCompensation.currency} {entry.baseAmount.toFixed(2)}</td><td className="whitespace-nowrap px-3 py-3">{attendance ? `${attendance.presentDays ?? 0} present · ${attendance.absentDays ?? 0} absent` : 'Snapshot unavailable'}{attendance ? <span className="block text-slate-500">{attendance.scheduledWorkdays ?? 0} workdays · {attendance.lateOccurrences ?? 0} late</span> : null}</td><td className="whitespace-nowrap px-3 py-3">{leave ? `${leave.approvedDays ?? 0} days` : 'Snapshot unavailable'}{leave ? <span className="block text-slate-500">{leave.approvedUnits ?? '0.0000'} units</span> : null}</td><td className="whitespace-nowrap px-3 py-3">{entry.grossAmount.toFixed(2)}</td><td className="whitespace-nowrap px-3 py-3">{entry.totalDeductions.toFixed(2)}</td><td className="whitespace-nowrap px-3 py-3 font-bold">{entry.netAmount.toFixed(2)}</td><td className="px-3 py-3 font-semibold">{entry.status}</td><td className={`whitespace-nowrap px-3 py-3 font-bold ${issue ? 'text-red-700' : 'text-emerald-700'}`}>{issue?.kind ?? 'READY'}</td><td className="px-3 py-3">{selectedPeriod.status === 'FINALIZED' && entry.status === 'FINALIZED' ? <a href={`/dashboard/payroll/payslips/${entry.id}`} className="whitespace-nowrap font-bold text-emerald-700">View Payslip</a> : '—'}</td></tr>; })}</tbody></table>}</div>
-    </section>
-  </div>;
+
+  const { period: selectedPeriodId, tab: rawTab } = await searchParams;
+  const validTabs: PayrollTabId[] = ['overview', 'processing', 'configuration'];
+  const activeTab: PayrollTabId = validTabs.includes(rawTab as PayrollTabId)
+    ? (rawTab as PayrollTabId)
+    : 'overview';
+
+  const data = await getPayrollDashboardData(user.organizationId, selectedPeriodId);
+  const { foundation, kpis, trendPoints, recentPeriods, entries, actions } = data;
+  const {
+    employees,
+    compensations,
+    periods,
+    selectedPeriod,
+    review,
+    policies,
+    currentPolicy,
+    leaveTypes,
+  } = foundation;
+
+  const canManagePayroll =
+    user.role === Role.ORGANIZATION_ADMIN || user.role === Role.HR_ADMIN;
+  const canGeneratePayroll =
+    canManagePayroll && selectedPeriod !== null && selectedPeriod.status !== 'FINALIZED';
+
+  const periodOptions = periods.map((p) => ({
+    id: p.id,
+    name: p.name,
+    status: p.status,
+  }));
+
+  const selectedPeriodDateRange = selectedPeriod
+    ? formatPayrollPeriodRange(selectedPeriod.periodStart, selectedPeriod.periodEnd)
+    : undefined;
+
+  return (
+    <div className="space-y-6">
+      {/* 1. Dashboard Top Header with Period Picker & Tab Switcher */}
+      <PayrollDashboardHeader
+        periods={periodOptions}
+        selectedPeriodId={selectedPeriod?.id ?? null}
+        activeTab={activeTab}
+        canManagePayroll={canManagePayroll}
+        canGeneratePayroll={canGeneratePayroll}
+        issuesCount={review?.issues.length ?? 0}
+      />
+
+      {/* 2. Tab Content: Overview (Default Financial Dashboard) */}
+      {activeTab === 'overview' && (
+        <div className="space-y-5">
+          {/* Top 5 KPI Summary Cards */}
+          <PayrollSummaryCards
+            kpis={kpis}
+            periodName={selectedPeriod?.name}
+          />
+
+          {/* Main Financial Workspace Grid (matching reference layout composition) */}
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 items-start">
+            {/* Left Column (8 Cols): Trend Chart Top + Employee Entries Table Below */}
+            <div className="lg:col-span-8 flex flex-col gap-5 min-w-0">
+              {/* Upper Left: Payroll Trend Chart */}
+              <PayrollTrendChart
+                trendPoints={trendPoints}
+                currentPeriodName={selectedPeriod?.name}
+              />
+
+              {/* Lower Left: Employee Payroll Entries Table */}
+              <EmployeePayrollEntriesTable
+                entries={entries}
+                selectedPeriodName={selectedPeriod?.name}
+                isPeriodFinalized={selectedPeriod?.status === 'FINALIZED'}
+              />
+            </div>
+
+            {/* Right Column (4 Cols): Summary Breakdown Top + Recent Periods & Actions Queue Below */}
+            <div className="lg:col-span-4 flex flex-col gap-5 min-w-0">
+              {/* Upper Right: Payroll Summary Breakdown Gauge */}
+              <PayrollBreakdownPanel
+                kpis={kpis}
+                periodName={selectedPeriod?.name}
+                periodDateRange={selectedPeriodDateRange}
+                processingHref={`/dashboard/payroll?tab=processing${
+                  selectedPeriod ? `&period=${selectedPeriod.id}` : ''
+                }`}
+              />
+
+              {/* Lower Right (Top): Recent Payroll Periods */}
+              <RecentPayrollPeriodsWidget periods={recentPeriods} />
+
+              {/* Lower Right (Bottom): Payroll Action Queue */}
+              <PayrollActionQueueWidget actions={actions} />
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* 3. Tab Content: Payroll Processing (Create Period, Generate, Review, Finalize) */}
+      {activeTab === 'processing' && (
+        <PayrollProcessingTab
+          periods={periods}
+          selectedPeriod={selectedPeriod}
+          review={review}
+        />
+      )}
+
+      {/* 4. Tab Content: Payroll Configuration (Compensations & Policy Versions) */}
+      {activeTab === 'configuration' && (
+        <PayrollConfigurationTab
+          employees={employees}
+          compensations={compensations}
+          policies={policies}
+          currentPolicy={currentPolicy}
+          leaveTypes={leaveTypes}
+        />
+      )}
+    </div>
+  );
 }
