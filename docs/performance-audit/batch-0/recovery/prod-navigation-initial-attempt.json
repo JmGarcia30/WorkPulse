@@ -1,0 +1,50 @@
+[
+  {
+    "cycle": 0,
+    "route": "Employee Records",
+    "completed": true,
+    "expectedContent": true,
+    "renderedError": false,
+    "navigationMs": 1085,
+    "networkRequests": 8,
+    "documentRequests": 0,
+    "failedHttpResponses": [],
+    "runtimeExceptions": 0
+  },
+  {
+    "cycle": 0,
+    "route": "Employee Profile",
+    "completed": true,
+    "expectedContent": true,
+    "renderedError": false,
+    "navigationMs": 2090,
+    "networkRequests": 8,
+    "documentRequests": 0,
+    "failedHttpResponses": [],
+    "runtimeExceptions": 0
+  },
+  {
+    "cycle": 0,
+    "route": "Exit Management",
+    "completed": true,
+    "expectedContent": true,
+    "renderedError": false,
+    "navigationMs": 1591,
+    "networkRequests": 7,
+    "documentRequests": 0,
+    "failedHttpResponses": [],
+    "runtimeExceptions": 0
+  },
+  {
+    "cycle": 0,
+    "route": "Dashboard",
+    "completed": false,
+    "expectedContent": false,
+    "renderedError": false,
+    "navigationMs": 1342,
+    "networkRequests": 3,
+    "documentRequests": 0,
+    "failedHttpResponses": [],
+    "runtimeExceptions": 0
+  }
+]

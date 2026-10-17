@@ -13,6 +13,7 @@ import { notifyLeaveEmployee } from '../src/features/leave/notifications';
 import { LeaveError } from '../src/features/leave/domain';
 import { canReviewLeaveRequests } from '../src/lib/permissions/rbac';
 import { getEmployeeLeaveOverviewData } from '../src/features/leave/read-model';
+import { assertLeaveEquivalence } from './assert-batch1-leave-equivalence';
 
 const rollback = Symbol('h5-rollback');
 let assertions = 0;
@@ -104,6 +105,7 @@ async function main() {
       const base = { organizationId: org.id, employeeId: employeeA.id, actorUserId: employeeAUser.id, leaveTypeId: sickType.id, reason: 'Test request' };
       const beforePageRead = await tx.leaveLedgerEntry.count({ where: { employeeId: employeeA.id } });
       const projectedOverview = await getEmployeeLeaveOverviewData(tx, org.id, employeeA.id);
+      await assertLeaveEquivalence(tx, org.id, employeeA.id);
       ok(await tx.leaveLedgerEntry.count({ where: { employeeId: employeeA.id } }) === beforePageRead, 'employee leave page read never creates an entitlement grant');
       ok(projectedOverview.balances.find((item) => item.leaveTypeCode === 'SICK_PERSONAL' && item.cycleId === sickCycle.id)?.annualEntitlement === 5, 'eligible employee sees projected five-day entitlement without a ledger write');
       ok(await rejected(() => submitLeaveRequest({ ...base, from: '2027-01-03', to: '2027-01-03', categoryCode: 'VACATION' }, tx), 'INVALID_CATEGORY'), 'unsupported category is rejected through service');
@@ -154,6 +156,7 @@ async function main() {
       const sharedBalance = await tx.leaveLedgerEntry.aggregate({ where: { employeeId: employeeA.id, leaveTypeId: sickType.id, leaveCycleId: sickCycle.id }, _sum: { amountUnits: true } });
       ok(sharedBalance._sum.amountUnits?.equals(1), 'SICK and PERSONAL debit same shared balance');
       await cancelApprovedLeave({ organizationId: org.id, actorUserId: hr.id, requestId: sick.id, reason: 'Cancelled' }, tx);
+      await assertLeaveEquivalence(tx, org.id, employeeA.id);
       const debit = await tx.leaveLedgerEntry.findFirstOrThrow({ where: { leaveRequestId: sick.id, entryType: 'APPROVED_LEAVE' } });
       const reversal = await tx.leaveLedgerEntry.findFirstOrThrow({ where: { reversesEntryId: debit.id } });
       ok(reversal.amountUnits.equals(debit.amountUnits.negated()), 'cancellation creates exact opposite reversal');
@@ -268,6 +271,9 @@ async function main() {
       ok((await tx.leaveRequest.findUniqueOrThrow({ where: { id: sick.id } })).status === 'CANCELLED' && await tx.leaveRequestAudit.count({ where: { leaveRequestId: sick.id, action: 'NOTIFICATION_FAILED' } }) === 1, 'email failure is audited without rolling back leave state');
       ok(await tx.leaveRequestAudit.count({ where: { leaveRequestId: reviewTarget.id, action: 'NOTIFICATION_SENT' } }) === 2, 'submitted and rejected notification events are independently audited');
       ok(otherEmployee.organizationId === otherOrg.id, 'second-tenant fixture is distinct');
+      await assertLeaveEquivalence(tx, org.id, employeeA.id);
+      await assertLeaveEquivalence(tx, otherOrg.id, otherEmployee.id);
+      ok(true, 'batched balances and bounded previews exactly match legacy reads across projection, reversal, multiple cycles, pending and foreign-tenant fixtures');
       throw rollback;
     }, { timeout: 120_000 });
   } catch (error) { if (error !== rollback) throw error; }

@@ -1,0 +1,78 @@
+{
+  "results": [
+    {
+      "name": "h3-test-h3-attendance",
+      "exitCode": 0,
+      "elapsedMs": 25840
+    },
+    {
+      "name": "test-h6-payroll-foundation",
+      "exitCode": 0,
+      "elapsedMs": 34334
+    },
+    {
+      "name": "test-h8-analytics",
+      "exitCode": 0,
+      "elapsedMs": 23551
+    },
+    {
+      "name": "h10-1",
+      "exitCode": 0,
+      "elapsedMs": 137412
+    },
+    {
+      "name": "h10-2",
+      "exitCode": 0,
+      "elapsedMs": 249735
+    },
+    {
+      "name": "h10-interface",
+      "exitCode": 0,
+      "elapsedMs": 256191
+    },
+    {
+      "name": "core-ess-leave-payroll-tenancy",
+      "exitCode": 0,
+      "elapsedMs": 382449
+    },
+    {
+      "name": "test-batch3-services",
+      "exitCode": 0,
+      "elapsedMs": 583141
+    },
+    {
+      "name": "scenarios-test-batch3-services",
+      "exitCode": 0,
+      "elapsedMs": 34287
+    },
+    {
+      "name": "prisma-validation",
+      "exitCode": 0,
+      "elapsedMs": 1435
+    },
+    {
+      "name": "final-typescript",
+      "exitCode": 0,
+      "elapsedMs": 6734
+    },
+    {
+      "name": "changed-eslint",
+      "exitCode": 0,
+      "elapsedMs": 2682
+    },
+    {
+      "name": "production-build",
+      "exitCode": 0,
+      "elapsedMs": 70949
+    },
+    {
+      "name": "diff-check",
+      "exitCode": 0,
+      "elapsedMs": 101
+    }
+  ],
+  "originalEnvUnchanged": true,
+  "protectedTablesCompared": 46,
+  "changedProtectedTables": [],
+  "evidenceSecretPatternMatches": 0
+}

@@ -1,0 +1,28 @@
+{
+  "name": "h10-interface",
+  "exitCode": 0,
+  "elapsedMs": 229960,
+  "assertions": [
+    "H10.1 and H10.2 migrations replayed in the isolated test schema.",
+    "INTERFACE PASS 1: active employee session can access ESS before separation",
+    "INTERFACE PASS 2: authorized tenant-prefixed list renders",
+    "INTERFACE PASS 3: rendered navigation preserves tenant prefix",
+    "INTERFACE PASS 4: HIRING_MANAGER / tenant mismatch cannot view Exit administration",
+    "INTERFACE PASS 5: EMPLOYEE / tenant mismatch cannot view Exit administration",
+    "INTERFACE PASS 6: HR_ADMIN / tenant mismatch cannot view Exit administration",
+    "INTERFACE PASS 7: create form produces a draft with pending clearance",
+    "INTERFACE PASS 8: incomplete clearance cannot mark ready through action",
+    "INTERFACE PASS 9: stale forms display conflict without overwriting decisions",
+    "INTERFACE PASS 10: clearance and verified reviews permit readiness through rendered forms",
+    "INTERFACE PASS 11: forged action submissions cannot bypass role or tenant authorization",
+    "INTERFACE PASS 12: server rejects execution without explicit confirmation",
+    "INTERFACE PASS 13: full HR form workflow completes separation",
+    "INTERFACE PASS 14: interface execution disables linked ESS account",
+    "INTERFACE PASS 15: previously signed employee session is redirected away from ESS after separation",
+    "INTERFACE PASS 16: duplicate execution does not duplicate final audit",
+    "INTERFACE PASS 17: cancellation form preserves a terminal cancelled case",
+    "INTERFACE PASS 18: future approval and rejected early execution preserve employment and ESS",
+    "INTERFACE PASS 19: case search and status filters return matching tenant records"
+  ],
+  "errorCodes": []
+}

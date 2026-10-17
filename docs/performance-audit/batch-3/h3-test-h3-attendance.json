@@ -1,0 +1,11 @@
+{
+  "name": "h3-test-h3-attendance",
+  "exitCode": 0,
+  "elapsedMs": 25840,
+  "assertions": [
+    "H3 Attendance Foundation tests passed: 39 assertions."
+  ],
+  "errorCodes": [
+    "P0001"
+  ]
+}

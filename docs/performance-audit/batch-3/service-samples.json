@@ -1,0 +1,266 @@
+[
+  {
+    "workload": "payroll-generation",
+    "size": 5,
+    "iteration": 0,
+    "mode": "before",
+    "ms": 3559.0766999999996,
+    "sql": 26
+  },
+  {
+    "workload": "payroll-generation",
+    "size": 5,
+    "iteration": 0,
+    "mode": "after",
+    "ms": 1701.6360999999997,
+    "sql": 16
+  },
+  {
+    "workload": "payroll-generation",
+    "size": 5,
+    "iteration": 1,
+    "mode": "after",
+    "ms": 1470.5467000000008,
+    "sql": 16
+  },
+  {
+    "workload": "payroll-generation",
+    "size": 5,
+    "iteration": 1,
+    "mode": "before",
+    "ms": 2485.0593999999983,
+    "sql": 26
+  },
+  {
+    "workload": "payroll-generation",
+    "size": 5,
+    "iteration": 2,
+    "mode": "before",
+    "ms": 2464.0277000000006,
+    "sql": 27
+  },
+  {
+    "workload": "payroll-generation",
+    "size": 5,
+    "iteration": 2,
+    "mode": "after",
+    "ms": 1551.8584999999985,
+    "sql": 16
+  },
+  {
+    "workload": "payroll-generation",
+    "size": 5,
+    "iteration": 3,
+    "mode": "after",
+    "ms": 1528.030700000003,
+    "sql": 16
+  },
+  {
+    "workload": "payroll-generation",
+    "size": 5,
+    "iteration": 3,
+    "mode": "before",
+    "ms": 2587.1632000000027,
+    "sql": 26
+  },
+  {
+    "workload": "payroll-generation",
+    "size": 50,
+    "iteration": 0,
+    "mode": "before",
+    "ms": 23236.878300000004,
+    "sql": 207
+  },
+  {
+    "workload": "payroll-generation",
+    "size": 50,
+    "iteration": 0,
+    "mode": "after",
+    "ms": 10674.569799999997,
+    "sql": 107
+  },
+  {
+    "workload": "payroll-generation",
+    "size": 50,
+    "iteration": 1,
+    "mode": "after",
+    "ms": 13484.155499999993,
+    "sql": 107
+  },
+  {
+    "workload": "payroll-generation",
+    "size": 50,
+    "iteration": 1,
+    "mode": "before",
+    "ms": 21835.908200000005,
+    "sql": 207
+  },
+  {
+    "workload": "payroll-generation",
+    "size": 50,
+    "iteration": 2,
+    "mode": "before",
+    "ms": 22267.84809999999,
+    "sql": 208
+  },
+  {
+    "workload": "payroll-generation",
+    "size": 50,
+    "iteration": 2,
+    "mode": "after",
+    "ms": 11807.887199999983,
+    "sql": 107
+  },
+  {
+    "workload": "payroll-generation",
+    "size": 50,
+    "iteration": 3,
+    "mode": "after",
+    "ms": 10350.25959999999,
+    "sql": 106
+  },
+  {
+    "workload": "payroll-generation",
+    "size": 50,
+    "iteration": 3,
+    "mode": "before",
+    "ms": 23039.79860000001,
+    "sql": 208
+  },
+  {
+    "workload": "payroll-generation",
+    "size": 100,
+    "iteration": 0,
+    "mode": "before",
+    "ms": 47593.87220000001,
+    "sql": 409
+  },
+  {
+    "workload": "payroll-generation",
+    "size": 100,
+    "iteration": 0,
+    "mode": "after",
+    "ms": 29706.08369999999,
+    "sql": 208
+  },
+  {
+    "workload": "payroll-generation",
+    "size": 100,
+    "iteration": 1,
+    "mode": "after",
+    "ms": 27611.330099999963,
+    "sql": 208
+  },
+  {
+    "workload": "payroll-generation",
+    "size": 100,
+    "iteration": 1,
+    "mode": "before",
+    "ms": 46847.366899999965,
+    "sql": 408
+  },
+  {
+    "workload": "payroll-generation",
+    "size": 100,
+    "iteration": 2,
+    "mode": "before",
+    "ms": 44528.80679999996,
+    "sql": 409
+  },
+  {
+    "workload": "payroll-generation",
+    "size": 100,
+    "iteration": 2,
+    "mode": "after",
+    "ms": 26749.94419999997,
+    "sql": 208
+  },
+  {
+    "workload": "payroll-generation",
+    "size": 100,
+    "iteration": 3,
+    "mode": "after",
+    "ms": 27072.121599999955,
+    "sql": 208
+  },
+  {
+    "workload": "payroll-generation",
+    "size": 100,
+    "iteration": 3,
+    "mode": "before",
+    "ms": 44336.691500000015,
+    "sql": 409
+  },
+  {
+    "workload": "attendance-period",
+    "employees": 3,
+    "days": 3,
+    "iteration": 0,
+    "mode": "before",
+    "ms": 13971.595399999991,
+    "sql": 141
+  },
+  {
+    "workload": "attendance-period",
+    "employees": 3,
+    "days": 3,
+    "iteration": 0,
+    "mode": "after",
+    "ms": 8826.271399999969,
+    "sql": 96
+  },
+  {
+    "workload": "attendance-period",
+    "employees": 3,
+    "days": 3,
+    "iteration": 1,
+    "mode": "after",
+    "ms": 8517.910499999998,
+    "sql": 95
+  },
+  {
+    "workload": "attendance-period",
+    "employees": 3,
+    "days": 3,
+    "iteration": 1,
+    "mode": "before",
+    "ms": 12808.05290000001,
+    "sql": 141
+  },
+  {
+    "workload": "attendance-period",
+    "employees": 3,
+    "days": 3,
+    "iteration": 2,
+    "mode": "before",
+    "ms": 13065.632600000012,
+    "sql": 141
+  },
+  {
+    "workload": "attendance-period",
+    "employees": 3,
+    "days": 3,
+    "iteration": 2,
+    "mode": "after",
+    "ms": 8453.24199999997,
+    "sql": 95
+  },
+  {
+    "workload": "attendance-period",
+    "employees": 3,
+    "days": 3,
+    "iteration": 3,
+    "mode": "after",
+    "ms": 8915.891300000018,
+    "sql": 96
+  },
+  {
+    "workload": "attendance-period",
+    "employees": 3,
+    "days": 3,
+    "iteration": 3,
+    "mode": "before",
+    "ms": 12641.793700000038,
+    "sql": 141
+  }
+]

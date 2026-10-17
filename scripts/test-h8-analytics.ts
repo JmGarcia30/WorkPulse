@@ -57,13 +57,20 @@ async function main() {
         const job = await tx.job.create({ data: { organizationId: tenantData.organization.id, title: suffix, slug: `${marker}-${suffix}`, department: category === 'TEACHING' ? 'Academics' : 'Administration', employmentType: 'Full-Time', location: 'Test', description: 'H8 fixture', responsibilities: 'Test', qualifications: 'Test', requirements: 'Test', category } });
         const applicant = await tx.applicant.create({ data: { firstName: suffix, lastName: 'H8', email: `${marker}-${suffix}@employee.invalid`, phone: '0' } });
         const application = await tx.application.create({ data: { jobId: job.id, applicantId: applicant.id, status: 'HIRED', coverLetter: 'H8 fixture' } });
-        const record = await tx.employee.create({ data: { organizationId: tenantData.organization.id, sourceApplicationId: application.id, applicantId: applicant.id, employeeNumber: `H8-${suffix}`, firstName: suffix, lastName: 'H8', email: applicant.email, phone: '0', createdById: tenantData.hr.id, employeeStatus: status, createdAt: day('2026-09-01') } });
+        let record = await tx.employee.create({ data: { organizationId: tenantData.organization.id, sourceApplicationId: application.id, applicantId: applicant.id, employeeNumber: `H8-${suffix}`, firstName: suffix, lastName: 'H8', email: applicant.email, phone: '0', createdById: tenantData.hr.id, employeeStatus: 'ACTIVE', createdAt: day('2026-09-01') } });
         const employment = await tx.employmentRecord.create({ data: {
           employeeId: record.id, jobId: job.id, jobTitle: suffix, department: job.department, employmentCategory: category, employmentType: 'Full-Time', employmentStatus,
           hireDate: day('2026-01-01'), startDate: day('2026-01-01'), effectiveFrom: day('2026-01-01'), salary: 999999, payFrequency: 'MONTHLY', createdById: tenantData.hr.id,
           ...(probationEnd ? { probation: { create: { employeeId: record.id, category, startedAt: day('2026-01-01'), expectedEndAt: day(probationEnd), maxRenewals: category === 'TEACHING' ? 2 : 0, policySnapshot: 'H2 test terms' } } } : {}),
         } });
-        return { employee: record, employment };
+        // H10 forbids new employment/attendance INSERTs after separation. Build
+        // the historical day first; later ranking checks reuse it without mutation.
+        const historicalAttendance = status === 'SEPARATED' ? await tx.dailyAttendanceRecord.create({ data: {
+          organizationId: tenantData.organization.id, employeeId: record.id, employmentRecordId: employment.id,
+          attendanceDate: day('2026-10-23'), timeZoneSnapshot: 'Asia/Manila', attendanceStatus: 'PRESENT', lateSeconds: 60, finalizedAt: asOf, lastCalculatedAt: asOf,
+        } }) : null;
+        if (status !== 'ACTIVE') record = await tx.employee.update({ where: { id: record.id }, data: { employeeStatus: status } });
+        return { employee: record, employment, historicalAttendance };
       }
       const teaching = await employee(a, 'a-teaching', 'TEACHING', 'ACTIVE', 'PROBATIONARY', '2026-10-20');
       const regular = await employee(a, 'a-regular', 'NON_TEACHING', 'ACTIVE', 'REGULAR');
@@ -158,6 +165,18 @@ async function main() {
       const before = await tx.dailyAttendanceRecord.findMany({ where: { organizationId: a.organization.id }, select: { id: true, updatedAt: true, attendanceStatus: true } });
 
       const result = await readAnalytics(session(a.hr), tx, {}, asOf);
+      if (process.env.WORKPULSE_BATCH2_PARITY === '1') {
+        const { readDashboardData } = await import('../src/features/dashboard/read-model');
+        const { readDashboardData: legacyDashboard } = await import('./reference/batch2-dashboard');
+        const { readOrganizationBranding } = await import('../src/features/organization-branding/data');
+        const branding = await readOrganizationBranding(tx, { id: a.organization.id });
+        ok(branding, 'fixture organization branding resolves');
+        for (const actor of [a.hr, admin, manager]) {
+          const original = await legacyDashboard(session(actor), asOf, tx, branding);
+          const optimized = await readDashboardData(session(actor), asOf, tx, branding);
+          ok(JSON.stringify(original) === JSON.stringify(optimized), `Dashboard complete view model matches the prior implementation for ${actor.role}`);
+        }
+      }
       ok(canViewAnalytics(session(a.hr)) && result.workforce.active === 4, 'HR Admin can access tenant analytics');
       const adminResult = await readAnalytics(session(admin), tx, {}, asOf);
       ok(canViewAnalytics(session(admin)) && JSON.stringify(adminResult) === JSON.stringify(result), 'Organization Admin receives the same tenant analytics');
@@ -172,10 +191,12 @@ async function main() {
       ok(result.workforce.active === 4 && result.workforce.regular === 1 && result.workforce.probationary === 2, 'employment history and future records do not double-count employees');
       ok(result.workforce.teaching === 1 && result.workforce.nonTeaching === 2 && result.workforce.unclassified === 1 && result.workforce.inactive === 1 && result.workforce.separated === 1, 'current category/status and missing-employment counts are accurate');
       ok(result.workforce.conversions === 1, 'conversion date uses tenant local boundaries');
-      ok(result.attendance.rate === 60 && result.attendance.finalizedWorkdays === 5, 'rate excludes rest/no-schedule/approved leave/open/unfinalized records');
-      ok(result.attendance.recordedDays === 10 && result.attendance.absentDays === 1, 'missing attendance is never inferred as absence');
-      ok(result.attendance.presentDays === 4 && result.attendance.incompleteDays === 1 && result.attendance.approvedLeaveDays === 1 && result.attendance.openDays === 1, 'stored attendance outcomes are aggregated correctly');
-      ok(result.attendance.lateOccurrences === 3 && result.attendance.lateLeaders[0].count === 3 && result.attendance.lateLeaders[0].lateMinutes === 4, 'late counts/minutes exclude leave/rest/no-schedule and out-of-range rows');
+      // Includes the separated employee's one pre-existing PRESENT/late day:
+      // four finalized PRESENT days / six finalized workdays = 66.7%.
+      ok(result.attendance.rate === 66.7 && result.attendance.finalizedWorkdays === 6, 'rate excludes rest/no-schedule/approved leave/open/unfinalized records and retains separated employee history');
+      ok(result.attendance.recordedDays === 11 && result.attendance.absentDays === 1, 'missing attendance is never inferred as absence');
+      ok(result.attendance.presentDays === 5 && result.attendance.incompleteDays === 1 && result.attendance.approvedLeaveDays === 1 && result.attendance.openDays === 1, 'stored attendance outcomes are aggregated correctly');
+      ok(result.attendance.lateOccurrences === 4 && result.attendance.lateLeaders[0].count === 3 && result.attendance.lateLeaders[0].lateMinutes === 4, 'late counts/minutes exclude leave/rest/no-schedule and out-of-range rows');
       ok(result.leave.requests === 5 && result.leave.approved === 1 && result.leave.pending === 1 && result.leave.rejected === 1 && result.leave.cancelled === 1 && result.leave.withdrawn === 1, 'pending/approved/rejected/closed request counts use overlapping leave dates');
       ok(result.leave.approvedUnits === '2', 'approved units use in-range finalized day charges, excluding cancellation and tenant B');
       ok(result.leave.byType.length === 2 && result.leave.byType.find(type => type.name === 'Sick / Personal')?.count === 2, 'leave breakdown uses existing tenant types');
@@ -198,7 +219,8 @@ async function main() {
       ok(empty.workforce.active === 0 && empty.attendance.rate === null && empty.attendance.absentDays === 0 && empty.leave.approvedUnits === '0' && empty.payroll.entries === 0 && empty.payroll.periods.length === 0 && empty.employment.actions.length === 0, 'empty tenant returns zeros and empty states safely');
 
       for (const [owner, index] of [[regular, 0], [nonTeaching, 1], [inactive, 2], [separated, 3]] as const) {
-        await tx.dailyAttendanceRecord.create({ data: { ...attendanceInput, employeeId: owner.employee.id, employmentRecordId: owner.employment.id, attendanceDate: day(`2026-10-${20 + index}`), attendanceStatus: 'PRESENT', lateSeconds: 60 } });
+        const data = { ...attendanceInput, employeeId: owner.employee.id, employmentRecordId: owner.employment.id, attendanceDate: day(`2026-10-${20 + index}`), attendanceStatus: 'PRESENT' as const, lateSeconds: 60 };
+        if (!owner.historicalAttendance) await tx.dailyAttendanceRecord.create({ data });
       }
       const sixth = await employee(a, 'a-sixth-late', 'NON_TEACHING', 'ACTIVE', 'REGULAR');
       await tx.dailyAttendanceRecord.create({ data: { ...attendanceInput, employeeId: sixth.employee.id, employmentRecordId: sixth.employment.id, attendanceDate: day('2026-10-24'), attendanceStatus: 'PRESENT', lateSeconds: 30 } });

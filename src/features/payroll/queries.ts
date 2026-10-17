@@ -1,6 +1,6 @@
 import { Prisma, PayrollEntryStatus, PayrollPeriodStatus } from '@prisma/client';
 import { prisma } from '@/lib/db/prisma';
-import { assessPayrollPeriod } from './review';
+import { assessPayrollPeriodFromReadInputs, payrollReviewEntryInclude } from './review';
 import { formatCurrency, formatPayrollDate, formatPayrollPeriodRange } from './formatters';
 
 type PayrollDb = Prisma.TransactionClient | typeof prisma;
@@ -18,15 +18,17 @@ export async function getPayrollFoundation(
     db.leaveType.findMany({ where: { organizationId, isActive: true }, select: { id: true, code: true, name: true, isPaid: true }, orderBy: { name: 'asc' } }),
   ]);
   const selectedPeriod = periods.find((period) => period.id === selectedPeriodId) ?? periods[0] ?? null;
-  const entries = selectedPeriod ? await db.payrollEntry.findMany({
+  const reviewEntries = selectedPeriod ? await db.payrollEntry.findMany({
     where: { organizationId, payrollPeriodId: selectedPeriod.id },
-    include: {
-      employee: { select: { employeeNumber: true, firstName: true, lastName: true } },
-      employeeCompensation: { select: { compensationType: true, baseRate: true, payFrequency: true, currency: true } },
-    },
+    include: payrollReviewEntryInclude,
     orderBy: [{ employee: { lastName: 'asc' } }, { employee: { firstName: 'asc' } }],
   }) : [];
-  const review = selectedPeriod ? await assessPayrollPeriod(organizationId, selectedPeriod.id, db) : null;
+  const review = selectedPeriod ? await assessPayrollPeriodFromReadInputs(organizationId, selectedPeriod.id, db, { employees, entries: reviewEntries }) : null;
+  // Preserve the foundation payload shape; full compensation is internal to review.
+  const entries = reviewEntries.map(entry => ({ ...entry, employeeCompensation: {
+    compensationType: entry.employeeCompensation.compensationType, baseRate: entry.employeeCompensation.baseRate,
+    payFrequency: entry.employeeCompensation.payFrequency, currency: entry.employeeCompensation.currency,
+  } }));
   const today = new Date();
   const currentPolicy = policies.find(policy => policy.status === 'ACTIVE' && policy.effectiveFrom <= today && (!policy.effectiveTo || policy.effectiveTo >= today)) ?? null;
   return { employees, compensations, periods, selectedPeriod, entries, review, policies, currentPolicy, leaveTypes };

@@ -1,0 +1,415 @@
+{
+  "route": "Hiring pipeline",
+  "documentState": {
+    "protocol": "http:",
+    "pathname": "/dashboard/hiring/pipeline",
+    "main": true,
+    "sidebarLinks": 12
+  },
+  "networkFailures": [
+    {
+      "type": "Fetch",
+      "error": "net::ERR_ABORTED"
+    },
+    {
+      "type": "Fetch",
+      "error": "net::ERR_ABORTED"
+    },
+    {
+      "type": "Fetch",
+      "error": "net::ERR_ABORTED"
+    },
+    {
+      "type": "Fetch",
+      "error": "net::ERR_ABORTED"
+    },
+    {
+      "type": "Fetch",
+      "error": "net::ERR_ABORTED"
+    },
+    {
+      "type": "Fetch",
+      "error": "net::ERR_ABORTED"
+    },
+    {
+      "type": "Fetch",
+      "error": "net::ERR_ABORTED"
+    },
+    {
+      "type": "Fetch",
+      "error": "net::ERR_ABORTED"
+    },
+    {
+      "type": "Fetch",
+      "error": "net::ERR_ABORTED"
+    },
+    {
+      "type": "Fetch",
+      "error": "net::ERR_ABORTED"
+    },
+    {
+      "type": "Fetch",
+      "error": "net::ERR_ABORTED"
+    },
+    {
+      "type": "Fetch",
+      "error": "net::ERR_ABORTED"
+    },
+    {
+      "type": "Fetch",
+      "error": "net::ERR_ABORTED"
+    },
+    {
+      "type": "Fetch",
+      "error": "net::ERR_ABORTED"
+    },
+    {
+      "type": "Fetch",
+      "error": "net::ERR_ABORTED"
+    },
+    {
+      "type": "Fetch",
+      "error": "net::ERR_ABORTED"
+    },
+    {
+      "type": "Fetch",
+      "error": "net::ERR_ABORTED"
+    },
+    {
+      "type": "Fetch",
+      "error": "net::ERR_ABORTED"
+    },
+    {
+      "type": "Fetch",
+      "error": "net::ERR_ABORTED"
+    },
+    {
+      "type": "Fetch",
+      "error": "net::ERR_ABORTED"
+    },
+    {
+      "type": "Fetch",
+      "error": "net::ERR_ABORTED"
+    },
+    {
+      "type": "Fetch",
+      "error": "net::ERR_ABORTED"
+    },
+    {
+      "type": "Fetch",
+      "error": "net::ERR_ABORTED"
+    },
+    {
+      "type": "Fetch",
+      "error": "net::ERR_ABORTED"
+    },
+    {
+      "type": "Fetch",
+      "error": "net::ERR_ABORTED"
+    },
+    {
+      "type": "Fetch",
+      "error": "net::ERR_ABORTED"
+    }
+  ],
+  "captureWindowMs": 10000,
+  "requests": 51,
+  "scriptRequests": 11,
+  "scriptTransferredBytes": 181578,
+  "resources": [
+    {
+      "initiator": "link",
+      "encodedBytes": 17226,
+      "decodedBytes": 100895,
+      "durationMs": 29
+    },
+    {
+      "initiator": "link",
+      "encodedBytes": 1506,
+      "decodedBytes": 5099,
+      "durationMs": 20
+    },
+    {
+      "initiator": "link",
+      "encodedBytes": 1813,
+      "decodedBytes": 3507,
+      "durationMs": 19
+    },
+    {
+      "initiator": "script",
+      "encodedBytes": 63300,
+      "decodedBytes": 201055,
+      "durationMs": 41
+    },
+    {
+      "initiator": "script",
+      "encodedBytes": 516,
+      "decodedBytes": 516,
+      "durationMs": 27
+    },
+    {
+      "initiator": "script",
+      "encodedBytes": 65604,
+      "decodedBytes": 240796,
+      "durationMs": 51
+    },
+    {
+      "initiator": "script",
+      "encodedBytes": 3554,
+      "decodedBytes": 8632,
+      "durationMs": 32
+    },
+    {
+      "initiator": "script",
+      "encodedBytes": 21729,
+      "decodedBytes": 69577,
+      "durationMs": 54
+    },
+    {
+      "initiator": "script",
+      "encodedBytes": 7581,
+      "decodedBytes": 27129,
+      "durationMs": 54
+    },
+    {
+      "initiator": "img",
+      "encodedBytes": 84241,
+      "decodedBytes": 84241,
+      "durationMs": 22
+    },
+    {
+      "initiator": "script",
+      "encodedBytes": 5489,
+      "decodedBytes": 14252,
+      "durationMs": 7
+    },
+    {
+      "initiator": "script",
+      "encodedBytes": 2279,
+      "decodedBytes": 6134,
+      "durationMs": 14
+    },
+    {
+      "initiator": "script",
+      "encodedBytes": 3432,
+      "decodedBytes": 10564,
+      "durationMs": 15
+    },
+    {
+      "initiator": "script",
+      "encodedBytes": 1868,
+      "decodedBytes": 4122,
+      "durationMs": 15
+    },
+    {
+      "initiator": "fetch",
+      "encodedBytes": 178,
+      "decodedBytes": 329,
+      "durationMs": 80
+    },
+    {
+      "initiator": "fetch",
+      "encodedBytes": 189,
+      "decodedBytes": 437,
+      "durationMs": 80
+    },
+    {
+      "initiator": "fetch",
+      "encodedBytes": 193,
+      "decodedBytes": 443,
+      "durationMs": 80
+    },
+    {
+      "initiator": "fetch",
+      "encodedBytes": 200,
+      "decodedBytes": 443,
+      "durationMs": 81
+    },
+    {
+      "initiator": "fetch",
+      "encodedBytes": 193,
+      "decodedBytes": 444,
+      "durationMs": 42
+    },
+    {
+      "initiator": "fetch",
+      "encodedBytes": 190,
+      "decodedBytes": 439,
+      "durationMs": 41
+    },
+    {
+      "initiator": "fetch",
+      "encodedBytes": 190,
+      "decodedBytes": 443,
+      "durationMs": 40
+    },
+    {
+      "initiator": "fetch",
+      "encodedBytes": 186,
+      "decodedBytes": 385,
+      "durationMs": 39
+    },
+    {
+      "initiator": "fetch",
+      "encodedBytes": 186,
+      "decodedBytes": 387,
+      "durationMs": 56
+    },
+    {
+      "initiator": "fetch",
+      "encodedBytes": 188,
+      "decodedBytes": 390,
+      "durationMs": 55
+    },
+    {
+      "initiator": "fetch",
+      "encodedBytes": 45,
+      "decodedBytes": 25,
+      "durationMs": 78
+    },
+    {
+      "initiator": "fetch",
+      "encodedBytes": 817,
+      "decodedBytes": 1622,
+      "durationMs": 86
+    },
+    {
+      "initiator": "fetch",
+      "encodedBytes": 837,
+      "decodedBytes": 1734,
+      "durationMs": 53
+    },
+    {
+      "initiator": "fetch",
+      "encodedBytes": 831,
+      "decodedBytes": 1730,
+      "durationMs": 53
+    },
+    {
+      "initiator": "fetch",
+      "encodedBytes": 45,
+      "decodedBytes": 25,
+      "durationMs": 30
+    },
+    {
+      "initiator": "fetch",
+      "encodedBytes": 833,
+      "decodedBytes": 1736,
+      "durationMs": 20
+    },
+    {
+      "initiator": "fetch",
+      "encodedBytes": 1406,
+      "decodedBytes": 5847,
+      "durationMs": 15
+    },
+    {
+      "initiator": "fetch",
+      "encodedBytes": 831,
+      "decodedBytes": 1737,
+      "durationMs": 47
+    },
+    {
+      "initiator": "fetch",
+      "encodedBytes": 831,
+      "decodedBytes": 1732,
+      "durationMs": 47
+    },
+    {
+      "initiator": "fetch",
+      "encodedBytes": 828,
+      "decodedBytes": 1736,
+      "durationMs": 46
+    },
+    {
+      "initiator": "fetch",
+      "encodedBytes": 825,
+      "decodedBytes": 1678,
+      "durationMs": 45
+    },
+    {
+      "initiator": "fetch",
+      "encodedBytes": 827,
+      "decodedBytes": 1680,
+      "durationMs": 14
+    },
+    {
+      "initiator": "fetch",
+      "encodedBytes": 829,
+      "decodedBytes": 1683,
+      "durationMs": 13
+    },
+    {
+      "initiator": "other",
+      "encodedBytes": 23982,
+      "decodedBytes": 23982,
+      "durationMs": 86
+    },
+    {
+      "initiator": "fetch",
+      "encodedBytes": 234,
+      "decodedBytes": 542,
+      "durationMs": 29
+    },
+    {
+      "initiator": "fetch",
+      "encodedBytes": 230,
+      "decodedBytes": 542,
+      "durationMs": 29
+    },
+    {
+      "initiator": "fetch",
+      "encodedBytes": 233,
+      "decodedBytes": 542,
+      "durationMs": 30
+    },
+    {
+      "initiator": "fetch",
+      "encodedBytes": 233,
+      "decodedBytes": 542,
+      "durationMs": 30
+    },
+    {
+      "initiator": "fetch",
+      "encodedBytes": 872,
+      "decodedBytes": 1835,
+      "durationMs": 27
+    },
+    {
+      "initiator": "fetch",
+      "encodedBytes": 870,
+      "decodedBytes": 1835,
+      "durationMs": 27
+    },
+    {
+      "initiator": "fetch",
+      "encodedBytes": 872,
+      "decodedBytes": 1835,
+      "durationMs": 25
+    },
+    {
+      "initiator": "fetch",
+      "encodedBytes": 872,
+      "decodedBytes": 1835,
+      "durationMs": 24
+    },
+    {
+      "initiator": "fetch",
+      "encodedBytes": 872,
+      "decodedBytes": 1835,
+      "durationMs": 8
+    },
+    {
+      "initiator": "other",
+      "encodedBytes": 23982,
+      "decodedBytes": 23982,
+      "durationMs": 13
+    },
+    {
+      "initiator": "other",
+      "encodedBytes": 2807,
+      "decodedBytes": 2858,
+      "durationMs": 10
+    }
+  ]
+}

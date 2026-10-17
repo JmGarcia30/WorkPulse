@@ -44,13 +44,32 @@ export type PayrollReviewIssue = {
   message: string;
 };
 
+export const payrollReviewEntryInclude = {
+  employee: { select: { employeeNumber: true, firstName: true, lastName: true } },
+  employeeCompensation: true,
+} as const;
+type ReviewEmployee = { id: string; employeeNumber: string; firstName: string; lastName: string };
+type ReviewEntry = Prisma.PayrollEntryGetPayload<{ include: typeof payrollReviewEntryInclude }>;
+type ReviewReadInputs = { employees: ReviewEmployee[]; entries: ReviewEntry[] };
+
 export async function assessPayrollPeriod(organizationId: string, payrollPeriodId: string, db: PayrollDb = prisma) {
+  return assessPeriod(organizationId, payrollPeriodId, db);
+}
+
+// Server read-model reuse only. Finalization always calls the fresh wrapper above,
+// inside its existing transaction; it cannot receive these preloaded read inputs.
+export async function assessPayrollPeriodFromReadInputs(organizationId: string, payrollPeriodId: string, db: PayrollDb, inputs: ReviewReadInputs) {
+  if (inputs.entries.some(entry => entry.organizationId !== organizationId || entry.payrollPeriodId !== payrollPeriodId)) throw new PayrollError('FORBIDDEN', 'Payroll review inputs are outside the requested period.');
+  return assessPeriod(organizationId, payrollPeriodId, db, inputs);
+}
+
+async function assessPeriod(organizationId: string, payrollPeriodId: string, db: PayrollDb, inputs?: ReviewReadInputs) {
   const period = await db.payrollPeriod.findFirst({
     where: { id: payrollPeriodId, organizationId },
     include: { finalizedBy: { select: { name: true } } },
   });
   if (!period) throw new PayrollError('NOT_FOUND', 'Payroll period not found.');
-  const [employees, entries] = await Promise.all([
+  const [employees, entries] = inputs ? [inputs.employees, inputs.entries] : await Promise.all([
     db.employee.findMany({
       where: { organizationId, employeeStatus: 'ACTIVE' },
       select: { id: true, employeeNumber: true, firstName: true, lastName: true },
@@ -58,20 +77,30 @@ export async function assessPayrollPeriod(organizationId: string, payrollPeriodI
     }),
     db.payrollEntry.findMany({
       where: { organizationId, payrollPeriodId },
-      include: {
-        employee: { select: { employeeNumber: true, firstName: true, lastName: true } },
-        employeeCompensation: true,
-      },
+      include: payrollReviewEntryInclude,
       orderBy: [{ employee: { lastName: 'asc' } }, { employee: { firstName: 'asc' } }],
     }),
   ]);
   const entriesByEmployee = new Map(entries.map(entry => [entry.employeeId, entry]));
   const issues: PayrollReviewIssue[] = [];
-  let resolvedPolicy: Awaited<ReturnType<typeof resolvePayrollPolicy>> | null = null;
-  try { resolvedPolicy = await resolvePayrollPolicy(organizationId, period.periodStart, period.periodEnd, db); }
-  catch (error) {
-    issues.push({ kind: 'SETUP_REQUIRED', message: error instanceof Error ? error.message : 'Payroll policy could not be resolved.' });
-  }
+  const compensationEmployeeIds = employees.filter(employee => {
+    const snapshot = snapshotObject(entriesByEmployee.get(employee.id)?.calculationSnapshot ?? null);
+    return snapshot?.compensation?.id && snapshot.policy?.id && typeof snapshot.policy.version === 'number' && snapshot.calculation;
+  }).map(employee => employee.id);
+  const [compensationGroups, policyResult] = await Promise.all([
+    compensationEmployeeIds.length ? db.employeeCompensation.groupBy({
+      by: ['employeeId'], where: {
+        organizationId, employeeId: { in: compensationEmployeeIds }, status: CompensationStatus.ACTIVE,
+        effectiveFrom: { lte: period.periodStart }, OR: [{ effectiveTo: null }, { effectiveTo: { gte: period.periodEnd } }],
+      }, _count: { _all: true },
+    }) : [],
+    resolvePayrollPolicy(organizationId, period.periodStart, period.periodEnd, db)
+      .then(policy => ({ policy, error: null }))
+      .catch((error: unknown) => ({ policy: null, error: error instanceof Error ? error.message : 'Payroll policy could not be resolved.' })),
+  ]);
+  const applicableCounts = new Map(compensationGroups.map(group => [group.employeeId, group._count._all]));
+  const resolvedPolicy = policyResult.policy;
+  if (policyResult.error !== null) issues.push({ kind: 'SETUP_REQUIRED', message: policyResult.error });
 
   for (const employee of employees) {
     const identity = { employeeId: employee.id, employeeNumber: employee.employeeNumber, employeeName: `${employee.firstName} ${employee.lastName}`.trim() };
@@ -89,12 +118,7 @@ export async function assessPayrollPeriod(organizationId: string, payrollPeriodI
       issues.push({ ...identity, kind: 'CALCULATION_ERROR', message: 'The payroll entry has not entered review status.' });
     }
     const compensation = entry.employeeCompensation;
-    const applicableCompensationCount = await db.employeeCompensation.count({
-      where: {
-        organizationId, employeeId: employee.id, status: CompensationStatus.ACTIVE,
-        effectiveFrom: { lte: period.periodStart }, OR: [{ effectiveTo: null }, { effectiveTo: { gte: period.periodEnd } }],
-      },
-    });
+    const applicableCompensationCount = applicableCounts.get(employee.id) ?? 0;
     const compensationValid = compensation.organizationId === organizationId
       && compensation.employeeId === employee.id
       && compensation.status === CompensationStatus.ACTIVE
@@ -112,7 +136,8 @@ export async function assessPayrollPeriod(organizationId: string, payrollPeriodI
       issues.push({ ...identity, kind: 'CALCULATION_ERROR', message: 'Stored amounts do not match the immutable calculation snapshot or net-pay equation.' });
     }
   }
-  for (const entry of entries.filter(item => !employees.some(employee => employee.id === item.employeeId))) {
+  const eligibleEmployeeIds = new Set(employees.map(employee => employee.id));
+  for (const entry of entries.filter(item => !eligibleEmployeeIds.has(item.employeeId))) {
     issues.push({
       employeeId: entry.employeeId, employeeNumber: entry.employee.employeeNumber,
       employeeName: `${entry.employee.firstName} ${entry.employee.lastName}`.trim(),

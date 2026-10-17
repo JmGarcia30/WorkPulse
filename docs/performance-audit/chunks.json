@@ -1,0 +1,477 @@
+[
+  {
+    "file": ".next\\static\\chunks\\3794-12e66dda6743712f.js",
+    "bytes": 240796,
+    "gzipBytes": 65604
+  },
+  {
+    "file": ".next\\static\\chunks\\app\\(dashboard)\\dashboard\\hiring\\applicants\\[applicationId]\\page-76bd40f271e9666a.js",
+    "bytes": 204143,
+    "gzipBytes": 37123
+  },
+  {
+    "file": ".next\\static\\chunks\\4bd1b696-93bf506b236d6248.js",
+    "bytes": 201055,
+    "gzipBytes": 63300
+  },
+  {
+    "file": ".next\\static\\chunks\\framework-82def0d08ade2173.js",
+    "bytes": 189665,
+    "gzipBytes": 59812
+  },
+  {
+    "file": ".next\\static\\chunks\\main-5515ad6c55597bd7.js",
+    "bytes": 133776,
+    "gzipBytes": 38529
+  },
+  {
+    "file": ".next\\static\\chunks\\polyfills-42372ed130431b0a.js",
+    "bytes": 112594,
+    "gzipBytes": 39627
+  },
+  {
+    "file": ".next\\static\\chunks\\9493-a8e08a245b0b47ab.js",
+    "bytes": 69577,
+    "gzipBytes": 21729
+  },
+  {
+    "file": ".next\\static\\chunks\\app\\(dashboard)\\dashboard\\payroll\\page-129c11ccaf0ae2d3.js",
+    "bytes": 60431,
+    "gzipBytes": 12522
+  },
+  {
+    "file": ".next\\static\\chunks\\app\\(dashboard)\\dashboard\\leave\\page-c9b43abc8f97a7ee.js",
+    "bytes": 35599,
+    "gzipBytes": 6776
+  },
+  {
+    "file": ".next\\static\\chunks\\app\\page-fe15db42f8a46604.js",
+    "bytes": 30647,
+    "gzipBytes": 8635
+  },
+  {
+    "file": ".next\\static\\chunks\\app\\(dashboard)\\dashboard\\hiring\\pipeline\\page-6185c0e92254a11c.js",
+    "bytes": 27129,
+    "gzipBytes": 7581
+  },
+  {
+    "file": ".next\\static\\chunks\\app\\(dashboard)\\dashboard\\leave\\settings\\page-c96f8717b02825f9.js",
+    "bytes": 25315,
+    "gzipBytes": 6887
+  },
+  {
+    "file": ".next\\static\\chunks\\app\\careers\\[organizationSlug]\\portal\\[applicationId]\\page-600d5e272ac8e985.js",
+    "bytes": 24704,
+    "gzipBytes": 6144
+  },
+  {
+    "file": ".next\\static\\chunks\\app\\(dashboard)\\dashboard\\employees\\page-0f8e3b3e9c1cf980.js",
+    "bytes": 22769,
+    "gzipBytes": 5741
+  },
+  {
+    "file": ".next\\static\\chunks\\app\\(dashboard)\\dashboard\\employees\\[employeeId]\\page-2e1caa3c46806755.js",
+    "bytes": 21121,
+    "gzipBytes": 6841
+  },
+  {
+    "file": ".next\\static\\chunks\\app\\(dashboard)\\dashboard\\page-a77265c4d61d14d7.js",
+    "bytes": 20120,
+    "gzipBytes": 5753
+  },
+  {
+    "file": ".next\\static\\chunks\\530-3a8ed69a14ea0f2a.js",
+    "bytes": 17389,
+    "gzipBytes": 4929
+  },
+  {
+    "file": ".next\\static\\chunks\\3124-93117db6834d1a80.js",
+    "bytes": 14434,
+    "gzipBytes": 4485
+  },
+  {
+    "file": ".next\\static\\chunks\\818-557e1b30ffa05a12.js",
+    "bytes": 14252,
+    "gzipBytes": 5489
+  },
+  {
+    "file": ".next\\static\\chunks\\app\\(dashboard)\\dashboard\\leave\\balances\\page-6750d134504885e0.js",
+    "bytes": 12518,
+    "gzipBytes": 3923
+  },
+  {
+    "file": ".next\\static\\chunks\\app\\careers\\[organizationSlug]\\[jobSlug]\\apply\\page-aab84f7fa09e196f.js",
+    "bytes": 12295,
+    "gzipBytes": 3835
+  },
+  {
+    "file": ".next\\static\\chunks\\app\\(dashboard)\\layout-dd98735de70f7bb4.js",
+    "bytes": 10564,
+    "gzipBytes": 3432
+  },
+  {
+    "file": ".next\\static\\chunks\\app\\tenant-entry\\page-8a278397cb4a8515.js",
+    "bytes": 10122,
+    "gzipBytes": 3712
+  },
+  {
+    "file": ".next\\static\\chunks\\8500-f4d7bfbe7500f274.js",
+    "bytes": 8632,
+    "gzipBytes": 3554
+  },
+  {
+    "file": ".next\\static\\chunks\\4721-b9bf806eab2bfd2e.js",
+    "bytes": 7573,
+    "gzipBytes": 2655
+  },
+  {
+    "file": ".next\\static\\chunks\\2668-24aca6e1f4efaf3a.js",
+    "bytes": 7418,
+    "gzipBytes": 2562
+  },
+  {
+    "file": ".next\\static\\chunks\\app\\(employee)\\employee\\layout-e550aa4b11cb5018.js",
+    "bytes": 6730,
+    "gzipBytes": 2651
+  },
+  {
+    "file": ".next\\static\\chunks\\app\\(dashboard)\\dashboard\\attendance\\page-adb9337bbab58fc0.js",
+    "bytes": 6671,
+    "gzipBytes": 2511
+  },
+  {
+    "file": ".next\\static\\chunks\\3637-74cf1e5ae882cc9a.js",
+    "bytes": 6134,
+    "gzipBytes": 2279
+  },
+  {
+    "file": ".next\\static\\chunks\\app\\(dashboard)\\dashboard\\attendance\\schedules\\page-d6be5f1142efb257.js",
+    "bytes": 5996,
+    "gzipBytes": 1956
+  },
+  {
+    "file": ".next\\static\\chunks\\app\\(dashboard)\\dashboard\\attendance\\[employeeId]\\page-3a65be50b4e819a9.js",
+    "bytes": 5595,
+    "gzipBytes": 1985
+  },
+  {
+    "file": ".next\\static\\chunks\\app\\(employee)\\employee\\leave\\new\\page-b0310cb312661ac1.js",
+    "bytes": 4909,
+    "gzipBytes": 1777
+  },
+  {
+    "file": ".next\\static\\chunks\\3899.0293d0ce3ef9cd47.js",
+    "bytes": 4753,
+    "gzipBytes": 1998
+  },
+  {
+    "file": ".next\\static\\chunks\\app\\careers\\[organizationSlug]\\error-59106209084a928c.js",
+    "bytes": 4152,
+    "gzipBytes": 1884
+  },
+  {
+    "file": ".next\\static\\chunks\\app\\(dashboard)\\error-7d77dc66be7446ae.js",
+    "bytes": 4122,
+    "gzipBytes": 1868
+  },
+  {
+    "file": ".next\\static\\chunks\\app\\(dashboard)\\dashboard\\employees\\exit\\new\\page-ef174e4b953e102a.js",
+    "bytes": 3853,
+    "gzipBytes": 1643
+  },
+  {
+    "file": ".next\\static\\chunks\\app\\(dashboard)\\dashboard\\employees\\exit\\[caseId]\\page-ef174e4b953e102a.js",
+    "bytes": 3853,
+    "gzipBytes": 1643
+  },
+  {
+    "file": ".next\\static\\chunks\\app\\(employee)\\employee\\attendance\\page-37b4f34f5e51fcfb.js",
+    "bytes": 3589,
+    "gzipBytes": 1556
+  },
+  {
+    "file": ".next\\static\\chunks\\webpack-9912ce95b015ffa8.js",
+    "bytes": 3507,
+    "gzipBytes": 1813
+  },
+  {
+    "file": ".next\\static\\chunks\\app\\(dashboard)\\dashboard\\organization\\page-ea6978c55fc63174.js",
+    "bytes": 3505,
+    "gzipBytes": 1319
+  },
+  {
+    "file": ".next\\static\\chunks\\app\\workspace-discovery\\page-3c3e24e3c1ea435b.js",
+    "bytes": 3422,
+    "gzipBytes": 1605
+  },
+  {
+    "file": ".next\\static\\chunks\\app\\(dashboard)\\dashboard\\leave\\requests\\[requestId]\\page-56f1fbbe3b76d238.js",
+    "bytes": 2900,
+    "gzipBytes": 1317
+  },
+  {
+    "file": ".next\\static\\chunks\\app\\_not-found\\page-4d0e3322a1660547.js",
+    "bytes": 2671,
+    "gzipBytes": 996
+  },
+  {
+    "file": ".next\\static\\chunks\\app\\(auth)\\login\\page-ccad7c48b8c0aa96.js",
+    "bytes": 2359,
+    "gzipBytes": 1130
+  },
+  {
+    "file": ".next\\static\\chunks\\app\\(auth)\\activate\\employee\\page-8df2499643a399aa.js",
+    "bytes": 2275,
+    "gzipBytes": 1094
+  },
+  {
+    "file": ".next\\static\\chunks\\app\\(dashboard)\\dashboard\\employees\\exit\\page-b67acf39c777338d.js",
+    "bytes": 2213,
+    "gzipBytes": 951
+  },
+  {
+    "file": ".next\\static\\chunks\\app\\careers\\layout-16969817fea5b920.js",
+    "bytes": 1729,
+    "gzipBytes": 929
+  },
+  {
+    "file": ".next\\static\\chunks\\app\\careers\\[organizationSlug]\\page-ddea802251c25953.js",
+    "bytes": 1312,
+    "gzipBytes": 746
+  },
+  {
+    "file": ".next\\static\\chunks\\app\\(dashboard)\\dashboard\\hiring\\jobs\\page-9eafbe752aaf0fca.js",
+    "bytes": 1279,
+    "gzipBytes": 747
+  },
+  {
+    "file": ".next\\static\\chunks\\app\\(dashboard)\\dashboard\\hiring\\jobs\\[jobId]\\page-9eafbe752aaf0fca.js",
+    "bytes": 1279,
+    "gzipBytes": 747
+  },
+  {
+    "file": ".next\\static\\chunks\\app\\careers\\page-9eafbe752aaf0fca.js",
+    "bytes": 1279,
+    "gzipBytes": 747
+  },
+  {
+    "file": ".next\\static\\chunks\\app\\careers\\[organizationSlug]\\[jobSlug]\\page-9eafbe752aaf0fca.js",
+    "bytes": 1279,
+    "gzipBytes": 747
+  },
+  {
+    "file": ".next\\static\\chunks\\app\\(dashboard)\\dashboard\\payroll\\payslips\\[entryId]\\page-6f0956910822a7d3.js",
+    "bytes": 1262,
+    "gzipBytes": 651
+  },
+  {
+    "file": ".next\\static\\chunks\\app\\(employee)\\employee\\payroll\\[entryId]\\page-6f0956910822a7d3.js",
+    "bytes": 1262,
+    "gzipBytes": 651
+  },
+  {
+    "file": ".next\\static\\chunks\\app\\(dashboard)\\loading-c0b6fc46b431d62a.js",
+    "bytes": 1220,
+    "gzipBytes": 726
+  },
+  {
+    "file": ".next\\static\\chunks\\app\\careers\\[organizationSlug]\\loading-c0b6fc46b431d62a.js",
+    "bytes": 1220,
+    "gzipBytes": 726
+  },
+  {
+    "file": ".next\\static\\chunks\\app\\request-demo\\page-9cdf418f916171ce.js",
+    "bytes": 873,
+    "gzipBytes": 441
+  },
+  {
+    "file": ".next\\static\\chunks\\1966.d10b448f42cccd98.js",
+    "bytes": 754,
+    "gzipBytes": 421
+  },
+  {
+    "file": ".next\\static\\chunks\\app\\(dashboard)\\dashboard\\employees\\exit\\error-58aa46068a9c5bab.js",
+    "bytes": 739,
+    "gzipBytes": 480
+  },
+  {
+    "file": ".next\\static\\chunks\\main-app-e1c87f82862226ec.js",
+    "bytes": 516,
+    "gzipBytes": 224
+  },
+  {
+    "file": ".next\\static\\chunks\\app\\(dashboard)\\dashboard\\leave\\requests\\[requestId]\\form\\page-3cbda092565ce646.js",
+    "bytes": 448,
+    "gzipBytes": 342
+  },
+  {
+    "file": ".next\\static\\chunks\\app\\(employee)\\employee\\leave\\[requestId]\\form\\page-3cbda092565ce646.js",
+    "bytes": 448,
+    "gzipBytes": 342
+  },
+  {
+    "file": ".next\\static\\chunks\\app\\(dashboard)\\dashboard\\analytics\\page-0236262b3999fd41.js",
+    "bytes": 221,
+    "gzipBytes": 188
+  },
+  {
+    "file": ".next\\static\\chunks\\app\\(employee)\\employee\\employment\\page-0236262b3999fd41.js",
+    "bytes": 221,
+    "gzipBytes": 188
+  },
+  {
+    "file": ".next\\static\\chunks\\app\\(employee)\\employee\\leave\\page-0236262b3999fd41.js",
+    "bytes": 221,
+    "gzipBytes": 188
+  },
+  {
+    "file": ".next\\static\\chunks\\app\\(employee)\\employee\\leave\\[requestId]\\page-0236262b3999fd41.js",
+    "bytes": 221,
+    "gzipBytes": 188
+  },
+  {
+    "file": ".next\\static\\chunks\\app\\(employee)\\employee\\page-0236262b3999fd41.js",
+    "bytes": 221,
+    "gzipBytes": 188
+  },
+  {
+    "file": ".next\\static\\chunks\\app\\(employee)\\employee\\payroll\\page-0236262b3999fd41.js",
+    "bytes": 221,
+    "gzipBytes": 188
+  },
+  {
+    "file": ".next\\static\\chunks\\app\\features\\page-0236262b3999fd41.js",
+    "bytes": 221,
+    "gzipBytes": 188
+  },
+  {
+    "file": ".next\\static\\chunks\\app\\security\\page-0236262b3999fd41.js",
+    "bytes": 221,
+    "gzipBytes": 188
+  },
+  {
+    "file": ".next\\static\\chunks\\app\\(dashboard)\\dashboard\\employees\\exit\\layout-5d78e50f75ecc453.js",
+    "bytes": 207,
+    "gzipBytes": 171
+  },
+  {
+    "file": ".next\\static\\chunks\\app\\(dashboard)\\dashboard\\employees\\layout-5d78e50f75ecc453.js",
+    "bytes": 207,
+    "gzipBytes": 171
+  },
+  {
+    "file": ".next\\static\\chunks\\app\\(dashboard)\\dashboard\\hiring\\interviews\\loading-5d78e50f75ecc453.js",
+    "bytes": 207,
+    "gzipBytes": 171
+  },
+  {
+    "file": ".next\\static\\chunks\\app\\(dashboard)\\dashboard\\hiring\\layout-5d78e50f75ecc453.js",
+    "bytes": 207,
+    "gzipBytes": 171
+  },
+  {
+    "file": ".next\\static\\chunks\\app\\(dashboard)\\dashboard\\hiring\\pipeline\\loading-5d78e50f75ecc453.js",
+    "bytes": 207,
+    "gzipBytes": 171
+  },
+  {
+    "file": ".next\\static\\chunks\\app\\(employee)\\employee\\profile\\page-5d78e50f75ecc453.js",
+    "bytes": 207,
+    "gzipBytes": 171
+  },
+  {
+    "file": ".next\\static\\chunks\\app\\api\\branding\\[kind]\\route-5d78e50f75ecc453.js",
+    "bytes": 207,
+    "gzipBytes": 171
+  },
+  {
+    "file": ".next\\static\\chunks\\app\\api\\leave-documents\\[id]\\route-5d78e50f75ecc453.js",
+    "bytes": 207,
+    "gzipBytes": 171
+  },
+  {
+    "file": ".next\\static\\chunks\\app\\api\\onboarding-documents\\[id]\\route-5d78e50f75ecc453.js",
+    "bytes": 207,
+    "gzipBytes": 171
+  },
+  {
+    "file": ".next\\static\\chunks\\app\\api\\recruitment-documents\\[id]\\route-5d78e50f75ecc453.js",
+    "bytes": 207,
+    "gzipBytes": 171
+  },
+  {
+    "file": ".next\\static\\chunks\\app\\api\\resumes\\[id]\\route-5d78e50f75ecc453.js",
+    "bytes": 207,
+    "gzipBytes": 171
+  },
+  {
+    "file": ".next\\static\\chunks\\app\\_global-error\\page-5d78e50f75ecc453.js",
+    "bytes": 207,
+    "gzipBytes": 171
+  },
+  {
+    "file": ".next\\static\\chunks\\next\\dist\\client\\components\\builtin\\app-error-5d78e50f75ecc453.js",
+    "bytes": 207,
+    "gzipBytes": 171
+  },
+  {
+    "file": ".next\\static\\chunks\\next\\dist\\client\\components\\builtin\\forbidden-5d78e50f75ecc453.js",
+    "bytes": 207,
+    "gzipBytes": 171
+  },
+  {
+    "file": ".next\\static\\chunks\\next\\dist\\client\\components\\builtin\\not-found-5d78e50f75ecc453.js",
+    "bytes": 207,
+    "gzipBytes": 171
+  },
+  {
+    "file": ".next\\static\\chunks\\next\\dist\\client\\components\\builtin\\unauthorized-5d78e50f75ecc453.js",
+    "bytes": 207,
+    "gzipBytes": 171
+  },
+  {
+    "file": ".next\\static\\chunks\\app\\layout-fa17cd5947d1f0ed.js",
+    "bytes": 200,
+    "gzipBytes": 172
+  },
+  {
+    "file": ".next\\static\\chunks\\next\\dist\\client\\components\\builtin\\global-error-108731524af1824c.js",
+    "bytes": 183,
+    "gzipBytes": 163
+  },
+  {
+    "file": ".next\\static\\chunks\\app\\(dashboard)\\dashboard\\hiring\\jobs\\new\\page-3d926cad565b9046.js",
+    "bytes": 139,
+    "gzipBytes": 133
+  },
+  {
+    "file": ".next\\static\\chunks\\app\\(dashboard)\\dashboard\\hiring\\jobs\\[jobId]\\edit\\page-04c36342be92195e.js",
+    "bytes": 139,
+    "gzipBytes": 132
+  },
+  {
+    "file": ".next\\static\\chunks\\app\\(dashboard)\\dashboard\\hiring\\applicants\\page-cf4c463f76d5a27f.js",
+    "bytes": 133,
+    "gzipBytes": 129
+  },
+  {
+    "file": ".next\\static\\chunks\\app\\(dashboard)\\dashboard\\hiring\\assessments\\page-8a8372f57aba7d51.js",
+    "bytes": 133,
+    "gzipBytes": 129
+  },
+  {
+    "file": ".next\\static\\chunks\\app\\(dashboard)\\dashboard\\hiring\\interviews\\page-ca054c0fa7f918bb.js",
+    "bytes": 133,
+    "gzipBytes": 129
+  },
+  {
+    "file": ".next\\static\\chunks\\app\\(dashboard)\\dashboard\\hiring\\offers\\page-51142ea361b46d8e.js",
+    "bytes": 133,
+    "gzipBytes": 129
+  },
+  {
+    "file": ".next\\static\\chunks\\app\\(dashboard)\\dashboard\\hiring\\onboarding\\page-70c4462e5d2d9744.js",
+    "bytes": 133,
+    "gzipBytes": 129
+  }
+]

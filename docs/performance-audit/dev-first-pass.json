@@ -1,0 +1,1442 @@
+[
+  {
+    "route": "Dashboard",
+    "iteration": 0,
+    "status": 200,
+    "ttfbMs": 28331.5,
+    "completeMs": 29456.9,
+    "responseBytes": 44372,
+    "sqlLogCount": 27,
+    "timings": [
+      {
+        "label": "branding read",
+        "ms": 507.6
+      },
+      {
+        "label": "tenant resolution",
+        "ms": 2039.5
+      },
+      {
+        "label": "session validation",
+        "ms": 311.4
+      },
+      {
+        "label": "session validation",
+        "ms": 310.2
+      }
+    ],
+    "runtimeErrorCodes": [
+      "P2022"
+    ],
+    "nextTiming": [],
+    "redirect": false,
+    "streamedError": false
+  },
+  {
+    "route": "Dashboard",
+    "iteration": 1,
+    "status": 200,
+    "ttfbMs": 1613.1,
+    "completeMs": 1676.1,
+    "responseBytes": 44372,
+    "sqlLogCount": 21,
+    "timings": [
+      {
+        "label": "branding read",
+        "ms": 272.1
+      },
+      {
+        "label": "tenant resolution",
+        "ms": 1154.8
+      },
+      {
+        "label": "session validation",
+        "ms": 113.7
+      },
+      {
+        "label": "session validation",
+        "ms": 113.7
+      }
+    ],
+    "runtimeErrorCodes": [
+      "P2022"
+    ],
+    "nextTiming": [],
+    "redirect": false,
+    "streamedError": false
+  },
+  {
+    "route": "Dashboard",
+    "iteration": 2,
+    "status": 200,
+    "ttfbMs": 1956.8,
+    "completeMs": 1962.3,
+    "responseBytes": 44372,
+    "sqlLogCount": 29,
+    "timings": [
+      {
+        "label": "branding read",
+        "ms": 555.9
+      },
+      {
+        "label": "tenant resolution",
+        "ms": 1459.2
+      },
+      {
+        "label": "session validation",
+        "ms": 192.8
+      },
+      {
+        "label": "session validation",
+        "ms": 193.1
+      }
+    ],
+    "runtimeErrorCodes": [
+      "P2022"
+    ],
+    "nextTiming": [],
+    "redirect": false,
+    "streamedError": false
+  },
+  {
+    "route": "Dashboard",
+    "iteration": 3,
+    "status": 200,
+    "ttfbMs": 1356.5,
+    "completeMs": 1376.1,
+    "responseBytes": 44372,
+    "sqlLogCount": 33,
+    "timings": [
+      {
+        "label": "branding read",
+        "ms": 262.6
+      },
+      {
+        "label": "tenant resolution",
+        "ms": 987.3
+      },
+      {
+        "label": "session validation",
+        "ms": 133.9
+      },
+      {
+        "label": "session validation",
+        "ms": 133.6
+      }
+    ],
+    "runtimeErrorCodes": [
+      "P2022"
+    ],
+    "nextTiming": [],
+    "redirect": false,
+    "streamedError": false
+  },
+  {
+    "route": "Hiring",
+    "iteration": 0,
+    "status": 200,
+    "ttfbMs": 5706,
+    "completeMs": 5713.8,
+    "responseBytes": 213800,
+    "sqlLogCount": 14,
+    "timings": [
+      {
+        "label": "branding read",
+        "ms": 350
+      },
+      {
+        "label": "tenant resolution",
+        "ms": 716.8
+      },
+      {
+        "label": "session validation",
+        "ms": 135.5
+      }
+    ],
+    "runtimeErrorCodes": [],
+    "nextTiming": [],
+    "redirect": false,
+    "streamedError": false
+  },
+  {
+    "route": "Hiring",
+    "iteration": 1,
+    "status": 200,
+    "ttfbMs": 1527.1,
+    "completeMs": 1533.6,
+    "responseBytes": 213800,
+    "sqlLogCount": 8,
+    "timings": [
+      {
+        "label": "branding read",
+        "ms": 349.5
+      },
+      {
+        "label": "tenant resolution",
+        "ms": 1056
+      },
+      {
+        "label": "session validation",
+        "ms": 137.3
+      }
+    ],
+    "runtimeErrorCodes": [],
+    "nextTiming": [],
+    "redirect": false,
+    "streamedError": false
+  },
+  {
+    "route": "Hiring",
+    "iteration": 2,
+    "status": 200,
+    "ttfbMs": 1347.5,
+    "completeMs": 1354.6,
+    "responseBytes": 213800,
+    "sqlLogCount": 8,
+    "timings": [
+      {
+        "label": "branding read",
+        "ms": 137
+      },
+      {
+        "label": "tenant resolution",
+        "ms": 886.2
+      },
+      {
+        "label": "session validation",
+        "ms": 69.3
+      }
+    ],
+    "runtimeErrorCodes": [],
+    "nextTiming": [],
+    "redirect": false,
+    "streamedError": false
+  },
+  {
+    "route": "Hiring",
+    "iteration": 3,
+    "status": 200,
+    "ttfbMs": 1365.9,
+    "completeMs": 1372.4,
+    "responseBytes": 213800,
+    "sqlLogCount": 10,
+    "timings": [
+      {
+        "label": "branding read",
+        "ms": 138.9
+      },
+      {
+        "label": "tenant resolution",
+        "ms": 941.1
+      },
+      {
+        "label": "session validation",
+        "ms": 93.7
+      }
+    ],
+    "runtimeErrorCodes": [],
+    "nextTiming": [],
+    "redirect": false,
+    "streamedError": false
+  },
+  {
+    "route": "Applicants",
+    "iteration": 0,
+    "status": 200,
+    "ttfbMs": 2861.7,
+    "completeMs": 3568.2,
+    "responseBytes": 123376,
+    "sqlLogCount": 14,
+    "timings": [
+      {
+        "label": "branding read",
+        "ms": 137.6
+      },
+      {
+        "label": "tenant resolution",
+        "ms": 414
+      },
+      {
+        "label": "session validation",
+        "ms": 223.1
+      },
+      {
+        "label": "session validation",
+        "ms": 222.8
+      }
+    ],
+    "runtimeErrorCodes": [],
+    "nextTiming": [],
+    "redirect": false,
+    "streamedError": false
+  },
+  {
+    "route": "Applicants",
+    "iteration": 1,
+    "status": 200,
+    "ttfbMs": 1076.1,
+    "completeMs": 1549.1,
+    "responseBytes": 123375,
+    "sqlLogCount": 12,
+    "timings": [
+      {
+        "label": "branding read",
+        "ms": 138.6
+      },
+      {
+        "label": "tenant resolution",
+        "ms": 781.3
+      },
+      {
+        "label": "session validation",
+        "ms": 91.7
+      },
+      {
+        "label": "session validation",
+        "ms": 90.9
+      }
+    ],
+    "runtimeErrorCodes": [],
+    "nextTiming": [],
+    "redirect": false,
+    "streamedError": false
+  },
+  {
+    "route": "Applicants",
+    "iteration": 2,
+    "status": 200,
+    "ttfbMs": 1201.3,
+    "completeMs": 1712,
+    "responseBytes": 123376,
+    "sqlLogCount": 12,
+    "timings": [
+      {
+        "label": "branding read",
+        "ms": 138.3
+      },
+      {
+        "label": "tenant resolution",
+        "ms": 927.1
+      },
+      {
+        "label": "session validation",
+        "ms": 70.4
+      },
+      {
+        "label": "session validation",
+        "ms": 70.3
+      }
+    ],
+    "runtimeErrorCodes": [],
+    "nextTiming": [],
+    "redirect": false,
+    "streamedError": false
+  },
+  {
+    "route": "Applicants",
+    "iteration": 3,
+    "status": 200,
+    "ttfbMs": 1118.8,
+    "completeMs": 1566.9,
+    "responseBytes": 123376,
+    "sqlLogCount": 12,
+    "timings": [
+      {
+        "label": "branding read",
+        "ms": 140
+      },
+      {
+        "label": "tenant resolution",
+        "ms": 845.6
+      },
+      {
+        "label": "session validation",
+        "ms": 70.9
+      },
+      {
+        "label": "session validation",
+        "ms": 70.6
+      }
+    ],
+    "runtimeErrorCodes": [],
+    "nextTiming": [],
+    "redirect": false,
+    "streamedError": false
+  },
+  {
+    "route": "Employee Records",
+    "iteration": 0,
+    "status": 200,
+    "ttfbMs": 3428,
+    "completeMs": 3853.3,
+    "responseBytes": 47809,
+    "sqlLogCount": 11,
+    "timings": [
+      {
+        "label": "branding read",
+        "ms": 139
+      },
+      {
+        "label": "tenant resolution",
+        "ms": 440.2
+      },
+      {
+        "label": "session validation",
+        "ms": 69.5
+      }
+    ],
+    "runtimeErrorCodes": [
+      "P2022"
+    ],
+    "nextTiming": [],
+    "redirect": false,
+    "streamedError": false
+  },
+  {
+    "route": "Employee Records",
+    "iteration": 1,
+    "status": 200,
+    "ttfbMs": 1851.6,
+    "completeMs": 1854.6,
+    "responseBytes": 47144,
+    "sqlLogCount": 12,
+    "timings": [
+      {
+        "label": "branding read",
+        "ms": 814.3
+      },
+      {
+        "label": "tenant resolution",
+        "ms": 1536.5
+      },
+      {
+        "label": "session validation",
+        "ms": 144.5
+      }
+    ],
+    "runtimeErrorCodes": [
+      "P2022"
+    ],
+    "nextTiming": [],
+    "redirect": false,
+    "streamedError": false
+  },
+  {
+    "route": "Employee Records",
+    "iteration": 2,
+    "status": 200,
+    "ttfbMs": 1112.3,
+    "completeMs": 1114.3,
+    "responseBytes": 47766,
+    "sqlLogCount": 11,
+    "timings": [
+      {
+        "label": "branding read",
+        "ms": 136.9
+      },
+      {
+        "label": "tenant resolution",
+        "ms": 838.3
+      },
+      {
+        "label": "session validation",
+        "ms": 71.2
+      }
+    ],
+    "runtimeErrorCodes": [
+      "P2022"
+    ],
+    "nextTiming": [],
+    "redirect": false,
+    "streamedError": false
+  },
+  {
+    "route": "Employee Records",
+    "iteration": 3,
+    "status": 200,
+    "ttfbMs": 1085.5,
+    "completeMs": 1090.5,
+    "responseBytes": 47766,
+    "sqlLogCount": 11,
+    "timings": [
+      {
+        "label": "branding read",
+        "ms": 135.9
+      },
+      {
+        "label": "tenant resolution",
+        "ms": 816.4
+      },
+      {
+        "label": "session validation",
+        "ms": 69.1
+      }
+    ],
+    "runtimeErrorCodes": [
+      "P2022"
+    ],
+    "nextTiming": [],
+    "redirect": false,
+    "streamedError": false
+  },
+  {
+    "route": "Employee Profile",
+    "iteration": 0,
+    "status": 200,
+    "ttfbMs": 6180.3,
+    "completeMs": 6183.3,
+    "responseBytes": 50283,
+    "sqlLogCount": 10,
+    "timings": [
+      {
+        "label": "branding read",
+        "ms": 286.6
+      },
+      {
+        "label": "tenant resolution",
+        "ms": 626.8
+      },
+      {
+        "label": "session validation",
+        "ms": 73.2
+      }
+    ],
+    "runtimeErrorCodes": [
+      "P2022"
+    ],
+    "nextTiming": [],
+    "redirect": false,
+    "streamedError": false
+  },
+  {
+    "route": "Employee Profile",
+    "iteration": 1,
+    "status": 200,
+    "ttfbMs": 1132.5,
+    "completeMs": 1137,
+    "responseBytes": 49603,
+    "sqlLogCount": 9,
+    "timings": [
+      {
+        "label": "branding read",
+        "ms": 143.3
+      },
+      {
+        "label": "tenant resolution",
+        "ms": 832.7
+      },
+      {
+        "label": "session validation",
+        "ms": 70.1
+      }
+    ],
+    "runtimeErrorCodes": [
+      "P2022"
+    ],
+    "nextTiming": [],
+    "redirect": false,
+    "streamedError": false
+  },
+  {
+    "route": "Employee Profile",
+    "iteration": 2,
+    "status": 200,
+    "ttfbMs": 1107.3,
+    "completeMs": 1110.1,
+    "responseBytes": 49603,
+    "sqlLogCount": 9,
+    "timings": [
+      {
+        "label": "branding read",
+        "ms": 147.2
+      },
+      {
+        "label": "tenant resolution",
+        "ms": 825.1
+      },
+      {
+        "label": "session validation",
+        "ms": 74.2
+      }
+    ],
+    "runtimeErrorCodes": [
+      "P2022"
+    ],
+    "nextTiming": [],
+    "redirect": false,
+    "streamedError": false
+  },
+  {
+    "route": "Employee Profile",
+    "iteration": 3,
+    "status": 200,
+    "ttfbMs": 1107.7,
+    "completeMs": 1111.9,
+    "responseBytes": 49603,
+    "sqlLogCount": 9,
+    "timings": [
+      {
+        "label": "branding read",
+        "ms": 137.5
+      },
+      {
+        "label": "tenant resolution",
+        "ms": 840.9
+      },
+      {
+        "label": "session validation",
+        "ms": 69.3
+      }
+    ],
+    "runtimeErrorCodes": [
+      "P2022"
+    ],
+    "nextTiming": [],
+    "redirect": false,
+    "streamedError": false
+  },
+  {
+    "route": "Attendance",
+    "iteration": 0,
+    "status": 200,
+    "ttfbMs": 4285.8,
+    "completeMs": 4288,
+    "responseBytes": 49121,
+    "sqlLogCount": 11,
+    "timings": [
+      {
+        "label": "branding read",
+        "ms": 136.9
+      },
+      {
+        "label": "tenant resolution",
+        "ms": 467.3
+      },
+      {
+        "label": "session validation",
+        "ms": 195.1
+      }
+    ],
+    "runtimeErrorCodes": [],
+    "nextTiming": [],
+    "redirect": false,
+    "streamedError": false
+  },
+  {
+    "route": "Attendance",
+    "iteration": 1,
+    "status": 200,
+    "ttfbMs": 1058.4,
+    "completeMs": 1061.2,
+    "responseBytes": 49115,
+    "sqlLogCount": 8,
+    "timings": [
+      {
+        "label": "branding read",
+        "ms": 166.8
+      },
+      {
+        "label": "tenant resolution",
+        "ms": 824.7
+      },
+      {
+        "label": "session validation",
+        "ms": 74.5
+      }
+    ],
+    "runtimeErrorCodes": [],
+    "nextTiming": [],
+    "redirect": false,
+    "streamedError": false
+  },
+  {
+    "route": "Attendance",
+    "iteration": 2,
+    "status": 200,
+    "ttfbMs": 1014.4,
+    "completeMs": 1016.7,
+    "responseBytes": 49115,
+    "sqlLogCount": 8,
+    "timings": [
+      {
+        "label": "branding read",
+        "ms": 146.2
+      },
+      {
+        "label": "tenant resolution",
+        "ms": 785.9
+      },
+      {
+        "label": "session validation",
+        "ms": 71.3
+      }
+    ],
+    "runtimeErrorCodes": [],
+    "nextTiming": [],
+    "redirect": false,
+    "streamedError": false
+  },
+  {
+    "route": "Attendance",
+    "iteration": 3,
+    "status": 200,
+    "ttfbMs": 1104.2,
+    "completeMs": 1107.1,
+    "responseBytes": 49115,
+    "sqlLogCount": 8,
+    "timings": [
+      {
+        "label": "branding read",
+        "ms": 167
+      },
+      {
+        "label": "tenant resolution",
+        "ms": 862.5
+      },
+      {
+        "label": "session validation",
+        "ms": 70.6
+      }
+    ],
+    "runtimeErrorCodes": [],
+    "nextTiming": [],
+    "redirect": false,
+    "streamedError": false
+  },
+  {
+    "route": "Attendance selected employee",
+    "iteration": 0,
+    "status": 200,
+    "ttfbMs": 1034.3,
+    "completeMs": 1771.1,
+    "responseBytes": 111328,
+    "sqlLogCount": 12,
+    "timings": [
+      {
+        "label": "branding read",
+        "ms": 147.7
+      },
+      {
+        "label": "tenant resolution",
+        "ms": 808.9
+      },
+      {
+        "label": "session validation",
+        "ms": 70.1
+      }
+    ],
+    "runtimeErrorCodes": [],
+    "nextTiming": [],
+    "redirect": false,
+    "streamedError": false
+  },
+  {
+    "route": "Attendance selected employee",
+    "iteration": 1,
+    "status": 200,
+    "ttfbMs": 1668.5,
+    "completeMs": 2484.8,
+    "responseBytes": 111328,
+    "sqlLogCount": 13,
+    "timings": [
+      {
+        "label": "branding read",
+        "ms": 139
+      },
+      {
+        "label": "tenant resolution",
+        "ms": 958.8
+      },
+      {
+        "label": "session validation",
+        "ms": 71
+      }
+    ],
+    "runtimeErrorCodes": [],
+    "nextTiming": [],
+    "redirect": false,
+    "streamedError": false
+  },
+  {
+    "route": "Attendance selected employee",
+    "iteration": 2,
+    "status": 200,
+    "ttfbMs": 1223.5,
+    "completeMs": 2125.7,
+    "responseBytes": 111328,
+    "sqlLogCount": 12,
+    "timings": [
+      {
+        "label": "branding read",
+        "ms": 177.3
+      },
+      {
+        "label": "tenant resolution",
+        "ms": 968.5
+      },
+      {
+        "label": "session validation",
+        "ms": 70.4
+      }
+    ],
+    "runtimeErrorCodes": [],
+    "nextTiming": [],
+    "redirect": false,
+    "streamedError": false
+  },
+  {
+    "route": "Attendance selected employee",
+    "iteration": 3,
+    "status": 200,
+    "ttfbMs": 1186.3,
+    "completeMs": 1617.5,
+    "responseBytes": 111328,
+    "sqlLogCount": 12,
+    "timings": [
+      {
+        "label": "branding read",
+        "ms": 140.3
+      },
+      {
+        "label": "tenant resolution",
+        "ms": 905.5
+      },
+      {
+        "label": "session validation",
+        "ms": 70.3
+      }
+    ],
+    "runtimeErrorCodes": [],
+    "nextTiming": [],
+    "redirect": false,
+    "streamedError": false
+  },
+  {
+    "route": "Leave",
+    "iteration": 0,
+    "status": 200,
+    "ttfbMs": 4123.8,
+    "completeMs": 4564.3,
+    "responseBytes": 66485,
+    "sqlLogCount": 11,
+    "timings": [
+      {
+        "label": "branding read",
+        "ms": 145.7
+      },
+      {
+        "label": "tenant resolution",
+        "ms": 447.1
+      },
+      {
+        "label": "session validation",
+        "ms": 145
+      },
+      {
+        "label": "session validation",
+        "ms": 144.8
+      }
+    ],
+    "runtimeErrorCodes": [],
+    "nextTiming": [],
+    "redirect": false,
+    "streamedError": false
+  },
+  {
+    "route": "Leave",
+    "iteration": 1,
+    "status": 200,
+    "ttfbMs": 1084,
+    "completeMs": 1305,
+    "responseBytes": 66485,
+    "sqlLogCount": 9,
+    "timings": [
+      {
+        "label": "branding read",
+        "ms": 145.3
+      },
+      {
+        "label": "tenant resolution",
+        "ms": 843.6
+      },
+      {
+        "label": "session validation",
+        "ms": 75
+      },
+      {
+        "label": "session validation",
+        "ms": 74.9
+      }
+    ],
+    "runtimeErrorCodes": [],
+    "nextTiming": [],
+    "redirect": false,
+    "streamedError": false
+  },
+  {
+    "route": "Leave",
+    "iteration": 2,
+    "status": 200,
+    "ttfbMs": 1135.2,
+    "completeMs": 1337.5,
+    "responseBytes": 66485,
+    "sqlLogCount": 9,
+    "timings": [
+      {
+        "label": "branding read",
+        "ms": 146.1
+      },
+      {
+        "label": "tenant resolution",
+        "ms": 875.4
+      },
+      {
+        "label": "session validation",
+        "ms": 75.8
+      },
+      {
+        "label": "session validation",
+        "ms": 75.7
+      }
+    ],
+    "runtimeErrorCodes": [],
+    "nextTiming": [],
+    "redirect": false,
+    "streamedError": false
+  },
+  {
+    "route": "Leave",
+    "iteration": 3,
+    "status": 200,
+    "ttfbMs": 1110.5,
+    "completeMs": 1307.3,
+    "responseBytes": 66485,
+    "sqlLogCount": 9,
+    "timings": [
+      {
+        "label": "branding read",
+        "ms": 147.4
+      },
+      {
+        "label": "tenant resolution",
+        "ms": 843.8
+      },
+      {
+        "label": "session validation",
+        "ms": 75.3
+      },
+      {
+        "label": "session validation",
+        "ms": 75.3
+      }
+    ],
+    "runtimeErrorCodes": [],
+    "nextTiming": [],
+    "redirect": false,
+    "streamedError": false
+  },
+  {
+    "route": "Payroll",
+    "iteration": 0,
+    "status": 200,
+    "ttfbMs": 4507.6,
+    "completeMs": 4852.7,
+    "responseBytes": 71625,
+    "sqlLogCount": 12,
+    "timings": [
+      {
+        "label": "branding read",
+        "ms": 146.5
+      },
+      {
+        "label": "tenant resolution",
+        "ms": 460.9
+      },
+      {
+        "label": "session validation",
+        "ms": 74.8
+      },
+      {
+        "label": "session validation",
+        "ms": 74.6
+      }
+    ],
+    "runtimeErrorCodes": [],
+    "nextTiming": [],
+    "redirect": false,
+    "streamedError": false
+  },
+  {
+    "route": "Payroll",
+    "iteration": 1,
+    "status": 200,
+    "ttfbMs": 1353.9,
+    "completeMs": 1544.3,
+    "responseBytes": 71625,
+    "sqlLogCount": 9,
+    "timings": [
+      {
+        "label": "branding read",
+        "ms": 301.6
+      },
+      {
+        "label": "tenant resolution",
+        "ms": 1030.4
+      },
+      {
+        "label": "session validation",
+        "ms": 152.4
+      },
+      {
+        "label": "session validation",
+        "ms": 152.3
+      }
+    ],
+    "runtimeErrorCodes": [],
+    "nextTiming": [],
+    "redirect": false,
+    "streamedError": false
+  },
+  {
+    "route": "Payroll",
+    "iteration": 2,
+    "status": 200,
+    "ttfbMs": 1078.7,
+    "completeMs": 1279.8,
+    "responseBytes": 71625,
+    "sqlLogCount": 9,
+    "timings": [
+      {
+        "label": "branding read",
+        "ms": 151
+      },
+      {
+        "label": "tenant resolution",
+        "ms": 806.9
+      },
+      {
+        "label": "session validation",
+        "ms": 78.3
+      },
+      {
+        "label": "session validation",
+        "ms": 78.6
+      }
+    ],
+    "runtimeErrorCodes": [],
+    "nextTiming": [],
+    "redirect": false,
+    "streamedError": false
+  },
+  {
+    "route": "Payroll",
+    "iteration": 3,
+    "status": 200,
+    "ttfbMs": 1036.2,
+    "completeMs": 1228,
+    "responseBytes": 71625,
+    "sqlLogCount": 9,
+    "timings": [
+      {
+        "label": "branding read",
+        "ms": 145.3
+      },
+      {
+        "label": "tenant resolution",
+        "ms": 788.9
+      },
+      {
+        "label": "session validation",
+        "ms": 74.7
+      },
+      {
+        "label": "session validation",
+        "ms": 74.7
+      }
+    ],
+    "runtimeErrorCodes": [],
+    "nextTiming": [],
+    "redirect": false,
+    "streamedError": false
+  },
+  {
+    "route": "Analytics",
+    "iteration": 0,
+    "status": 200,
+    "ttfbMs": 2821.6,
+    "completeMs": 4702.3,
+    "responseBytes": 74396,
+    "sqlLogCount": 27,
+    "timings": [
+      {
+        "label": "branding read",
+        "ms": 154.5
+      },
+      {
+        "label": "tenant resolution",
+        "ms": 400.9
+      },
+      {
+        "label": "session validation",
+        "ms": 78.3
+      },
+      {
+        "label": "session validation",
+        "ms": 78.3
+      },
+      {
+        "label": "session validation",
+        "ms": 261.8
+      }
+    ],
+    "runtimeErrorCodes": [],
+    "nextTiming": [],
+    "redirect": false,
+    "streamedError": false
+  },
+  {
+    "route": "Analytics",
+    "iteration": 1,
+    "status": 200,
+    "ttfbMs": 1171.1,
+    "completeMs": 2445.5,
+    "responseBytes": 74396,
+    "sqlLogCount": 20,
+    "timings": [
+      {
+        "label": "branding read",
+        "ms": 145.8
+      },
+      {
+        "label": "tenant resolution",
+        "ms": 824.8
+      },
+      {
+        "label": "session validation",
+        "ms": 79.3
+      },
+      {
+        "label": "session validation",
+        "ms": 79.1
+      },
+      {
+        "label": "session validation",
+        "ms": 144.1
+      }
+    ],
+    "runtimeErrorCodes": [],
+    "nextTiming": [],
+    "redirect": false,
+    "streamedError": false
+  },
+  {
+    "route": "Analytics",
+    "iteration": 2,
+    "status": 200,
+    "ttfbMs": 1106.3,
+    "completeMs": 1989.7,
+    "responseBytes": 74396,
+    "sqlLogCount": 20,
+    "timings": [
+      {
+        "label": "branding read",
+        "ms": 145.6
+      },
+      {
+        "label": "tenant resolution",
+        "ms": 831.8
+      },
+      {
+        "label": "session validation",
+        "ms": 78.4
+      },
+      {
+        "label": "session validation",
+        "ms": 78.4
+      },
+      {
+        "label": "session validation",
+        "ms": 74.3
+      }
+    ],
+    "runtimeErrorCodes": [],
+    "nextTiming": [],
+    "redirect": false,
+    "streamedError": false
+  },
+  {
+    "route": "Analytics",
+    "iteration": 3,
+    "status": 200,
+    "ttfbMs": 1034.1,
+    "completeMs": 1896.9,
+    "responseBytes": 74396,
+    "sqlLogCount": 23,
+    "timings": [
+      {
+        "label": "branding read",
+        "ms": 225.7
+      },
+      {
+        "label": "tenant resolution",
+        "ms": 821
+      },
+      {
+        "label": "session validation",
+        "ms": 77.3
+      },
+      {
+        "label": "session validation",
+        "ms": 77.4
+      },
+      {
+        "label": "session validation",
+        "ms": 77.1
+      }
+    ],
+    "runtimeErrorCodes": [],
+    "nextTiming": [],
+    "redirect": false,
+    "streamedError": false
+  },
+  {
+    "route": "ESS",
+    "iteration": 0,
+    "status": 200,
+    "ttfbMs": 5827,
+    "completeMs": 5831.2,
+    "responseBytes": 40477,
+    "sqlLogCount": 30,
+    "timings": [
+      {
+        "label": "branding read",
+        "ms": 641.2
+      },
+      {
+        "label": "tenant resolution",
+        "ms": 907.9
+      }
+    ],
+    "runtimeErrorCodes": [],
+    "nextTiming": [],
+    "redirect": false,
+    "streamedError": false
+  },
+  {
+    "route": "ESS",
+    "iteration": 1,
+    "status": 200,
+    "ttfbMs": 2241.8,
+    "completeMs": 2244.5,
+    "responseBytes": 40478,
+    "sqlLogCount": 37,
+    "timings": [
+      {
+        "label": "branding read",
+        "ms": 138.3
+      },
+      {
+        "label": "tenant resolution",
+        "ms": 841.6
+      }
+    ],
+    "runtimeErrorCodes": [],
+    "nextTiming": [],
+    "redirect": false,
+    "streamedError": false
+  },
+  {
+    "route": "ESS",
+    "iteration": 2,
+    "status": 200,
+    "ttfbMs": 2861.7,
+    "completeMs": 2863.6,
+    "responseBytes": 40477,
+    "sqlLogCount": 30,
+    "timings": [
+      {
+        "label": "branding read",
+        "ms": 298.9
+      },
+      {
+        "label": "tenant resolution",
+        "ms": 989.9
+      }
+    ],
+    "runtimeErrorCodes": [],
+    "nextTiming": [],
+    "redirect": false,
+    "streamedError": false
+  },
+  {
+    "route": "ESS",
+    "iteration": 3,
+    "status": 200,
+    "ttfbMs": 1553.2,
+    "completeMs": 1554.6,
+    "responseBytes": 40478,
+    "sqlLogCount": 30,
+    "timings": [
+      {
+        "label": "branding read",
+        "ms": 150.7
+      },
+      {
+        "label": "tenant resolution",
+        "ms": 594.1
+      }
+    ],
+    "runtimeErrorCodes": [],
+    "nextTiming": [],
+    "redirect": false,
+    "streamedError": false
+  },
+  {
+    "route": "Exit Management",
+    "iteration": 0,
+    "status": 200,
+    "ttfbMs": 2885.9,
+    "completeMs": 3619,
+    "responseBytes": 52000,
+    "sqlLogCount": 11,
+    "timings": [
+      {
+        "label": "branding read",
+        "ms": 179.5
+      },
+      {
+        "label": "tenant resolution",
+        "ms": 464.2
+      },
+      {
+        "label": "session validation",
+        "ms": 185.2
+      },
+      {
+        "label": "session validation",
+        "ms": 185.2
+      },
+      {
+        "label": "session validation",
+        "ms": 185.1
+      }
+    ],
+    "runtimeErrorCodes": [
+      "P2034"
+    ],
+    "nextTiming": [],
+    "redirect": false,
+    "streamedError": false
+  },
+  {
+    "route": "Exit Management",
+    "iteration": 1,
+    "status": 200,
+    "ttfbMs": 793.3,
+    "completeMs": 1237.4,
+    "responseBytes": 52000,
+    "sqlLogCount": 10,
+    "timings": [
+      {
+        "label": "branding read",
+        "ms": 150.9
+      },
+      {
+        "label": "tenant resolution",
+        "ms": 589
+      },
+      {
+        "label": "session validation",
+        "ms": 98.9
+      },
+      {
+        "label": "session validation",
+        "ms": 98.9
+      },
+      {
+        "label": "session validation",
+        "ms": 98.8
+      }
+    ],
+    "runtimeErrorCodes": [
+      "P2034"
+    ],
+    "nextTiming": [],
+    "redirect": false,
+    "streamedError": false
+  },
+  {
+    "route": "Exit Management",
+    "iteration": 2,
+    "status": 200,
+    "ttfbMs": 785.4,
+    "completeMs": 1209.5,
+    "responseBytes": 52000,
+    "sqlLogCount": 10,
+    "timings": [
+      {
+        "label": "branding read",
+        "ms": 152.4
+      },
+      {
+        "label": "tenant resolution",
+        "ms": 595.5
+      },
+      {
+        "label": "session validation",
+        "ms": 77.3
+      },
+      {
+        "label": "session validation",
+        "ms": 77.2
+      },
+      {
+        "label": "session validation",
+        "ms": 77.1
+      }
+    ],
+    "runtimeErrorCodes": [
+      "P2034"
+    ],
+    "nextTiming": [],
+    "redirect": false,
+    "streamedError": false
+  },
+  {
+    "route": "Exit Management",
+    "iteration": 3,
+    "status": 200,
+    "ttfbMs": 854,
+    "completeMs": 1259.5,
+    "responseBytes": 52000,
+    "sqlLogCount": 10,
+    "timings": [
+      {
+        "label": "branding read",
+        "ms": 157.4
+      },
+      {
+        "label": "tenant resolution",
+        "ms": 642.1
+      },
+      {
+        "label": "session validation",
+        "ms": 80.5
+      },
+      {
+        "label": "session validation",
+        "ms": 80.4
+      },
+      {
+        "label": "session validation",
+        "ms": 80.4
+      }
+    ],
+    "runtimeErrorCodes": [
+      "P2034"
+    ],
+    "nextTiming": [],
+    "redirect": false,
+    "streamedError": false
+  }
+]

@@ -3,7 +3,7 @@ import { redirect } from 'next/navigation';
 import type { ReactNode } from 'react';
 import { getAnalytics } from '@/features/analytics/queries';
 import { AnalyticsFilterError, type AnalyticsFilters } from '@/features/analytics/date-range';
-import { requireBackOfficeContext } from '@/lib/auth/guards';
+import { getBackOfficeReadContext } from '@/lib/auth/guards';
 import { canViewAnalytics } from '@/lib/permissions/rbac';
 import { formatStatusLabel } from '@/lib/ui/format-status';
 
@@ -26,7 +26,7 @@ function money(amount: string, currency: string) {
 }
 
 export default async function AnalyticsPage({ searchParams }: { searchParams: Promise<AnalyticsFilters> }) {
-  const user = await requireBackOfficeContext();
+  const user = await getBackOfficeReadContext();
   if (!canViewAnalytics(user)) redirect('/dashboard');
   const params = await searchParams;
   let data;

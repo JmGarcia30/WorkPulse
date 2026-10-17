@@ -1,0 +1,170 @@
+[
+  {
+    "branded": false,
+    "iteration": 0,
+    "mode": "before",
+    "ms": 508.88139999998384,
+    "sql": 3
+  },
+  {
+    "branded": false,
+    "iteration": 0,
+    "mode": "after",
+    "ms": 172.18410000001313,
+    "sql": 1
+  },
+  {
+    "branded": false,
+    "iteration": 1,
+    "mode": "after",
+    "ms": 84.56219999998575,
+    "sql": 1
+  },
+  {
+    "branded": false,
+    "iteration": 1,
+    "mode": "before",
+    "ms": 253.9835000000021,
+    "sql": 3
+  },
+  {
+    "branded": false,
+    "iteration": 2,
+    "mode": "before",
+    "ms": 252.38689999998314,
+    "sql": 3
+  },
+  {
+    "branded": false,
+    "iteration": 2,
+    "mode": "after",
+    "ms": 86.1308999999892,
+    "sql": 1
+  },
+  {
+    "branded": false,
+    "iteration": 3,
+    "mode": "after",
+    "ms": 85.39890000000014,
+    "sql": 1
+  },
+  {
+    "branded": false,
+    "iteration": 3,
+    "mode": "before",
+    "ms": 253.00109999999404,
+    "sql": 3
+  },
+  {
+    "branded": false,
+    "iteration": 4,
+    "mode": "before",
+    "ms": 335.2092999999877,
+    "sql": 4
+  },
+  {
+    "branded": false,
+    "iteration": 4,
+    "mode": "after",
+    "ms": 85.3972000000067,
+    "sql": 1
+  },
+  {
+    "branded": false,
+    "iteration": 5,
+    "mode": "after",
+    "ms": 84.58950000000186,
+    "sql": 1
+  },
+  {
+    "branded": false,
+    "iteration": 5,
+    "mode": "before",
+    "ms": 254.8128999999899,
+    "sql": 3
+  },
+  {
+    "branded": true,
+    "iteration": 0,
+    "mode": "before",
+    "ms": 248.43520000000717,
+    "sql": 3
+  },
+  {
+    "branded": true,
+    "iteration": 0,
+    "mode": "after",
+    "ms": 83.80039999997825,
+    "sql": 1
+  },
+  {
+    "branded": true,
+    "iteration": 1,
+    "mode": "after",
+    "ms": 83.00409999999101,
+    "sql": 1
+  },
+  {
+    "branded": true,
+    "iteration": 1,
+    "mode": "before",
+    "ms": 255.00419999999576,
+    "sql": 3
+  },
+  {
+    "branded": true,
+    "iteration": 2,
+    "mode": "before",
+    "ms": 257.5482999999949,
+    "sql": 3
+  },
+  {
+    "branded": true,
+    "iteration": 2,
+    "mode": "after",
+    "ms": 86.34259999997448,
+    "sql": 1
+  },
+  {
+    "branded": true,
+    "iteration": 3,
+    "mode": "after",
+    "ms": 84.03150000001187,
+    "sql": 1
+  },
+  {
+    "branded": true,
+    "iteration": 3,
+    "mode": "before",
+    "ms": 252.6005999999761,
+    "sql": 3
+  },
+  {
+    "branded": true,
+    "iteration": 4,
+    "mode": "before",
+    "ms": 252.60939999998664,
+    "sql": 3
+  },
+  {
+    "branded": true,
+    "iteration": 4,
+    "mode": "after",
+    "ms": 88.59169999998994,
+    "sql": 1
+  },
+  {
+    "branded": true,
+    "iteration": 5,
+    "mode": "after",
+    "ms": 88.63539999999921,
+    "sql": 1
+  },
+  {
+    "branded": true,
+    "iteration": 5,
+    "mode": "before",
+    "ms": 251.11250000001746,
+    "sql": 3
+  }
+]

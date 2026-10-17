@@ -1,0 +1,32 @@
+[
+  {
+    "name": "h10-1",
+    "exitCode": 0,
+    "elapsedMs": 110279,
+    "errorCodes": [
+      "P0001"
+    ]
+  },
+  {
+    "name": "h10-2",
+    "exitCode": 0,
+    "elapsedMs": 210827,
+    "errorCodes": [
+      "P0001"
+    ]
+  },
+  {
+    "name": "isolated-regressions",
+    "exitCode": 0,
+    "elapsedMs": 322852,
+    "errorCodes": [
+      "P0001"
+    ]
+  },
+  {
+    "name": "h10-interface",
+    "exitCode": 0,
+    "elapsedMs": 221390,
+    "errorCodes": []
+  }
+]

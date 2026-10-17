@@ -1,0 +1,254 @@
+[
+  {
+    "size": 5,
+    "iteration": 0,
+    "mode": "before",
+    "ms": 1973.2776999999996,
+    "sql": 12
+  },
+  {
+    "size": 5,
+    "iteration": 0,
+    "mode": "after",
+    "ms": 797.3472999999994,
+    "sql": 8
+  },
+  {
+    "size": 5,
+    "iteration": 1,
+    "mode": "after",
+    "ms": 723.2780999999995,
+    "sql": 8
+  },
+  {
+    "size": 5,
+    "iteration": 1,
+    "mode": "before",
+    "ms": 860.7570999999998,
+    "sql": 12
+  },
+  {
+    "size": 5,
+    "iteration": 2,
+    "mode": "before",
+    "ms": 969.6046999999999,
+    "sql": 12
+  },
+  {
+    "size": 5,
+    "iteration": 2,
+    "mode": "after",
+    "ms": 488.6218000000008,
+    "sql": 8
+  },
+  {
+    "size": 5,
+    "iteration": 3,
+    "mode": "after",
+    "ms": 487.8212000000003,
+    "sql": 8
+  },
+  {
+    "size": 5,
+    "iteration": 3,
+    "mode": "before",
+    "ms": 881.0234999999993,
+    "sql": 12
+  },
+  {
+    "size": 5,
+    "iteration": 4,
+    "mode": "before",
+    "ms": 894.2776000000013,
+    "sql": 12
+  },
+  {
+    "size": 5,
+    "iteration": 4,
+    "mode": "after",
+    "ms": 482.8256000000001,
+    "sql": 8
+  },
+  {
+    "size": 5,
+    "iteration": 5,
+    "mode": "after",
+    "ms": 474.4961000000003,
+    "sql": 8
+  },
+  {
+    "size": 5,
+    "iteration": 5,
+    "mode": "before",
+    "ms": 906.3886999999995,
+    "sql": 12
+  },
+  {
+    "size": 50,
+    "iteration": 0,
+    "mode": "before",
+    "ms": 5163.5124,
+    "sql": 58
+  },
+  {
+    "size": 50,
+    "iteration": 0,
+    "mode": "after",
+    "ms": 926.9343000000008,
+    "sql": 9
+  },
+  {
+    "size": 50,
+    "iteration": 1,
+    "mode": "after",
+    "ms": 736.1005000000005,
+    "sql": 8
+  },
+  {
+    "size": 50,
+    "iteration": 1,
+    "mode": "before",
+    "ms": 4648.538200000003,
+    "sql": 57
+  },
+  {
+    "size": 50,
+    "iteration": 2,
+    "mode": "before",
+    "ms": 4881.049299999999,
+    "sql": 58
+  },
+  {
+    "size": 50,
+    "iteration": 2,
+    "mode": "after",
+    "ms": 556.7372000000032,
+    "sql": 8
+  },
+  {
+    "size": 50,
+    "iteration": 3,
+    "mode": "after",
+    "ms": 739.1450999999943,
+    "sql": 8
+  },
+  {
+    "size": 50,
+    "iteration": 3,
+    "mode": "before",
+    "ms": 4680.078099999999,
+    "sql": 58
+  },
+  {
+    "size": 50,
+    "iteration": 4,
+    "mode": "before",
+    "ms": 5002.681199999999,
+    "sql": 57
+  },
+  {
+    "size": 50,
+    "iteration": 4,
+    "mode": "after",
+    "ms": 701.8853000000017,
+    "sql": 8
+  },
+  {
+    "size": 50,
+    "iteration": 5,
+    "mode": "after",
+    "ms": 777.3352999999988,
+    "sql": 8
+  },
+  {
+    "size": 50,
+    "iteration": 5,
+    "mode": "before",
+    "ms": 4889.0962,
+    "sql": 58
+  },
+  {
+    "size": 100,
+    "iteration": 0,
+    "mode": "before",
+    "ms": 8728.881800000003,
+    "sql": 108
+  },
+  {
+    "size": 100,
+    "iteration": 0,
+    "mode": "after",
+    "ms": 1154.2632999999914,
+    "sql": 8
+  },
+  {
+    "size": 100,
+    "iteration": 1,
+    "mode": "after",
+    "ms": 711.4867000000086,
+    "sql": 8
+  },
+  {
+    "size": 100,
+    "iteration": 1,
+    "mode": "before",
+    "ms": 9021.727599999998,
+    "sql": 108
+  },
+  {
+    "size": 100,
+    "iteration": 2,
+    "mode": "before",
+    "ms": 8581.239099999992,
+    "sql": 108
+  },
+  {
+    "size": 100,
+    "iteration": 2,
+    "mode": "after",
+    "ms": 764.8261999999959,
+    "sql": 9
+  },
+  {
+    "size": 100,
+    "iteration": 3,
+    "mode": "after",
+    "ms": 616.5905999999959,
+    "sql": 8
+  },
+  {
+    "size": 100,
+    "iteration": 3,
+    "mode": "before",
+    "ms": 8661.006000000008,
+    "sql": 108
+  },
+  {
+    "size": 100,
+    "iteration": 4,
+    "mode": "before",
+    "ms": 8828.3367,
+    "sql": 108
+  },
+  {
+    "size": 100,
+    "iteration": 4,
+    "mode": "after",
+    "ms": 674.4430999999895,
+    "sql": 8
+  },
+  {
+    "size": 100,
+    "iteration": 5,
+    "mode": "after",
+    "ms": 583.0225999999966,
+    "sql": 8
+  },
+  {
+    "size": 100,
+    "iteration": 5,
+    "mode": "before",
+    "ms": 8869.5392,
+    "sql": 107
+  }
+]

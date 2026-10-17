@@ -70,7 +70,10 @@ export function DashboardSidebarNav({
               sectionPrefix: '/dashboard/employees',
               label: 'Employees',
               icon: Users,
-              children: [{ href: '/dashboard/employees', label: 'Employee Records' }],
+              children: [
+                { href: '/dashboard/employees', label: 'Employee Records' },
+                { href: '/dashboard/employees/exit', label: 'Exit Management' },
+              ],
             },
             {
               href: '/dashboard/attendance',

@@ -67,7 +67,7 @@ export function DashboardHeader({ orgName, orgSlug, role }: { orgName: string; o
           <nav aria-label="Breadcrumb" className="min-w-0 text-sm">
             <ol className="flex items-center gap-2">
               {breadcrumbs.map((crumb, index) => (
-                <li key={crumb.href} className="flex min-w-0 items-center gap-2">
+                <li key={`${index}:${crumb.href}`} className="flex min-w-0 items-center gap-2">
                   {index > 0 ? (
                     <ChevronRight className="hidden h-3.5 w-3.5 shrink-0 text-[var(--wp-text-muted)] sm:block" aria-hidden="true" />
                   ) : null}

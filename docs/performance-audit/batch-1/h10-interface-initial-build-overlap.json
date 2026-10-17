@@ -1,0 +1,17 @@
+{
+  "name": "h10-interface",
+  "exitCode": 1,
+  "elapsedMs": 26786,
+  "assertions": [
+    "H10.1 and H10.2 migrations replayed in the isolated test schema.",
+    "✓ Ready in 223ms",
+    "✓ Running next.config.ts took 59ms",
+    "✓ Ready in 223ms",
+    "✓ Running next.config.ts took 59ms"
+  ],
+  "errorCodes": [],
+  "diagnostics": [
+    "Error: Could not find a production build in the '.next' directory. Try building your app with 'next build' before starting the production server. https://nextjs.org/docs/messages/production-start-no-build-id",
+    "Error: Could not find a production build in the '.next' directory. Try building your app with 'next build' before starting the production server. https://nextjs.org/docs/messages/production-start-no-build-id"
+  ]
+}

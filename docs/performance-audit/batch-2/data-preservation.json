@@ -1,0 +1,19 @@
+{
+    "capturedAt":  "2026-10-17T13:58:06.549Z",
+    "branch":  "workpulse-batch0-recovery",
+    "protectedTablesCompared":  46,
+    "changedProtectedTables":  [
+
+                               ],
+    "originalEnvUnchanged":  true,
+    "appliedCount":  22,
+    "h10ChecksumMatch":  true,
+    "missingColumns":  [
+
+                       ],
+    "missingTriggers":  [
+
+                        ],
+    "enabledH10Triggers":  16,
+    "temporaryBenchmarkUsersRemoved":  true
+}

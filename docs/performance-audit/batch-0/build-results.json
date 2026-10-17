@@ -1,0 +1,17 @@
+[
+  {
+    "name": "prisma-validate",
+    "code": 0,
+    "elapsedMs": 6701
+  },
+  {
+    "name": "prisma-generate",
+    "code": 0,
+    "elapsedMs": 2256
+  },
+  {
+    "name": "production-build",
+    "code": 0,
+    "elapsedMs": 35964
+  }
+]

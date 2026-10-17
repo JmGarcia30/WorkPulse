@@ -1,0 +1,443 @@
+{
+  "capturedAt": "2026-10-17T14:53:43.200Z",
+  "identity": {
+    "branchName": "workpulse-batch0-recovery",
+    "branchId": "br-broad-forest-az55xwfe",
+    "endpointId": "ep-bitter-queen-azfwx70v",
+    "checkpointBranchId": null,
+    "pooledAndDirectSameEndpoint": true,
+    "distinctFromProtectedOriginal": true,
+    "database": "neondb",
+    "schema": "public",
+    "originalEnvSha256": "eefb1ccb8aad1895fef4d6a154efce261d3c26b00692265aba855e0be0c1d523",
+    "endpointSha256": "54e42c8d8591f1c8ee24b89396a4c92e661e1c12df3d826102d7614f50568931",
+    "consoleMappingComplete": true
+  },
+  "appliedCount": 22,
+  "h10Applied": true,
+  "h10ChecksumMatch": true,
+  "missingColumns": [],
+  "missingEnumValues": [],
+  "expectedTriggers": 16,
+  "missingTriggers": [],
+  "triggerFunctions": [
+    {
+      "proname": "Employee_guard_post_separation_work",
+      "proconfig": [
+        "search_path=\"$user\", public"
+      ]
+    },
+    {
+      "proname": "ProbationRecord_assert_separation_scope",
+      "proconfig": [
+        "search_path=\"$user\", public"
+      ]
+    },
+    {
+      "proname": "SeparationAudit_server_time",
+      "proconfig": null
+    },
+    {
+      "proname": "SeparationCase_protect_final_state",
+      "proconfig": [
+        "search_path=\"$user\", public"
+      ]
+    },
+    {
+      "proname": "SeparationHistory_prevent_mutation",
+      "proconfig": null
+    }
+  ],
+  "constraints": [
+    {
+      "conname": "EmployeeSeparationCase_id_not_null",
+      "convalidated": true
+    },
+    {
+      "conname": "ProbationRecord_id_not_null",
+      "convalidated": true
+    },
+    {
+      "conname": "ProbationRecord_employeeId_not_null",
+      "convalidated": true
+    },
+    {
+      "conname": "ProbationRecord_employmentRecordId_not_null",
+      "convalidated": true
+    },
+    {
+      "conname": "ProbationRecord_category_not_null",
+      "convalidated": true
+    },
+    {
+      "conname": "ProbationRecord_startedAt_not_null",
+      "convalidated": true
+    },
+    {
+      "conname": "ProbationRecord_expectedEndAt_not_null",
+      "convalidated": true
+    },
+    {
+      "conname": "ProbationRecord_probationStatus_not_null",
+      "convalidated": true
+    },
+    {
+      "conname": "ProbationRecord_renewalCount_not_null",
+      "convalidated": true
+    },
+    {
+      "conname": "ProbationRecord_maxRenewals_not_null",
+      "convalidated": true
+    },
+    {
+      "conname": "ProbationRecord_decision_not_null",
+      "convalidated": true
+    },
+    {
+      "conname": "ProbationRecord_policySnapshot_not_null",
+      "convalidated": true
+    },
+    {
+      "conname": "ProbationRecord_createdAt_not_null",
+      "convalidated": true
+    },
+    {
+      "conname": "ProbationRecord_updatedAt_not_null",
+      "convalidated": true
+    },
+    {
+      "conname": "ProbationRecord_pkey",
+      "convalidated": true
+    },
+    {
+      "conname": "ProbationRecord_employeeId_fkey",
+      "convalidated": true
+    },
+    {
+      "conname": "ProbationRecord_employmentRecordId_fkey",
+      "convalidated": true
+    },
+    {
+      "conname": "ProbationRecord_previousProbationRecordId_fkey",
+      "convalidated": true
+    },
+    {
+      "conname": "ProbationRecord_decisionById_fkey",
+      "convalidated": true
+    },
+    {
+      "conname": "ProbationRecord_renewal_counts_check",
+      "convalidated": true
+    },
+    {
+      "conname": "ProbationRecord_period_check",
+      "convalidated": true
+    },
+    {
+      "conname": "EmployeeSeparationCase_organizationId_not_null",
+      "convalidated": true
+    },
+    {
+      "conname": "EmployeeSeparationCase_employeeId_not_null",
+      "convalidated": true
+    },
+    {
+      "conname": "EmployeeSeparationCase_separationType_not_null",
+      "convalidated": true
+    },
+    {
+      "conname": "EmployeeSeparationCase_reason_not_null",
+      "convalidated": true
+    },
+    {
+      "conname": "EmployeeSeparationCase_noticeCompliance_not_null",
+      "convalidated": true
+    },
+    {
+      "conname": "EmployeeSeparationCase_policySnapshot_not_null",
+      "convalidated": true
+    },
+    {
+      "conname": "EmployeeSeparationCase_initiatedById_not_null",
+      "convalidated": true
+    },
+    {
+      "conname": "EmployeeSeparationCase_initiatedAt_not_null",
+      "convalidated": true
+    },
+    {
+      "conname": "EmployeeSeparationCase_status_not_null",
+      "convalidated": true
+    },
+    {
+      "conname": "EmployeeSeparationCase_version_not_null",
+      "convalidated": true
+    },
+    {
+      "conname": "EmployeeSeparationCase_versionOfDetails_not_null",
+      "convalidated": true
+    },
+    {
+      "conname": "EmployeeSeparationCase_requestKey_not_null",
+      "convalidated": true
+    },
+    {
+      "conname": "EmployeeSeparationCase_requestFingerprint_not_null",
+      "convalidated": true
+    },
+    {
+      "conname": "EmployeeSeparationCase_createdAt_not_null",
+      "convalidated": true
+    },
+    {
+      "conname": "EmployeeSeparationCase_updatedAt_not_null",
+      "convalidated": true
+    },
+    {
+      "conname": "EmployeeSeparationCase_pkey",
+      "convalidated": true
+    },
+    {
+      "conname": "EmployeeClearanceItem_id_not_null",
+      "convalidated": true
+    },
+    {
+      "conname": "EmployeeClearanceItem_organizationId_not_null",
+      "convalidated": true
+    },
+    {
+      "conname": "EmployeeClearanceItem_caseId_not_null",
+      "convalidated": true
+    },
+    {
+      "conname": "EmployeeClearanceItem_category_not_null",
+      "convalidated": true
+    },
+    {
+      "conname": "EmployeeClearanceItem_title_not_null",
+      "convalidated": true
+    },
+    {
+      "conname": "EmployeeClearanceItem_isRequired_not_null",
+      "convalidated": true
+    },
+    {
+      "conname": "EmployeeClearanceItem_status_not_null",
+      "convalidated": true
+    },
+    {
+      "conname": "EmployeeClearanceItem_requestKey_not_null",
+      "convalidated": true
+    },
+    {
+      "conname": "EmployeeClearanceItem_createdAt_not_null",
+      "convalidated": true
+    },
+    {
+      "conname": "EmployeeClearanceItem_updatedAt_not_null",
+      "convalidated": true
+    },
+    {
+      "conname": "EmployeeClearanceItem_pkey",
+      "convalidated": true
+    },
+    {
+      "conname": "EmployeeSeparationReview_id_not_null",
+      "convalidated": true
+    },
+    {
+      "conname": "EmployeeSeparationReview_organizationId_not_null",
+      "convalidated": true
+    },
+    {
+      "conname": "EmployeeSeparationReview_caseId_not_null",
+      "convalidated": true
+    },
+    {
+      "conname": "EmployeeSeparationReview_kind_not_null",
+      "convalidated": true
+    },
+    {
+      "conname": "EmployeeSeparationReview_evidence_not_null",
+      "convalidated": true
+    },
+    {
+      "conname": "EmployeeSeparationReview_recordedById_not_null",
+      "convalidated": true
+    },
+    {
+      "conname": "EmployeeSeparationReview_recordedAt_not_null",
+      "convalidated": true
+    },
+    {
+      "conname": "EmployeeSeparationReview_caseVersion_not_null",
+      "convalidated": true
+    },
+    {
+      "conname": "EmployeeSeparationReview_pkey",
+      "convalidated": true
+    },
+    {
+      "conname": "EmployeeSeparationAudit_id_not_null",
+      "convalidated": true
+    },
+    {
+      "conname": "EmployeeSeparationAudit_organizationId_not_null",
+      "convalidated": true
+    },
+    {
+      "conname": "EmployeeSeparationAudit_caseId_not_null",
+      "convalidated": true
+    },
+    {
+      "conname": "EmployeeSeparationAudit_actorUserId_not_null",
+      "convalidated": true
+    },
+    {
+      "conname": "EmployeeSeparationAudit_action_not_null",
+      "convalidated": true
+    },
+    {
+      "conname": "EmployeeSeparationAudit_createdAt_not_null",
+      "convalidated": true
+    },
+    {
+      "conname": "EmployeeSeparationAudit_pkey",
+      "convalidated": true
+    },
+    {
+      "conname": "EmployeeSeparationCase_organizationId_fkey",
+      "convalidated": true
+    },
+    {
+      "conname": "EmployeeSeparationCase_employeeId_organizationId_fkey",
+      "convalidated": true
+    },
+    {
+      "conname": "EmployeeSeparationCase_initiatedById_organizationId_fkey",
+      "convalidated": true
+    },
+    {
+      "conname": "EmployeeSeparationCase_cancelledById_organizationId_fkey",
+      "convalidated": true
+    },
+    {
+      "conname": "EmployeeSeparationCase_noticeExceptionById_organizationId_fkey",
+      "convalidated": true
+    },
+    {
+      "conname": "EmployeeClearanceItem_organizationId_fkey",
+      "convalidated": true
+    },
+    {
+      "conname": "EmployeeClearanceItem_caseId_organizationId_fkey",
+      "convalidated": true
+    },
+    {
+      "conname": "EmployeeClearanceItem_reviewedById_organizationId_fkey",
+      "convalidated": true
+    },
+    {
+      "conname": "EmployeeSeparationReview_organizationId_fkey",
+      "convalidated": true
+    },
+    {
+      "conname": "EmployeeSeparationReview_caseId_organizationId_fkey",
+      "convalidated": true
+    },
+    {
+      "conname": "EmployeeSeparationReview_recordedById_organizationId_fkey",
+      "convalidated": true
+    },
+    {
+      "conname": "EmployeeSeparationAudit_organizationId_fkey",
+      "convalidated": true
+    },
+    {
+      "conname": "EmployeeSeparationAudit_caseId_organizationId_fkey",
+      "convalidated": true
+    },
+    {
+      "conname": "EmployeeSeparationAudit_actorUserId_organizationId_fkey",
+      "convalidated": true
+    },
+    {
+      "conname": "SeparationCase_versions_valid",
+      "convalidated": true
+    },
+    {
+      "conname": "SeparationCase_date_order",
+      "convalidated": true
+    },
+    {
+      "conname": "SeparationCase_exception_documented",
+      "convalidated": true
+    },
+    {
+      "conname": "SeparationCase_cancellation_documented",
+      "convalidated": true
+    },
+    {
+      "conname": "ClearanceItem_verified_decision",
+      "convalidated": true
+    },
+    {
+      "conname": "ClearanceItem_reason_required",
+      "convalidated": true
+    },
+    {
+      "conname": "SeparationReview_evidence_required",
+      "convalidated": true
+    },
+    {
+      "conname": "EmployeeSeparationCase_approvedById_organizationId_fkey",
+      "convalidated": true
+    },
+    {
+      "conname": "EmployeeSeparationCase_completedById_organizationId_fkey",
+      "convalidated": true
+    },
+    {
+      "conname": "ProbationRecord_closedBySeparationCaseId_fkey",
+      "convalidated": true
+    },
+    {
+      "conname": "SeparationCase_final_approval_required",
+      "convalidated": true
+    },
+    {
+      "conname": "SeparationCase_completion_required",
+      "convalidated": true
+    },
+    {
+      "conname": "ProbationRecord_lifecycle_state_check",
+      "convalidated": true
+    }
+  ],
+  "criticalIndexes": [
+    {
+      "indexname": "User_id_organizationId_key",
+      "indexdef": "CREATE UNIQUE INDEX \"User_id_organizationId_key\" ON public.\"User\" USING btree (id, \"organizationId\")"
+    },
+    {
+      "indexname": "Employee_id_organizationId_key",
+      "indexdef": "CREATE UNIQUE INDEX \"Employee_id_organizationId_key\" ON public.\"Employee\" USING btree (id, \"organizationId\")"
+    },
+    {
+      "indexname": "ProbationRecord_closedBySeparationCaseId_idx",
+      "indexdef": "CREATE INDEX \"ProbationRecord_closedBySeparationCaseId_idx\" ON public.\"ProbationRecord\" USING btree (\"closedBySeparationCaseId\")"
+    },
+    {
+      "indexname": "EmployeeSeparationCase_one_active_employee",
+      "indexdef": "CREATE UNIQUE INDEX \"EmployeeSeparationCase_one_active_employee\" ON public.\"EmployeeSeparationCase\" USING btree (\"organizationId\", \"employeeId\") WHERE (status = ANY (ARRAY['DRAFT'::\"SeparationCaseStatus\", 'IN_PROGRESS'::\"SeparationCaseStatus\", 'READY_FOR_FINAL_REVIEW'::\"SeparationCaseStatus\", 'APPROVED_PENDING_EFFECTIVE'::\"SeparationCaseStatus\"]))"
+    }
+  ],
+  "index": [
+    {
+      "indexdef": "CREATE UNIQUE INDEX \"EmployeeSeparationCase_one_active_employee\" ON public.\"EmployeeSeparationCase\" USING btree (\"organizationId\", \"employeeId\") WHERE (status = ANY (ARRAY['DRAFT'::\"SeparationCaseStatus\", 'IN_PROGRESS'::\"SeparationCaseStatus\", 'READY_FOR_FINAL_REVIEW'::\"SeparationCaseStatus\", 'APPROVED_PENDING_EFFECTIVE'::\"SeparationCaseStatus\"]))"
+    }
+  ],
+  "protectedTablesCompared": 46,
+  "changedProtectedTables": [],
+  "originalEnvUnchanged": true
+}

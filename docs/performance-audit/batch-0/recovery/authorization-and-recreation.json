@@ -1,0 +1,8 @@
+{
+  "branch": "workpulse-batch0-recovery",
+  "basis": "User confirmed in Neon Console that the configured endpoint is a separate child of production and authorized migration/regressions; user confirmed disposal/recreation from production.",
+  "fullBranchId": "br-broad-forest-az55xwfe",
+  "branchIdRequiredForSqlConnection": false,
+  "recreation": "Create a replacement disposable child from the intact production parent via the already-used Console workflow. This recreates a testing dataset; it is not an exact-point production restore.",
+  "originalEndpointNeverSelected": true
+}

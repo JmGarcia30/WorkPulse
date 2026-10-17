@@ -50,7 +50,7 @@ export async function getMyCurrentSchedule(context: EmployeeSelfContext, db: Pri
 }
 
 export async function getMyProfile(context: EmployeeSelfContext, db: Prisma.TransactionClient, asOf = new Date()) {
-  const employee = await db.employee.findFirst({
+  const [employee, schedule] = await Promise.all([db.employee.findFirst({
     where: { id: context.employee.id, organizationId: context.organization.id },
     select: {
       firstName: true,
@@ -78,9 +78,9 @@ export async function getMyProfile(context: EmployeeSelfContext, db: Prisma.Tran
         },
       },
     },
-  });
+  }), getMyCurrentSchedule(context, db, asOf)]);
   if (!employee) return null;
-  return { employee, loginEmail: context.user.email, schedule: await getMyCurrentSchedule(context, db, asOf), organization: context.organization };
+  return { employee, loginEmail: context.user.email, schedule, organization: context.organization };
 }
 
 export async function getMyDashboard(context: EmployeeSelfContext, db: Prisma.TransactionClient, asOf = new Date()) {
@@ -92,9 +92,14 @@ export async function getMyDashboard(context: EmployeeSelfContext, db: Prisma.Tr
       where: { organizationId_employeeId_attendanceDate: { organizationId: context.organization.id, employeeId: context.employee.id, attendanceDate: attendanceDateToDb(today) } },
       select: { attendanceDate: true, timeZoneSnapshot: true, scheduledStartAt: true, scheduledEndAt: true, firstTimeIn: true, lastTimeOut: true, attendanceStatus: true },
     }),
-    getMyAttendance(context, db, { from: monthStart, to: today }),
-    getEmployeeLeaveOverviewData(db, context.organization.id, context.employee.id),
-    listFinalizedPayslipsForEmployee({ organizationId: context.organization.id, userId: context.user.id }, db),
+    // The dashboard only displays indicators; the attendance page retains full rows.
+    db.dailyAttendanceRecord.findMany({
+      where: { organizationId: context.organization.id, employeeId: context.employee.id, attendanceDate: { gte: attendanceDateToDb(monthStart), lte: attendanceDateToDb(today) } },
+      orderBy: { attendanceDate: 'desc' },
+      select: { attendanceDate: true, attendanceStatus: true, disposition: true, lateSeconds: true },
+    }).then(rows => rows.map(row => ({ date: row.attendanceDate.toISOString().slice(0, 10), status: row.attendanceStatus, disposition: row.disposition, lateSeconds: row.lateSeconds }))),
+    getEmployeeLeaveOverviewData(db, context.organization.id, context.employee.id, { recentRequests: 1 }),
+    listFinalizedPayslipsForEmployee({ organizationId: context.organization.id, userId: context.user.id }, db, { take: 1 }),
   ]);
   const indicators = summarizeAttendanceIndicators(monthRows.map(row => ({ attendanceDate: row.date, status: row.status, disposition: row.disposition, lateSeconds: row.lateSeconds })));
   return { today, profile, attendance, monthSummary: {

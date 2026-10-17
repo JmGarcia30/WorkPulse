@@ -1,0 +1,12 @@
+{
+  "name": "migration-deploy",
+  "exitCode": 0,
+  "elapsedMs": 5903,
+  "errorCodes": [],
+  "assertions": [
+    "Applying migration `20261017090000_h10_1_exit_clearance`",
+    "Applying migration `20261017120000_h10_2_final_separation`",
+    "The following migration(s) have been applied:",
+    "All migrations have been successfully applied."
+  ]
+}

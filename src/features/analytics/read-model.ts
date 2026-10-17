@@ -10,19 +10,24 @@ export class AnalyticsAccessError extends Error {
 
 type CurrencyTotal = { currency: string; entries: number; gross: string; deductions: string; net: string };
 type PayrollAggregate = { periodId: string; currency: string | null; entries: bigint; gross: Prisma.Decimal; deductions: Prisma.Decimal; net: Prisma.Decimal };
+type AttendanceAggregate = { attendanceStatus: string; disposition: string; count: bigint; finalized: bigint; late: bigint };
 
 // Internal, read-only database entry point. The session comes from the server guard,
 // never request parameters. Revalidate the persisted actor before reading any HR data.
 export async function readAnalytics(session: UserSessionPayload | null, db: Prisma.TransactionClient, filters: AnalyticsFilters = {}, asOf = new Date()) {
   if (!canViewAnalytics(session) || !session) throw new AnalyticsAccessError('Analytics access is unavailable.');
-  const actor = await db.user.findFirst({
-    where: { id: session.userId, organizationId: session.organizationId, role: session.role },
-    select: { organization: { select: { id: true, timeZone: true } } },
-  });
+  // A single joined read still validates the persisted actor on every invocation.
+  const [actor] = await db.$queryRaw<Array<{ organizationId: string; timeZone: string }>>(Prisma.sql`
+    SELECT u."organizationId", o."timeZone" FROM "User" u
+    JOIN "Organization" o ON o."id" = u."organizationId"
+    WHERE u."id" = ${session.userId} AND u."organizationId" = ${session.organizationId}
+      AND u."role"::text = ${session.role}
+  `);
   if (!actor) throw new AnalyticsAccessError('Analytics access is unavailable.');
-  const organizationId = actor.organization.id;
-  const range = resolveAnalyticsRange(filters, actor.organization.timeZone, asOf);
-  const employees = await db.employee.findMany({
+  const organizationId = actor.organizationId;
+  const range = resolveAnalyticsRange(filters, actor.timeZone, asOf);
+  // Normalize Prisma's lazy thenable once; filtered and unfiltered paths reuse it.
+  const employeesPromise = Promise.resolve(db.employee.findMany({
     where: { organizationId },
     select: {
       id: true, firstName: true, lastName: true, employeeNumber: true, employeeStatus: true, createdAt: true,
@@ -35,10 +40,11 @@ export async function readAnalytics(session: UserSessionPayload | null, db: Pris
         },
       },
     },
-  });
+  }));
   // Type filters consistently use CURRENT employment; historical type is not guessed.
-  const cohort = employees.filter(employee => !range.category || employee.employmentRecords[0]?.employmentCategory === range.category);
-  const employeeScope: Prisma.EmployeeWhereInput = { organizationId, ...(range.category ? { id: { in: cohort.map(employee => employee.id) } } : {}) };
+  // Only a category filter requires the current-employment cohort before aggregates.
+  const filteredEmployees = range.category ? (await employeesPromise).filter(employee => employee.employmentRecords[0]?.employmentCategory === range.category) : null;
+  const employeeScope: Prisma.EmployeeWhereInput = { organizationId, ...(filteredEmployees ? { id: { in: filteredEmployees.map(employee => employee.id) } } : {}) };
   const attendanceWhere: Prisma.DailyAttendanceRecordWhereInput = {
     organizationId, employee: employeeScope, attendanceDate: { gte: range.fromDate, lte: range.toDate },
   };
@@ -48,23 +54,29 @@ export async function readAnalytics(session: UserSessionPayload | null, db: Pris
   };
   const periodWhere: Prisma.PayrollPeriodWhereInput = { organizationId, payDate: { gte: range.fromDate, lte: range.toDate } };
   const payrollWhere: Prisma.PayrollEntryWhereInput = { organizationId, employee: employeeScope, payrollPeriod: periodWhere };
-  const sqlCohort = !range.category ? Prisma.empty : cohort.length
-    ? Prisma.sql`AND e."id" IN (${Prisma.join(cohort.map(employee => employee.id))})`
+  const sqlCohort = !filteredEmployees ? Prisma.empty : filteredEmployees.length
+    ? Prisma.sql`AND e."id" IN (${Prisma.join(filteredEmployees.map(employee => employee.id))})`
     : Prisma.sql`AND FALSE`;
 
-  const [attendanceGroups, finalizedAttendance, lateLeaders, lateTotal, leaveGroups, approvedUnits, leaveTypes, periods, entryCounts, payrollGroups] = await Promise.all([
-    db.dailyAttendanceRecord.groupBy({ by: ['attendanceStatus', 'disposition'], where: attendanceWhere, _count: { _all: true } }),
-    db.dailyAttendanceRecord.groupBy({
-      by: ['attendanceStatus'], where: { ...attendanceWhere, finalizedAt: { not: null }, disposition: 'NORMAL', attendanceStatus: { in: ['PRESENT', 'ABSENT', 'INCOMPLETE'] } },
-      _count: { _all: true },
-    }),
+  const [attendanceTotals, lateLeaders, leaveGroups, approvedUnits, leaveTypes, periods, entryCounts, payrollGroups, employees] = await Promise.all([
+    // Keep distinct finalized-workday and tardiness predicates inside SQL FILTERs.
+    // Grouped results are bounded by status/disposition, not attendance history size.
+    db.$queryRaw<AttendanceAggregate[]>(Prisma.sql`
+      SELECT d."attendanceStatus", d."disposition", COUNT(*) AS "count",
+        COUNT(*) FILTER (WHERE d."finalizedAt" IS NOT NULL AND d."disposition" = 'NORMAL'
+          AND d."attendanceStatus" IN ('PRESENT', 'ABSENT', 'INCOMPLETE')) AS "finalized",
+        COUNT(*) FILTER (WHERE d."disposition" = 'NORMAL'
+          AND d."attendanceStatus" NOT IN ('REST_DAY', 'NO_SCHEDULE') AND d."lateSeconds" > 0) AS "late"
+      FROM "DailyAttendanceRecord" d JOIN "Employee" e ON e."id" = d."employeeId"
+      WHERE d."organizationId" = ${organizationId} AND e."organizationId" = ${organizationId}
+        AND d."attendanceDate" >= ${range.from}::date AND d."attendanceDate" <= ${range.to}::date
+        ${sqlCohort}
+      GROUP BY d."attendanceStatus", d."disposition"
+    `),
     db.dailyAttendanceRecord.groupBy({
       by: ['employeeId'], where: { ...attendanceWhere, disposition: 'NORMAL', attendanceStatus: { notIn: ['REST_DAY', 'NO_SCHEDULE'] }, lateSeconds: { gt: 0 } },
       _count: { employeeId: true }, _sum: { lateSeconds: true },
       orderBy: [{ _count: { employeeId: 'desc' } }, { _sum: { lateSeconds: 'desc' } }, { employeeId: 'asc' }], take: 5,
-    }),
-    db.dailyAttendanceRecord.aggregate({
-      where: { ...attendanceWhere, disposition: 'NORMAL', attendanceStatus: { notIn: ['REST_DAY', 'NO_SCHEDULE'] }, lateSeconds: { gt: 0 } }, _count: { _all: true },
     }),
     db.leaveRequest.groupBy({ by: ['status', 'leaveTypeId'], where: requestWhere, _count: { _all: true } }),
     db.leaveRequestDay.aggregate({
@@ -93,8 +105,11 @@ export async function readAnalytics(session: UserSessionPayload | null, db: Pris
         ${sqlCohort}
       GROUP BY pe."payrollPeriodId", pe."calculationSnapshot" #>> '{compensation,currency}'
     `),
+    employeesPromise,
   ]);
 
+  const cohort = filteredEmployees ?? employees;
+  const attendanceGroups = attendanceTotals.map(group => ({ ...group, _count: { _all: Number(group.count) } }));
   const countStatus = (status: EmployeeStatus) => cohort.filter(employee => employee.employeeStatus === status).length;
   const active = cohort.filter(employee => employee.employeeStatus === 'ACTIVE');
   const categoryCount = (category: EmploymentCategory) => active.filter(employee => employee.employmentRecords[0]?.employmentCategory === category).length;
@@ -103,8 +118,8 @@ export async function readAnalytics(session: UserSessionPayload | null, db: Pris
     return employment?.employmentStatus === 'PROBATIONARY' && employment.probation?.probationStatus === 'ACTIVE' && employment.probation.decision === 'PENDING';
   });
   const normalCount = (status: string) => attendanceGroups.filter(group => group.attendanceStatus === status && group.disposition !== 'APPROVED_LEAVE').reduce((sum, group) => sum + group._count._all, 0);
-  const finalizedWorkdays = finalizedAttendance.reduce((sum, group) => sum + group._count._all, 0);
-  const finalizedPresent = finalizedAttendance.find(group => group.attendanceStatus === 'PRESENT')?._count._all ?? 0;
+  const finalizedWorkdays = attendanceTotals.reduce((sum, group) => sum + Number(group.finalized), 0);
+  const finalizedPresent = attendanceTotals.filter(group => group.attendanceStatus === 'PRESENT').reduce((sum, group) => sum + Number(group.finalized), 0);
   const requestCount = (status: string) => leaveGroups.filter(group => group.status === status).reduce((sum, group) => sum + group._count._all, 0);
   const currencyTotals = new Map<string, { entries: number; gross: Prisma.Decimal; deductions: Prisma.Decimal; net: Prisma.Decimal }>();
   let unavailableCurrencyEntries = 0;
@@ -137,7 +152,7 @@ export async function readAnalytics(session: UserSessionPayload | null, db: Pris
 
   return {
     range: { preset: range.preset, from: range.from, to: range.to, category: range.category ?? 'ALL' },
-    asOf: asOf.toISOString(), timeZone: actor.organization.timeZone,
+    asOf: asOf.toISOString(), timeZone: actor.timeZone,
     workforce: {
       active: active.length, teaching: categoryCount('TEACHING'), nonTeaching: categoryCount('NON_TEACHING'),
       probationary: active.filter(employee => employee.employmentRecords[0]?.employmentStatus === 'PROBATIONARY').length,
@@ -151,7 +166,7 @@ export async function readAnalytics(session: UserSessionPayload | null, db: Pris
       presentDays: normalCount('PRESENT'), absentDays: normalCount('ABSENT'), incompleteDays: normalCount('INCOMPLETE'),
       openDays: normalCount('OPEN'), restDays: normalCount('REST_DAY'), noScheduleDays: normalCount('NO_SCHEDULE'),
       approvedLeaveDays: attendanceGroups.filter(group => group.disposition === 'APPROVED_LEAVE').reduce((sum, group) => sum + group._count._all, 0),
-      lateOccurrences: lateTotal._count._all,
+      lateOccurrences: attendanceTotals.reduce((sum, group) => sum + Number(group.late), 0),
       rate: finalizedWorkdays ? Number((100 * finalizedPresent / finalizedWorkdays).toFixed(1)) : null,
       finalizedWorkdays,
       lateLeaders: lateLeaders.map(group => {

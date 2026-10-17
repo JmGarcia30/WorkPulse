@@ -21,6 +21,14 @@ const DEFAULT_ENTITLEMENT_SOURCE = 'DEFAULT_CYCLE_ENTITLEMENT';
 const SICK_PERSONAL_CODE = 'SICK_PERSONAL';
 const SOLO_PARENT_CODE = 'SOLO_PARENT';
 
+// A cached ESS context cannot authorize a mutation after formal separation.
+async function requireCurrentLeaveActor(tx: Tx, input: { organizationId: string; employeeId: string; actorUserId: string }, code: 'FORBIDDEN' | 'DOCUMENT_UNAVAILABLE' = 'FORBIDDEN') {
+  const actor = await tx.user.findFirst({ where: { id: input.actorUserId, organizationId: input.organizationId }, select: { role: true, employeeAccount: { select: { status: true, organizationId: true, employeeId: true, employee: { select: { employeeStatus: true, organizationId: true } } } } } });
+  if (actor?.role === 'ORGANIZATION_ADMIN' || actor?.role === 'HR_ADMIN') return;
+  const account = actor?.employeeAccount;
+  if (actor?.role !== 'EMPLOYEE' || !account || account.status !== 'ACTIVE' || account.employeeId !== input.employeeId || account.organizationId !== input.organizationId || account.employee.organizationId !== input.organizationId || account.employee.employeeStatus !== 'ACTIVE') throw new LeaveError(code, 'Current employee eligibility is required.');
+}
+
 async function requireHr(tx: Tx, organizationId: string, actorUserId: string) {
   const actor = await tx.user.findFirst({
     where: { id: actorUserId, organizationId, role: { in: [Role.ORGANIZATION_ADMIN, Role.HR_ADMIN] } },
@@ -504,6 +512,7 @@ export async function reviewLeaveRequest(input: { organizationId: string; actorU
 
 export async function withdrawLeaveRequest(input: { organizationId: string; employeeId: string; actorUserId: string; requestId: string }, testTransaction?: Tx) {
   const operation = async (tx: Tx) => {
+    await requireCurrentLeaveActor(tx, input);
     const request = await tx.leaveRequest.update({ where: { id: input.requestId, organizationId: input.organizationId, employeeId: input.employeeId, status: LeaveRequestStatus.PENDING }, data: { status: LeaveRequestStatus.WITHDRAWN } }).catch(() => null);
     if (!request) throw new LeaveError('NOT_PENDING', 'The pending request was not found.');
     await tx.leaveRequestAudit.create({ data: { organizationId: input.organizationId, leaveRequestId: request.id, actorUserId: input.actorUserId, action: LeaveRequestAuditAction.WITHDRAWN } });
@@ -514,6 +523,7 @@ export async function withdrawLeaveRequest(input: { organizationId: string; empl
 
 export async function removePendingLeaveDocument(input: { organizationId: string; employeeId: string; actorUserId: string; requestId: string; documentId: string }, testTransaction?: Tx) {
   const operation = async (tx: Tx) => {
+    await requireCurrentLeaveActor(tx, input, 'DOCUMENT_UNAVAILABLE');
     const document = await tx.leaveDocument.findFirst({ where: {
       id: input.documentId, organizationId: input.organizationId, employeeId: input.employeeId,
       leaveRequestId: input.requestId, removedAt: null,

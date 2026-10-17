@@ -1,0 +1,6 @@
+{
+  "method": "Normal login form, bcrypt validation, persisted tenant/role guard and server-issued cookie",
+  "temporaryAccount": true,
+  "credentialsAndCookiesSaved": false,
+  "dashboardVisitedDuringLogin": true
+}

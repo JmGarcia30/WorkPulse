@@ -1,0 +1,41 @@
+{
+  "capturedAt": "2026-10-17T08:36:12.381Z",
+  "postCompatibilityMeasurements": [
+    {
+      "route": "Dashboard",
+      "status": "BLOCKED: awaiting approved migration and recovery verification",
+      "initialTtfb": "Not measured",
+      "warmCompletionMedian": "Not measured",
+      "sqlStatementCount": "Not measured",
+      "browserNavigationTime": "Not measured",
+      "remainingRuntimeErrors": "Not re-tested; live schema mismatch remains"
+    },
+    {
+      "route": "Employee Records",
+      "status": "BLOCKED: awaiting approved migration and recovery verification",
+      "initialTtfb": "Not measured",
+      "warmCompletionMedian": "Not measured",
+      "sqlStatementCount": "Not measured",
+      "browserNavigationTime": "Not measured",
+      "remainingRuntimeErrors": "Not re-tested; live schema mismatch remains"
+    },
+    {
+      "route": "Employee Profile",
+      "status": "BLOCKED: awaiting approved migration and recovery verification",
+      "initialTtfb": "Not measured",
+      "warmCompletionMedian": "Not measured",
+      "sqlStatementCount": "Not measured",
+      "browserNavigationTime": "Not measured",
+      "remainingRuntimeErrors": "Not re-tested; live schema mismatch remains"
+    },
+    {
+      "route": "Exit Management",
+      "status": "BLOCKED: awaiting approved migration and recovery verification",
+      "initialTtfb": "Not measured",
+      "warmCompletionMedian": "Not measured",
+      "sqlStatementCount": "Not measured",
+      "browserNavigationTime": "Not measured",
+      "remainingRuntimeErrors": "Not re-tested; live schema mismatch remains"
+    }
+  ]
+}

@@ -1,0 +1,33 @@
+{
+  "planningMs": 0.167,
+  "executionMs": 0.078,
+  "plan": {
+    "type": "Aggregate",
+    "actualRows": 0,
+    "actualTotalMs": 0.038,
+    "children": [
+      {
+        "type": "Seq Scan",
+        "relation": "Organization",
+        "actualRows": 1,
+        "actualTotalMs": 0.018,
+        "children": []
+      },
+      {
+        "type": "Sort",
+        "actualRows": 0,
+        "actualTotalMs": 0.037,
+        "children": [
+          {
+            "type": "Index Only Scan",
+            "relation": "DailyAttendanceRecord",
+            "index": "DailyAttendanceRecord_organizationId_attendanceDate_attenda_idx",
+            "actualRows": 0,
+            "actualTotalMs": 0.033,
+            "children": []
+          }
+        ]
+      }
+    ]
+  }
+}

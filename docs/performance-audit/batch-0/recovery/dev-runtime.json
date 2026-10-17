@@ -1,0 +1,8 @@
+{
+  "normalAuthentication": true,
+  "httpSamples": 16,
+  "browserSamples": 12,
+  "runtimeErrorCodes": [],
+  "databaseReadOnlyDuringPageRequests": true,
+  "firstRequestsNotProvenColdStarts": true
+}

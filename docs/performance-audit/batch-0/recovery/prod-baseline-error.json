@@ -1,0 +1,7 @@
+{
+  "resolved": true,
+  "initialCode": "BROWSER_RENDER_CHECK_FAILED",
+  "cause": "Case-sensitive DOM assertion did not account for CSS uppercase labels",
+  "resolution": "Case-folded content check; browser-only repetition passed all 12 transitions",
+  "applicationRuntimeError": false
+}

@@ -1,0 +1,15 @@
+{
+  "name": "test-h3-attendance",
+  "exitCode": 1,
+  "elapsedMs": 6266,
+  "assertions": [],
+  "errorCodes": [
+    "P2028"
+  ],
+  "diagnostics": [
+    "PrismaClientKnownRequestError: ",
+    "    at async materializeDayInOrganization (G:\\CAPSTONE\\WorkPulse\\src\\features\\attendance\\service.ts:219:24)",
+    "    at async <anonymous> (G:\\CAPSTONE\\WorkPulse\\scripts\\test-h3-attendance.ts:111:25)",
+    "    at async main (G:\\CAPSTONE\\WorkPulse\\scripts\\test-h3-attendance.ts:74:5) {"
+  ]
+}

@@ -10,6 +10,7 @@ import {
   OfferStatus,
   OnboardingTaskStatus,
   ProbationStatus,
+  Prisma,
 } from '@prisma/client';
 import { prisma } from '@/lib/db/prisma';
 import { UserSessionPayload } from '@/lib/auth/session';
@@ -18,7 +19,8 @@ import {
   canViewHiringData,
   canViewPayroll,
 } from '@/lib/permissions/rbac';
-import { getOrganizationBranding } from '@/features/organization-branding/read-model';
+import { getRequestOrganizationBranding } from '@/lib/tenant/server';
+import type { OrganizationBrandingView } from '@/features/organization-branding/read-model';
 import {
   attendanceDateForInstant,
   attendanceDateToDb,
@@ -126,10 +128,10 @@ export interface DashboardViewModel {
   attentionQueue: AttentionItemDetail[];
 }
 
-export async function readDashboardData(session: UserSessionPayload, asOf = new Date()): Promise<DashboardViewModel | null> {
+export async function readDashboardData(session: UserSessionPayload, asOf = new Date(), db: Prisma.TransactionClient = prisma, suppliedBranding?: OrganizationBrandingView): Promise<DashboardViewModel | null> {
   const organizationId = session.organizationId;
-  const branding = await getOrganizationBranding(organizationId);
-  if (!branding) return null;
+  const branding = suppliedBranding ?? await getRequestOrganizationBranding(organizationId);
+  if (!branding || branding.organizationId !== organizationId) return null;
 
   const hasHrAccess = canViewEmployees(session);
   const hasPayrollAccess = canViewPayroll(session);
@@ -137,7 +139,7 @@ export async function readDashboardData(session: UserSessionPayload, asOf = new 
 
   const timeZone = branding.timeZone;
   const todayStr = attendanceDateForInstant(asOf, timeZone);
-  const todayDb = attendanceDateToDb(todayStr);
+
 
   // Month range using H8 definition
   const monthRange = resolveAnalyticsRange({ preset: 'this-month' }, timeZone, asOf);
@@ -159,6 +161,25 @@ export async function readDashboardData(session: UserSessionPayload, asOf = new 
   const scheduleStartInstant = instantForLocalSecond(weekStartStr, 0, timeZone);
   const scheduleEndInstant = instantForLocalSecond(scheduleEndStr, 86_400, timeZone);
 
+
+  // One bounded grouped read replaces today/month/week fan-out. Keep each card's
+  // original predicates: Present Today includes leave; donut/trend exclude it.
+  type AttendanceGroup = { attendanceDate: Date; attendanceStatus: AttendanceStatus; disposition: string; count: bigint; finalized: bigint; late: bigint };
+  const attendancePromise = hasHrAccess ? Promise.resolve(db.$queryRaw<AttendanceGroup[]>(Prisma.sql`
+    SELECT "attendanceDate", "attendanceStatus", "disposition", COUNT(*) AS "count",
+      COUNT(*) FILTER (WHERE "finalizedAt" IS NOT NULL AND "disposition" = 'NORMAL'
+        AND "attendanceStatus" IN ('PRESENT','ABSENT','INCOMPLETE')) AS "finalized",
+      COUNT(*) FILTER (WHERE "lateSeconds" > 0) AS "late"
+    FROM "DailyAttendanceRecord" WHERE "organizationId" = ${organizationId}
+      AND (("attendanceDate" BETWEEN ${monthRange.from}::date AND ${monthRange.to}::date)
+        OR ("attendanceDate" BETWEEN ${weekStartStr}::date AND ${weekEndStr}::date))
+    GROUP BY "attendanceDate", "attendanceStatus", "disposition"
+  `)) : Promise.resolve([] as AttendanceGroup[]);
+  const workforcePromise = hasHrAccess ? Promise.resolve(db.$queryRaw<Array<{ active: bigint; hires: bigint }>>(Prisma.sql`
+    SELECT COUNT(*) FILTER (WHERE "employeeStatus" = 'ACTIVE') AS "active",
+      COUNT(*) FILTER (WHERE "createdAt" >= ${monthRange.fromInstant} AND "createdAt" < ${monthRange.throughInstant}) AS "hires"
+    FROM "Employee" WHERE "organizationId" = ${organizationId}
+  `)) : Promise.resolve([]);
 
   // Run all primary queries in parallel
   const [
@@ -182,74 +203,16 @@ export async function readDashboardData(session: UserSessionPayload, asOf = new 
     missingCompensationEmployees,
     incompleteSetupEmployees,
   ] = await Promise.all([
-    // 1. Total Active Employees
-    hasHrAccess
-      ? prisma.employee.count({ where: { organizationId, employeeStatus: EmployeeStatus.ACTIVE } })
-      : Promise.resolve(0),
-
-    // 2. Present Today (Calculated through H3 records, organization's timezone)
-    hasHrAccess
-      ? prisma.dailyAttendanceRecord.count({
-          where: { organizationId, attendanceDate: todayDb, attendanceStatus: AttendanceStatus.PRESENT },
-        })
-      : Promise.resolve(0),
-
-    // 3. Open Positions (Active published postings)
-    prisma.job.count({ where: { organizationId, status: JobStatus.PUBLISHED } }),
-
-    // 4. New Hires (Converted / created within current month)
-    hasHrAccess
-      ? prisma.employee.count({
-          where: {
-            organizationId,
-            createdAt: { gte: monthRange.fromInstant, lt: monthRange.throughInstant },
-          },
-        })
-      : Promise.resolve(0),
-
-    // 5. Finalized Attendance for Current Month (H8 Attendance Rate definition)
-    hasHrAccess
-      ? prisma.dailyAttendanceRecord.groupBy({
-          by: ['attendanceStatus'],
-          where: {
-            organizationId,
-            attendanceDate: { gte: monthRange.fromDate, lte: monthRange.toDate },
-            finalizedAt: { not: null },
-            disposition: 'NORMAL',
-            attendanceStatus: { in: ['PRESENT', 'ABSENT', 'INCOMPLETE'] },
-          },
-          _count: { _all: true },
-        })
-      : Promise.resolve([]),
-
-    // 6. Today's Attendance Groups (For Donut chart)
-    hasHrAccess
-      ? prisma.dailyAttendanceRecord.groupBy({
-          by: ['attendanceStatus', 'disposition'],
-          where: { organizationId, attendanceDate: todayDb },
-          _count: { _all: true },
-        })
-      : Promise.resolve([]),
-
-    // 7. Weekly Attendance Records (Current week trend)
-    hasHrAccess
-      ? prisma.dailyAttendanceRecord.findMany({
-          where: {
-            organizationId,
-            attendanceDate: { gte: weekStartDb, lte: weekEndDb },
-          },
-          select: {
-            attendanceDate: true,
-            attendanceStatus: true,
-            lateSeconds: true,
-            disposition: true,
-          },
-        })
-      : Promise.resolve([]),
-
+    workforcePromise.then(rows => Number(rows[0]?.active ?? 0)),
+    attendancePromise.then(rows => rows.filter(row => row.attendanceDate.toISOString().slice(0, 10) === todayStr && row.attendanceStatus === 'PRESENT').reduce((sum, row) => sum + Number(row.count), 0)),
+    db.job.count({ where: { organizationId, status: JobStatus.PUBLISHED } }),
+    workforcePromise.then(rows => Number(rows[0]?.hires ?? 0)),
+    attendancePromise.then(rows => [AttendanceStatus.PRESENT, AttendanceStatus.ABSENT, AttendanceStatus.INCOMPLETE].map(status => ({ attendanceStatus: status, _count: { _all: rows.filter(row => row.attendanceStatus === status && row.attendanceDate >= monthRange.fromDate && row.attendanceDate <= monthRange.toDate).reduce((sum, row) => sum + Number(row.finalized), 0) } }))),
+    attendancePromise.then(rows => rows.filter(row => row.attendanceDate.toISOString().slice(0, 10) === todayStr).map(row => ({ ...row, _count: { _all: Number(row.count) } }))),
+    attendancePromise.then(rows => rows.filter(row => row.attendanceDate >= weekStartDb && row.attendanceDate <= weekEndDb)),
     // 8. Scheduled candidate interviews
     hasHiringAccess
-      ? prisma.interview.findMany({
+      ? db.interview.findMany({
           where: {
             application: { job: { organizationId } },
             status: 'SCHEDULED',
@@ -271,7 +234,7 @@ export async function readDashboardData(session: UserSessionPayload, asOf = new 
 
     // 9. Probation reviews approaching their due date
     hasHrAccess
-      ? prisma.probationRecord.findMany({
+      ? db.probationRecord.findMany({
           where: {
             employee: { organizationId },
             probationStatus: ProbationStatus.ACTIVE,
@@ -300,7 +263,7 @@ export async function readDashboardData(session: UserSessionPayload, asOf = new 
 
     // 10. Payroll pay dates
     hasPayrollAccess
-      ? prisma.payrollPeriod.findMany({
+      ? db.payrollPeriod.findMany({
           where: {
             organizationId,
             payDate: { gte: weekStartDb, lte: scheduleEndDb },
@@ -313,7 +276,7 @@ export async function readDashboardData(session: UserSessionPayload, asOf = new 
 
     // 11. Approved employee leave dates
     hasHrAccess
-      ? prisma.leaveRequestDay.findMany({
+      ? db.leaveRequestDay.findMany({
           where: {
             organizationId,
             attendanceDate: { gte: weekStartDb, lte: scheduleEndDb },
@@ -345,14 +308,14 @@ export async function readDashboardData(session: UserSessionPayload, asOf = new 
       : Promise.resolve([]),
 
     // 12. Application stage counts
-    prisma.application.groupBy({
+    db.application.groupBy({
       by: ['status'],
       where: { job: { organizationId } },
       _count: { _all: true },
     }),
 
     // 13. Onboarding count
-    prisma.onboardingProcess.count({
+    db.onboardingProcess.count({
       where: {
         application: { job: { organizationId } },
         status: 'IN_PROGRESS',
@@ -361,7 +324,7 @@ export async function readDashboardData(session: UserSessionPayload, asOf = new 
 
     // 14. Pending leave requests (for Action Queue)
     hasHrAccess
-      ? prisma.leaveRequest.findMany({
+      ? db.leaveRequest.findMany({
           where: { organizationId, status: LeaveRequestStatus.PENDING },
           include: {
             employee: {
@@ -386,7 +349,7 @@ export async function readDashboardData(session: UserSessionPayload, asOf = new 
 
     // 15. Submitted assessments
     hasHiringAccess
-      ? prisma.assessment.findMany({
+      ? db.assessment.findMany({
           where: {
             application: { job: { organizationId } },
             status: AssessmentStatus.SUBMITTED,
@@ -407,7 +370,7 @@ export async function readDashboardData(session: UserSessionPayload, asOf = new 
 
     // 16. Pending offers awaiting approval
     hasHiringAccess
-      ? prisma.offer.findMany({
+      ? db.offer.findMany({
           where: {
             application: { job: { organizationId } },
             status: OfferStatus.PENDING_APPROVAL,
@@ -428,7 +391,7 @@ export async function readDashboardData(session: UserSessionPayload, asOf = new 
 
     // 17. Pending onboarding task submissions
     hasHiringAccess
-      ? prisma.onboardingTask.findMany({
+      ? db.onboardingTask.findMany({
           where: {
             onboardingProcess: { application: { job: { organizationId } } },
             status: OnboardingTaskStatus.SUBMITTED,
@@ -453,7 +416,7 @@ export async function readDashboardData(session: UserSessionPayload, asOf = new 
 
     // 18. Employees missing active compensation
     hasPayrollAccess
-      ? prisma.employee.findMany({
+      ? db.employee.findMany({
           where: {
             organizationId,
             employeeStatus: EmployeeStatus.ACTIVE,
@@ -476,7 +439,7 @@ export async function readDashboardData(session: UserSessionPayload, asOf = new 
 
     // 19. Incomplete employee records
     hasHrAccess
-      ? prisma.employee.findMany({
+      ? db.employee.findMany({
           where: {
             organizationId,
             employeeStatus: EmployeeStatus.ACTIVE,
@@ -536,10 +499,10 @@ export async function readDashboardData(session: UserSessionPayload, asOf = new 
 
     const presentCount = dayRecords.filter(
       (r) => r.attendanceStatus === 'PRESENT' && r.disposition !== 'APPROVED_LEAVE'
-    ).length;
+    ).reduce((sum, row) => sum + Number(row.count), 0);
     const lateCount = dayRecords.filter(
-      (r) => r.lateSeconds !== null && r.lateSeconds > 0 && r.disposition !== 'APPROVED_LEAVE'
-    ).length;
+      (r) => r.disposition !== 'APPROVED_LEAVE'
+    ).reduce((sum, row) => sum + Number(row.late), 0);
 
     totalPresentThisWeek += presentCount;
 

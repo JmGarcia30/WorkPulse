@@ -1,0 +1,122 @@
+[
+  {
+    "name": "handle-request",
+    "durationMs": 18314
+  },
+  {
+    "name": "compile-path",
+    "durationMs": 15386
+  },
+  {
+    "name": "handle-request",
+    "durationMs": 4878
+  },
+  {
+    "name": "handle-request",
+    "durationMs": 4285
+  },
+  {
+    "name": "handle-request",
+    "durationMs": 3384
+  },
+  {
+    "name": "handle-request",
+    "durationMs": 3175
+  },
+  {
+    "name": "handle-request",
+    "durationMs": 3067
+  },
+  {
+    "name": "handle-request",
+    "durationMs": 2947
+  },
+  {
+    "name": "compile-path",
+    "durationMs": 2909
+  },
+  {
+    "name": "handle-request",
+    "durationMs": 2872
+  },
+  {
+    "name": "render-path",
+    "durationMs": 2709
+  },
+  {
+    "name": "handle-request",
+    "durationMs": 2673
+  },
+  {
+    "name": "handle-request",
+    "durationMs": 2627
+  },
+  {
+    "name": "handle-request",
+    "durationMs": 2535
+  },
+  {
+    "name": "render-path",
+    "durationMs": 2358
+  },
+  {
+    "name": "handle-request",
+    "durationMs": 2289
+  },
+  {
+    "name": "render-path",
+    "durationMs": 2288
+  },
+  {
+    "name": "compile-path",
+    "durationMs": 2075
+  },
+  {
+    "name": "handle-request",
+    "durationMs": 2062
+  },
+  {
+    "name": "render-path",
+    "durationMs": 2061
+  },
+  {
+    "name": "render-path",
+    "durationMs": 1875
+  },
+  {
+    "name": "handle-request",
+    "durationMs": 1870
+  },
+  {
+    "name": "render-path",
+    "durationMs": 1868
+  },
+  {
+    "name": "compile-path",
+    "durationMs": 1717
+  },
+  {
+    "name": "compile-path",
+    "durationMs": 1700
+  },
+  {
+    "name": "compile-path",
+    "durationMs": 1540
+  },
+  {
+    "name": "compile-path",
+    "durationMs": 1496
+  },
+  {
+    "name": "handle-request",
+    "durationMs": 1468
+  },
+  {
+    "name": "render-path",
+    "durationMs": 1466
+  },
+  {
+    "name": "handle-request",
+    "durationMs": 1450
+  }
+]

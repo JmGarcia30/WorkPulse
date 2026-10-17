@@ -1,0 +1,42 @@
+{
+  "typescript": {
+    "status": "PASS",
+    "command": "node node_modules/typescript/bin/tsc --noEmit",
+    "exitCode": 0
+  },
+  "saasShell": {
+    "status": "PASS",
+    "command": "node node_modules/tsx/dist/cli.mjs scripts/test-s1-saas-shell.ts",
+    "exitCode": 0,
+    "initialSandboxAttempt": "Failed before assertions in OS user-info lookup; permitted rerun passed"
+  },
+  "build": [
+    {
+      "name": "prisma-validate",
+      "code": 0,
+      "elapsedMs": 6701
+    },
+    {
+      "name": "prisma-generate",
+      "code": 0,
+      "elapsedMs": 2256
+    },
+    {
+      "name": "production-build",
+      "code": 0,
+      "elapsedMs": 35964
+    }
+  ],
+  "blocked": [
+    "H1",
+    "H2",
+    "H10.1",
+    "H10.2",
+    "H10 interface",
+    "ESS",
+    "Leave",
+    "Payroll",
+    "Live database tenant authorization"
+  ],
+  "reason": "Database writes/migration replay require an approved disposable target; application target is treated as production"
+}

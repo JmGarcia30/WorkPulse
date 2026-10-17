@@ -1,0 +1,33 @@
+{
+  "name": "test-batch3-services",
+  "exitCode": 0,
+  "elapsedMs": 583141,
+  "assertions": [
+    "PASS 1: Full payroll calculation and snapshot parity: 5 employees, sample 0",
+    "PASS 2: Full payroll calculation and snapshot parity: 5 employees, sample 1",
+    "PASS 3: Full payroll calculation and snapshot parity: 5 employees, sample 2",
+    "PASS 4: Full payroll calculation and snapshot parity: 5 employees, sample 3",
+    "PASS 5: Idempotent generation: 5 employees",
+    "PASS 6: Existing immutable entries unchanged",
+    "PASS 7: Missing attendance and partial-period compensation errors match",
+    "PASS 8: Both implementations reject finalized period generation",
+    "PASS 9: Full payroll calculation and snapshot parity: 50 employees, sample 0",
+    "PASS 10: Full payroll calculation and snapshot parity: 50 employees, sample 1",
+    "PASS 11: Full payroll calculation and snapshot parity: 50 employees, sample 2",
+    "PASS 12: Full payroll calculation and snapshot parity: 50 employees, sample 3",
+    "PASS 13: Idempotent generation: 50 employees",
+    "PASS 14: Existing immutable entries unchanged",
+    "PASS 15: Full payroll calculation and snapshot parity: 100 employees, sample 0",
+    "PASS 16: Full payroll calculation and snapshot parity: 100 employees, sample 1",
+    "PASS 17: Full payroll calculation and snapshot parity: 100 employees, sample 2",
+    "PASS 18: Full payroll calculation and snapshot parity: 100 employees, sample 3",
+    "PASS 19: Idempotent generation: 100 employees",
+    "PASS 20: Existing immutable entries unchanged",
+    "PASS 21: Attendance complete projection parity: sample 0",
+    "PASS 22: Attendance complete projection parity: sample 1",
+    "PASS 23: Attendance complete projection parity: sample 2",
+    "PASS 24: Attendance complete projection parity: sample 3",
+    "PASS 25: All timings exclude fixture setup and comparison queries"
+  ],
+  "errorCodes": []
+}

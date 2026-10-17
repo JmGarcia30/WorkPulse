@@ -1,0 +1,9 @@
+{
+  "name": "prisma-generate",
+  "exitCode": 0,
+  "elapsedMs": 1994,
+  "errorCodes": [],
+  "assertions": [
+    "✔ Generated Prisma Client (v6.19.3) to .\\node_modules\\@prisma\\client in 463ms"
+  ]
+}

@@ -1,0 +1,45 @@
+{
+  "capturedAt": "2026-10-17T15:13:30.419Z",
+  "inheritedDatabase": true,
+  "loadedFiles": [
+    ".env"
+  ],
+  "selectedEnvironment": "original production/pending H10",
+  "databases": [
+    {
+      "label": "original",
+      "selectedByNextDev": true,
+      "state": {
+        "schema": "public",
+        "read_only": "on"
+      },
+      "appliedMigrations": 20,
+      "h10Applied": false,
+      "probationColumn": {
+        "success": false,
+        "code": "P2022"
+      },
+      "separationTable": {
+        "success": false,
+        "code": "P2021"
+      }
+    },
+    {
+      "label": "recovery",
+      "selectedByNextDev": false,
+      "state": {
+        "schema": "public",
+        "read_only": "on"
+      },
+      "appliedMigrations": 22,
+      "h10Applied": true,
+      "probationColumn": {
+        "success": true
+      },
+      "separationTable": {
+        "success": true
+      }
+    }
+  ],
+  "originalEnvUnchanged": true
+}

@@ -1,0 +1,147 @@
+{
+  "conditions": {
+    "environment": "Local Node/tsx service benchmarks against disposable schemas on workpulse-batch0-recovery; direct Neon connections",
+    "samples": "Four alternating before/after pairs per workload; first pair excluded, median of three warm samples",
+    "oracle": "Frozen pre-Batch-3 service implementations; only import paths adjusted",
+    "sql": "Prisma query events including emitted controls and pool probes; instrumentation adds no SQL",
+    "comparisons": "Every benchmark pair compares complete result and persisted values/snapshots; only generated payroll-entry IDs and volatile timestamps excluded",
+    "load": "Focused H3/H6/H8 fixture suites overlapped part of the run. No other benchmark/build/UI workload ran during the later 100-employee and Attendance samples. External database load not controlled.",
+    "notMeasured": [
+      "Vercel",
+      "browser navigation",
+      "HTTP response/TTFB",
+      "production data workloads",
+      "cold starts"
+    ]
+  },
+  "rows": [
+    {
+      "workload": "payroll-generation",
+      "employees": 5,
+      "before": {
+        "samples": 3,
+        "medianMs": 2485.0593999999983,
+        "medianSql": 26,
+        "msRange": [
+          2464.0277000000006,
+          2587.1632000000027
+        ],
+        "sqlRange": [
+          26,
+          27
+        ]
+      },
+      "after": {
+        "samples": 3,
+        "medianMs": 1528.030700000003,
+        "medianSql": 16,
+        "msRange": [
+          1470.5467000000008,
+          1551.8584999999985
+        ],
+        "sqlRange": [
+          16,
+          16
+        ]
+      },
+      "timeReductionPercent": 38.51130077615031,
+      "sqlReductionPercent": 38.46153846153846
+    },
+    {
+      "workload": "payroll-generation",
+      "employees": 50,
+      "before": {
+        "samples": 3,
+        "medianMs": 22267.84809999999,
+        "medianSql": 208,
+        "msRange": [
+          21835.908200000005,
+          23039.79860000001
+        ],
+        "sqlRange": [
+          207,
+          208
+        ]
+      },
+      "after": {
+        "samples": 3,
+        "medianMs": 11807.887199999983,
+        "medianSql": 107,
+        "msRange": [
+          10350.25959999999,
+          13484.155499999993
+        ],
+        "sqlRange": [
+          106,
+          107
+        ]
+      },
+      "timeReductionPercent": 46.97337997379285,
+      "sqlReductionPercent": 48.557692307692314
+    },
+    {
+      "workload": "payroll-generation",
+      "employees": 100,
+      "before": {
+        "samples": 3,
+        "medianMs": 44528.80679999996,
+        "medianSql": 409,
+        "msRange": [
+          44336.691500000015,
+          46847.366899999965
+        ],
+        "sqlRange": [
+          408,
+          409
+        ]
+      },
+      "after": {
+        "samples": 3,
+        "medianMs": 27072.121599999955,
+        "medianSql": 208,
+        "msRange": [
+          26749.94419999997,
+          27611.330099999963
+        ],
+        "sqlRange": [
+          208,
+          208
+        ]
+      },
+      "timeReductionPercent": 39.2031281646649,
+      "sqlReductionPercent": 49.1442542787286
+    },
+    {
+      "workload": "attendance-period",
+      "employees": 3,
+      "before": {
+        "samples": 3,
+        "medianMs": 12808.05290000001,
+        "medianSql": 141,
+        "msRange": [
+          12641.793700000038,
+          13065.632600000012
+        ],
+        "sqlRange": [
+          141,
+          141
+        ]
+      },
+      "after": {
+        "samples": 3,
+        "medianMs": 8517.910499999998,
+        "medianSql": 95,
+        "msRange": [
+          8453.24199999997,
+          8915.891300000018
+        ],
+        "sqlRange": [
+          95,
+          96
+        ]
+      },
+      "timeReductionPercent": 33.49566427852596,
+      "sqlReductionPercent": 32.62411347517731
+    }
+  ]
+}

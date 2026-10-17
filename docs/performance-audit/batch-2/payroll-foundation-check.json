@@ -1,0 +1,21 @@
+{
+  "name": "payroll-foundation-check",
+  "exitCode": 0,
+  "elapsedMs": 29395,
+  "assertions": [
+    "PASS 1: Payroll foundation payload parity at 5 employees, sample 0",
+    "PASS 2: Payroll foundation payload parity at 5 employees, sample 1",
+    "PASS 3: Payroll foundation payload parity at 5 employees, sample 2",
+    "PASS 4: Payroll foundation payload parity at 5 employees, sample 3",
+    "PASS 5: Payroll foundation payload parity at 5 employees, sample 4",
+    "PASS 6: Payroll foundation payload parity at 5 employees, sample 5",
+    "PASS 7: Payroll complete review parity: partial compensation period",
+    "PASS 8: Payroll complete review parity: inclusive effective end boundary",
+    "PASS 9: Payroll complete review parity: ineligible employee with existing entry",
+    "PASS 10: Payroll complete review parity: incomplete snapshot",
+    "PASS 11: Payroll complete review parity: mismatched amounts and status",
+    "PASS 12: Payroll complete review parity: missing eligible entry",
+    "PASS 12: Batch 2 synthetic scalability and result parity complete"
+  ],
+  "errorCodes": []
+}

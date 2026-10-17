@@ -51,11 +51,16 @@ function employmentForPeriod(entry: FinalizedEntry) {
   return entry.employee.employmentRecords.find(record => record.effectiveFrom <= entry.payrollPeriod.periodStart && (!record.effectiveTo || record.effectiveTo >= entry.payrollPeriod.periodStart)) ?? null;
 }
 
-function toPayslip(entry: FinalizedEntry) {
+function entrySnapshot(entry: Pick<FinalizedEntry, 'calculationSnapshot' | 'payrollPeriodId' | 'employeeId'>) {
   const snapshot = parseSnapshot(entry.calculationSnapshot);
   if (snapshot.payrollPeriod!.id !== entry.payrollPeriodId || snapshot.employee!.id !== entry.employeeId) {
     throw new PayrollError('INVALID_SNAPSHOT', 'The finalized snapshot does not match this payroll entry.');
   }
+  return snapshot;
+}
+
+function toPayslip(entry: FinalizedEntry) {
+  const snapshot = entrySnapshot(entry);
   const employment = employmentForPeriod(entry);
   const deductions = snapshot.policy?.deductionRules;
   const leaveTreatments = snapshot.leaveSummary?.requests ?? snapshot.policy?.leaveTreatmentsApplied ?? [];
@@ -132,17 +137,22 @@ export async function getFinalizedPayslipForEmployee(input: { organizationId: st
   return toPayslip(entry);
 }
 
-export async function listFinalizedPayslipsForEmployee(input: { organizationId: string; userId: string }, db: PayrollDb = prisma) {
+export async function listFinalizedPayslipsForEmployee(input: { organizationId: string; userId: string }, db: PayrollDb = prisma, options: { take?: number } = {}) {
   const employeeId = await activeEmployeeForUser(input.organizationId, input.userId, db);
   const entries = await db.payrollEntry.findMany({
     where: {
       organizationId: input.organizationId, employeeId, status: PayrollEntryStatus.FINALIZED,
       payrollPeriod: { organizationId: input.organizationId, status: PayrollPeriodStatus.FINALIZED, finalizedAt: { not: null } },
-    }, include: entryInclude, orderBy: [{ payrollPeriod: { payDate: 'desc' } }, { createdAt: 'desc' }],
+    },
+    // List/dashboard fields come entirely from the immutable snapshot and period.
+    // Effective-dated employment is still loaded for the detailed payslip view.
+    select: { id: true, employeeId: true, payrollPeriodId: true, status: true, calculationSnapshot: true, payrollPeriod: { select: { periodStart: true, periodEnd: true, payDate: true } } },
+    orderBy: [{ payrollPeriod: { payDate: 'desc' } }, { createdAt: 'desc' }],
+    ...(options.take === undefined ? {} : { take: options.take }),
   });
   return entries.map(entry => {
-    const payslip = toPayslip(entry);
-    return { entryId: payslip.entryId, periodStart: payslip.payroll.periodStart, periodEnd: payslip.payroll.periodEnd, payDate: payslip.payroll.payDate, currency: payslip.payroll.currency, basePay: payslip.calculation.basePay, grossPay: payslip.calculation.grossPay, totalDeductions: payslip.calculation.totalDeductions, netPay: payslip.calculation.netPay, status: entry.status };
+    const snapshot = entrySnapshot(entry);
+    return { entryId: entry.id, periodStart: snapshot.payrollPeriod?.start ?? entry.payrollPeriod.periodStart.toISOString().slice(0, 10), periodEnd: snapshot.payrollPeriod?.end ?? entry.payrollPeriod.periodEnd.toISOString().slice(0, 10), payDate: snapshot.payrollPeriod?.payDate ?? entry.payrollPeriod.payDate.toISOString().slice(0, 10), currency: snapshot.compensation!.currency!, basePay: snapshot.calculation!.baseAmount!, grossPay: snapshot.calculation!.grossAmount!, totalDeductions: snapshot.calculation!.totalDeductions!, netPay: snapshot.calculation!.netAmount!, status: entry.status };
   });
 }
 

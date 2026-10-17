@@ -1,0 +1,26 @@
+[
+  {
+    "trial": 0,
+    "completedReadOnlySelects": 73,
+    "elapsedMs": 5029.2,
+    "error": {
+      "code": "P2028"
+    }
+  },
+  {
+    "trial": 1,
+    "completedReadOnlySelects": 71,
+    "elapsedMs": 5645.1,
+    "error": {
+      "code": "P2028"
+    }
+  },
+  {
+    "trial": 2,
+    "completedReadOnlySelects": 72,
+    "elapsedMs": 5052.7,
+    "error": {
+      "code": "P2028"
+    }
+  }
+]

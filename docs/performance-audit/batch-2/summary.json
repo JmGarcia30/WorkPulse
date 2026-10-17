@@ -1,0 +1,677 @@
+{
+  "capturedAt": "2026-10-17T13:58:50.206Z",
+  "routes": [
+    {
+      "route": "Dashboard",
+      "before": {
+        "samples": 5,
+        "ms": 1213.8,
+        "range": [
+          1180.9,
+          1878.7
+        ],
+        "sql": 29,
+        "sqlRange": [
+          29,
+          30
+        ]
+      },
+      "after": {
+        "samples": 5,
+        "ms": 1150.7,
+        "range": [
+          720.5,
+          1315.8
+        ],
+        "sql": 23,
+        "sqlRange": [
+          23,
+          23
+        ]
+      },
+      "beforeTtfb": 679.4,
+      "afterTtfb": 352.6,
+      "beforeInitialTtfb": 692.2,
+      "afterInitialTtfb": 376.5,
+      "beforeNav": {
+        "samples": 3,
+        "ms": 1183,
+        "range": [
+          975,
+          1773
+        ],
+        "sql": null,
+        "sqlRange": null
+      },
+      "afterNav": {
+        "samples": 3,
+        "ms": 1084,
+        "range": [
+          691,
+          1485
+        ],
+        "sql": null,
+        "sqlRange": null
+      }
+    },
+    {
+      "route": "Hiring",
+      "before": {
+        "samples": 5,
+        "ms": 422.8,
+        "range": [
+          394.6,
+          629.1
+        ],
+        "sql": 8,
+        "sqlRange": [
+          8,
+          10
+        ]
+      },
+      "after": {
+        "samples": 5,
+        "ms": 431.7,
+        "range": [
+          343.9,
+          655.2
+        ],
+        "sql": 6,
+        "sqlRange": [
+          6,
+          8
+        ]
+      },
+      "beforeTtfb": 418.3,
+      "afterTtfb": 183.5,
+      "beforeInitialTtfb": 511.1,
+      "afterInitialTtfb": 188.7,
+      "beforeNav": {
+        "samples": 3,
+        "ms": 838,
+        "range": [
+          720,
+          1018
+        ],
+        "sql": null,
+        "sqlRange": null
+      },
+      "afterNav": {
+        "samples": 3,
+        "ms": 768,
+        "range": [
+          717,
+          1339
+        ],
+        "sql": null,
+        "sqlRange": null
+      }
+    },
+    {
+      "route": "Employees",
+      "before": {
+        "samples": 5,
+        "ms": 611.9,
+        "range": [
+          592,
+          1222.2
+        ],
+        "sql": 11,
+        "sqlRange": [
+          11,
+          11
+        ]
+      },
+      "after": {
+        "samples": 5,
+        "ms": 577.9,
+        "range": [
+          574.6,
+          966.9
+        ],
+        "sql": 9,
+        "sqlRange": [
+          9,
+          9
+        ]
+      },
+      "beforeTtfb": 358.4,
+      "afterTtfb": 181.2,
+      "beforeInitialTtfb": 361.9,
+      "afterInitialTtfb": 180.3,
+      "beforeNav": {
+        "samples": 3,
+        "ms": 986,
+        "range": [
+          924,
+          1004
+        ],
+        "sql": null,
+        "sqlRange": null
+      },
+      "afterNav": {
+        "samples": 3,
+        "ms": 952,
+        "range": [
+          952,
+          1019
+        ],
+        "sql": null,
+        "sqlRange": null
+      }
+    },
+    {
+      "route": "Attendance",
+      "before": {
+        "samples": 5,
+        "ms": 378,
+        "range": [
+          374.8,
+          960.9
+        ],
+        "sql": 8,
+        "sqlRange": [
+          8,
+          8
+        ]
+      },
+      "after": {
+        "samples": 5,
+        "ms": 342.2,
+        "range": [
+          194.4,
+          368.7
+        ],
+        "sql": 6,
+        "sqlRange": [
+          6,
+          6
+        ]
+      },
+      "beforeTtfb": 376.5,
+      "afterTtfb": 189.2,
+      "beforeInitialTtfb": 361,
+      "afterInitialTtfb": 206,
+      "beforeNav": {
+        "samples": 3,
+        "ms": 389,
+        "range": [
+          189,
+          425
+        ],
+        "sql": null,
+        "sqlRange": null
+      },
+      "afterNav": {
+        "samples": 3,
+        "ms": 386,
+        "range": [
+          194,
+          406
+        ],
+        "sql": null,
+        "sqlRange": null
+      }
+    },
+    {
+      "route": "Leave",
+      "before": {
+        "samples": 5,
+        "ms": 631.3,
+        "range": [
+          621.7,
+          1037.1
+        ],
+        "sql": 9,
+        "sqlRange": [
+          9,
+          10
+        ]
+      },
+      "after": {
+        "samples": 5,
+        "ms": 513.6,
+        "range": [
+          428.6,
+          941.4
+        ],
+        "sql": 7,
+        "sqlRange": [
+          7,
+          8
+        ]
+      },
+      "beforeTtfb": 367.9,
+      "afterTtfb": 265.1,
+      "beforeInitialTtfb": 522,
+      "afterInitialTtfb": 347.3,
+      "beforeNav": {
+        "samples": 3,
+        "ms": 1299,
+        "range": [
+          877,
+          1311
+        ],
+        "sql": null,
+        "sqlRange": null
+      },
+      "afterNav": {
+        "samples": 3,
+        "ms": 855,
+        "range": [
+          456,
+          993
+        ],
+        "sql": null,
+        "sqlRange": null
+      }
+    },
+    {
+      "route": "Payroll",
+      "before": {
+        "samples": 5,
+        "ms": 599.7,
+        "range": [
+          522.3,
+          690.2
+        ],
+        "sql": 9,
+        "sqlRange": [
+          9,
+          11
+        ]
+      },
+      "after": {
+        "samples": 5,
+        "ms": 363.8,
+        "range": [
+          291.9,
+          555.3
+        ],
+        "sql": 7,
+        "sqlRange": [
+          7,
+          7
+        ]
+      },
+      "beforeTtfb": 428.2,
+      "afterTtfb": 201.8,
+      "beforeInitialTtfb": 444.9,
+      "afterInitialTtfb": 187,
+      "beforeNav": {
+        "samples": 3,
+        "ms": 617,
+        "range": [
+          617,
+          894
+        ],
+        "sql": null,
+        "sqlRange": null
+      },
+      "afterNav": {
+        "samples": 3,
+        "ms": 388,
+        "range": [
+          366,
+          623
+        ],
+        "sql": null,
+        "sqlRange": null
+      }
+    },
+    {
+      "route": "Analytics",
+      "before": {
+        "samples": 5,
+        "ms": 1058.3,
+        "range": [
+          951.9,
+          1401.5
+        ],
+        "sql": 16,
+        "sqlRange": [
+          16,
+          17
+        ]
+      },
+      "after": {
+        "samples": 5,
+        "ms": 866.2,
+        "range": [
+          767.3,
+          1111.9
+        ],
+        "sql": 14,
+        "sqlRange": [
+          14,
+          16
+        ]
+      },
+      "beforeTtfb": 357.7,
+      "afterTtfb": 188,
+      "beforeInitialTtfb": 364.2,
+      "afterInitialTtfb": 289.6,
+      "beforeNav": {
+        "samples": 3,
+        "ms": 1111,
+        "range": [
+          987,
+          2098
+        ],
+        "sql": null,
+        "sqlRange": null
+      },
+      "afterNav": {
+        "samples": 3,
+        "ms": 717,
+        "range": [
+          670,
+          853
+        ],
+        "sql": null,
+        "sqlRange": null
+      }
+    },
+    {
+      "route": "Exit Management",
+      "before": {
+        "samples": 5,
+        "ms": 959,
+        "range": [
+          957.5,
+          1075.5
+        ],
+        "sql": 11,
+        "sqlRange": [
+          11,
+          12
+        ]
+      },
+      "after": {
+        "samples": 5,
+        "ms": 787.5,
+        "range": [
+          783.2,
+          798.8
+        ],
+        "sql": 9,
+        "sqlRange": [
+          9,
+          9
+        ]
+      },
+      "beforeTtfb": 368.1,
+      "afterTtfb": 194.4,
+      "beforeInitialTtfb": 486,
+      "afterInitialTtfb": 280.2,
+      "beforeNav": {
+        "samples": 3,
+        "ms": 1770,
+        "range": [
+          1323,
+          2537
+        ],
+        "sql": null,
+        "sqlRange": null
+      },
+      "afterNav": {
+        "samples": 3,
+        "ms": 1244,
+        "range": [
+          1142,
+          1472
+        ],
+        "sql": null,
+        "sqlRange": null
+      }
+    }
+  ],
+  "scales": [
+    {
+      "size": 5,
+      "before": {
+        "samples": 5,
+        "ms": 894.3,
+        "range": [
+          860.8,
+          969.6
+        ],
+        "sql": 12,
+        "sqlRange": [
+          12,
+          12
+        ]
+      },
+      "after": {
+        "samples": 5,
+        "ms": 487.8,
+        "range": [
+          474.5,
+          723.3
+        ],
+        "sql": 8,
+        "sqlRange": [
+          8,
+          8
+        ]
+      }
+    },
+    {
+      "size": 50,
+      "before": {
+        "samples": 5,
+        "ms": 4881,
+        "range": [
+          4648.5,
+          5002.7
+        ],
+        "sql": 58,
+        "sqlRange": [
+          57,
+          58
+        ]
+      },
+      "after": {
+        "samples": 5,
+        "ms": 736.1,
+        "range": [
+          556.7,
+          777.3
+        ],
+        "sql": 8,
+        "sqlRange": [
+          8,
+          8
+        ]
+      }
+    },
+    {
+      "size": 100,
+      "before": {
+        "samples": 5,
+        "ms": 8828.3,
+        "range": [
+          8581.2,
+          9021.7
+        ],
+        "sql": 108,
+        "sqlRange": [
+          107,
+          108
+        ]
+      },
+      "after": {
+        "samples": 5,
+        "ms": 674.4,
+        "range": [
+          583,
+          764.8
+        ],
+        "sql": 8,
+        "sqlRange": [
+          8,
+          9
+        ]
+      }
+    }
+  ],
+  "brands": [
+    {
+      "branded": false,
+      "before": {
+        "samples": 5,
+        "ms": 254,
+        "range": [
+          252.4,
+          335.2
+        ],
+        "sql": 3,
+        "sqlRange": [
+          3,
+          4
+        ]
+      },
+      "after": {
+        "samples": 5,
+        "ms": 85.4,
+        "range": [
+          84.6,
+          86.1
+        ],
+        "sql": 1,
+        "sqlRange": [
+          1,
+          1
+        ]
+      }
+    },
+    {
+      "branded": true,
+      "before": {
+        "samples": 5,
+        "ms": 252.6,
+        "range": [
+          251.1,
+          257.5
+        ],
+        "sql": 3,
+        "sqlRange": [
+          3,
+          3
+        ]
+      },
+      "after": {
+        "samples": 5,
+        "ms": 86.3,
+        "range": [
+          83,
+          88.6
+        ],
+        "sql": 1,
+        "sqlRange": [
+          1,
+          1
+        ]
+      }
+    }
+  ],
+  "foundation": {
+    "before": {
+      "samples": 5,
+      "ms": 1493.2,
+      "range": [
+        1297.9,
+        2394.5
+      ],
+      "sql": 21,
+      "sqlRange": [
+        21,
+        22
+      ]
+    },
+    "after": {
+      "samples": 5,
+      "ms": 813.2,
+      "range": [
+        644.6,
+        1002.8
+      ],
+      "sql": 13,
+      "sqlRange": [
+        13,
+        14
+      ]
+    }
+  },
+  "suites": [
+    {
+      "name": "h10-1",
+      "exitCode": 0,
+      "elapsedMs": 133249
+    },
+    {
+      "name": "h10-2",
+      "exitCode": 0,
+      "elapsedMs": 233115
+    },
+    {
+      "name": "isolated-regressions",
+      "exitCode": 0,
+      "elapsedMs": 388755
+    },
+    {
+      "name": "h10-interface",
+      "exitCode": 0,
+      "elapsedMs": 243688
+    },
+    {
+      "name": "analytics",
+      "exitCode": 0,
+      "elapsedMs": 41287
+    },
+    {
+      "name": "payroll-scalability",
+      "exitCode": 0,
+      "elapsedMs": 151152
+    },
+    {
+      "name": "payroll-foundation-check",
+      "exitCode": 0,
+      "elapsedMs": 29395
+    },
+    {
+      "name": "prisma-validation",
+      "exitCode": 0,
+      "elapsedMs": 1441
+    },
+    {
+      "name": "typescript",
+      "exitCode": 0,
+      "elapsedMs": 3636
+    },
+    {
+      "name": "production-build",
+      "exitCode": 0,
+      "elapsedMs": 85569
+    }
+  ],
+  "checks": {
+    "typeScriptPassed": true,
+    "eslintPassed": true,
+    "diffCheckPassed": true,
+    "scope": "All Batch 2 changed/new application, test, runner and reference files; final standalone TypeScript."
+  },
+  "preservation": {
+    "capturedAt": "2026-10-17T13:58:06.549Z",
+    "branch": "workpulse-batch0-recovery",
+    "protectedTablesCompared": 46,
+    "changedProtectedTables": [],
+    "originalEnvUnchanged": true,
+    "appliedCount": 22,
+    "h10ChecksumMatch": true,
+    "missingColumns": [],
+    "missingTriggers": [],
+    "enabledH10Triggers": 16,
+    "temporaryBenchmarkUsersRemoved": true
+  }
+}

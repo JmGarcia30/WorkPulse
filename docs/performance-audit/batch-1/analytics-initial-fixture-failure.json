@@ -1,0 +1,27 @@
+{
+  "name": "analytics",
+  "exitCode": 1,
+  "elapsedMs": 5805,
+  "assertions": [
+    "PASS 1: default month follows tenant timezone at UTC month boundary",
+    "PASS 2: Last Month resolves exact calendar bounds",
+    "PASS 3: Last Month handles year rollover",
+    "PASS 4: local date boundaries preserve daylight-saving transitions",
+    "PASS 5: invalid filters rejected: {\"preset\":\"custom\",\"from\":\"2026-02-30\",\"to\":\"2026-03-01\"}",
+    "PASS 6: invalid filters rejected: {\"preset\":\"custom\",\"from\":\"2026-10-12\",\"to\":\"2026-10-01\"}",
+    "PASS 7: invalid filters rejected: {\"preset\":\"custom\",\"from\":\"2025-01-01\",\"to\":\"2026-10-01\"}",
+    "PASS 8: invalid filters rejected: {\"preset\":\"custom\"}",
+    "PASS 9: invalid filters rejected: {\"category\":\"FAKE\"}",
+    "PASS 10: invalid filters rejected: {\"preset\":\"FAKE\"}"
+  ],
+  "errorCodes": [
+    "P0001"
+  ],
+  "diagnostics": [
+    "PrismaClientUnknownRequestError: ",
+    "G:\\CAPSTONE\\WorkPulse\\scripts\\test-h8-analytics.ts:61:54",
+    "    at async employee (G:\\CAPSTONE\\WorkPulse\\scripts\\test-h8-analytics.ts:61:28)",
+    "    at async prisma.$transaction.timeout (G:\\CAPSTONE\\WorkPulse\\scripts\\test-h8-analytics.ts:72:25)",
+    "    at async main (G:\\CAPSTONE\\WorkPulse\\scripts\\test-h8-analytics.ts:42:5) {"
+  ]
+}

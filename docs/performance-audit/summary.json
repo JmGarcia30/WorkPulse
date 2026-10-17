@@ -1,0 +1,248 @@
+[
+  {
+    "route": "Dashboard",
+    "production": {
+      "initialTtfbMs": 1947.1,
+      "initialCompleteMs": 2623.2,
+      "warmTtfbMs": 747.5,
+      "warmCompleteMs": 833,
+      "queryCounts": [
+        25,
+        30,
+        31
+      ]
+    },
+    "development": {
+      "initialCompleteMs": 26127.4,
+      "warmCompleteMs": 1106.1
+    },
+    "browser": "Not measured"
+  },
+  {
+    "route": "Hiring",
+    "production": {
+      "initialTtfbMs": 690.3,
+      "initialCompleteMs": 693.8,
+      "warmTtfbMs": 324.4,
+      "warmCompleteMs": 327.6,
+      "queryCounts": [
+        8,
+        8,
+        8
+      ]
+    },
+    "development": {
+      "initialCompleteMs": 3416.2,
+      "warmCompleteMs": 905.2
+    },
+    "browser": {
+      "samples": 3,
+      "medianMs": 18
+    }
+  },
+  {
+    "route": "Applicants",
+    "production": {
+      "initialTtfbMs": 376,
+      "initialCompleteMs": 1175.1,
+      "warmTtfbMs": 547.7,
+      "warmCompleteMs": 1021.2,
+      "queryCounts": [
+        12,
+        12,
+        12
+      ]
+    },
+    "development": {
+      "initialCompleteMs": 2591.6,
+      "warmCompleteMs": 1191.6
+    },
+    "browser": {
+      "samples": 3,
+      "medianMs": 1520
+    }
+  },
+  {
+    "route": "Employee Records",
+    "production": {
+      "initialTtfbMs": 742.8,
+      "initialCompleteMs": 788.8,
+      "warmTtfbMs": 310.4,
+      "warmCompleteMs": 544.8,
+      "queryCounts": [
+        11,
+        11,
+        11
+      ]
+    },
+    "development": {
+      "initialCompleteMs": 2711.8,
+      "warmCompleteMs": 746.2
+    },
+    "browser": "Not measured"
+  },
+  {
+    "route": "Employee Profile",
+    "production": {
+      "initialTtfbMs": 326.5,
+      "initialCompleteMs": 738.1,
+      "warmTtfbMs": 302.2,
+      "warmCompleteMs": 377.6,
+      "queryCounts": [
+        11,
+        9,
+        9
+      ]
+    },
+    "development": {
+      "initialCompleteMs": 4937.8,
+      "warmCompleteMs": 876.6
+    },
+    "browser": "Not measured"
+  },
+  {
+    "route": "Attendance",
+    "production": {
+      "initialTtfbMs": 315.4,
+      "initialCompleteMs": 390.6,
+      "warmTtfbMs": 336.8,
+      "warmCompleteMs": 349.7,
+      "queryCounts": [
+        8,
+        8,
+        8
+      ]
+    },
+    "development": {
+      "initialCompleteMs": 2671.3,
+      "warmCompleteMs": 784.1
+    },
+    "browser": {
+      "samples": 3,
+      "medianMs": 322
+    }
+  },
+  {
+    "route": "Attendance selected employee",
+    "production": {
+      "initialTtfbMs": 270.1,
+      "initialCompleteMs": 1134.7,
+      "warmTtfbMs": 299.9,
+      "warmCompleteMs": 777.5,
+      "queryCounts": [
+        12,
+        12,
+        12
+      ]
+    },
+    "development": {
+      "initialCompleteMs": 1506.2,
+      "warmCompleteMs": 1103.3
+    },
+    "browser": "Not measured"
+  },
+  {
+    "route": "Leave",
+    "production": {
+      "initialTtfbMs": 337.4,
+      "initialCompleteMs": 849.5,
+      "warmTtfbMs": 311.1,
+      "warmCompleteMs": 832.9,
+      "queryCounts": [
+        9,
+        9,
+        9
+      ]
+    },
+    "development": {
+      "initialCompleteMs": 2984.5,
+      "warmCompleteMs": 958.6
+    },
+    "browser": {
+      "samples": 3,
+      "medianMs": 1054
+    }
+  },
+  {
+    "route": "Payroll",
+    "production": {
+      "initialTtfbMs": 298.4,
+      "initialCompleteMs": 524.1,
+      "warmTtfbMs": 322.3,
+      "warmCompleteMs": 547.9,
+      "queryCounts": [
+        9,
+        9,
+        9
+      ]
+    },
+    "development": {
+      "initialCompleteMs": 3242.1,
+      "warmCompleteMs": 978.7
+    },
+    "browser": {
+      "samples": 3,
+      "medianMs": 891
+    }
+  },
+  {
+    "route": "Analytics",
+    "production": {
+      "initialTtfbMs": 330.2,
+      "initialCompleteMs": 1549,
+      "warmTtfbMs": 690.9,
+      "warmCompleteMs": 1953.2,
+      "queryCounts": [
+        22,
+        20,
+        20
+      ]
+    },
+    "development": {
+      "initialCompleteMs": 3104.1,
+      "warmCompleteMs": 1909
+    },
+    "browser": {
+      "samples": 3,
+      "medianMs": 1424
+    }
+  },
+  {
+    "route": "ESS",
+    "production": {
+      "initialTtfbMs": 1755.3,
+      "initialCompleteMs": 1756.2,
+      "warmTtfbMs": 1988.1,
+      "warmCompleteMs": 1989.5,
+      "queryCounts": [
+        30,
+        31,
+        30
+      ]
+    },
+    "development": {
+      "initialCompleteMs": 4323.3,
+      "warmCompleteMs": 1484.9
+    },
+    "browser": "Not measured"
+  },
+  {
+    "route": "Exit Management",
+    "production": {
+      "initialTtfbMs": 469.5,
+      "initialCompleteMs": 1041.6,
+      "warmTtfbMs": 308.7,
+      "warmCompleteMs": 730.3,
+      "queryCounts": [
+        10,
+        11,
+        10
+      ]
+    },
+    "development": {
+      "initialCompleteMs": 2911.9,
+      "warmCompleteMs": 1158
+    },
+    "browser": "Not measured"
+  }
+]

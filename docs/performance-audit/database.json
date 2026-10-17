@@ -1,0 +1,538 @@
+{
+  "node": "v24.18.0",
+  "next": "16.3.6",
+  "pooledEndpoint": true,
+  "databaseRegionHint": "ap-southeast-1",
+  "connectionParameters": [
+    "sslmode",
+    "channel_binding",
+    "options"
+  ],
+  "readOnly": true,
+  "selectOneMs": [
+    697.3,
+    66.8,
+    66,
+    66,
+    66.2,
+    66.8
+  ],
+  "readOnlySetting": [
+    {
+      "default_transaction_read_only": "on"
+    }
+  ],
+  "h10Tables": [],
+  "h10Migrations": [],
+  "missingGeneratedColumns": [
+    "EmployeeSeparationCase.id",
+    "EmployeeSeparationCase.organizationId",
+    "EmployeeSeparationCase.employeeId",
+    "EmployeeSeparationCase.separationType",
+    "EmployeeSeparationCase.reason",
+    "EmployeeSeparationCase.noticeDate",
+    "EmployeeSeparationCase.proposedLastWorkingDay",
+    "EmployeeSeparationCase.proposedEffectiveDate",
+    "EmployeeSeparationCase.noticeCompliance",
+    "EmployeeSeparationCase.noticeExceptionReason",
+    "EmployeeSeparationCase.noticeExceptionById",
+    "EmployeeSeparationCase.noticeExceptionAt",
+    "EmployeeSeparationCase.noticeRemarks",
+    "EmployeeSeparationCase.policySnapshot",
+    "EmployeeSeparationCase.initiatedById",
+    "EmployeeSeparationCase.initiatedAt",
+    "EmployeeSeparationCase.status",
+    "EmployeeSeparationCase.administrativeRemarks",
+    "EmployeeSeparationCase.inactiveEmployeeJustification",
+    "EmployeeSeparationCase.cancelledById",
+    "EmployeeSeparationCase.cancelledAt",
+    "EmployeeSeparationCase.cancellationReason",
+    "EmployeeSeparationCase.approvedById",
+    "EmployeeSeparationCase.approvedAt",
+    "EmployeeSeparationCase.approvalDecision",
+    "EmployeeSeparationCase.approvalRemarks",
+    "EmployeeSeparationCase.backdatedJustification",
+    "EmployeeSeparationCase.approvedDetailsVersion",
+    "EmployeeSeparationCase.completedById",
+    "EmployeeSeparationCase.completedAt",
+    "EmployeeSeparationCase.executionRemarks",
+    "EmployeeSeparationCase.completionSnapshot",
+    "EmployeeSeparationCase.version",
+    "EmployeeSeparationCase.versionOfDetails",
+    "EmployeeSeparationCase.requestKey",
+    "EmployeeSeparationCase.requestFingerprint",
+    "EmployeeSeparationCase.createdAt",
+    "EmployeeSeparationCase.updatedAt",
+    "EmployeeClearanceItem.id",
+    "EmployeeClearanceItem.organizationId",
+    "EmployeeClearanceItem.caseId",
+    "EmployeeClearanceItem.category",
+    "EmployeeClearanceItem.title",
+    "EmployeeClearanceItem.description",
+    "EmployeeClearanceItem.isRequired",
+    "EmployeeClearanceItem.status",
+    "EmployeeClearanceItem.responsibleUnit",
+    "EmployeeClearanceItem.reviewedById",
+    "EmployeeClearanceItem.reviewedAt",
+    "EmployeeClearanceItem.remarks",
+    "EmployeeClearanceItem.requestKey",
+    "EmployeeClearanceItem.createdAt",
+    "EmployeeClearanceItem.updatedAt",
+    "EmployeeSeparationReview.id",
+    "EmployeeSeparationReview.organizationId",
+    "EmployeeSeparationReview.caseId",
+    "EmployeeSeparationReview.kind",
+    "EmployeeSeparationReview.evidence",
+    "EmployeeSeparationReview.recordedById",
+    "EmployeeSeparationReview.recordedAt",
+    "EmployeeSeparationReview.caseVersion",
+    "EmployeeSeparationAudit.id",
+    "EmployeeSeparationAudit.organizationId",
+    "EmployeeSeparationAudit.caseId",
+    "EmployeeSeparationAudit.actorUserId",
+    "EmployeeSeparationAudit.action",
+    "EmployeeSeparationAudit.previousValues",
+    "EmployeeSeparationAudit.newValues",
+    "EmployeeSeparationAudit.remarks",
+    "EmployeeSeparationAudit.createdAt",
+    "ProbationRecord.closedBySeparationCaseId"
+  ],
+  "indexes": [
+    {
+      "tablename": "Application",
+      "indexname": "Application_applicantId_idx",
+      "indexdef": "CREATE INDEX \"Application_applicantId_idx\" ON public.\"Application\" USING btree (\"applicantId\")"
+    },
+    {
+      "tablename": "Application",
+      "indexname": "Application_appliedAt_idx",
+      "indexdef": "CREATE INDEX \"Application_appliedAt_idx\" ON public.\"Application\" USING btree (\"appliedAt\")"
+    },
+    {
+      "tablename": "Application",
+      "indexname": "Application_jobId_applicantId_key",
+      "indexdef": "CREATE UNIQUE INDEX \"Application_jobId_applicantId_key\" ON public.\"Application\" USING btree (\"jobId\", \"applicantId\")"
+    },
+    {
+      "tablename": "Application",
+      "indexname": "Application_jobId_idx",
+      "indexdef": "CREATE INDEX \"Application_jobId_idx\" ON public.\"Application\" USING btree (\"jobId\")"
+    },
+    {
+      "tablename": "Application",
+      "indexname": "Application_pkey",
+      "indexdef": "CREATE UNIQUE INDEX \"Application_pkey\" ON public.\"Application\" USING btree (id)"
+    },
+    {
+      "tablename": "Application",
+      "indexname": "Application_status_idx",
+      "indexdef": "CREATE INDEX \"Application_status_idx\" ON public.\"Application\" USING btree (status)"
+    },
+    {
+      "tablename": "AttendanceEvent",
+      "indexname": "AttendanceEvent_createdById_idx",
+      "indexdef": "CREATE INDEX \"AttendanceEvent_createdById_idx\" ON public.\"AttendanceEvent\" USING btree (\"createdById\")"
+    },
+    {
+      "tablename": "AttendanceEvent",
+      "indexname": "AttendanceEvent_organizationId_employeeId_occurredAt_idx",
+      "indexdef": "CREATE INDEX \"AttendanceEvent_organizationId_employeeId_occurredAt_idx\" ON public.\"AttendanceEvent\" USING btree (\"organizationId\", \"employeeId\", \"occurredAt\")"
+    },
+    {
+      "tablename": "AttendanceEvent",
+      "indexname": "AttendanceEvent_organizationId_source_sourceReference_key",
+      "indexdef": "CREATE UNIQUE INDEX \"AttendanceEvent_organizationId_source_sourceReference_key\" ON public.\"AttendanceEvent\" USING btree (\"organizationId\", source, \"sourceReference\")"
+    },
+    {
+      "tablename": "AttendanceEvent",
+      "indexname": "AttendanceEvent_pkey",
+      "indexdef": "CREATE UNIQUE INDEX \"AttendanceEvent_pkey\" ON public.\"AttendanceEvent\" USING btree (id)"
+    },
+    {
+      "tablename": "DailyAttendanceRecord",
+      "indexname": "DailyAttendanceRecord_approvedLeaveRequestDayId_key",
+      "indexdef": "CREATE UNIQUE INDEX \"DailyAttendanceRecord_approvedLeaveRequestDayId_key\" ON public.\"DailyAttendanceRecord\" USING btree (\"approvedLeaveRequestDayId\")"
+    },
+    {
+      "tablename": "DailyAttendanceRecord",
+      "indexname": "DailyAttendanceRecord_employeeId_attendanceDate_idx",
+      "indexdef": "CREATE INDEX \"DailyAttendanceRecord_employeeId_attendanceDate_idx\" ON public.\"DailyAttendanceRecord\" USING btree (\"employeeId\", \"attendanceDate\")"
+    },
+    {
+      "tablename": "DailyAttendanceRecord",
+      "indexname": "DailyAttendanceRecord_employmentRecordId_idx",
+      "indexdef": "CREATE INDEX \"DailyAttendanceRecord_employmentRecordId_idx\" ON public.\"DailyAttendanceRecord\" USING btree (\"employmentRecordId\")"
+    },
+    {
+      "tablename": "DailyAttendanceRecord",
+      "indexname": "DailyAttendanceRecord_organizationId_attendanceDate_attenda_idx",
+      "indexdef": "CREATE INDEX \"DailyAttendanceRecord_organizationId_attendanceDate_attenda_idx\" ON public.\"DailyAttendanceRecord\" USING btree (\"organizationId\", \"attendanceDate\", \"attendanceStatus\")"
+    },
+    {
+      "tablename": "DailyAttendanceRecord",
+      "indexname": "DailyAttendanceRecord_organizationId_attendanceDate_disposi_idx",
+      "indexdef": "CREATE INDEX \"DailyAttendanceRecord_organizationId_attendanceDate_disposi_idx\" ON public.\"DailyAttendanceRecord\" USING btree (\"organizationId\", \"attendanceDate\", disposition)"
+    },
+    {
+      "tablename": "DailyAttendanceRecord",
+      "indexname": "DailyAttendanceRecord_organizationId_employeeId_attendanceD_key",
+      "indexdef": "CREATE UNIQUE INDEX \"DailyAttendanceRecord_organizationId_employeeId_attendanceD_key\" ON public.\"DailyAttendanceRecord\" USING btree (\"organizationId\", \"employeeId\", \"attendanceDate\")"
+    },
+    {
+      "tablename": "DailyAttendanceRecord",
+      "indexname": "DailyAttendanceRecord_pkey",
+      "indexdef": "CREATE UNIQUE INDEX \"DailyAttendanceRecord_pkey\" ON public.\"DailyAttendanceRecord\" USING btree (id)"
+    },
+    {
+      "tablename": "DailyAttendanceRecord",
+      "indexname": "DailyAttendanceRecord_scheduleAssignmentId_idx",
+      "indexdef": "CREATE INDEX \"DailyAttendanceRecord_scheduleAssignmentId_idx\" ON public.\"DailyAttendanceRecord\" USING btree (\"scheduleAssignmentId\")"
+    },
+    {
+      "tablename": "Employee",
+      "indexname": "Employee_applicantId_idx",
+      "indexdef": "CREATE INDEX \"Employee_applicantId_idx\" ON public.\"Employee\" USING btree (\"applicantId\")"
+    },
+    {
+      "tablename": "Employee",
+      "indexname": "Employee_organizationId_applicantId_key",
+      "indexdef": "CREATE UNIQUE INDEX \"Employee_organizationId_applicantId_key\" ON public.\"Employee\" USING btree (\"organizationId\", \"applicantId\")"
+    },
+    {
+      "tablename": "Employee",
+      "indexname": "Employee_organizationId_employeeNumber_key",
+      "indexdef": "CREATE UNIQUE INDEX \"Employee_organizationId_employeeNumber_key\" ON public.\"Employee\" USING btree (\"organizationId\", \"employeeNumber\")"
+    },
+    {
+      "tablename": "Employee",
+      "indexname": "Employee_organizationId_employeeStatus_idx",
+      "indexdef": "CREATE INDEX \"Employee_organizationId_employeeStatus_idx\" ON public.\"Employee\" USING btree (\"organizationId\", \"employeeStatus\")"
+    },
+    {
+      "tablename": "Employee",
+      "indexname": "Employee_pkey",
+      "indexdef": "CREATE UNIQUE INDEX \"Employee_pkey\" ON public.\"Employee\" USING btree (id)"
+    },
+    {
+      "tablename": "Employee",
+      "indexname": "Employee_sourceApplicationId_key",
+      "indexdef": "CREATE UNIQUE INDEX \"Employee_sourceApplicationId_key\" ON public.\"Employee\" USING btree (\"sourceApplicationId\")"
+    },
+    {
+      "tablename": "EmployeeCompensation",
+      "indexname": "EmployeeCompensation_organizationId_employeeId_effectiveFrom_id",
+      "indexdef": "CREATE INDEX \"EmployeeCompensation_organizationId_employeeId_effectiveFrom_id\" ON public.\"EmployeeCompensation\" USING btree (\"organizationId\", \"employeeId\", \"effectiveFrom\")"
+    },
+    {
+      "tablename": "EmployeeCompensation",
+      "indexname": "EmployeeCompensation_organizationId_status_idx",
+      "indexdef": "CREATE INDEX \"EmployeeCompensation_organizationId_status_idx\" ON public.\"EmployeeCompensation\" USING btree (\"organizationId\", status)"
+    },
+    {
+      "tablename": "EmployeeCompensation",
+      "indexname": "EmployeeCompensation_pkey",
+      "indexdef": "CREATE UNIQUE INDEX \"EmployeeCompensation_pkey\" ON public.\"EmployeeCompensation\" USING btree (id)"
+    },
+    {
+      "tablename": "EmploymentRecord",
+      "indexname": "EmploymentRecord_acceptedOfferId_key",
+      "indexdef": "CREATE UNIQUE INDEX \"EmploymentRecord_acceptedOfferId_key\" ON public.\"EmploymentRecord\" USING btree (\"acceptedOfferId\")"
+    },
+    {
+      "tablename": "EmploymentRecord",
+      "indexname": "EmploymentRecord_effectiveFrom_effectiveTo_idx",
+      "indexdef": "CREATE INDEX \"EmploymentRecord_effectiveFrom_effectiveTo_idx\" ON public.\"EmploymentRecord\" USING btree (\"effectiveFrom\", \"effectiveTo\")"
+    },
+    {
+      "tablename": "EmploymentRecord",
+      "indexname": "EmploymentRecord_employeeId_idx",
+      "indexdef": "CREATE INDEX \"EmploymentRecord_employeeId_idx\" ON public.\"EmploymentRecord\" USING btree (\"employeeId\")"
+    },
+    {
+      "tablename": "EmploymentRecord",
+      "indexname": "EmploymentRecord_employmentStatus_idx",
+      "indexdef": "CREATE INDEX \"EmploymentRecord_employmentStatus_idx\" ON public.\"EmploymentRecord\" USING btree (\"employmentStatus\")"
+    },
+    {
+      "tablename": "EmploymentRecord",
+      "indexname": "EmploymentRecord_jobId_idx",
+      "indexdef": "CREATE INDEX \"EmploymentRecord_jobId_idx\" ON public.\"EmploymentRecord\" USING btree (\"jobId\")"
+    },
+    {
+      "tablename": "EmploymentRecord",
+      "indexname": "EmploymentRecord_one_current_per_employee_key",
+      "indexdef": "CREATE UNIQUE INDEX \"EmploymentRecord_one_current_per_employee_key\" ON public.\"EmploymentRecord\" USING btree (\"employeeId\") WHERE (\"effectiveTo\" IS NULL)"
+    },
+    {
+      "tablename": "EmploymentRecord",
+      "indexname": "EmploymentRecord_pkey",
+      "indexdef": "CREATE UNIQUE INDEX \"EmploymentRecord_pkey\" ON public.\"EmploymentRecord\" USING btree (id)"
+    },
+    {
+      "tablename": "LeaveRequest",
+      "indexname": "LeaveRequest_leaveTypeId_leaveCycleId_idx",
+      "indexdef": "CREATE INDEX \"LeaveRequest_leaveTypeId_leaveCycleId_idx\" ON public.\"LeaveRequest\" USING btree (\"leaveTypeId\", \"leaveCycleId\")"
+    },
+    {
+      "tablename": "LeaveRequest",
+      "indexname": "LeaveRequest_no_active_overlap",
+      "indexdef": "CREATE INDEX \"LeaveRequest_no_active_overlap\" ON public.\"LeaveRequest\" USING gist (\"organizationId\", \"employeeId\", daterange(\"requestedStartDate\", (\"requestedEndDate\" + 1), '[)'::text)) WHERE (status = ANY (ARRAY['PENDING'::\"LeaveRequestStatus\", 'APPROVED'::\"LeaveRequestStatus\"]))"
+    },
+    {
+      "tablename": "LeaveRequest",
+      "indexname": "LeaveRequest_organizationId_employeeId_requestedStartDate_idx",
+      "indexdef": "CREATE INDEX \"LeaveRequest_organizationId_employeeId_requestedStartDate_idx\" ON public.\"LeaveRequest\" USING btree (\"organizationId\", \"employeeId\", \"requestedStartDate\")"
+    },
+    {
+      "tablename": "LeaveRequest",
+      "indexname": "LeaveRequest_organizationId_status_submittedAt_idx",
+      "indexdef": "CREATE INDEX \"LeaveRequest_organizationId_status_submittedAt_idx\" ON public.\"LeaveRequest\" USING btree (\"organizationId\", status, \"submittedAt\")"
+    },
+    {
+      "tablename": "LeaveRequest",
+      "indexname": "LeaveRequest_pkey",
+      "indexdef": "CREATE UNIQUE INDEX \"LeaveRequest_pkey\" ON public.\"LeaveRequest\" USING btree (id)"
+    },
+    {
+      "tablename": "Organization",
+      "indexname": "Organization_pkey",
+      "indexdef": "CREATE UNIQUE INDEX \"Organization_pkey\" ON public.\"Organization\" USING btree (id)"
+    },
+    {
+      "tablename": "Organization",
+      "indexname": "Organization_slug_key",
+      "indexdef": "CREATE UNIQUE INDEX \"Organization_slug_key\" ON public.\"Organization\" USING btree (slug)"
+    },
+    {
+      "tablename": "PayrollEntry",
+      "indexname": "PayrollEntry_employeeCompensationId_idx",
+      "indexdef": "CREATE INDEX \"PayrollEntry_employeeCompensationId_idx\" ON public.\"PayrollEntry\" USING btree (\"employeeCompensationId\")"
+    },
+    {
+      "tablename": "PayrollEntry",
+      "indexname": "PayrollEntry_organizationId_employeeId_idx",
+      "indexdef": "CREATE INDEX \"PayrollEntry_organizationId_employeeId_idx\" ON public.\"PayrollEntry\" USING btree (\"organizationId\", \"employeeId\")"
+    },
+    {
+      "tablename": "PayrollEntry",
+      "indexname": "PayrollEntry_organizationId_payrollPeriodId_employeeId_key",
+      "indexdef": "CREATE UNIQUE INDEX \"PayrollEntry_organizationId_payrollPeriodId_employeeId_key\" ON public.\"PayrollEntry\" USING btree (\"organizationId\", \"payrollPeriodId\", \"employeeId\")"
+    },
+    {
+      "tablename": "PayrollEntry",
+      "indexname": "PayrollEntry_organizationId_payrollPeriodId_status_idx",
+      "indexdef": "CREATE INDEX \"PayrollEntry_organizationId_payrollPeriodId_status_idx\" ON public.\"PayrollEntry\" USING btree (\"organizationId\", \"payrollPeriodId\", status)"
+    },
+    {
+      "tablename": "PayrollEntry",
+      "indexname": "PayrollEntry_pkey",
+      "indexdef": "CREATE UNIQUE INDEX \"PayrollEntry_pkey\" ON public.\"PayrollEntry\" USING btree (id)"
+    },
+    {
+      "tablename": "User",
+      "indexname": "User_email_key",
+      "indexdef": "CREATE UNIQUE INDEX \"User_email_key\" ON public.\"User\" USING btree (email)"
+    },
+    {
+      "tablename": "User",
+      "indexname": "User_organizationId_idx",
+      "indexdef": "CREATE INDEX \"User_organizationId_idx\" ON public.\"User\" USING btree (\"organizationId\")"
+    },
+    {
+      "tablename": "User",
+      "indexname": "User_pkey",
+      "indexdef": "CREATE UNIQUE INDEX \"User_pkey\" ON public.\"User\" USING btree (id)"
+    }
+  ],
+  "tableEstimates": [
+    {
+      "relname": "Applicant",
+      "estimated_rows": 25
+    },
+    {
+      "relname": "Application",
+      "estimated_rows": 22
+    },
+    {
+      "relname": "ApplicationStatusHistory",
+      "estimated_rows": 27
+    },
+    {
+      "relname": "Assessment",
+      "estimated_rows": 10
+    },
+    {
+      "relname": "AttendanceCorrection",
+      "estimated_rows": 0
+    },
+    {
+      "relname": "AttendanceEvent",
+      "estimated_rows": 0
+    },
+    {
+      "relname": "CandidateEvaluation",
+      "estimated_rows": 12
+    },
+    {
+      "relname": "DailyAttendanceRecord",
+      "estimated_rows": 77
+    },
+    {
+      "relname": "Document",
+      "estimated_rows": 12
+    },
+    {
+      "relname": "Employee",
+      "estimated_rows": 7
+    },
+    {
+      "relname": "EmployeeAccount",
+      "estimated_rows": 3
+    },
+    {
+      "relname": "EmployeeAccountAudit",
+      "estimated_rows": 25
+    },
+    {
+      "relname": "EmployeeCompensation",
+      "estimated_rows": 0
+    },
+    {
+      "relname": "EmployeeNumberSequence",
+      "estimated_rows": 1
+    },
+    {
+      "relname": "EmployeeScheduleAssignment",
+      "estimated_rows": 4
+    },
+    {
+      "relname": "EmployeeStatusHistory",
+      "estimated_rows": 6
+    },
+    {
+      "relname": "EmploymentDecisionHistory",
+      "estimated_rows": 5
+    },
+    {
+      "relname": "EmploymentRecord",
+      "estimated_rows": 11
+    },
+    {
+      "relname": "Interview",
+      "estimated_rows": 16
+    },
+    {
+      "relname": "Job",
+      "estimated_rows": 6
+    },
+    {
+      "relname": "JobRequirement",
+      "estimated_rows": 11
+    },
+    {
+      "relname": "LeaveCycle",
+      "estimated_rows": 2
+    },
+    {
+      "relname": "LeaveDocument",
+      "estimated_rows": 0
+    },
+    {
+      "relname": "LeaveLedgerEntry",
+      "estimated_rows": 2
+    },
+    {
+      "relname": "LeaveRequest",
+      "estimated_rows": 1
+    },
+    {
+      "relname": "LeaveRequestAudit",
+      "estimated_rows": 6
+    },
+    {
+      "relname": "LeaveRequestDay",
+      "estimated_rows": 1
+    },
+    {
+      "relname": "LeaveType",
+      "estimated_rows": 6
+    },
+    {
+      "relname": "Offer",
+      "estimated_rows": 10
+    },
+    {
+      "relname": "OnboardingProcess",
+      "estimated_rows": 5
+    },
+    {
+      "relname": "OnboardingTask",
+      "estimated_rows": 20
+    },
+    {
+      "relname": "Organization",
+      "estimated_rows": 3
+    },
+    {
+      "relname": "OrganizationBranding",
+      "estimated_rows": 1
+    },
+    {
+      "relname": "OrganizationBrandingAudit",
+      "estimated_rows": 0
+    },
+    {
+      "relname": "OrganizationPayrollPolicy",
+      "estimated_rows": 0
+    },
+    {
+      "relname": "ParsedResume",
+      "estimated_rows": 3
+    },
+    {
+      "relname": "PayrollEntry",
+      "estimated_rows": 0
+    },
+    {
+      "relname": "PayrollPeriod",
+      "estimated_rows": 0
+    },
+    {
+      "relname": "PayrollPolicyLeaveTreatment",
+      "estimated_rows": 0
+    },
+    {
+      "relname": "ProbationRecord",
+      "estimated_rows": 8
+    },
+    {
+      "relname": "RecruitmentDocument",
+      "estimated_rows": 127
+    },
+    {
+      "relname": "User",
+      "estimated_rows": 8
+    },
+    {
+      "relname": "WorkScheduleBreak",
+      "estimated_rows": 15
+    },
+    {
+      "relname": "WorkScheduleDay",
+      "estimated_rows": 28
+    },
+    {
+      "relname": "WorkScheduleGroup",
+      "estimated_rows": 4
+    },
+    {
+      "relname": "WorkScheduleVersion",
+      "estimated_rows": 4
+    },
+    {
+      "relname": "_prisma_migrations",
+      "estimated_rows": 21
+    }
+  ],
+  "vercelOrigin": null
+}

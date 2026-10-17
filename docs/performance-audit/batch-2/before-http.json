@@ -1,0 +1,4440 @@
+[
+  {
+    "route": "Dashboard",
+    "iteration": 0,
+    "ttfbMs": 692.1769999999997,
+    "completionMs": 1557.463300000003,
+    "sqlStatements": 29,
+    "queries": [
+      {
+        "ms": 160,
+        "tables": [
+          "Organization"
+        ]
+      },
+      {
+        "ms": 164,
+        "tables": [
+          "Organization"
+        ]
+      },
+      {
+        "ms": 161,
+        "tables": [
+          "OrganizationBranding"
+        ]
+      },
+      {
+        "ms": 163,
+        "tables": [
+          "User"
+        ]
+      },
+      {
+        "ms": 89,
+        "tables": [
+          "DailyAttendanceRecord"
+        ]
+      },
+      {
+        "ms": 161,
+        "tables": [
+          "DailyAttendanceRecord"
+        ]
+      },
+      {
+        "ms": 163,
+        "tables": [
+          "Employee"
+        ]
+      },
+      {
+        "ms": 163,
+        "tables": [
+          "Job"
+        ]
+      },
+      {
+        "ms": 162,
+        "tables": [
+          "ProbationRecord",
+          "Employee"
+        ]
+      },
+      {
+        "ms": 167,
+        "tables": [
+          "Employee"
+        ]
+      },
+      {
+        "ms": 167,
+        "tables": [
+          "PayrollPeriod"
+        ]
+      },
+      {
+        "ms": 167,
+        "tables": [
+          "DailyAttendanceRecord"
+        ]
+      },
+      {
+        "ms": 174,
+        "tables": [
+          "Application",
+          "Job"
+        ]
+      },
+      {
+        "ms": 173,
+        "tables": [
+          "OnboardingTask",
+          "OnboardingProcess",
+          "Application",
+          "Job"
+        ]
+      },
+      {
+        "ms": 173,
+        "tables": [
+          "Offer",
+          "Application",
+          "Job"
+        ]
+      },
+      {
+        "ms": 173,
+        "tables": [
+          "LeaveRequestDay",
+          "LeaveRequest"
+        ]
+      },
+      {
+        "ms": 173,
+        "tables": [
+          "Interview",
+          "Application",
+          "Job"
+        ]
+      },
+      {
+        "ms": 174,
+        "tables": [
+          "OnboardingProcess",
+          "Application",
+          "Job"
+        ]
+      },
+      {
+        "ms": 175,
+        "tables": [
+          "DailyAttendanceRecord"
+        ]
+      },
+      {
+        "ms": 179,
+        "tables": [
+          "Assessment",
+          "Application",
+          "Job"
+        ]
+      },
+      {
+        "ms": 180,
+        "tables": [
+          "LeaveRequest"
+        ]
+      },
+      {
+        "ms": 81,
+        "tables": [
+          "Employee",
+          "EmployeeAccount",
+          "EmploymentRecord"
+        ]
+      },
+      {
+        "ms": 176,
+        "tables": [
+          "Employee",
+          "EmployeeCompensation"
+        ]
+      },
+      {
+        "ms": 86,
+        "tables": [
+          "EmploymentRecord"
+        ]
+      },
+      {
+        "ms": 172,
+        "tables": [
+          "OnboardingProcess"
+        ]
+      },
+      {
+        "ms": 176,
+        "tables": [
+          "EmploymentRecord"
+        ]
+      },
+      {
+        "ms": 170,
+        "tables": [
+          "Application"
+        ]
+      },
+      {
+        "ms": 170,
+        "tables": [
+          "Applicant"
+        ]
+      },
+      {
+        "ms": 166,
+        "tables": [
+          "Job"
+        ]
+      }
+    ],
+    "status": 200,
+    "expectedContent": true,
+    "streamedError": false,
+    "runtimeCodes": []
+  },
+  {
+    "route": "Dashboard",
+    "iteration": 1,
+    "ttfbMs": 719.5999999999985,
+    "completionMs": 1212.635699999999,
+    "sqlStatements": 29,
+    "queries": [
+      {
+        "ms": 172,
+        "tables": [
+          "Organization"
+        ]
+      },
+      {
+        "ms": 176,
+        "tables": [
+          "Organization"
+        ]
+      },
+      {
+        "ms": 169,
+        "tables": [
+          "OrganizationBranding"
+        ]
+      },
+      {
+        "ms": 172,
+        "tables": [
+          "User"
+        ]
+      },
+      {
+        "ms": 80,
+        "tables": [
+          "OnboardingTask",
+          "OnboardingProcess",
+          "Application",
+          "Job"
+        ]
+      },
+      {
+        "ms": 154,
+        "tables": [
+          "LeaveRequestDay",
+          "LeaveRequest"
+        ]
+      },
+      {
+        "ms": 160,
+        "tables": [
+          "Interview",
+          "Application",
+          "Job"
+        ]
+      },
+      {
+        "ms": 163,
+        "tables": [
+          "Job"
+        ]
+      },
+      {
+        "ms": 80,
+        "tables": [
+          "OnboardingProcess"
+        ]
+      },
+      {
+        "ms": 166,
+        "tables": [
+          "Assessment",
+          "Application",
+          "Job"
+        ]
+      },
+      {
+        "ms": 167,
+        "tables": [
+          "OnboardingProcess",
+          "Application",
+          "Job"
+        ]
+      },
+      {
+        "ms": 168,
+        "tables": [
+          "Employee"
+        ]
+      },
+      {
+        "ms": 167,
+        "tables": [
+          "LeaveRequest"
+        ]
+      },
+      {
+        "ms": 172,
+        "tables": [
+          "Employee"
+        ]
+      },
+      {
+        "ms": 171,
+        "tables": [
+          "Application",
+          "Job"
+        ]
+      },
+      {
+        "ms": 171,
+        "tables": [
+          "PayrollPeriod"
+        ]
+      },
+      {
+        "ms": 172,
+        "tables": [
+          "DailyAttendanceRecord"
+        ]
+      },
+      {
+        "ms": 172,
+        "tables": [
+          "Offer",
+          "Application",
+          "Job"
+        ]
+      },
+      {
+        "ms": 172,
+        "tables": [
+          "ProbationRecord",
+          "Employee"
+        ]
+      },
+      {
+        "ms": 176,
+        "tables": [
+          "DailyAttendanceRecord"
+        ]
+      },
+      {
+        "ms": 179,
+        "tables": [
+          "DailyAttendanceRecord"
+        ]
+      },
+      {
+        "ms": 179,
+        "tables": [
+          "DailyAttendanceRecord"
+        ]
+      },
+      {
+        "ms": 79,
+        "tables": [
+          "Application"
+        ]
+      },
+      {
+        "ms": 155,
+        "tables": [
+          "Employee",
+          "EmployeeCompensation"
+        ]
+      },
+      {
+        "ms": 161,
+        "tables": [
+          "Employee",
+          "EmployeeAccount",
+          "EmploymentRecord"
+        ]
+      },
+      {
+        "ms": 81,
+        "tables": [
+          "Applicant"
+        ]
+      },
+      {
+        "ms": 81,
+        "tables": [
+          "Job"
+        ]
+      },
+      {
+        "ms": 158,
+        "tables": [
+          "EmploymentRecord"
+        ]
+      },
+      {
+        "ms": 162,
+        "tables": [
+          "EmploymentRecord"
+        ]
+      }
+    ],
+    "status": 200,
+    "expectedContent": true,
+    "streamedError": false,
+    "runtimeCodes": []
+  },
+  {
+    "route": "Dashboard",
+    "iteration": 2,
+    "ttfbMs": 371.1313000000009,
+    "completionMs": 1307.666500000003,
+    "sqlStatements": 29,
+    "queries": [
+      {
+        "ms": 81,
+        "tables": [
+          "Organization"
+        ]
+      },
+      {
+        "ms": 81,
+        "tables": [
+          "Organization"
+        ]
+      },
+      {
+        "ms": 81,
+        "tables": [
+          "OrganizationBranding"
+        ]
+      },
+      {
+        "ms": 89,
+        "tables": [
+          "User"
+        ]
+      },
+      {
+        "ms": 83,
+        "tables": [
+          "Assessment",
+          "Application",
+          "Job"
+        ]
+      },
+      {
+        "ms": 86,
+        "tables": [
+          "Employee"
+        ]
+      },
+      {
+        "ms": 86,
+        "tables": [
+          "Interview",
+          "Application",
+          "Job"
+        ]
+      },
+      {
+        "ms": 89,
+        "tables": [
+          "DailyAttendanceRecord"
+        ]
+      },
+      {
+        "ms": 161,
+        "tables": [
+          "Employee"
+        ]
+      },
+      {
+        "ms": 162,
+        "tables": [
+          "DailyAttendanceRecord"
+        ]
+      },
+      {
+        "ms": 163,
+        "tables": [
+          "Job"
+        ]
+      },
+      {
+        "ms": 167,
+        "tables": [
+          "Offer",
+          "Application",
+          "Job"
+        ]
+      },
+      {
+        "ms": 168,
+        "tables": [
+          "Employee",
+          "EmployeeCompensation"
+        ]
+      },
+      {
+        "ms": 167,
+        "tables": [
+          "LeaveRequest"
+        ]
+      },
+      {
+        "ms": 168,
+        "tables": [
+          "LeaveRequestDay",
+          "LeaveRequest"
+        ]
+      },
+      {
+        "ms": 172,
+        "tables": [
+          "PayrollPeriod"
+        ]
+      },
+      {
+        "ms": 174,
+        "tables": [
+          "Application",
+          "Job"
+        ]
+      },
+      {
+        "ms": 172,
+        "tables": [
+          "ProbationRecord",
+          "Employee"
+        ]
+      },
+      {
+        "ms": 174,
+        "tables": [
+          "DailyAttendanceRecord"
+        ]
+      },
+      {
+        "ms": 178,
+        "tables": [
+          "OnboardingProcess",
+          "Application",
+          "Job"
+        ]
+      },
+      {
+        "ms": 180,
+        "tables": [
+          "DailyAttendanceRecord"
+        ]
+      },
+      {
+        "ms": 167,
+        "tables": [
+          "OnboardingTask",
+          "OnboardingProcess",
+          "Application",
+          "Job"
+        ]
+      },
+      {
+        "ms": 172,
+        "tables": [
+          "Employee",
+          "EmployeeAccount",
+          "EmploymentRecord"
+        ]
+      },
+      {
+        "ms": 166,
+        "tables": [
+          "EmploymentRecord"
+        ]
+      },
+      {
+        "ms": 178,
+        "tables": [
+          "OnboardingProcess"
+        ]
+      },
+      {
+        "ms": 172,
+        "tables": [
+          "EmploymentRecord"
+        ]
+      },
+      {
+        "ms": 161,
+        "tables": [
+          "Application"
+        ]
+      },
+      {
+        "ms": 174,
+        "tables": [
+          "Applicant"
+        ]
+      },
+      {
+        "ms": 161,
+        "tables": [
+          "Job"
+        ]
+      }
+    ],
+    "status": 200,
+    "expectedContent": true,
+    "streamedError": false,
+    "runtimeCodes": []
+  },
+  {
+    "route": "Dashboard",
+    "iteration": 3,
+    "ttfbMs": 702.7654000000002,
+    "completionMs": 1878.6627000000008,
+    "sqlStatements": 29,
+    "queries": [
+      {
+        "ms": 164,
+        "tables": [
+          "Organization"
+        ]
+      },
+      {
+        "ms": 180,
+        "tables": [
+          "Organization"
+        ]
+      },
+      {
+        "ms": 162,
+        "tables": [
+          "OrganizationBranding"
+        ]
+      },
+      {
+        "ms": 162,
+        "tables": [
+          "User"
+        ]
+      },
+      {
+        "ms": 81,
+        "tables": [
+          "DailyAttendanceRecord"
+        ]
+      },
+      {
+        "ms": 82,
+        "tables": [
+          "Offer",
+          "Application",
+          "Job"
+        ]
+      },
+      {
+        "ms": 84,
+        "tables": [
+          "Application",
+          "Job"
+        ]
+      },
+      {
+        "ms": 84,
+        "tables": [
+          "DailyAttendanceRecord"
+        ]
+      },
+      {
+        "ms": 160,
+        "tables": [
+          "Assessment",
+          "Application",
+          "Job"
+        ]
+      },
+      {
+        "ms": 166,
+        "tables": [
+          "OnboardingProcess",
+          "Application",
+          "Job"
+        ]
+      },
+      {
+        "ms": 174,
+        "tables": [
+          "Employee"
+        ]
+      },
+      {
+        "ms": 177,
+        "tables": [
+          "DailyAttendanceRecord"
+        ]
+      },
+      {
+        "ms": 182,
+        "tables": [
+          "PayrollPeriod"
+        ]
+      },
+      {
+        "ms": 183,
+        "tables": [
+          "Employee",
+          "EmployeeCompensation"
+        ]
+      },
+      {
+        "ms": 183,
+        "tables": [
+          "ProbationRecord",
+          "Employee"
+        ]
+      },
+      {
+        "ms": 182,
+        "tables": [
+          "LeaveRequest"
+        ]
+      },
+      {
+        "ms": 185,
+        "tables": [
+          "DailyAttendanceRecord"
+        ]
+      },
+      {
+        "ms": 186,
+        "tables": [
+          "Employee"
+        ]
+      },
+      {
+        "ms": 186,
+        "tables": [
+          "Job"
+        ]
+      },
+      {
+        "ms": 185,
+        "tables": [
+          "Interview",
+          "Application",
+          "Job"
+        ]
+      },
+      {
+        "ms": 186,
+        "tables": [
+          "LeaveRequestDay",
+          "LeaveRequest"
+        ]
+      },
+      {
+        "ms": 173,
+        "tables": [
+          "OnboardingTask",
+          "OnboardingProcess",
+          "Application",
+          "Job"
+        ]
+      },
+      {
+        "ms": 181,
+        "tables": [
+          "Employee",
+          "EmployeeAccount",
+          "EmploymentRecord"
+        ]
+      },
+      {
+        "ms": 168,
+        "tables": [
+          "EmploymentRecord"
+        ]
+      },
+      {
+        "ms": 169,
+        "tables": [
+          "OnboardingProcess"
+        ]
+      },
+      {
+        "ms": 162,
+        "tables": [
+          "EmploymentRecord"
+        ]
+      },
+      {
+        "ms": 160,
+        "tables": [
+          "Application"
+        ]
+      },
+      {
+        "ms": 417,
+        "tables": [
+          "Applicant"
+        ]
+      },
+      {
+        "ms": 163,
+        "tables": [
+          "Job"
+        ]
+      }
+    ],
+    "status": 200,
+    "expectedContent": true,
+    "streamedError": false,
+    "runtimeCodes": []
+  },
+  {
+    "route": "Dashboard",
+    "iteration": 4,
+    "ttfbMs": 679.407100000004,
+    "completionMs": 1180.8733000000066,
+    "sqlStatements": 30,
+    "queries": [
+      {
+        "ms": 161,
+        "tables": [
+          "Organization"
+        ]
+      },
+      {
+        "ms": 161,
+        "tables": [
+          "Organization"
+        ]
+      },
+      {
+        "ms": 160,
+        "tables": [
+          "OrganizationBranding"
+        ]
+      },
+      {
+        "ms": 161,
+        "tables": [
+          "User"
+        ]
+      },
+      {
+        "ms": 77,
+        "tables": [
+          "Offer",
+          "Application",
+          "Job"
+        ]
+      },
+      {
+        "ms": 82,
+        "tables": []
+      },
+      {
+        "ms": 81,
+        "tables": [
+          "Assessment",
+          "Application",
+          "Job"
+        ]
+      },
+      {
+        "ms": 82,
+        "tables": [
+          "LeaveRequest"
+        ]
+      },
+      {
+        "ms": 84,
+        "tables": [
+          "Job"
+        ]
+      },
+      {
+        "ms": 85,
+        "tables": [
+          "Application",
+          "Job"
+        ]
+      },
+      {
+        "ms": 86,
+        "tables": [
+          "DailyAttendanceRecord"
+        ]
+      },
+      {
+        "ms": 88,
+        "tables": [
+          "DailyAttendanceRecord"
+        ]
+      },
+      {
+        "ms": 91,
+        "tables": [
+          "DailyAttendanceRecord"
+        ]
+      },
+      {
+        "ms": 160,
+        "tables": [
+          "Employee"
+        ]
+      },
+      {
+        "ms": 161,
+        "tables": [
+          "DailyAttendanceRecord"
+        ]
+      },
+      {
+        "ms": 160,
+        "tables": [
+          "ProbationRecord",
+          "Employee"
+        ]
+      },
+      {
+        "ms": 163,
+        "tables": [
+          "OnboardingProcess",
+          "Application",
+          "Job"
+        ]
+      },
+      {
+        "ms": 80,
+        "tables": [
+          "OnboardingTask",
+          "OnboardingProcess",
+          "Application",
+          "Job"
+        ]
+      },
+      {
+        "ms": 167,
+        "tables": [
+          "Employee",
+          "EmployeeAccount",
+          "EmploymentRecord"
+        ]
+      },
+      {
+        "ms": 170,
+        "tables": [
+          "Employee"
+        ]
+      },
+      {
+        "ms": 178,
+        "tables": [
+          "PayrollPeriod"
+        ]
+      },
+      {
+        "ms": 155,
+        "tables": [
+          "Interview",
+          "Application",
+          "Job"
+        ]
+      },
+      {
+        "ms": 160,
+        "tables": [
+          "LeaveRequestDay",
+          "LeaveRequest"
+        ]
+      },
+      {
+        "ms": 79,
+        "tables": [
+          "OnboardingProcess"
+        ]
+      },
+      {
+        "ms": 259,
+        "tables": [
+          "Employee",
+          "EmployeeCompensation"
+        ]
+      },
+      {
+        "ms": 79,
+        "tables": [
+          "Application"
+        ]
+      },
+      {
+        "ms": 169,
+        "tables": [
+          "EmploymentRecord"
+        ]
+      },
+      {
+        "ms": 86,
+        "tables": [
+          "Applicant"
+        ]
+      },
+      {
+        "ms": 167,
+        "tables": [
+          "EmploymentRecord"
+        ]
+      },
+      {
+        "ms": 79,
+        "tables": [
+          "Job"
+        ]
+      }
+    ],
+    "status": 200,
+    "expectedContent": true,
+    "streamedError": false,
+    "runtimeCodes": []
+  },
+  {
+    "route": "Dashboard",
+    "iteration": 5,
+    "ttfbMs": 371.51230000000214,
+    "completionMs": 1213.8453000000009,
+    "sqlStatements": 29,
+    "queries": [
+      {
+        "ms": 81,
+        "tables": [
+          "Organization"
+        ]
+      },
+      {
+        "ms": 85,
+        "tables": [
+          "Organization"
+        ]
+      },
+      {
+        "ms": 81,
+        "tables": [
+          "OrganizationBranding"
+        ]
+      },
+      {
+        "ms": 80,
+        "tables": [
+          "User"
+        ]
+      },
+      {
+        "ms": 80,
+        "tables": [
+          "Employee"
+        ]
+      },
+      {
+        "ms": 80,
+        "tables": [
+          "ProbationRecord",
+          "Employee"
+        ]
+      },
+      {
+        "ms": 84,
+        "tables": [
+          "Employee"
+        ]
+      },
+      {
+        "ms": 167,
+        "tables": [
+          "DailyAttendanceRecord"
+        ]
+      },
+      {
+        "ms": 166,
+        "tables": [
+          "PayrollPeriod"
+        ]
+      },
+      {
+        "ms": 170,
+        "tables": [
+          "DailyAttendanceRecord"
+        ]
+      },
+      {
+        "ms": 169,
+        "tables": [
+          "Application",
+          "Job"
+        ]
+      },
+      {
+        "ms": 172,
+        "tables": [
+          "Interview",
+          "Application",
+          "Job"
+        ]
+      },
+      {
+        "ms": 173,
+        "tables": [
+          "DailyAttendanceRecord"
+        ]
+      },
+      {
+        "ms": 171,
+        "tables": [
+          "OnboardingTask",
+          "OnboardingProcess",
+          "Application",
+          "Job"
+        ]
+      },
+      {
+        "ms": 175,
+        "tables": [
+          "Job"
+        ]
+      },
+      {
+        "ms": 176,
+        "tables": [
+          "Employee",
+          "EmployeeCompensation"
+        ]
+      },
+      {
+        "ms": 179,
+        "tables": [
+          "DailyAttendanceRecord"
+        ]
+      },
+      {
+        "ms": 177,
+        "tables": [
+          "Assessment",
+          "Application",
+          "Job"
+        ]
+      },
+      {
+        "ms": 177,
+        "tables": [
+          "LeaveRequestDay",
+          "LeaveRequest"
+        ]
+      },
+      {
+        "ms": 177,
+        "tables": [
+          "OnboardingProcess",
+          "Application",
+          "Job"
+        ]
+      },
+      {
+        "ms": 170,
+        "tables": [
+          "Offer",
+          "Application",
+          "Job"
+        ]
+      },
+      {
+        "ms": 169,
+        "tables": [
+          "Employee",
+          "EmployeeAccount",
+          "EmploymentRecord"
+        ]
+      },
+      {
+        "ms": 259,
+        "tables": [
+          "LeaveRequest"
+        ]
+      },
+      {
+        "ms": 161,
+        "tables": [
+          "OnboardingProcess"
+        ]
+      },
+      {
+        "ms": 167,
+        "tables": [
+          "EmploymentRecord"
+        ]
+      },
+      {
+        "ms": 159,
+        "tables": [
+          "EmploymentRecord"
+        ]
+      },
+      {
+        "ms": 165,
+        "tables": [
+          "Application"
+        ]
+      },
+      {
+        "ms": 168,
+        "tables": [
+          "Applicant"
+        ]
+      },
+      {
+        "ms": 166,
+        "tables": [
+          "Job"
+        ]
+      }
+    ],
+    "status": 200,
+    "expectedContent": true,
+    "streamedError": false,
+    "runtimeCodes": []
+  },
+  {
+    "route": "Hiring",
+    "iteration": 0,
+    "ttfbMs": 511.0888999999952,
+    "completionMs": 797.145199999999,
+    "sqlStatements": 8,
+    "queries": [
+      {
+        "ms": 164,
+        "tables": [
+          "Organization"
+        ]
+      },
+      {
+        "ms": 162,
+        "tables": [
+          "Job"
+        ]
+      },
+      {
+        "ms": 97,
+        "tables": [
+          "Organization"
+        ]
+      },
+      {
+        "ms": 82,
+        "tables": [
+          "OrganizationBranding"
+        ]
+      },
+      {
+        "ms": 179,
+        "tables": [
+          "Application",
+          "Job"
+        ]
+      },
+      {
+        "ms": 83,
+        "tables": [
+          "User"
+        ]
+      },
+      {
+        "ms": 173,
+        "tables": [
+          "Applicant"
+        ]
+      },
+      {
+        "ms": 164,
+        "tables": [
+          "Job"
+        ]
+      }
+    ],
+    "status": 200,
+    "expectedContent": true,
+    "streamedError": false,
+    "runtimeCodes": []
+  },
+  {
+    "route": "Hiring",
+    "iteration": 1,
+    "ttfbMs": 624.8531999999977,
+    "completionMs": 629.1359999999986,
+    "sqlStatements": 8,
+    "queries": [
+      {
+        "ms": 80,
+        "tables": [
+          "Organization"
+        ]
+      },
+      {
+        "ms": 79,
+        "tables": [
+          "Job"
+        ]
+      },
+      {
+        "ms": 162,
+        "tables": [
+          "Organization"
+        ]
+      },
+      {
+        "ms": 161,
+        "tables": [
+          "Application",
+          "Job"
+        ]
+      },
+      {
+        "ms": 160,
+        "tables": [
+          "OrganizationBranding"
+        ]
+      },
+      {
+        "ms": 160,
+        "tables": [
+          "Applicant"
+        ]
+      },
+      {
+        "ms": 160,
+        "tables": [
+          "User"
+        ]
+      },
+      {
+        "ms": 160,
+        "tables": [
+          "Job"
+        ]
+      }
+    ],
+    "status": 200,
+    "expectedContent": true,
+    "streamedError": false,
+    "runtimeCodes": []
+  },
+  {
+    "route": "Hiring",
+    "iteration": 2,
+    "ttfbMs": 460.8712000000014,
+    "completionMs": 552.7930000000051,
+    "sqlStatements": 10,
+    "queries": [
+      {
+        "ms": 85,
+        "tables": []
+      },
+      {
+        "ms": 88,
+        "tables": []
+      },
+      {
+        "ms": 84,
+        "tables": [
+          "Organization"
+        ]
+      },
+      {
+        "ms": 164,
+        "tables": [
+          "Job"
+        ]
+      },
+      {
+        "ms": 81,
+        "tables": [
+          "Organization"
+        ]
+      },
+      {
+        "ms": 85,
+        "tables": [
+          "Application",
+          "Job"
+        ]
+      },
+      {
+        "ms": 85,
+        "tables": [
+          "OrganizationBranding"
+        ]
+      },
+      {
+        "ms": 86,
+        "tables": [
+          "Applicant"
+        ]
+      },
+      {
+        "ms": 83,
+        "tables": [
+          "User"
+        ]
+      },
+      {
+        "ms": 81,
+        "tables": [
+          "Job"
+        ]
+      }
+    ],
+    "status": 200,
+    "expectedContent": true,
+    "streamedError": false,
+    "runtimeCodes": []
+  },
+  {
+    "route": "Hiring",
+    "iteration": 3,
+    "ttfbMs": 389.47819999999774,
+    "completionMs": 394.5564999999988,
+    "sqlStatements": 8,
+    "queries": [
+      {
+        "ms": 83,
+        "tables": [
+          "Organization"
+        ]
+      },
+      {
+        "ms": 80,
+        "tables": [
+          "Job"
+        ]
+      },
+      {
+        "ms": 83,
+        "tables": [
+          "Organization"
+        ]
+      },
+      {
+        "ms": 83,
+        "tables": [
+          "Application",
+          "Job"
+        ]
+      },
+      {
+        "ms": 85,
+        "tables": [
+          "Applicant"
+        ]
+      },
+      {
+        "ms": 89,
+        "tables": [
+          "OrganizationBranding"
+        ]
+      },
+      {
+        "ms": 81,
+        "tables": [
+          "Job"
+        ]
+      },
+      {
+        "ms": 81,
+        "tables": [
+          "User"
+        ]
+      }
+    ],
+    "status": 200,
+    "expectedContent": true,
+    "streamedError": false,
+    "runtimeCodes": []
+  },
+  {
+    "route": "Hiring",
+    "iteration": 4,
+    "ttfbMs": 418.3419999999969,
+    "completionMs": 422.8228999999992,
+    "sqlStatements": 8,
+    "queries": [
+      {
+        "ms": 81,
+        "tables": [
+          "Organization"
+        ]
+      },
+      {
+        "ms": 82,
+        "tables": [
+          "Job"
+        ]
+      },
+      {
+        "ms": 81,
+        "tables": [
+          "Organization"
+        ]
+      },
+      {
+        "ms": 83,
+        "tables": [
+          "Application",
+          "Job"
+        ]
+      },
+      {
+        "ms": 88,
+        "tables": [
+          "Applicant"
+        ]
+      },
+      {
+        "ms": 122,
+        "tables": [
+          "OrganizationBranding"
+        ]
+      },
+      {
+        "ms": 86,
+        "tables": [
+          "Job"
+        ]
+      },
+      {
+        "ms": 83,
+        "tables": [
+          "User"
+        ]
+      }
+    ],
+    "status": 200,
+    "expectedContent": true,
+    "streamedError": false,
+    "runtimeCodes": []
+  },
+  {
+    "route": "Hiring",
+    "iteration": 5,
+    "ttfbMs": 396.46949999999924,
+    "completionMs": 399.93530000000464,
+    "sqlStatements": 8,
+    "queries": [
+      {
+        "ms": 85,
+        "tables": [
+          "Job"
+        ]
+      },
+      {
+        "ms": 90,
+        "tables": [
+          "Organization"
+        ]
+      },
+      {
+        "ms": 84,
+        "tables": [
+          "Application",
+          "Job"
+        ]
+      },
+      {
+        "ms": 88,
+        "tables": [
+          "Organization"
+        ]
+      },
+      {
+        "ms": 83,
+        "tables": [
+          "Applicant"
+        ]
+      },
+      {
+        "ms": 81,
+        "tables": [
+          "OrganizationBranding"
+        ]
+      },
+      {
+        "ms": 80,
+        "tables": [
+          "Job"
+        ]
+      },
+      {
+        "ms": 88,
+        "tables": [
+          "User"
+        ]
+      }
+    ],
+    "status": 200,
+    "expectedContent": true,
+    "streamedError": false,
+    "runtimeCodes": []
+  },
+  {
+    "route": "Employees",
+    "iteration": 0,
+    "ttfbMs": 361.86569999999483,
+    "completionMs": 956.8907999999938,
+    "sqlStatements": 11,
+    "queries": [
+      {
+        "ms": 83,
+        "tables": [
+          "Organization"
+        ]
+      },
+      {
+        "ms": 81,
+        "tables": []
+      },
+      {
+        "ms": 82,
+        "tables": [
+          "Organization"
+        ]
+      },
+      {
+        "ms": 163,
+        "tables": [
+          "Employee"
+        ]
+      },
+      {
+        "ms": 82,
+        "tables": [
+          "OrganizationBranding"
+        ]
+      },
+      {
+        "ms": 79,
+        "tables": [
+          "Employee"
+        ]
+      },
+      {
+        "ms": 80,
+        "tables": [
+          "User"
+        ]
+      },
+      {
+        "ms": 79,
+        "tables": []
+      },
+      {
+        "ms": 162,
+        "tables": [
+          "Employee"
+        ]
+      },
+      {
+        "ms": 183,
+        "tables": [
+          "EmploymentRecord"
+        ]
+      },
+      {
+        "ms": 167,
+        "tables": [
+          "ProbationRecord"
+        ]
+      }
+    ],
+    "status": 200,
+    "expectedContent": true,
+    "streamedError": false,
+    "runtimeCodes": []
+  },
+  {
+    "route": "Employees",
+    "iteration": 1,
+    "ttfbMs": 366.8793000000005,
+    "completionMs": 1222.2462999999989,
+    "sqlStatements": 11,
+    "queries": [
+      {
+        "ms": 81,
+        "tables": [
+          "Organization"
+        ]
+      },
+      {
+        "ms": 81,
+        "tables": []
+      },
+      {
+        "ms": 86,
+        "tables": [
+          "Organization"
+        ]
+      },
+      {
+        "ms": 168,
+        "tables": [
+          "Employee"
+        ]
+      },
+      {
+        "ms": 82,
+        "tables": [
+          "OrganizationBranding"
+        ]
+      },
+      {
+        "ms": 88,
+        "tables": [
+          "Employee"
+        ]
+      },
+      {
+        "ms": 88,
+        "tables": [
+          "User"
+        ]
+      },
+      {
+        "ms": 84,
+        "tables": []
+      },
+      {
+        "ms": 433,
+        "tables": [
+          "Employee"
+        ]
+      },
+      {
+        "ms": 166,
+        "tables": [
+          "EmploymentRecord"
+        ]
+      },
+      {
+        "ms": 167,
+        "tables": [
+          "ProbationRecord"
+        ]
+      }
+    ],
+    "status": 200,
+    "expectedContent": true,
+    "streamedError": false,
+    "runtimeCodes": []
+  },
+  {
+    "route": "Employees",
+    "iteration": 2,
+    "ttfbMs": 358.0037999999986,
+    "completionMs": 611.898500000003,
+    "sqlStatements": 11,
+    "queries": [
+      {
+        "ms": 81,
+        "tables": []
+      },
+      {
+        "ms": 85,
+        "tables": [
+          "Organization"
+        ]
+      },
+      {
+        "ms": 84,
+        "tables": [
+          "Employee"
+        ]
+      },
+      {
+        "ms": 81,
+        "tables": [
+          "Organization"
+        ]
+      },
+      {
+        "ms": 80,
+        "tables": [
+          "Employee"
+        ]
+      },
+      {
+        "ms": 80,
+        "tables": [
+          "OrganizationBranding"
+        ]
+      },
+      {
+        "ms": 82,
+        "tables": []
+      },
+      {
+        "ms": 81,
+        "tables": [
+          "User"
+        ]
+      },
+      {
+        "ms": 83,
+        "tables": [
+          "Employee"
+        ]
+      },
+      {
+        "ms": 84,
+        "tables": [
+          "EmploymentRecord"
+        ]
+      },
+      {
+        "ms": 82,
+        "tables": [
+          "ProbationRecord"
+        ]
+      }
+    ],
+    "status": 200,
+    "expectedContent": true,
+    "streamedError": false,
+    "runtimeCodes": []
+  },
+  {
+    "route": "Employees",
+    "iteration": 3,
+    "ttfbMs": 350.29609999999957,
+    "completionMs": 592.049500000001,
+    "sqlStatements": 11,
+    "queries": [
+      {
+        "ms": 79,
+        "tables": []
+      },
+      {
+        "ms": 83,
+        "tables": [
+          "Organization"
+        ]
+      },
+      {
+        "ms": 79,
+        "tables": [
+          "Employee"
+        ]
+      },
+      {
+        "ms": 83,
+        "tables": [
+          "Organization"
+        ]
+      },
+      {
+        "ms": 88,
+        "tables": [
+          "Employee"
+        ]
+      },
+      {
+        "ms": 83,
+        "tables": [
+          "OrganizationBranding"
+        ]
+      },
+      {
+        "ms": 80,
+        "tables": []
+      },
+      {
+        "ms": 82,
+        "tables": [
+          "User"
+        ]
+      },
+      {
+        "ms": 79,
+        "tables": [
+          "Employee"
+        ]
+      },
+      {
+        "ms": 82,
+        "tables": [
+          "EmploymentRecord"
+        ]
+      },
+      {
+        "ms": 81,
+        "tables": [
+          "ProbationRecord"
+        ]
+      }
+    ],
+    "status": 200,
+    "expectedContent": true,
+    "streamedError": false,
+    "runtimeCodes": []
+  },
+  {
+    "route": "Employees",
+    "iteration": 4,
+    "ttfbMs": 358.40490000000136,
+    "completionMs": 704.732600000003,
+    "sqlStatements": 11,
+    "queries": [
+      {
+        "ms": 81,
+        "tables": [
+          "Organization"
+        ]
+      },
+      {
+        "ms": 80,
+        "tables": []
+      },
+      {
+        "ms": 81,
+        "tables": [
+          "Organization"
+        ]
+      },
+      {
+        "ms": 82,
+        "tables": [
+          "Employee"
+        ]
+      },
+      {
+        "ms": 81,
+        "tables": [
+          "OrganizationBranding"
+        ]
+      },
+      {
+        "ms": 81,
+        "tables": [
+          "Employee"
+        ]
+      },
+      {
+        "ms": 82,
+        "tables": [
+          "User"
+        ]
+      },
+      {
+        "ms": 83,
+        "tables": []
+      },
+      {
+        "ms": 82,
+        "tables": [
+          "Employee"
+        ]
+      },
+      {
+        "ms": 84,
+        "tables": [
+          "EmploymentRecord"
+        ]
+      },
+      {
+        "ms": 174,
+        "tables": [
+          "ProbationRecord"
+        ]
+      }
+    ],
+    "status": 200,
+    "expectedContent": true,
+    "streamedError": false,
+    "runtimeCodes": []
+  },
+  {
+    "route": "Employees",
+    "iteration": 5,
+    "ttfbMs": 366.674199999994,
+    "completionMs": 610.1638999999996,
+    "sqlStatements": 11,
+    "queries": [
+      {
+        "ms": 80,
+        "tables": []
+      },
+      {
+        "ms": 84,
+        "tables": [
+          "Organization"
+        ]
+      },
+      {
+        "ms": 85,
+        "tables": [
+          "Employee"
+        ]
+      },
+      {
+        "ms": 84,
+        "tables": [
+          "Organization"
+        ]
+      },
+      {
+        "ms": 79,
+        "tables": [
+          "Employee"
+        ]
+      },
+      {
+        "ms": 82,
+        "tables": [
+          "OrganizationBranding"
+        ]
+      },
+      {
+        "ms": 79,
+        "tables": []
+      },
+      {
+        "ms": 82,
+        "tables": [
+          "User"
+        ]
+      },
+      {
+        "ms": 81,
+        "tables": [
+          "Employee"
+        ]
+      },
+      {
+        "ms": 82,
+        "tables": [
+          "EmploymentRecord"
+        ]
+      },
+      {
+        "ms": 82,
+        "tables": [
+          "ProbationRecord"
+        ]
+      }
+    ],
+    "status": 200,
+    "expectedContent": true,
+    "streamedError": false,
+    "runtimeCodes": []
+  },
+  {
+    "route": "Attendance",
+    "iteration": 0,
+    "ttfbMs": 360.997199999998,
+    "completionMs": 484.30169999999634,
+    "sqlStatements": 10,
+    "queries": [
+      {
+        "ms": 81,
+        "tables": [
+          "Organization"
+        ]
+      },
+      {
+        "ms": 94,
+        "tables": []
+      },
+      {
+        "ms": 95,
+        "tables": []
+      },
+      {
+        "ms": 85,
+        "tables": [
+          "Organization"
+        ]
+      },
+      {
+        "ms": 172,
+        "tables": [
+          "EmploymentRecord",
+          "Employee"
+        ]
+      },
+      {
+        "ms": 81,
+        "tables": [
+          "OrganizationBranding"
+        ]
+      },
+      {
+        "ms": 176,
+        "tables": [
+          "Organization"
+        ]
+      },
+      {
+        "ms": 180,
+        "tables": [
+          "Employee"
+        ]
+      },
+      {
+        "ms": 81,
+        "tables": [
+          "User"
+        ]
+      },
+      {
+        "ms": 175,
+        "tables": [
+          "EmploymentRecord"
+        ]
+      }
+    ],
+    "status": 200,
+    "expectedContent": true,
+    "streamedError": false,
+    "runtimeCodes": []
+  },
+  {
+    "route": "Attendance",
+    "iteration": 1,
+    "ttfbMs": 959.3919999999998,
+    "completionMs": 960.8868999999977,
+    "sqlStatements": 8,
+    "queries": [
+      {
+        "ms": 83,
+        "tables": [
+          "Organization"
+        ]
+      },
+      {
+        "ms": 162,
+        "tables": [
+          "EmploymentRecord",
+          "Employee"
+        ]
+      },
+      {
+        "ms": 162,
+        "tables": [
+          "Employee"
+        ]
+      },
+      {
+        "ms": 170,
+        "tables": [
+          "Organization"
+        ]
+      },
+      {
+        "ms": 422,
+        "tables": [
+          "EmploymentRecord"
+        ]
+      },
+      {
+        "ms": 425,
+        "tables": [
+          "Organization"
+        ]
+      },
+      {
+        "ms": 166,
+        "tables": [
+          "OrganizationBranding"
+        ]
+      },
+      {
+        "ms": 166,
+        "tables": [
+          "User"
+        ]
+      }
+    ],
+    "status": 200,
+    "expectedContent": true,
+    "streamedError": false,
+    "runtimeCodes": []
+  },
+  {
+    "route": "Attendance",
+    "iteration": 2,
+    "ttfbMs": 372.8871999999974,
+    "completionMs": 374.81439999999566,
+    "sqlStatements": 8,
+    "queries": [
+      {
+        "ms": 85,
+        "tables": [
+          "Organization"
+        ]
+      },
+      {
+        "ms": 84,
+        "tables": [
+          "EmploymentRecord",
+          "Employee"
+        ]
+      },
+      {
+        "ms": 85,
+        "tables": [
+          "Organization"
+        ]
+      },
+      {
+        "ms": 163,
+        "tables": [
+          "Employee"
+        ]
+      },
+      {
+        "ms": 85,
+        "tables": [
+          "Organization"
+        ]
+      },
+      {
+        "ms": 85,
+        "tables": [
+          "OrganizationBranding"
+        ]
+      },
+      {
+        "ms": 161,
+        "tables": [
+          "EmploymentRecord"
+        ]
+      },
+      {
+        "ms": 83,
+        "tables": [
+          "User"
+        ]
+      }
+    ],
+    "status": 200,
+    "expectedContent": true,
+    "streamedError": false,
+    "runtimeCodes": []
+  },
+  {
+    "route": "Attendance",
+    "iteration": 3,
+    "ttfbMs": 377.98079999999754,
+    "completionMs": 379.9087999999974,
+    "sqlStatements": 8,
+    "queries": [
+      {
+        "ms": 82,
+        "tables": [
+          "EmploymentRecord",
+          "Employee"
+        ]
+      },
+      {
+        "ms": 86,
+        "tables": [
+          "Organization"
+        ]
+      },
+      {
+        "ms": 163,
+        "tables": [
+          "Organization"
+        ]
+      },
+      {
+        "ms": 87,
+        "tables": [
+          "Organization"
+        ]
+      },
+      {
+        "ms": 172,
+        "tables": [
+          "Employee"
+        ]
+      },
+      {
+        "ms": 87,
+        "tables": [
+          "OrganizationBranding"
+        ]
+      },
+      {
+        "ms": 169,
+        "tables": [
+          "EmploymentRecord"
+        ]
+      },
+      {
+        "ms": 84,
+        "tables": [
+          "User"
+        ]
+      }
+    ],
+    "status": 200,
+    "expectedContent": true,
+    "streamedError": false,
+    "runtimeCodes": []
+  },
+  {
+    "route": "Attendance",
+    "iteration": 4,
+    "ttfbMs": 374.0809999999983,
+    "completionMs": 375.9144000000015,
+    "sqlStatements": 8,
+    "queries": [
+      {
+        "ms": 96,
+        "tables": [
+          "Organization"
+        ]
+      },
+      {
+        "ms": 96,
+        "tables": [
+          "Employee"
+        ]
+      },
+      {
+        "ms": 98,
+        "tables": [
+          "Organization"
+        ]
+      },
+      {
+        "ms": 79,
+        "tables": [
+          "EmploymentRecord"
+        ]
+      },
+      {
+        "ms": 180,
+        "tables": [
+          "EmploymentRecord",
+          "Employee"
+        ]
+      },
+      {
+        "ms": 83,
+        "tables": [
+          "Organization"
+        ]
+      },
+      {
+        "ms": 86,
+        "tables": [
+          "OrganizationBranding"
+        ]
+      },
+      {
+        "ms": 86,
+        "tables": [
+          "User"
+        ]
+      }
+    ],
+    "status": 200,
+    "expectedContent": true,
+    "streamedError": false,
+    "runtimeCodes": []
+  },
+  {
+    "route": "Attendance",
+    "iteration": 5,
+    "ttfbMs": 376.5055999999968,
+    "completionMs": 377.9899000000005,
+    "sqlStatements": 8,
+    "queries": [
+      {
+        "ms": 80,
+        "tables": [
+          "Employee"
+        ]
+      },
+      {
+        "ms": 81,
+        "tables": [
+          "Organization"
+        ]
+      },
+      {
+        "ms": 84,
+        "tables": [
+          "Organization"
+        ]
+      },
+      {
+        "ms": 84,
+        "tables": [
+          "EmploymentRecord",
+          "Employee"
+        ]
+      },
+      {
+        "ms": 86,
+        "tables": [
+          "EmploymentRecord"
+        ]
+      },
+      {
+        "ms": 88,
+        "tables": [
+          "Organization"
+        ]
+      },
+      {
+        "ms": 86,
+        "tables": [
+          "OrganizationBranding"
+        ]
+      },
+      {
+        "ms": 83,
+        "tables": [
+          "User"
+        ]
+      }
+    ],
+    "status": 200,
+    "expectedContent": true,
+    "streamedError": false,
+    "runtimeCodes": []
+  },
+  {
+    "route": "Leave",
+    "iteration": 0,
+    "ttfbMs": 521.9668999999994,
+    "completionMs": 1047.4329999999973,
+    "sqlStatements": 9,
+    "queries": [
+      {
+        "ms": 86,
+        "tables": [
+          "Organization"
+        ]
+      },
+      {
+        "ms": 103,
+        "tables": [
+          "Organization"
+        ]
+      },
+      {
+        "ms": 86,
+        "tables": [
+          "OrganizationBranding"
+        ]
+      },
+      {
+        "ms": 168,
+        "tables": [
+          "User"
+        ]
+      },
+      {
+        "ms": 162,
+        "tables": [
+          "Organization"
+        ]
+      },
+      {
+        "ms": 168,
+        "tables": [
+          "LeaveRequest"
+        ]
+      },
+      {
+        "ms": 174,
+        "tables": [
+          "LeaveType"
+        ]
+      },
+      {
+        "ms": 167,
+        "tables": [
+          "Employee"
+        ]
+      },
+      {
+        "ms": 173,
+        "tables": [
+          "LeaveDocument"
+        ]
+      }
+    ],
+    "status": 200,
+    "expectedContent": true,
+    "streamedError": false,
+    "runtimeCodes": []
+  },
+  {
+    "route": "Leave",
+    "iteration": 1,
+    "ttfbMs": 453.94459999999526,
+    "completionMs": 1037.0815999999977,
+    "sqlStatements": 10,
+    "queries": [
+      {
+        "ms": 84,
+        "tables": [
+          "Organization"
+        ]
+      },
+      {
+        "ms": 86,
+        "tables": [
+          "Organization"
+        ]
+      },
+      {
+        "ms": 85,
+        "tables": [
+          "OrganizationBranding"
+        ]
+      },
+      {
+        "ms": 169,
+        "tables": [
+          "User"
+        ]
+      },
+      {
+        "ms": 80,
+        "tables": []
+      },
+      {
+        "ms": 172,
+        "tables": [
+          "Organization"
+        ]
+      },
+      {
+        "ms": 172,
+        "tables": [
+          "LeaveType"
+        ]
+      },
+      {
+        "ms": 166,
+        "tables": [
+          "LeaveRequest"
+        ]
+      },
+      {
+        "ms": 163,
+        "tables": [
+          "Employee"
+        ]
+      },
+      {
+        "ms": 162,
+        "tables": [
+          "LeaveDocument"
+        ]
+      }
+    ],
+    "status": 200,
+    "expectedContent": true,
+    "streamedError": false,
+    "runtimeCodes": []
+  },
+  {
+    "route": "Leave",
+    "iteration": 2,
+    "ttfbMs": 435.9293000000034,
+    "completionMs": 951.922900000005,
+    "sqlStatements": 9,
+    "queries": [
+      {
+        "ms": 80,
+        "tables": [
+          "Organization"
+        ]
+      },
+      {
+        "ms": 81,
+        "tables": [
+          "Organization"
+        ]
+      },
+      {
+        "ms": 78,
+        "tables": [
+          "OrganizationBranding"
+        ]
+      },
+      {
+        "ms": 164,
+        "tables": [
+          "User"
+        ]
+      },
+      {
+        "ms": 83,
+        "tables": [
+          "Organization"
+        ]
+      },
+      {
+        "ms": 162,
+        "tables": [
+          "LeaveType"
+        ]
+      },
+      {
+        "ms": 169,
+        "tables": [
+          "LeaveRequest"
+        ]
+      },
+      {
+        "ms": 166,
+        "tables": [
+          "Employee"
+        ]
+      },
+      {
+        "ms": 169,
+        "tables": [
+          "LeaveDocument"
+        ]
+      }
+    ],
+    "status": 200,
+    "expectedContent": true,
+    "streamedError": false,
+    "runtimeCodes": []
+  },
+  {
+    "route": "Leave",
+    "iteration": 3,
+    "ttfbMs": 367.94160000000556,
+    "completionMs": 627.0257000000056,
+    "sqlStatements": 9,
+    "queries": [
+      {
+        "ms": 83,
+        "tables": [
+          "Organization"
+        ]
+      },
+      {
+        "ms": 84,
+        "tables": [
+          "Organization"
+        ]
+      },
+      {
+        "ms": 83,
+        "tables": [
+          "OrganizationBranding"
+        ]
+      },
+      {
+        "ms": 83,
+        "tables": [
+          "User"
+        ]
+      },
+      {
+        "ms": 80,
+        "tables": [
+          "LeaveType"
+        ]
+      },
+      {
+        "ms": 84,
+        "tables": [
+          "Organization"
+        ]
+      },
+      {
+        "ms": 83,
+        "tables": [
+          "LeaveRequest"
+        ]
+      },
+      {
+        "ms": 82,
+        "tables": [
+          "Employee"
+        ]
+      },
+      {
+        "ms": 83,
+        "tables": [
+          "LeaveDocument"
+        ]
+      }
+    ],
+    "status": 200,
+    "expectedContent": true,
+    "streamedError": false,
+    "runtimeCodes": []
+  },
+  {
+    "route": "Leave",
+    "iteration": 4,
+    "ttfbMs": 363.5032000000065,
+    "completionMs": 621.6935000000012,
+    "sqlStatements": 9,
+    "queries": [
+      {
+        "ms": 83,
+        "tables": [
+          "Organization"
+        ]
+      },
+      {
+        "ms": 82,
+        "tables": [
+          "Organization"
+        ]
+      },
+      {
+        "ms": 84,
+        "tables": [
+          "OrganizationBranding"
+        ]
+      },
+      {
+        "ms": 84,
+        "tables": [
+          "User"
+        ]
+      },
+      {
+        "ms": 88,
+        "tables": [
+          "LeaveRequest"
+        ]
+      },
+      {
+        "ms": 89,
+        "tables": [
+          "LeaveType"
+        ]
+      },
+      {
+        "ms": 89,
+        "tables": [
+          "Organization"
+        ]
+      },
+      {
+        "ms": 82,
+        "tables": [
+          "Employee"
+        ]
+      },
+      {
+        "ms": 80,
+        "tables": [
+          "LeaveDocument"
+        ]
+      }
+    ],
+    "status": 200,
+    "expectedContent": true,
+    "streamedError": false,
+    "runtimeCodes": []
+  },
+  {
+    "route": "Leave",
+    "iteration": 5,
+    "ttfbMs": 360.3706999999995,
+    "completionMs": 631.3416999999972,
+    "sqlStatements": 9,
+    "queries": [
+      {
+        "ms": 79,
+        "tables": [
+          "Organization"
+        ]
+      },
+      {
+        "ms": 81,
+        "tables": [
+          "Organization"
+        ]
+      },
+      {
+        "ms": 80,
+        "tables": [
+          "OrganizationBranding"
+        ]
+      },
+      {
+        "ms": 89,
+        "tables": [
+          "User"
+        ]
+      },
+      {
+        "ms": 81,
+        "tables": [
+          "LeaveType"
+        ]
+      },
+      {
+        "ms": 90,
+        "tables": [
+          "Organization"
+        ]
+      },
+      {
+        "ms": 92,
+        "tables": [
+          "LeaveRequest"
+        ]
+      },
+      {
+        "ms": 82,
+        "tables": [
+          "Employee"
+        ]
+      },
+      {
+        "ms": 82,
+        "tables": [
+          "LeaveDocument"
+        ]
+      }
+    ],
+    "status": 200,
+    "expectedContent": true,
+    "streamedError": false,
+    "runtimeCodes": []
+  },
+  {
+    "route": "Payroll",
+    "iteration": 0,
+    "ttfbMs": 444.9495999999999,
+    "completionMs": 714.2267999999967,
+    "sqlStatements": 11,
+    "queries": [
+      {
+        "ms": 89,
+        "tables": [
+          "Organization"
+        ]
+      },
+      {
+        "ms": 83,
+        "tables": [
+          "Organization"
+        ]
+      },
+      {
+        "ms": 115,
+        "tables": [
+          "OrganizationBranding"
+        ]
+      },
+      {
+        "ms": 126,
+        "tables": [
+          "User"
+        ]
+      },
+      {
+        "ms": 82,
+        "tables": []
+      },
+      {
+        "ms": 83,
+        "tables": []
+      },
+      {
+        "ms": 163,
+        "tables": [
+          "EmployeeCompensation"
+        ]
+      },
+      {
+        "ms": 173,
+        "tables": [
+          "Employee"
+        ]
+      },
+      {
+        "ms": 173,
+        "tables": [
+          "PayrollPeriod"
+        ]
+      },
+      {
+        "ms": 172,
+        "tables": [
+          "LeaveType"
+        ]
+      },
+      {
+        "ms": 179,
+        "tables": [
+          "OrganizationPayrollPolicy"
+        ]
+      }
+    ],
+    "status": 200,
+    "expectedContent": true,
+    "streamedError": false,
+    "runtimeCodes": []
+  },
+  {
+    "route": "Payroll",
+    "iteration": 1,
+    "ttfbMs": 428.2306000000026,
+    "completionMs": 599.7055000000037,
+    "sqlStatements": 9,
+    "queries": [
+      {
+        "ms": 79,
+        "tables": [
+          "Organization"
+        ]
+      },
+      {
+        "ms": 80,
+        "tables": [
+          "Organization"
+        ]
+      },
+      {
+        "ms": 80,
+        "tables": [
+          "OrganizationBranding"
+        ]
+      },
+      {
+        "ms": 159,
+        "tables": [
+          "User"
+        ]
+      },
+      {
+        "ms": 81,
+        "tables": [
+          "LeaveType"
+        ]
+      },
+      {
+        "ms": 160,
+        "tables": [
+          "PayrollPeriod"
+        ]
+      },
+      {
+        "ms": 160,
+        "tables": [
+          "OrganizationPayrollPolicy"
+        ]
+      },
+      {
+        "ms": 169,
+        "tables": [
+          "EmployeeCompensation"
+        ]
+      },
+      {
+        "ms": 170,
+        "tables": [
+          "Employee"
+        ]
+      }
+    ],
+    "status": 200,
+    "expectedContent": true,
+    "streamedError": false,
+    "runtimeCodes": []
+  },
+  {
+    "route": "Payroll",
+    "iteration": 2,
+    "ttfbMs": 358.70840000000317,
+    "completionMs": 522.279300000002,
+    "sqlStatements": 9,
+    "queries": [
+      {
+        "ms": 83,
+        "tables": [
+          "Organization"
+        ]
+      },
+      {
+        "ms": 90,
+        "tables": [
+          "Organization"
+        ]
+      },
+      {
+        "ms": 83,
+        "tables": [
+          "OrganizationBranding"
+        ]
+      },
+      {
+        "ms": 83,
+        "tables": [
+          "User"
+        ]
+      },
+      {
+        "ms": 83,
+        "tables": [
+          "PayrollPeriod"
+        ]
+      },
+      {
+        "ms": 83,
+        "tables": [
+          "Employee"
+        ]
+      },
+      {
+        "ms": 159,
+        "tables": [
+          "LeaveType"
+        ]
+      },
+      {
+        "ms": 160,
+        "tables": [
+          "EmployeeCompensation"
+        ]
+      },
+      {
+        "ms": 161,
+        "tables": [
+          "OrganizationPayrollPolicy"
+        ]
+      }
+    ],
+    "status": 200,
+    "expectedContent": true,
+    "streamedError": false,
+    "runtimeCodes": []
+  },
+  {
+    "route": "Payroll",
+    "iteration": 3,
+    "ttfbMs": 441.8790000000008,
+    "completionMs": 616.3258999999962,
+    "sqlStatements": 9,
+    "queries": [
+      {
+        "ms": 83,
+        "tables": [
+          "Organization"
+        ]
+      },
+      {
+        "ms": 81,
+        "tables": [
+          "Organization"
+        ]
+      },
+      {
+        "ms": 83,
+        "tables": [
+          "OrganizationBranding"
+        ]
+      },
+      {
+        "ms": 165,
+        "tables": [
+          "User"
+        ]
+      },
+      {
+        "ms": 80,
+        "tables": [
+          "LeaveType"
+        ]
+      },
+      {
+        "ms": 83,
+        "tables": [
+          "EmployeeCompensation"
+        ]
+      },
+      {
+        "ms": 161,
+        "tables": [
+          "Employee"
+        ]
+      },
+      {
+        "ms": 162,
+        "tables": [
+          "PayrollPeriod"
+        ]
+      },
+      {
+        "ms": 167,
+        "tables": [
+          "OrganizationPayrollPolicy"
+        ]
+      }
+    ],
+    "status": 200,
+    "expectedContent": true,
+    "streamedError": false,
+    "runtimeCodes": []
+  },
+  {
+    "route": "Payroll",
+    "iteration": 4,
+    "ttfbMs": 435.83690000000206,
+    "completionMs": 690.1771999999983,
+    "sqlStatements": 11,
+    "queries": [
+      {
+        "ms": 83,
+        "tables": []
+      },
+      {
+        "ms": 83,
+        "tables": [
+          "Organization"
+        ]
+      },
+      {
+        "ms": 83,
+        "tables": [
+          "Organization"
+        ]
+      },
+      {
+        "ms": 84,
+        "tables": [
+          "OrganizationBranding"
+        ]
+      },
+      {
+        "ms": 84,
+        "tables": [
+          "User"
+        ]
+      },
+      {
+        "ms": 81,
+        "tables": [
+          "EmployeeCompensation"
+        ]
+      },
+      {
+        "ms": 80,
+        "tables": [
+          "OrganizationPayrollPolicy"
+        ]
+      },
+      {
+        "ms": 83,
+        "tables": []
+      },
+      {
+        "ms": 83,
+        "tables": [
+          "PayrollPeriod"
+        ]
+      },
+      {
+        "ms": 161,
+        "tables": [
+          "Employee"
+        ]
+      },
+      {
+        "ms": 168,
+        "tables": [
+          "LeaveType"
+        ]
+      }
+    ],
+    "status": 200,
+    "expectedContent": true,
+    "streamedError": false,
+    "runtimeCodes": []
+  },
+  {
+    "route": "Payroll",
+    "iteration": 5,
+    "ttfbMs": 377.1370999999999,
+    "completionMs": 554.283199999998,
+    "sqlStatements": 9,
+    "queries": [
+      {
+        "ms": 84,
+        "tables": [
+          "Organization"
+        ]
+      },
+      {
+        "ms": 85,
+        "tables": [
+          "Organization"
+        ]
+      },
+      {
+        "ms": 85,
+        "tables": [
+          "OrganizationBranding"
+        ]
+      },
+      {
+        "ms": 84,
+        "tables": [
+          "User"
+        ]
+      },
+      {
+        "ms": 81,
+        "tables": [
+          "EmployeeCompensation"
+        ]
+      },
+      {
+        "ms": 81,
+        "tables": [
+          "OrganizationPayrollPolicy"
+        ]
+      },
+      {
+        "ms": 81,
+        "tables": [
+          "PayrollPeriod"
+        ]
+      },
+      {
+        "ms": 84,
+        "tables": [
+          "Employee"
+        ]
+      },
+      {
+        "ms": 174,
+        "tables": [
+          "LeaveType"
+        ]
+      }
+    ],
+    "status": 200,
+    "expectedContent": true,
+    "streamedError": false,
+    "runtimeCodes": []
+  },
+  {
+    "route": "Analytics",
+    "iteration": 0,
+    "ttfbMs": 364.17789999999513,
+    "completionMs": 1156.2255999999907,
+    "sqlStatements": 20,
+    "queries": [
+      {
+        "ms": 84,
+        "tables": [
+          "Organization"
+        ]
+      },
+      {
+        "ms": 83,
+        "tables": [
+          "Organization"
+        ]
+      },
+      {
+        "ms": 84,
+        "tables": [
+          "OrganizationBranding"
+        ]
+      },
+      {
+        "ms": 84,
+        "tables": [
+          "User"
+        ]
+      },
+      {
+        "ms": 166,
+        "tables": [
+          "User",
+          "Organization"
+        ]
+      },
+      {
+        "ms": 86,
+        "tables": []
+      },
+      {
+        "ms": 88,
+        "tables": []
+      },
+      {
+        "ms": 89,
+        "tables": []
+      },
+      {
+        "ms": 89,
+        "tables": []
+      },
+      {
+        "ms": 161,
+        "tables": [
+          "PayrollPeriod"
+        ]
+      },
+      {
+        "ms": 170,
+        "tables": [
+          "LeaveType"
+        ]
+      },
+      {
+        "ms": 171,
+        "tables": [
+          "LeaveRequestDay",
+          "Employee",
+          "LeaveRequest"
+        ]
+      },
+      {
+        "ms": 177,
+        "tables": [
+          "PayrollEntry",
+          "PayrollPeriod",
+          "Employee"
+        ]
+      },
+      {
+        "ms": 166,
+        "tables": [
+          "LeaveRequest",
+          "Employee"
+        ]
+      },
+      {
+        "ms": 175,
+        "tables": [
+          "Employee"
+        ]
+      },
+      {
+        "ms": 178,
+        "tables": [
+          "PayrollEntry",
+          "Employee",
+          "PayrollPeriod"
+        ]
+      },
+      {
+        "ms": 183,
+        "tables": [
+          "DailyAttendanceRecord",
+          "Employee"
+        ]
+      },
+      {
+        "ms": 430,
+        "tables": [
+          "DailyAttendanceRecord",
+          "Employee"
+        ]
+      },
+      {
+        "ms": 175,
+        "tables": [
+          "EmploymentRecord"
+        ]
+      },
+      {
+        "ms": 176,
+        "tables": [
+          "ProbationRecord"
+        ]
+      }
+    ],
+    "status": 200,
+    "expectedContent": true,
+    "streamedError": false,
+    "runtimeCodes": []
+  },
+  {
+    "route": "Analytics",
+    "iteration": 1,
+    "ttfbMs": 732.5255000000034,
+    "completionMs": 1401.5480000000098,
+    "sqlStatements": 16,
+    "queries": [
+      {
+        "ms": 176,
+        "tables": [
+          "Organization"
+        ]
+      },
+      {
+        "ms": 179,
+        "tables": [
+          "Organization"
+        ]
+      },
+      {
+        "ms": 174,
+        "tables": [
+          "OrganizationBranding"
+        ]
+      },
+      {
+        "ms": 174,
+        "tables": [
+          "User"
+        ]
+      },
+      {
+        "ms": 178,
+        "tables": [
+          "User",
+          "Organization"
+        ]
+      },
+      {
+        "ms": 159,
+        "tables": [
+          "Employee"
+        ]
+      },
+      {
+        "ms": 161,
+        "tables": [
+          "PayrollEntry",
+          "Employee",
+          "PayrollPeriod"
+        ]
+      },
+      {
+        "ms": 161,
+        "tables": [
+          "DailyAttendanceRecord",
+          "Employee"
+        ]
+      },
+      {
+        "ms": 166,
+        "tables": [
+          "PayrollEntry",
+          "PayrollPeriod",
+          "Employee"
+        ]
+      },
+      {
+        "ms": 166,
+        "tables": [
+          "PayrollPeriod"
+        ]
+      },
+      {
+        "ms": 166,
+        "tables": [
+          "LeaveRequest",
+          "Employee"
+        ]
+      },
+      {
+        "ms": 176,
+        "tables": [
+          "LeaveType"
+        ]
+      },
+      {
+        "ms": 176,
+        "tables": [
+          "LeaveRequestDay",
+          "Employee",
+          "LeaveRequest"
+        ]
+      },
+      {
+        "ms": 162,
+        "tables": [
+          "EmploymentRecord"
+        ]
+      },
+      {
+        "ms": 446,
+        "tables": [
+          "DailyAttendanceRecord",
+          "Employee"
+        ]
+      },
+      {
+        "ms": 162,
+        "tables": [
+          "ProbationRecord"
+        ]
+      }
+    ],
+    "status": 200,
+    "expectedContent": true,
+    "streamedError": false,
+    "runtimeCodes": []
+  },
+  {
+    "route": "Analytics",
+    "iteration": 2,
+    "ttfbMs": 334.9811000000045,
+    "completionMs": 1075.8104000000021,
+    "sqlStatements": 16,
+    "queries": [
+      {
+        "ms": 81,
+        "tables": [
+          "Organization"
+        ]
+      },
+      {
+        "ms": 79,
+        "tables": [
+          "Organization"
+        ]
+      },
+      {
+        "ms": 81,
+        "tables": [
+          "OrganizationBranding"
+        ]
+      },
+      {
+        "ms": 80,
+        "tables": [
+          "User"
+        ]
+      },
+      {
+        "ms": 163,
+        "tables": [
+          "User",
+          "Organization"
+        ]
+      },
+      {
+        "ms": 83,
+        "tables": [
+          "DailyAttendanceRecord",
+          "Employee"
+        ]
+      },
+      {
+        "ms": 84,
+        "tables": [
+          "LeaveRequest",
+          "Employee"
+        ]
+      },
+      {
+        "ms": 88,
+        "tables": [
+          "LeaveType"
+        ]
+      },
+      {
+        "ms": 168,
+        "tables": [
+          "PayrollEntry",
+          "Employee",
+          "PayrollPeriod"
+        ]
+      },
+      {
+        "ms": 169,
+        "tables": [
+          "LeaveRequestDay",
+          "Employee",
+          "LeaveRequest"
+        ]
+      },
+      {
+        "ms": 178,
+        "tables": [
+          "PayrollEntry",
+          "PayrollPeriod",
+          "Employee"
+        ]
+      },
+      {
+        "ms": 179,
+        "tables": [
+          "PayrollPeriod"
+        ]
+      },
+      {
+        "ms": 245,
+        "tables": [
+          "Employee"
+        ]
+      },
+      {
+        "ms": 399,
+        "tables": [
+          "DailyAttendanceRecord",
+          "Employee"
+        ]
+      },
+      {
+        "ms": 162,
+        "tables": [
+          "EmploymentRecord"
+        ]
+      },
+      {
+        "ms": 161,
+        "tables": [
+          "ProbationRecord"
+        ]
+      }
+    ],
+    "status": 200,
+    "expectedContent": true,
+    "streamedError": false,
+    "runtimeCodes": []
+  },
+  {
+    "route": "Analytics",
+    "iteration": 3,
+    "ttfbMs": 349.66509999999835,
+    "completionMs": 1058.3218999999954,
+    "sqlStatements": 17,
+    "queries": [
+      {
+        "ms": 81,
+        "tables": [
+          "Organization"
+        ]
+      },
+      {
+        "ms": 80,
+        "tables": [
+          "Organization"
+        ]
+      },
+      {
+        "ms": 80,
+        "tables": [
+          "OrganizationBranding"
+        ]
+      },
+      {
+        "ms": 81,
+        "tables": [
+          "User"
+        ]
+      },
+      {
+        "ms": 168,
+        "tables": [
+          "User",
+          "Organization"
+        ]
+      },
+      {
+        "ms": 80,
+        "tables": []
+      },
+      {
+        "ms": 113,
+        "tables": [
+          "LeaveRequestDay",
+          "Employee",
+          "LeaveRequest"
+        ]
+      },
+      {
+        "ms": 115,
+        "tables": [
+          "DailyAttendanceRecord",
+          "Employee"
+        ]
+      },
+      {
+        "ms": 198,
+        "tables": [
+          "PayrollEntry",
+          "Employee",
+          "PayrollPeriod"
+        ]
+      },
+      {
+        "ms": 198,
+        "tables": [
+          "Employee"
+        ]
+      },
+      {
+        "ms": 199,
+        "tables": [
+          "LeaveRequest",
+          "Employee"
+        ]
+      },
+      {
+        "ms": 201,
+        "tables": [
+          "PayrollPeriod"
+        ]
+      },
+      {
+        "ms": 202,
+        "tables": [
+          "LeaveType"
+        ]
+      },
+      {
+        "ms": 200,
+        "tables": [
+          "PayrollEntry",
+          "PayrollPeriod",
+          "Employee"
+        ]
+      },
+      {
+        "ms": 170,
+        "tables": [
+          "EmploymentRecord"
+        ]
+      },
+      {
+        "ms": 162,
+        "tables": [
+          "ProbationRecord"
+        ]
+      },
+      {
+        "ms": 536,
+        "tables": [
+          "DailyAttendanceRecord",
+          "Employee"
+        ]
+      }
+    ],
+    "status": 200,
+    "expectedContent": true,
+    "streamedError": false,
+    "runtimeCodes": []
+  },
+  {
+    "route": "Analytics",
+    "iteration": 4,
+    "ttfbMs": 357.74950000000536,
+    "completionMs": 962.8389000000025,
+    "sqlStatements": 16,
+    "queries": [
+      {
+        "ms": 81,
+        "tables": [
+          "Organization"
+        ]
+      },
+      {
+        "ms": 81,
+        "tables": [
+          "Organization"
+        ]
+      },
+      {
+        "ms": 83,
+        "tables": [
+          "OrganizationBranding"
+        ]
+      },
+      {
+        "ms": 83,
+        "tables": [
+          "User"
+        ]
+      },
+      {
+        "ms": 82,
+        "tables": [
+          "User",
+          "Organization"
+        ]
+      },
+      {
+        "ms": 80,
+        "tables": [
+          "PayrollEntry",
+          "PayrollPeriod",
+          "Employee"
+        ]
+      },
+      {
+        "ms": 81,
+        "tables": [
+          "DailyAttendanceRecord",
+          "Employee"
+        ]
+      },
+      {
+        "ms": 87,
+        "tables": [
+          "PayrollPeriod"
+        ]
+      },
+      {
+        "ms": 92,
+        "tables": [
+          "PayrollEntry",
+          "Employee",
+          "PayrollPeriod"
+        ]
+      },
+      {
+        "ms": 161,
+        "tables": [
+          "LeaveType"
+        ]
+      },
+      {
+        "ms": 171,
+        "tables": [
+          "Employee"
+        ]
+      },
+      {
+        "ms": 172,
+        "tables": [
+          "DailyAttendanceRecord",
+          "Employee"
+        ]
+      },
+      {
+        "ms": 180,
+        "tables": [
+          "LeaveRequest",
+          "Employee"
+        ]
+      },
+      {
+        "ms": 181,
+        "tables": [
+          "LeaveRequestDay",
+          "Employee",
+          "LeaveRequest"
+        ]
+      },
+      {
+        "ms": 175,
+        "tables": [
+          "EmploymentRecord"
+        ]
+      },
+      {
+        "ms": 170,
+        "tables": [
+          "ProbationRecord"
+        ]
+      }
+    ],
+    "status": 200,
+    "expectedContent": true,
+    "streamedError": false,
+    "runtimeCodes": []
+  },
+  {
+    "route": "Analytics",
+    "iteration": 5,
+    "ttfbMs": 360.1287000000011,
+    "completionMs": 951.8649000000005,
+    "sqlStatements": 16,
+    "queries": [
+      {
+        "ms": 83,
+        "tables": [
+          "Organization"
+        ]
+      },
+      {
+        "ms": 82,
+        "tables": [
+          "Organization"
+        ]
+      },
+      {
+        "ms": 83,
+        "tables": [
+          "OrganizationBranding"
+        ]
+      },
+      {
+        "ms": 83,
+        "tables": [
+          "User"
+        ]
+      },
+      {
+        "ms": 167,
+        "tables": [
+          "User",
+          "Organization"
+        ]
+      },
+      {
+        "ms": 79,
+        "tables": [
+          "LeaveType"
+        ]
+      },
+      {
+        "ms": 80,
+        "tables": [
+          "Employee"
+        ]
+      },
+      {
+        "ms": 82,
+        "tables": [
+          "PayrollEntry",
+          "Employee",
+          "PayrollPeriod"
+        ]
+      },
+      {
+        "ms": 85,
+        "tables": [
+          "LeaveRequest",
+          "Employee"
+        ]
+      },
+      {
+        "ms": 90,
+        "tables": [
+          "LeaveRequestDay",
+          "Employee",
+          "LeaveRequest"
+        ]
+      },
+      {
+        "ms": 84,
+        "tables": [
+          "EmploymentRecord"
+        ]
+      },
+      {
+        "ms": 168,
+        "tables": [
+          "PayrollPeriod"
+        ]
+      },
+      {
+        "ms": 173,
+        "tables": [
+          "PayrollEntry",
+          "PayrollPeriod",
+          "Employee"
+        ]
+      },
+      {
+        "ms": 189,
+        "tables": [
+          "DailyAttendanceRecord",
+          "Employee"
+        ]
+      },
+      {
+        "ms": 79,
+        "tables": [
+          "ProbationRecord"
+        ]
+      },
+      {
+        "ms": 420,
+        "tables": [
+          "DailyAttendanceRecord",
+          "Employee"
+        ]
+      }
+    ],
+    "status": 200,
+    "expectedContent": true,
+    "streamedError": false,
+    "runtimeCodes": []
+  },
+  {
+    "route": "Exit Management",
+    "iteration": 0,
+    "ttfbMs": 486.03919999999925,
+    "completionMs": 1435.3501000000106,
+    "sqlStatements": 11,
+    "queries": [
+      {
+        "ms": 84,
+        "tables": [
+          "Organization"
+        ]
+      },
+      {
+        "ms": 83,
+        "tables": [
+          "Organization"
+        ]
+      },
+      {
+        "ms": 83,
+        "tables": [
+          "OrganizationBranding"
+        ]
+      },
+      {
+        "ms": 170,
+        "tables": [
+          "User"
+        ]
+      },
+      {
+        "ms": 83,
+        "tables": []
+      },
+      {
+        "ms": 83,
+        "tables": []
+      },
+      {
+        "ms": 168,
+        "tables": [
+          "User"
+        ]
+      },
+      {
+        "ms": 167,
+        "tables": [
+          "Organization"
+        ]
+      },
+      {
+        "ms": 186,
+        "tables": [
+          "EmployeeSeparationCase"
+        ]
+      },
+      {
+        "ms": 172,
+        "tables": [
+          "EmployeeSeparationCase"
+        ]
+      },
+      {
+        "ms": 87,
+        "tables": []
+      }
+    ],
+    "status": 200,
+    "expectedContent": true,
+    "streamedError": false,
+    "runtimeCodes": []
+  },
+  {
+    "route": "Exit Management",
+    "iteration": 1,
+    "ttfbMs": 364.4447000000073,
+    "completionMs": 957.4532000000036,
+    "sqlStatements": 11,
+    "queries": [
+      {
+        "ms": 83,
+        "tables": [
+          "Organization"
+        ]
+      },
+      {
+        "ms": 83,
+        "tables": [
+          "Organization"
+        ]
+      },
+      {
+        "ms": 84,
+        "tables": [
+          "OrganizationBranding"
+        ]
+      },
+      {
+        "ms": 84,
+        "tables": [
+          "User"
+        ]
+      },
+      {
+        "ms": 82,
+        "tables": []
+      },
+      {
+        "ms": 83,
+        "tables": []
+      },
+      {
+        "ms": 84,
+        "tables": [
+          "User"
+        ]
+      },
+      {
+        "ms": 83,
+        "tables": [
+          "Organization"
+        ]
+      },
+      {
+        "ms": 84,
+        "tables": [
+          "EmployeeSeparationCase"
+        ]
+      },
+      {
+        "ms": 86,
+        "tables": [
+          "EmployeeSeparationCase"
+        ]
+      },
+      {
+        "ms": 82,
+        "tables": []
+      }
+    ],
+    "status": 200,
+    "expectedContent": true,
+    "streamedError": false,
+    "runtimeCodes": []
+  },
+  {
+    "route": "Exit Management",
+    "iteration": 2,
+    "ttfbMs": 368.148199999996,
+    "completionMs": 957.8294999999925,
+    "sqlStatements": 11,
+    "queries": [
+      {
+        "ms": 89,
+        "tables": [
+          "Organization"
+        ]
+      },
+      {
+        "ms": 82,
+        "tables": [
+          "Organization"
+        ]
+      },
+      {
+        "ms": 83,
+        "tables": [
+          "OrganizationBranding"
+        ]
+      },
+      {
+        "ms": 83,
+        "tables": [
+          "User"
+        ]
+      },
+      {
+        "ms": 84,
+        "tables": []
+      },
+      {
+        "ms": 83,
+        "tables": []
+      },
+      {
+        "ms": 83,
+        "tables": [
+          "User"
+        ]
+      },
+      {
+        "ms": 83,
+        "tables": [
+          "Organization"
+        ]
+      },
+      {
+        "ms": 83,
+        "tables": [
+          "EmployeeSeparationCase"
+        ]
+      },
+      {
+        "ms": 83,
+        "tables": [
+          "EmployeeSeparationCase"
+        ]
+      },
+      {
+        "ms": 84,
+        "tables": []
+      }
+    ],
+    "status": 200,
+    "expectedContent": true,
+    "streamedError": false,
+    "runtimeCodes": []
+  },
+  {
+    "route": "Exit Management",
+    "iteration": 3,
+    "ttfbMs": 366.00560000000405,
+    "completionMs": 959.0011999999988,
+    "sqlStatements": 11,
+    "queries": [
+      {
+        "ms": 83,
+        "tables": [
+          "Organization"
+        ]
+      },
+      {
+        "ms": 84,
+        "tables": [
+          "Organization"
+        ]
+      },
+      {
+        "ms": 85,
+        "tables": [
+          "OrganizationBranding"
+        ]
+      },
+      {
+        "ms": 83,
+        "tables": [
+          "User"
+        ]
+      },
+      {
+        "ms": 82,
+        "tables": []
+      },
+      {
+        "ms": 83,
+        "tables": []
+      },
+      {
+        "ms": 83,
+        "tables": [
+          "User"
+        ]
+      },
+      {
+        "ms": 85,
+        "tables": [
+          "Organization"
+        ]
+      },
+      {
+        "ms": 85,
+        "tables": [
+          "EmployeeSeparationCase"
+        ]
+      },
+      {
+        "ms": 84,
+        "tables": [
+          "EmployeeSeparationCase"
+        ]
+      },
+      {
+        "ms": 83,
+        "tables": []
+      }
+    ],
+    "status": 200,
+    "expectedContent": true,
+    "streamedError": false,
+    "runtimeCodes": []
+  },
+  {
+    "route": "Exit Management",
+    "iteration": 4,
+    "ttfbMs": 465.5046000000002,
+    "completionMs": 1075.503199999992,
+    "sqlStatements": 12,
+    "queries": [
+      {
+        "ms": 83,
+        "tables": []
+      },
+      {
+        "ms": 83,
+        "tables": [
+          "Organization"
+        ]
+      },
+      {
+        "ms": 86,
+        "tables": [
+          "Organization"
+        ]
+      },
+      {
+        "ms": 87,
+        "tables": [
+          "OrganizationBranding"
+        ]
+      },
+      {
+        "ms": 96,
+        "tables": [
+          "User"
+        ]
+      },
+      {
+        "ms": 85,
+        "tables": []
+      },
+      {
+        "ms": 89,
+        "tables": []
+      },
+      {
+        "ms": 85,
+        "tables": [
+          "User"
+        ]
+      },
+      {
+        "ms": 87,
+        "tables": [
+          "Organization"
+        ]
+      },
+      {
+        "ms": 84,
+        "tables": [
+          "EmployeeSeparationCase"
+        ]
+      },
+      {
+        "ms": 85,
+        "tables": [
+          "EmployeeSeparationCase"
+        ]
+      },
+      {
+        "ms": 84,
+        "tables": []
+      }
+    ],
+    "status": 200,
+    "expectedContent": true,
+    "streamedError": false,
+    "runtimeCodes": []
+  },
+  {
+    "route": "Exit Management",
+    "iteration": 5,
+    "ttfbMs": 373.4832999999926,
+    "completionMs": 965.049199999994,
+    "sqlStatements": 11,
+    "queries": [
+      {
+        "ms": 88,
+        "tables": [
+          "Organization"
+        ]
+      },
+      {
+        "ms": 84,
+        "tables": [
+          "Organization"
+        ]
+      },
+      {
+        "ms": 86,
+        "tables": [
+          "OrganizationBranding"
+        ]
+      },
+      {
+        "ms": 83,
+        "tables": [
+          "User"
+        ]
+      },
+      {
+        "ms": 83,
+        "tables": []
+      },
+      {
+        "ms": 83,
+        "tables": []
+      },
+      {
+        "ms": 84,
+        "tables": [
+          "User"
+        ]
+      },
+      {
+        "ms": 82,
+        "tables": [
+          "Organization"
+        ]
+      },
+      {
+        "ms": 83,
+        "tables": [
+          "EmployeeSeparationCase"
+        ]
+      },
+      {
+        "ms": 82,
+        "tables": [
+          "EmployeeSeparationCase"
+        ]
+      },
+      {
+        "ms": 86,
+        "tables": []
+      }
+    ],
+    "status": 200,
+    "expectedContent": true,
+    "streamedError": false,
+    "runtimeCodes": []
+  }
+]

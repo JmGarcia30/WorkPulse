@@ -1,0 +1,117 @@
+[
+  {
+    "route": "Dashboard",
+    "completed": true,
+    "expectedContent": true,
+    "renderedError": false,
+    "initialNormalLogin": true
+  },
+  {
+    "route": "Hiring",
+    "completed": true,
+    "expectedContent": true,
+    "renderedError": false,
+    "navigationMs": 4591,
+    "networkRequests": 10,
+    "documentRequests": 0,
+    "failedHttpResponses": [],
+    "runtimeExceptions": 0,
+    "consoleErrors": []
+  },
+  {
+    "route": "Employees",
+    "completed": true,
+    "expectedContent": true,
+    "renderedError": false,
+    "navigationMs": 4440,
+    "networkRequests": 13,
+    "documentRequests": 0,
+    "failedHttpResponses": [],
+    "runtimeExceptions": 0,
+    "consoleErrors": []
+  },
+  {
+    "route": "Employee Profile",
+    "completed": true,
+    "expectedContent": true,
+    "renderedError": false,
+    "navigationMs": 6652,
+    "networkRequests": 13,
+    "documentRequests": 0,
+    "failedHttpResponses": [],
+    "runtimeExceptions": 0,
+    "consoleErrors": []
+  },
+  {
+    "route": "Attendance",
+    "completed": true,
+    "expectedContent": true,
+    "renderedError": false,
+    "navigationMs": 5825,
+    "networkRequests": 15,
+    "documentRequests": 0,
+    "failedHttpResponses": [],
+    "runtimeExceptions": 0,
+    "consoleErrors": []
+  },
+  {
+    "route": "Leave",
+    "completed": true,
+    "expectedContent": true,
+    "renderedError": false,
+    "navigationMs": 5113,
+    "networkRequests": 13,
+    "documentRequests": 0,
+    "failedHttpResponses": [],
+    "runtimeExceptions": 0,
+    "consoleErrors": []
+  },
+  {
+    "route": "Payroll",
+    "completed": true,
+    "expectedContent": true,
+    "renderedError": false,
+    "navigationMs": 4478,
+    "networkRequests": 12,
+    "documentRequests": 0,
+    "failedHttpResponses": [],
+    "runtimeExceptions": 0,
+    "consoleErrors": []
+  },
+  {
+    "route": "Analytics",
+    "completed": true,
+    "expectedContent": true,
+    "renderedError": false,
+    "navigationMs": 3853,
+    "networkRequests": 12,
+    "documentRequests": 0,
+    "failedHttpResponses": [],
+    "runtimeExceptions": 0,
+    "consoleErrors": []
+  },
+  {
+    "route": "Exit Management",
+    "completed": true,
+    "expectedContent": true,
+    "renderedError": false,
+    "navigationMs": 3002,
+    "networkRequests": 13,
+    "documentRequests": 0,
+    "failedHttpResponses": [],
+    "runtimeExceptions": 0,
+    "consoleErrors": []
+  },
+  {
+    "route": "Dashboard return",
+    "completed": true,
+    "expectedContent": true,
+    "renderedError": false,
+    "navigationMs": 1590,
+    "networkRequests": 10,
+    "documentRequests": 0,
+    "failedHttpResponses": [],
+    "runtimeExceptions": 0,
+    "consoleErrors": []
+  }
+]

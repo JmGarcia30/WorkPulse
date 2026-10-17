@@ -1,0 +1,11 @@
+{
+  "name": "production-build",
+  "exitCode": 0,
+  "elapsedMs": 35428,
+  "errorCodes": [],
+  "assertions": [
+    "✓ Running next.config.ts took 34ms",
+    "✓ Compiled successfully in 9.3s",
+    "✓ Generating static pages using 15 workers (40/40) in 2.7s"
+  ]
+}

@@ -1,0 +1,52 @@
+{
+  "captureSource": "Next.js get_errors MCP response observed before restart",
+  "configErrors": [],
+  "issues": [
+    {
+      "type": "runtime",
+      "errorName": "PrismaClientKnownRequestError",
+      "message": "ProbationRecord.closedBySeparationCaseId does not exist",
+      "stack": [
+        {
+          "file": "src/features/dashboard/read-model.ts",
+          "methodName": "readDashboardData",
+          "line": 205
+        },
+        {
+          "file": "src/app/(dashboard)/dashboard/page.tsx",
+          "methodName": "DashboardPage",
+          "line": 14
+        }
+      ]
+    },
+    {
+      "type": "runtime",
+      "errorName": "SeparationError",
+      "message": "The separation operation could not be completed.",
+      "underlyingError": "EmployeeSeparationCase table does not exist",
+      "stack": [
+        {
+          "file": "src/features/separation/core.ts",
+          "methodName": "run",
+          "line": 53
+        },
+        {
+          "file": "src/app/(dashboard)/dashboard/employees/exit/page.tsx",
+          "methodName": "ExitPage",
+          "line": 11
+        }
+      ]
+    },
+    {
+      "type": "console",
+      "errorName": "Error",
+      "message": "Encountered two children with the same key, /dashboard/hiring/pipeline",
+      "stack": [
+        {
+          "file": "src/components/layout/DashboardHeader.tsx",
+          "line": 70
+        }
+      ]
+    }
+  ]
+}

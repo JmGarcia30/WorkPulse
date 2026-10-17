@@ -37,6 +37,17 @@ export class AttendanceError extends Error {
 
 type DbClient = Prisma.TransactionClient;
 
+async function serializableAttendance<T>(operation: (tx: DbClient) => Promise<T>): Promise<T> {
+  for (let attempt = 0; ; attempt++) {
+    try {
+      return await prisma.$transaction(operation, { isolationLevel: Prisma.TransactionIsolationLevel.Serializable });
+    } catch (error) {
+      // PostgreSQL has rolled back the entire attempt. Never retry timeouts or arbitrary failures.
+      if (attempt >= 2 || !(error instanceof Prisma.PrismaClientKnownRequestError) || error.code !== 'P2034') throw error;
+    }
+  }
+}
+
 async function assertActor(
   db: DbClient,
   organizationId: string,
@@ -198,46 +209,53 @@ export async function assignSchedule(input: {
   }, { isolationLevel: Prisma.TransactionIsolationLevel.Serializable });
 }
 
-const scheduleInclude = {
-  scheduleVersion: {
-    include: {
-      scheduleGroup: true,
-      days: { include: { breaks: true } },
-    },
-  },
-} satisfies Prisma.EmployeeScheduleAssignmentInclude;
-
 export async function materializeAttendanceDay(
   db: DbClient,
   input: { organizationId: string; employeeId: string; attendanceDate: string; asOf?: Date }
 ) {
-  const date = attendanceDateToDb(input.attendanceDate);
+  attendanceDateToDb(input.attendanceDate);
   const organization = await db.organization.findUnique({ where: { id: input.organizationId }, select: { timeZone: true } });
   if (!organization) throw new AttendanceError('NOT_FOUND', 'Organization not found.');
+  return materializeDayInOrganization(db, input, organization);
+}
+
+// Only reuse organization data read by the same transaction; never cache attendance inputs.
+async function materializeDayInOrganization(
+  db: DbClient,
+  input: { organizationId: string; employeeId: string; attendanceDate: string; asOf?: Date },
+  organization: { timeZone: string }
+) {
+  const date = attendanceDateToDb(input.attendanceDate);
   const dayStart = instantForLocalSecond(input.attendanceDate, 0, organization.timeZone);
   const dayEnd = instantForLocalSecond(input.attendanceDate, 86_400, organization.timeZone);
-  const employee = await db.employee.findFirst({
-    where: { id: input.employeeId, organizationId: input.organizationId },
-    include: {
-      employmentRecords: {
-        where: { effectiveFrom: { lt: dayEnd }, OR: [{ effectiveTo: null }, { effectiveTo: { gt: dayStart } }] },
-        orderBy: { effectiveFrom: 'desc' }, take: 1,
-      },
-    },
-  });
-  const employment = employee?.employmentRecords[0];
-  if (!employee || !employment) throw new AttendanceError('NOT_FOUND', 'Employee was not employed on the requested date.');
-  const assignment = await db.employeeScheduleAssignment.findFirst({
-    where: {
-      organizationId: input.organizationId, employeeId: input.employeeId,
-      effectiveFrom: { lte: date }, OR: [{ effectiveTo: null }, { effectiveTo: { gt: date } }],
-    },
-    include: scheduleInclude,
-    orderBy: { effectiveFrom: 'desc' },
-  });
-  const scheduleDay = assignment?.scheduleVersion.days.find(
-    (item) => item.isoWeekday === parseAttendanceDate(input.attendanceDate).dayOfWeek
-  ) ?? null;
+  const [employment] = await db.$queryRaw<Array<{ id: string }>>(Prisma.sql`
+    SELECT r.id FROM "Employee" e JOIN "EmploymentRecord" r ON r."employeeId" = e.id
+    WHERE e.id = ${input.employeeId} AND e."organizationId" = ${input.organizationId}
+      AND r."effectiveFrom" < ${dayEnd}
+      AND (r."effectiveTo" IS NULL OR r."effectiveTo" > ${dayStart})
+    ORDER BY r."effectiveFrom" DESC LIMIT 1
+  `);
+  if (!employment) throw new AttendanceError('NOT_FOUND', 'Employee was not employed on the requested date.');
+  // One bounded day projection replaces assignment/version/group/all-seven-days/break hydration.
+  const [assignment] = await db.$queryRaw<Array<{
+    id: string; lateGraceSeconds: number; dayId: string | null;
+    isWorkday: boolean | null; expectedStartSecond: number | null; expectedEndSecond: number | null;
+    breaks: Array<{ startSecond: number; endSecond: number; isPaid: boolean }>;
+  }>>(Prisma.sql`
+    SELECT a.id, v."lateGraceSeconds", d.id AS "dayId", d."isWorkday",
+      d."expectedStartSecond", d."expectedEndSecond",
+      COALESCE((SELECT jsonb_agg(jsonb_build_object('startSecond', b."startSecond",
+        'endSecond', b."endSecond", 'isPaid', b."isPaid")) FROM "WorkScheduleBreak" b
+        WHERE b."scheduleDayId" = d.id), '[]'::jsonb) AS breaks
+    FROM "EmployeeScheduleAssignment" a
+    JOIN "WorkScheduleVersion" v ON v.id = a."scheduleVersionId"
+    LEFT JOIN "WorkScheduleDay" d ON d."scheduleVersionId" = v.id
+      AND d."isoWeekday" = ${parseAttendanceDate(input.attendanceDate).dayOfWeek}
+    WHERE a."organizationId" = ${input.organizationId} AND a."employeeId" = ${input.employeeId}
+      AND a."effectiveFrom" <= ${date} AND (a."effectiveTo" IS NULL OR a."effectiveTo" > ${date})
+    ORDER BY a."effectiveFrom" DESC LIMIT 1
+  `);
+  const scheduleDay = assignment?.dayId ? assignment : null;
   const events = await db.attendanceEvent.findMany({
     where: { organizationId: input.organizationId, employeeId: input.employeeId, occurredAt: { gte: dayStart, lt: dayEnd } },
     orderBy: [{ occurredAt: 'asc' }, { id: 'asc' }],
@@ -277,7 +295,7 @@ export async function materializeAttendanceDay(
     ? calculateAttendanceDurations({
         attendanceDate: input.attendanceDate, timeZone: organization.timeZone,
         scheduledStartAt, scheduledEndAt,
-        lateGraceSeconds: assignment?.scheduleVersion.lateGraceSeconds ?? 0,
+        lateGraceSeconds: assignment?.lateGraceSeconds ?? 0,
         breaks: scheduleDay.breaks, firstTimeIn, lastTimeOut,
       })
     : { workedSeconds: null, lateSeconds: null, undertimeSeconds: null, overtimeSeconds: null };
@@ -289,7 +307,7 @@ export async function materializeAttendanceDay(
     update: {
       employmentRecordId: employment.id, scheduleAssignmentId: assignment?.id ?? null,
       timeZoneSnapshot: organization.timeZone, scheduledStartAt, scheduledEndAt,
-      lateGraceSeconds: assignment?.scheduleVersion.lateGraceSeconds ?? 0,
+      lateGraceSeconds: assignment?.lateGraceSeconds ?? 0,
       scheduledUnpaidBreakSeconds, firstTimeIn, lastTimeOut, ...durations,
       attendanceStatus: status,
       disposition, approvedLeaveRequestDayId: approvedLeaveDay?.id ?? null,
@@ -309,7 +327,7 @@ export async function materializeAttendanceDay(
       employmentRecordId: employment.id, scheduleAssignmentId: assignment?.id ?? null,
       attendanceDate: date, timeZoneSnapshot: organization.timeZone,
       scheduledStartAt, scheduledEndAt,
-      lateGraceSeconds: assignment?.scheduleVersion.lateGraceSeconds ?? 0,
+      lateGraceSeconds: assignment?.lateGraceSeconds ?? 0,
       scheduledUnpaidBreakSeconds, firstTimeIn, lastTimeOut, ...durations,
       attendanceStatus: status,
       disposition, approvedLeaveRequestDayId: approvedLeaveDay?.id ?? null,
@@ -351,11 +369,10 @@ export async function materializeAttendancePeriod(input: {
   for (let cursor = from; Temporal.PlainDate.compare(cursor, to) <= 0; cursor = cursor.add({ days: 1 })) {
     for (const employee of employees) {
       try {
-        await prisma.$transaction(
+        await serializableAttendance(
           async (tx) => {
             await materializeAttendanceDay(tx, { organizationId: input.organizationId, employeeId: employee.id, attendanceDate: cursor.toString(), asOf: input.asOf });
-          },
-          { isolationLevel: Prisma.TransactionIsolationLevel.Serializable }
+          }
         );
         count += 1;
       } catch (error) {
@@ -380,7 +397,7 @@ export async function recordAttendanceEvent(input: {
   if (input.metadata && (typeof input.metadata !== 'object' || Array.isArray(input.metadata) || Buffer.byteLength(JSON.stringify(input.metadata), 'utf8') > 4096)) {
     throw new AttendanceError('INVALID_INPUT', 'Attendance metadata must be a JSON object no larger than 4 KiB.');
   }
-  return prisma.$transaction(async (tx) => {
+  return serializableAttendance(async (tx) => {
     await assertActor(tx, input.organizationId, input.actorUserId!);
     const employee = await tx.employee.findFirst({ where: { id: input.employeeId, organizationId: input.organizationId }, select: { id: true } });
     if (!employee) throw new AttendanceError('NOT_FOUND', 'Employee not found or access denied.');
@@ -409,12 +426,12 @@ export async function recordAttendanceEvent(input: {
       throw new AttendanceError('IDEMPOTENCY_CONFLICT', 'The attendance reference was already used for different event data.');
     }
     const organization = await tx.organization.findUniqueOrThrow({ where: { id: input.organizationId }, select: { timeZone: true } });
-    await materializeAttendanceDay(tx, {
+    await materializeDayInOrganization(tx, {
       organizationId: input.organizationId, employeeId: input.employeeId,
       attendanceDate: attendanceDateForInstant(input.occurredAt, organization.timeZone),
-    });
+    }, organization);
     return { eventId: event.id, idempotent: inserted.count === 0 };
-  }, { isolationLevel: Prisma.TransactionIsolationLevel.Serializable });
+  });
 }
 
 export async function correctAttendance(input: {
@@ -430,7 +447,7 @@ export async function correctAttendance(input: {
     throw new AttendanceError('INVALID_INPUT', 'A Present correction requires a valid time-in and time-out pair.');
   }
   const reason = cleanText(input.reason, 'Correction reason');
-  return prisma.$transaction(async (tx) => {
+  return serializableAttendance(async (tx) => {
     await assertActor(tx, input.organizationId, input.actorUserId);
     const record = await tx.dailyAttendanceRecord.findFirst({ where: { id: input.dailyAttendanceRecordId, organizationId: input.organizationId } });
     if (!record) throw new AttendanceError('NOT_FOUND', 'Attendance record not found or access denied.');
@@ -451,5 +468,5 @@ export async function correctAttendance(input: {
       attendanceDate: record.attendanceDate.toISOString().slice(0, 10),
     });
     return { dailyAttendanceRecordId: record.id, revision };
-  }, { isolationLevel: Prisma.TransactionIsolationLevel.Serializable });
+  });
 }

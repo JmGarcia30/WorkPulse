@@ -1,5 +1,5 @@
 import { redirect } from 'next/navigation';
-import { requireBackOfficeContext } from '@/lib/auth/guards';
+import { getBackOfficeReadContext } from '@/lib/auth/guards';
 import { readDashboardData } from '@/features/dashboard/read-model';
 import { DashboardHeader } from '@/components/dashboard/DashboardHeader';
 import { DashboardSummaryCards } from '@/components/dashboard/DashboardSummaryCards';
@@ -10,7 +10,7 @@ import { HiringPipelineWidget } from '@/components/dashboard/HiringPipelineWidge
 import { RequiresAttentionWidget } from '@/components/dashboard/RequiresAttentionWidget';
 
 export default async function DashboardPage() {
-  const user = await requireBackOfficeContext();
+  const user = await getBackOfficeReadContext();
   const data = await readDashboardData(user);
 
   if (!data) {

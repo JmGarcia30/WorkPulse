@@ -3,9 +3,10 @@ import 'server-only';
 import { cache } from 'react';
 import { headers } from 'next/headers';
 import { notFound } from 'next/navigation';
-import { getOrganizationBranding } from '@/features/organization-branding/read-model';
+import { getOrganizationBrandingBySlug } from '@/features/organization-branding/read-model';
 import { measureDevelopment } from '@/lib/performance/diagnostics';
-import { databaseSlugForTenant, parsePlatformHost } from './host';
+import { parsePlatformHost } from './host';
+export { getOrganizationBrandingBySlug } from '@/features/organization-branding/read-model';
 
 const TENANT_SLUG = /^[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?$/;
 
@@ -22,11 +23,11 @@ export const resolveRequestTenant = cache(async () => measureDevelopment('tenant
   return branding;
 }));
 
-export const getOrganizationBrandingBySlug = cache(async (slug: string) => {
-  const { prisma } = await import('@/lib/db/prisma');
-  const organization = await prisma.organization.findUnique({ where: { slug: databaseSlugForTenant(slug) }, select: { id: true } });
-  return organization ? getOrganizationBranding(organization.id) : null;
-});
+// Reuse the already-resolved brand, rejecting IDs outside the request tenant.
+export async function getRequestOrganizationBranding(organizationId: string) {
+  const tenant = await resolveRequestTenant();
+  return tenant?.organizationId === organizationId ? tenant : null;
+}
 
 export async function requireRequestTenant() {
   const tenant = await resolveRequestTenant();

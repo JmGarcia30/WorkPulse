@@ -1,0 +1,15 @@
+{
+  "name": "scenarios-test-batch3-services",
+  "exitCode": 0,
+  "elapsedMs": 34287,
+  "assertions": [
+    "PASS 1: Custom policy: fractional Decimal deductions, paid leave, daily/monthly rates and complete snapshots",
+    "PASS 2: Custom policy: UNPAID, actual-present basis and occurrence deductions",
+    "PASS 3: Custom policy: NO_PAYROLL_EFFECT, actual-present basis and occurrence deductions",
+    "PASS 4: Deduction-exceeds-gross setup errors and unaffected employees match",
+    "PASS 5: Multiple covering compensations produce identical setup errors",
+    "PASS 6: Concurrent generation creates at most one entry per employee",
+    "PASS 7: Foreign tenant actor cannot generate this period"
+  ],
+  "errorCodes": []
+}

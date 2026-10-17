@@ -1,0 +1,54 @@
+{
+  "checks": [
+    {
+      "name": "startup-regression",
+      "exitCode": 0,
+      "elapsedMs": 92
+    },
+    {
+      "name": "isolated-regressions",
+      "exitCode": 0,
+      "elapsedMs": 374620
+    },
+    {
+      "name": "h10-interface",
+      "exitCode": 0,
+      "elapsedMs": 232963
+    },
+    {
+      "name": "prisma-validation",
+      "exitCode": 0,
+      "elapsedMs": 1771
+    },
+    {
+      "name": "typescript",
+      "exitCode": 0,
+      "elapsedMs": 27581
+    },
+    {
+      "name": "production-build",
+      "exitCode": 0,
+      "elapsedMs": 81224
+    },
+    {
+      "name": "eslint",
+      "exitCode": 0,
+      "elapsedMs": 19710
+    },
+    {
+      "name": "diff-check",
+      "exitCode": 0,
+      "elapsedMs": 632
+    }
+  ],
+  "browserVerified": true,
+  "uniqueModules": 9,
+  "consoleErrors": 0,
+  "consoleWarnings": 0,
+  "devtoolsErrors": 0,
+  "liveTarget": "workpulse-batch0-recovery",
+  "originalEnvUnchanged": true,
+  "protectedTablesUnchanged": 46,
+  "productionModified": false,
+  "devServerLeftRunning": true
+}

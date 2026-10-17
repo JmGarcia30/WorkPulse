@@ -1,6 +1,7 @@
-import { AbsenceDeductionRule, AttendanceDisposition, AttendanceStatus, CompensationStatus, CompensationType, DailyPayBasis, LateDeductionRule, LeavePayrollTreatment, LeaveRequestStatus, PayrollPeriodStatus, Prisma, Role, UndertimeDeductionRule } from '@prisma/client';
+import { AbsenceDeductionRule, AttendanceDisposition, AttendanceStatus, CompensationStatus, CompensationType, DailyPayBasis, LateDeductionRule, LeavePayrollTreatment, PayrollPeriodStatus, Prisma, Role, UndertimeDeductionRule } from '@prisma/client';
 import { prisma } from '@/lib/db/prisma';
 import { PayrollError, calculateMonthlyCompensationBase, inclusiveCalendarDays, parseCompensationType, parsePayFrequency, parsePayrollDate, validateCurrency } from './domain';
+import { readPayrollGenerationInputs } from './generation-inputs';
 import { resolvePayrollPolicy, validateResolvedPolicyParameters } from './policy';
 
 type PayrollDb = Prisma.TransactionClient | typeof prisma;
@@ -156,16 +157,9 @@ export async function generatePayroll(input: GeneratePayrollInput, db: PayrollDb
       employeeId: employee.id, employeeNumber: employee.employeeNumber, employeeName,
       code: 'SETUP_REQUIRED', message,
     });
-    const compensations = await db.employeeCompensation.findMany({
-      where: {
-        organizationId: input.organizationId,
-        employeeId: employee.id,
-        status: CompensationStatus.ACTIVE,
-        effectiveFrom: { lte: period.periodStart },
-        OR: [{ effectiveTo: null }, { effectiveTo: { gte: period.periodEnd } }],
-      },
-      orderBy: [{ effectiveFrom: 'desc' }, { createdAt: 'desc' }],
-    });
+    const { compensations, attendance, leaveDays } = await readPayrollGenerationInputs(
+      db, input.organizationId, employee.id, period.periodStart, period.periodEnd
+    );
     if (compensations.length !== 1) {
       setupError(compensations.length === 0
         ? 'No active compensation covers the entire payroll period.'
@@ -174,25 +168,6 @@ export async function generatePayroll(input: GeneratePayrollInput, db: PayrollDb
     }
 
     const compensation = compensations[0];
-    const attendance = await db.dailyAttendanceRecord.findMany({
-      where: {
-        organizationId: input.organizationId,
-        employeeId: employee.id,
-        attendanceDate: { gte: period.periodStart, lte: period.periodEnd },
-      },
-      orderBy: { attendanceDate: 'asc' },
-    });
-    const leaveDays = await db.leaveRequestDay.findMany({
-      where: {
-        organizationId: input.organizationId,
-        employeeId: employee.id,
-        attendanceDate: { gte: period.periodStart, lte: period.periodEnd },
-        leaveRequest: { status: LeaveRequestStatus.APPROVED },
-      },
-      include: { leaveRequest: { select: { id: true, leaveTypeId: true, leaveTypeCodeSnapshot: true, leaveTypeNameSnapshot: true, leavePaidSnapshot: true } } },
-      orderBy: { attendanceDate: 'asc' },
-    });
-
     const expectedDays = inclusiveCalendarDays(period.periodStart, period.periodEnd);
     const attendanceRequired = compensation.compensationType === CompensationType.DAILY
       || policy.lateDeductionRule !== LateDeductionRule.NONE

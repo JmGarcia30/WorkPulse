@@ -39,6 +39,7 @@ export async function activateEmployeeAccountInTransaction(
     !account.activationTokenExpiresAt ||
     account.activationTokenExpiresAt <= input.now ||
     account.user.role !== Role.EMPLOYEE ||
+    account.employee.employeeStatus !== 'ACTIVE' ||
     account.user.organizationId !== account.organizationId ||
     account.employee.organizationId !== account.organizationId
   ) {

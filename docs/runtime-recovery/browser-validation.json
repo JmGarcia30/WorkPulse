@@ -1,0 +1,12 @@
+{
+  "normalPasswordLogin": true,
+  "recoveryOnlyTemporaryAccount": true,
+  "liveRecoveryTargetConfirmedByAuthentication": true,
+  "verifiedBranch": "workpulse-batch0-recovery",
+  "consoleErrors": [],
+  "consoleWarnings": [],
+  "serverFailures": [],
+  "devtoolsConfigErrors": 0,
+  "devtoolsSessionErrors": 0,
+  "originalEnvUnchanged": true
+}

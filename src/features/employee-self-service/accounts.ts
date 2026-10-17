@@ -16,6 +16,7 @@ import {
   isActivationTokenFormatValid,
 } from './activation';
 import { publicOrigin } from '@/lib/tenant/host';
+import { disableEmployeeAccountInTransaction } from './account-state';
 
 export class EmployeeAccountError extends Error {
   constructor(public readonly code: string, message: string) {
@@ -248,12 +249,7 @@ export async function disableEmployeeAccount(input: { organizationId: string; ac
   const reason = input.reason.trim();
   if (!reason || reason.length > 2000) throw new EmployeeAccountError('INVALID_REASON', 'A disable reason is required.');
   return prisma.$transaction(async (tx) => {
-    const account = await tx.employeeAccount.update({
-      where: { id: input.accountId, organizationId: input.organizationId, status: { in: [EmployeeAccountStatus.INVITED, EmployeeAccountStatus.ACTIVE] } },
-      data: { status: EmployeeAccountStatus.DISABLED, activationTokenHash: null, activationTokenExpiresAt: null, disabledAt: new Date(), disabledReason: reason },
-    });
-    await tx.employeeAccountAudit.create({ data: { organizationId: input.organizationId, employeeAccountId: account.id, actorUserId: input.actorUserId, action: EmployeeAccountAuditAction.DISABLED, details: { reason } } });
-    return account;
+    return disableEmployeeAccountInTransaction(tx, { ...input, reason, now: new Date() });
   });
 }
 

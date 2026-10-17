@@ -216,6 +216,12 @@ async function testH7() {
       assert(list.length === 2 && list[0].entryId === latest.id && list[1].entryId === older.id && list[0].totalDeductions === '345.00', 'H7 finalized payroll list order/amounts incorrect.');
       const populated = await getMyDashboard(context, tx);
       assert(populated.latestPayroll?.entryId === latest.id && populated.monthSummary.presentDays === 1 && populated.monthSummary.lateOccurrences === 1 && populated.leave.requests.length === 1, 'H7 dashboard latest payroll and own summaries incorrect.');
+      const nextDay = new Date(day.getTime() + 86400000);
+      const latestLeave = await tx.leaveRequest.create({ data: { ...leaveInput, employeeId: own.employee.id, requestedStartDate: nextDay, requestedEndDate: nextDay, requestedUnits: '1.5', submittedAt: new Date(Date.now() + 1000) } });
+      const bounded = await getMyDashboard(context, tx);
+      assert(bounded.leave.requests.length === 1 && bounded.leave.requests[0].id === latestLeave.id && bounded.leave.pendingRequestCount === 2, 'H7 recent leave preview must retain the total pending count.');
+      const recentPayslips = await listFinalizedPayslipsForEmployee(payrollInput, tx, { take: 1 });
+      assert(recentPayslips.length === 1 && recentPayslips[0].entryId === list[0].entryId && (await listFinalizedPayslipsForEmployee(payrollInput, tx)).length === 2, 'H7 dashboard payslip bound must preserve complete historical payroll access.');
       await tx.dailyAttendanceRecord.update({ where: { id: rows[0].id }, data: { disposition: 'APPROVED_LEAVE', attendanceStatus: 'ABSENT' } });
       const onLeave = await getMyDashboard(context, tx);
       assert(onLeave.monthSummary.approvedLeaveDays === 1 && onLeave.monthSummary.presentDays === 0, 'H7 approved leave summary must respect stored disposition.');

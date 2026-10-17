@@ -154,3 +154,6 @@ export function canManagePayroll(user: UserSessionPayload | null): boolean {
 export const canViewPayroll = canManagePayroll;
 
 export const canViewAnalytics = canViewEmployees;
+
+export const canManageSeparation = canManageEmploymentLifecycle;
+export const canViewSeparation = canManageSeparation;

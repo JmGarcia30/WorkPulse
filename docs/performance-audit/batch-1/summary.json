@@ -1,0 +1,156 @@
+{
+  "capturedAt": "2026-10-17T10:20:09.489Z",
+  "mode": "local production webpack",
+  "rows": [
+    {
+      "route": "ESS",
+      "before": {
+        "samples": 5,
+        "completionMedianMs": 1430.2,
+        "completionRangeMs": [
+          1294.8,
+          1703
+        ],
+        "ttfbMedianMs": 1429.1,
+        "sqlMedian": 27,
+        "sqlRange": [
+          27,
+          29
+        ]
+      },
+      "after": {
+        "samples": 5,
+        "completionMedianMs": 1331.4,
+        "completionRangeMs": [
+          1063.6,
+          1940.5
+        ],
+        "ttfbMedianMs": 1330,
+        "sqlMedian": 22,
+        "sqlRange": [
+          22,
+          30
+        ]
+      },
+      "observedCompletionReductionPercent": 6.9,
+      "sqlMedianReductionPercent": 18.5
+    },
+    {
+      "route": "Analytics",
+      "before": {
+        "samples": 5,
+        "completionMedianMs": 1554.3,
+        "completionRangeMs": [
+          991.7,
+          2471.2
+        ],
+        "ttfbMedianMs": 454.2,
+        "sqlMedian": 20,
+        "sqlRange": [
+          20,
+          30
+        ]
+      },
+      "after": {
+        "samples": 5,
+        "completionMedianMs": 1145,
+        "completionRangeMs": [
+          889.8,
+          1221.5
+        ],
+        "ttfbMedianMs": 584.1,
+        "sqlMedian": 16,
+        "sqlRange": [
+          16,
+          24
+        ]
+      },
+      "observedCompletionReductionPercent": 26.3,
+      "sqlMedianReductionPercent": 20
+    },
+    {
+      "route": "Dashboard",
+      "before": {
+        "samples": 5,
+        "completionMedianMs": 1463,
+        "completionRangeMs": [
+          762.1,
+          2057.9
+        ],
+        "ttfbMedianMs": 664.1,
+        "sqlMedian": 28,
+        "sqlRange": [
+          28,
+          29
+        ]
+      },
+      "after": {
+        "samples": 5,
+        "completionMedianMs": 1288.9,
+        "completionRangeMs": [
+          1025.3,
+          1526.1
+        ],
+        "ttfbMedianMs": 594.3,
+        "sqlMedian": 28,
+        "sqlRange": [
+          28,
+          29
+        ]
+      },
+      "observedCompletionReductionPercent": 11.9,
+      "sqlMedianReductionPercent": 0
+    }
+  ],
+  "tests": [
+    {
+      "name": "h10-1",
+      "exitCode": 0,
+      "elapsedMs": 118377
+    },
+    {
+      "name": "h10-2",
+      "exitCode": 0,
+      "elapsedMs": 206309
+    },
+    {
+      "name": "isolated-regressions",
+      "exitCode": 1,
+      "elapsedMs": 329339,
+      "effectiveResult": "Other nested suites passed; corrected ESS fixture passed targeted isolated rerun; original failure artifact retained."
+    },
+    {
+      "name": "h10-interface",
+      "exitCode": 0,
+      "elapsedMs": 229960
+    },
+    {
+      "name": "analytics",
+      "exitCode": 0,
+      "elapsedMs": 20867
+    },
+    {
+      "name": "ess-retry",
+      "exitCode": 0,
+      "elapsedMs": 50675
+    }
+  ],
+  "checks": {
+    "eslintPassed": true,
+    "diffCheckPassed": true,
+    "typeScriptPassed": true,
+    "scope": "All Batch 1 modified and new code files; final standalone TypeScript exit 0 after H8 fixture changes."
+  },
+  "preservation": {
+    "capturedAt": "2026-10-17T10:18:24.763Z",
+    "branch": "workpulse-batch0-recovery",
+    "protectedTablesCompared": 46,
+    "changedProtectedTables": [],
+    "originalEnvUnchanged": true,
+    "appliedCount": 22,
+    "h10ChecksumMatch": true,
+    "missingColumns": [],
+    "missingTriggers": [],
+    "temporaryBenchmarkAccountsRemoved": true
+  }
+}

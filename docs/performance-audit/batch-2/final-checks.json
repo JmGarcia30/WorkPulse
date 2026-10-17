@@ -1,0 +1,6 @@
+{
+  "typeScriptPassed": true,
+  "eslintPassed": true,
+  "diffCheckPassed": true,
+  "scope": "All Batch 2 changed/new application, test, runner and reference files; final standalone TypeScript."
+}

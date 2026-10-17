@@ -1,0 +1,13 @@
+{
+  "name": "startup-regression",
+  "exitCode": 0,
+  "elapsedMs": 92,
+  "assertions": [
+    "PASS 1: inherited production URLs are overridden only in the child; session and CLI arguments are preserved",
+    "PASS 2: unverified recovery configuration cannot launch or fall back to production",
+    "PASS 3: unverified recovery configuration cannot launch or fall back to production",
+    "PASS 4: unverified recovery configuration cannot launch or fall back to production",
+    "PASS 5: missing recovery profile fails closed"
+  ],
+  "errorCodes": []
+}
