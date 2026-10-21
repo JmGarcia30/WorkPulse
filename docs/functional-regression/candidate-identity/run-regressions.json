@@ -1,0 +1,12 @@
+{
+  "exitCode": 0,
+  "elapsedMs": 52423,
+  "output": [
+    "{\"name\":\"test-h4-employee-self-service\",\"exitCode\":0,\"elapsedMs\":24256}",
+    "{\"name\":\"test-h8-analytics\",\"exitCode\":0,\"elapsedMs\":26471}",
+    "{\"name\":\"test-final-ux-hiring\",\"exitCode\":0,\"elapsedMs\":1162}",
+    "{\"name\":\"test-final-ux-payroll-state\",\"exitCode\":0,\"elapsedMs\":262}",
+    "{\"name\":\"test-runtime-startup\",\"exitCode\":0,\"elapsedMs\":137}",
+    ""
+  ]
+}

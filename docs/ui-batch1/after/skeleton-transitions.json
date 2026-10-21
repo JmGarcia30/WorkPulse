@@ -1,0 +1,102 @@
+[
+  {
+    "width": 320,
+    "kind": "jobs",
+    "pageOverflow": false,
+    "headerRetained": true,
+    "sidebarRetained": true,
+    "animated": false,
+    "dark": false,
+    "headerStable": true
+  },
+  {
+    "width": 320,
+    "kind": "employees",
+    "pageOverflow": false,
+    "headerRetained": true,
+    "sidebarRetained": true,
+    "animated": false,
+    "dark": false,
+    "headerStable": true
+  },
+  {
+    "width": 375,
+    "kind": "jobs",
+    "pageOverflow": false,
+    "headerRetained": true,
+    "sidebarRetained": true,
+    "animated": false,
+    "dark": false,
+    "headerStable": true
+  },
+  {
+    "width": 375,
+    "kind": "employees",
+    "pageOverflow": false,
+    "headerRetained": true,
+    "sidebarRetained": true,
+    "animated": false,
+    "dark": false,
+    "headerStable": true
+  },
+  {
+    "width": 390,
+    "kind": "jobs",
+    "pageOverflow": false,
+    "headerRetained": true,
+    "sidebarRetained": true,
+    "animated": false,
+    "dark": false,
+    "headerStable": true
+  },
+  {
+    "width": 390,
+    "kind": "employees",
+    "pageOverflow": false,
+    "headerRetained": true,
+    "sidebarRetained": true,
+    "animated": false,
+    "dark": false,
+    "headerStable": true
+  },
+  {
+    "width": 768,
+    "kind": "jobs",
+    "pageOverflow": false,
+    "headerRetained": true,
+    "sidebarRetained": true,
+    "animated": false,
+    "dark": false,
+    "headerStable": true
+  },
+  {
+    "width": 768,
+    "kind": "employees",
+    "pageOverflow": false,
+    "headerRetained": true,
+    "sidebarRetained": true,
+    "animated": false,
+    "dark": false,
+    "headerStable": true
+  },
+  {
+    "width": 1280,
+    "kind": "jobs",
+    "pageOverflow": false,
+    "headerRetained": true,
+    "sidebarRetained": true,
+    "animated": false,
+    "dark": false,
+    "headerStable": true
+  },
+  {
+    "width": 1280,
+    "kind": "employees",
+    "pageOverflow": false,
+    "headerRetained": true,
+    "sidebarRetained": true,
+    "animated": false,
+    "dark": false,
+    "headerStable": true
+  }
+]

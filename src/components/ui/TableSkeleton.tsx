@@ -1,19 +1,17 @@
+import { Skeleton } from './Skeleton';
+import { SkeletonCard } from './SkeletonCard';
+
 export function TableSkeleton({ rows = 5, cols = 5 }: { rows?: number; cols?: number }) {
-  return (
-    <div className="animate-pulse rounded-xl border border-slate-200 bg-white shadow-xs overflow-hidden dark:border-slate-800 dark:bg-slate-900">
-      <div className="h-10 border-b border-slate-200 bg-slate-50 dark:border-slate-800 dark:bg-slate-950" />
-      <div className="divide-y divide-slate-100 dark:divide-slate-800">
-        {Array.from({ length: rows }).map((_, rIdx) => (
-          <div key={rIdx} className="flex items-center justify-between px-4 py-4 gap-4">
-            {Array.from({ length: cols }).map((_, cIdx) => (
-              <div
-                key={cIdx}
-                className="h-3 rounded-md bg-slate-200 dark:bg-slate-800 flex-1"
-              />
-            ))}
-          </div>
-        ))}
+  return <div aria-hidden="true" className="min-w-0">
+    <div className="md:hidden"><SkeletonCard count={3} stacked /></div>
+    <div className="hidden overflow-hidden rounded-lg border border-[var(--wp-border)] bg-[var(--wp-surface)] md:block">
+      <div className="h-12 border-b border-[var(--wp-border)] bg-[var(--wp-surface-subtle)]" />
+      <div className="divide-y divide-[var(--wp-border)]">
+        {Array.from({ length: rows }, (_, row) => <div key={row} className="flex items-center gap-5 px-5 py-5">
+          {Array.from({ length: cols }, (_, col) => <Skeleton key={col} className="h-4 min-w-0 flex-1" />)}
+        </div>)}
       </div>
+      <div className="flex justify-between gap-4 border-t border-[var(--wp-border)] p-4"><Skeleton className="h-4 w-40" /><Skeleton className="h-8 w-48" /></div>
     </div>
-  );
+  </div>;
 }

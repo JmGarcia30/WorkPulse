@@ -1,0 +1,426 @@
+[
+  {
+    "scenario": "Normal password login reaches fixture-only Dashboard",
+    "passed": true
+  },
+  {
+    "scenario": "ORGANIZATION_ADMIN permitted document",
+    "passed": true
+  },
+  {
+    "scenario": "ORGANIZATION_ADMIN permitted document",
+    "passed": true
+  },
+  {
+    "scenario": "ORGANIZATION_ADMIN permitted document",
+    "passed": true
+  },
+  {
+    "scenario": "HR_ADMIN permitted document",
+    "passed": true
+  },
+  {
+    "scenario": "HR_ADMIN permitted document",
+    "passed": true
+  },
+  {
+    "scenario": "HR_ADMIN permitted document",
+    "passed": true
+  },
+  {
+    "scenario": "HIRING_MANAGER permitted document",
+    "passed": true
+  },
+  {
+    "scenario": "HIRING_MANAGER permitted document",
+    "passed": true
+  },
+  {
+    "scenario": "HIRING_MANAGER permitted document",
+    "passed": true
+  },
+  {
+    "scenario": "Employee denied",
+    "passed": true
+  },
+  {
+    "scenario": "No credentials denied",
+    "passed": true
+  },
+  {
+    "scenario": "Invalid staff cookie cannot use appId",
+    "passed": true
+  },
+  {
+    "scenario": "Wrong tenant staff denied",
+    "passed": true
+  },
+  {
+    "scenario": "Employee denied",
+    "passed": true
+  },
+  {
+    "scenario": "No credentials denied",
+    "passed": true
+  },
+  {
+    "scenario": "Invalid staff cookie cannot use appId",
+    "passed": true
+  },
+  {
+    "scenario": "Wrong tenant staff denied",
+    "passed": true
+  },
+  {
+    "scenario": "Employee denied",
+    "passed": true
+  },
+  {
+    "scenario": "No credentials denied",
+    "passed": true
+  },
+  {
+    "scenario": "Invalid staff cookie cannot use appId",
+    "passed": true
+  },
+  {
+    "scenario": "Wrong tenant staff denied",
+    "passed": true
+  },
+  {
+    "scenario": "Staff may read another candidate in same organization",
+    "passed": true
+  },
+  {
+    "scenario": "Changed ID cannot retrieve foreign document",
+    "passed": true
+  },
+  {
+    "scenario": "Anonymous foreign tenant cannot override host with appId",
+    "passed": true
+  },
+  {
+    "scenario": "Unprovisioned tenant cannot fall back to public careers access",
+    "passed": true
+  },
+  {
+    "scenario": "Mismatched candidate application and document IDs denied",
+    "passed": true
+  },
+  {
+    "scenario": "Missing record safe",
+    "passed": true
+  },
+  {
+    "scenario": "Missing record safe",
+    "passed": true
+  },
+  {
+    "scenario": "Missing record safe",
+    "passed": true
+  },
+  {
+    "scenario": "Inaccessible stored file safe",
+    "passed": true
+  },
+  {
+    "scenario": "Role downgrade rejects old JWT",
+    "passed": true
+  },
+  {
+    "scenario": "Role downgrade rejects old JWT",
+    "passed": true
+  },
+  {
+    "scenario": "Role downgrade rejects old JWT",
+    "passed": true
+  },
+  {
+    "scenario": "Hiring Manager recruitment upload persists",
+    "passed": true
+  },
+  {
+    "scenario": "Wrong request tenant prevents staff mutation",
+    "passed": true
+  },
+  {
+    "scenario": "Foreign document ID prevents staff mutation",
+    "passed": true
+  },
+  {
+    "scenario": "Hiring Manager cannot upload onboarding",
+    "passed": true
+  },
+  {
+    "scenario": "Administrator onboarding upload persists",
+    "passed": true
+  },
+  {
+    "scenario": "Verification records real persisted reviewer",
+    "passed": true
+  },
+  {
+    "scenario": "Direct candidate action cannot overwrite verified file",
+    "passed": true
+  },
+  {
+    "scenario": "Rejection persists reviewer feedback",
+    "passed": true
+  },
+  {
+    "scenario": "Wrong tenant prevents candidate upload",
+    "passed": true
+  },
+  {
+    "scenario": "Active HTML MIME cannot bypass validation with PDF extension",
+    "passed": true
+  },
+  {
+    "scenario": "Direct candidate action cannot overwrite verified onboarding file",
+    "passed": true
+  },
+  {
+    "scenario": "Waived onboarding file remains unchanged",
+    "passed": true
+  },
+  {
+    "scenario": "Non-document task cannot be completed via document upload",
+    "passed": true
+  },
+  {
+    "scenario": "Onboarding upload also rejects disguised HTML",
+    "passed": true
+  },
+  {
+    "scenario": "Foreign-host portal HTML and metadata contain no candidate identity",
+    "passed": true
+  },
+  {
+    "scenario": "Staff historical read after APPLIED",
+    "passed": true
+  },
+  {
+    "scenario": "Staff historical read after SCREENING",
+    "passed": true
+  },
+  {
+    "scenario": "Staff historical read after SHORTLISTED",
+    "passed": true
+  },
+  {
+    "scenario": "Staff historical read after INTERVIEW",
+    "passed": true
+  },
+  {
+    "scenario": "Staff historical read after ASSESSMENT",
+    "passed": true
+  },
+  {
+    "scenario": "Staff historical read after OFFER",
+    "passed": true
+  },
+  {
+    "scenario": "Staff historical read after HIRED",
+    "passed": true
+  },
+  {
+    "scenario": "Staff historical read after REJECTED",
+    "passed": true
+  },
+  {
+    "scenario": "Staff historical read after WITHDRAWN",
+    "passed": true
+  },
+  {
+    "scenario": "Raw local storage URL cannot bypass handler",
+    "passed": true
+  },
+  {
+    "scenario": "Raw local storage URL cannot bypass handler",
+    "passed": true
+  },
+  {
+    "scenario": "Public application stores resume against its new application",
+    "passed": true
+  },
+  {
+    "scenario": "Cross-organization reapplication preserves all shared identity fields",
+    "passed": true
+  },
+  {
+    "scenario": "Duplicate unverified submission returns neutral response and preserves unique application and resume",
+    "passed": true
+  },
+  {
+    "scenario": "File-validation responses cannot distinguish existing and unknown application emails",
+    "passed": true
+  },
+  {
+    "scenario": "New public-upload resume remains isolated from foreign staff organization",
+    "passed": true
+  },
+  {
+    "scenario": "Authorized organization can read its public application upload",
+    "passed": true
+  },
+  {
+    "scenario": "All six original CD-01/CD-05 exposure probes denied",
+    "passed": true
+  },
+  {
+    "scenario": "Malformed application identifiers cannot omit ownership predicates",
+    "passed": true
+  },
+  {
+    "scenario": "Wrong email returns no identity or grant",
+    "passed": true
+  },
+  {
+    "scenario": "Random link stored only as hash; exact fifteen-minute lifetime; no session before verification",
+    "passed": true
+  },
+  {
+    "scenario": "Resend cooldown enforced persistently",
+    "passed": true
+  },
+  {
+    "scenario": "Five-per-hour send cap enforced",
+    "passed": true
+  },
+  {
+    "scenario": "Verification denied on wrong tenant",
+    "passed": true
+  },
+  {
+    "scenario": "Expired email link denied",
+    "passed": true
+  },
+  {
+    "scenario": "Failed email delivery revokes reserved link and grants no access",
+    "passed": true
+  },
+  {
+    "scenario": "Resend invalidates previous email link",
+    "passed": true
+  },
+  {
+    "scenario": "Successful verification consumes link exactly once",
+    "passed": true
+  },
+  {
+    "scenario": "Candidate cookie is HttpOnly Secure SameSite=Lax and limited to twenty-four hours",
+    "passed": true
+  },
+  {
+    "scenario": "Verified session bound to one application",
+    "passed": true
+  },
+  {
+    "scenario": "Invalid staff cookie never falls back to verified candidate",
+    "passed": true
+  },
+  {
+    "scenario": "Expired candidate session denied",
+    "passed": true
+  },
+  {
+    "scenario": "Revoked session denied and cannot self-renew",
+    "passed": true
+  },
+  {
+    "scenario": "Rejected and withdrawn applications denied",
+    "passed": true
+  },
+  {
+    "scenario": "Hired candidate allowed until onboarding completion",
+    "passed": true
+  },
+  {
+    "scenario": "Real verification Server Action sets secure cookie and redirects to application",
+    "passed": true
+  },
+  {
+    "scenario": "Verified candidate downloads own private document",
+    "passed": true
+  },
+  {
+    "scenario": "Verified candidate downloads own private document",
+    "passed": true
+  },
+  {
+    "scenario": "Verified candidate wrong tenant denied",
+    "passed": true
+  },
+  {
+    "scenario": "Foreign candidate cannot use another application ID",
+    "passed": true
+  },
+  {
+    "scenario": "Anonymous portal and metadata show verification without identity",
+    "passed": true
+  },
+  {
+    "scenario": "Verified candidate portal renders own identity",
+    "passed": true
+  },
+  {
+    "scenario": "Verified candidate still cannot upload active HTML disguised as PDF",
+    "passed": true
+  },
+  {
+    "scenario": "Missing document ID cannot broaden verified candidate update",
+    "passed": true
+  },
+  {
+    "scenario": "Verified recruitment upload persists",
+    "passed": true
+  },
+  {
+    "scenario": "Authenticated candidate cannot replace verified recruitment document",
+    "passed": true
+  },
+  {
+    "scenario": "Verified hired-candidate onboarding upload persists",
+    "passed": true
+  },
+  {
+    "scenario": "Authenticated candidate cannot replace waived onboarding document",
+    "passed": true
+  },
+  {
+    "scenario": "Candidate cannot invoke HR revocation controls",
+    "passed": true
+  },
+  {
+    "scenario": "Wrong tenant cannot invoke HR revocation controls",
+    "passed": true
+  },
+  {
+    "scenario": "HR revocation denies existing candidate cookie",
+    "passed": true
+  },
+  {
+    "scenario": "HR re-enable requires fresh verification",
+    "passed": true
+  },
+  {
+    "scenario": "Actual onboarding completion permanently revokes candidate credentials",
+    "passed": true
+  },
+  {
+    "scenario": "Actual rejection action permanently revokes candidate credentials",
+    "passed": true
+  },
+  {
+    "scenario": "Browser recruitment preview link uses authorized endpoint",
+    "passed": true
+  },
+  {
+    "scenario": "Browser staff upload persists replacement through real form",
+    "passed": true
+  },
+  {
+    "scenario": "Browser preview/download receives exact uploaded fixture bytes",
+    "passed": true
+  }
+]

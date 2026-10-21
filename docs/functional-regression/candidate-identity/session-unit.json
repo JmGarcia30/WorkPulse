@@ -1,0 +1,7 @@
+{
+  "exitCode": 0,
+  "elapsedMs": 359,
+  "output": [
+    "PASS session signature/expiry/claim types, current role/membership, removed user, current identity, and database failure propagation"
+  ]
+}

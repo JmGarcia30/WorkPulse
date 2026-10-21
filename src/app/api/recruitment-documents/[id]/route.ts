@@ -1,3 +1,4 @@
+import { candidateHasAccess } from '@/features/careers/candidate-access';
 import { NextRequest, NextResponse } from 'next/server';
 import { COOKIE_NAME, getSession } from '@/lib/auth/session';
 import { requireBackOfficeContext } from '@/lib/auth/guards';
@@ -23,7 +24,7 @@ export async function GET(
   }
   const { id: documentId } = await params;
   const candidateAppId = request.nextUrl.searchParams.get('appId');
-  if (!user && !candidateAppId) return new NextResponse('Forbidden', { status: 403 });
+  if (!user && (!candidateAppId || !await candidateHasAccess(candidateAppId))) return new NextResponse('Forbidden', { status: 403 });
 
   const doc = await prisma.recruitmentDocument.findUnique({
     where: { id: documentId },
@@ -51,8 +52,7 @@ export async function GET(
     if (!canViewHiringData(user) || user.organizationId !== orgId) return new NextResponse('Forbidden', { status: 403 });
     // Authorized
   } else {
-    // Legacy ID-only candidate path; appId is not an ownership credential.
-    // The unresolved candidate credential policy remains a merge blocker.
+    // The session is verified above; IDs only select the owned resource.
     if (!candidateAppId || candidateAppId !== doc.applicationId) {
       return new NextResponse('Unauthorized access to candidate document', { status: 403 });
     }

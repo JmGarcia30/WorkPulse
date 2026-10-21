@@ -1,5 +1,5 @@
-import { LoadingSpinner } from '@/components/ui/LoadingSpinner';
+import { PageSkeleton } from '@/components/ui/PageSkeleton';
 
-export default function EmployeeProfileLoading() {
-  return <LoadingSpinner label="Loading employee profile..." />;
+export default function Loading() {
+  return <PageSkeleton kind="profile" label="employee profile" />;
 }

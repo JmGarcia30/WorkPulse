@@ -1,0 +1,2979 @@
+{
+  "branch": "workpulse-batch0-recovery",
+  "originalEnvSha256": "eefb1ccb8aad1895fef4d6a154efce261d3c26b00692265aba855e0be0c1d523",
+  "namespaces": [
+    {
+      "name": "public",
+      "tables": 51
+    }
+  ],
+  "migrationHistory": [
+    {
+      "migration_name": "20260810182207_sprint1_initial",
+      "checksum": "2a1391c7342b5e2af4987954458fe85fb5e6a94de3b8a36dedf04e1041e580e2",
+      "finished_at": "2026-08-10T18:22:08.142Z",
+      "rolled_back_at": null
+    },
+    {
+      "migration_name": "20260810191746_sprint1_5_tenant_portals",
+      "checksum": "a7a9f6f0af34f19220797cdfb4aa91e6647e0fac7d0da18e900bb09c37fc6d25",
+      "finished_at": "2026-08-10T19:17:47.321Z",
+      "rolled_back_at": null
+    },
+    {
+      "migration_name": "20260811133650_expand_application_status_enum",
+      "checksum": "0bddb0cfef0b78bd3eab1651d83dbfbf09292fd86f86c35a814dc17e70a4caf8",
+      "finished_at": "2026-08-11T13:36:50.811Z",
+      "rolled_back_at": null
+    },
+    {
+      "migration_name": "20260821112801_sprint2_2_interview_management",
+      "checksum": "8acf4fe6dfc7a6ba774d646db9aae20b1747c61c61f58615f73e8e013bb3c6d0",
+      "finished_at": "2026-08-21T11:28:01.908Z",
+      "rolled_back_at": null
+    },
+    {
+      "migration_name": "20260822133153_sprint2_3_assessments_offers",
+      "checksum": "dffee0cecbae782bcd8e820c7bd38d8c6d3faffeeb688b8c0d48222ef9cf2c15",
+      "finished_at": "2026-08-22T13:31:54.094Z",
+      "rolled_back_at": null
+    },
+    {
+      "migration_name": "20260825052913_sprint2_4_onboarding",
+      "checksum": "b609e1818c27d5e1944d43f7dc07d9c1471317d7744849edbf7826ea2de76701",
+      "finished_at": "2026-08-25T05:29:14.015Z",
+      "rolled_back_at": null
+    },
+    {
+      "migration_name": "20260831112506_add_parsed_resume",
+      "checksum": "b2d55da85bb98309bca10af9901de594b28955cc6e25097598bc838ca2d9e305",
+      "finished_at": "2026-08-31T11:25:06.977Z",
+      "rolled_back_at": null
+    },
+    {
+      "migration_name": "20260906180000_h1_employee_core",
+      "checksum": "9bb28a335297e939b8a6f88eae7157667a717f24c1e4ab6b3ef17dab5399e9f4",
+      "finished_at": "2026-09-06T14:44:26.548Z",
+      "rolled_back_at": null
+    },
+    {
+      "migration_name": "20260907120000_h2_employment_probation",
+      "checksum": "86a376ac88c79cbb3cf2d83228c6da789573b480182afb86696f084ed2786cf9",
+      "finished_at": "2026-09-07T11:36:55.213Z",
+      "rolled_back_at": null
+    },
+    {
+      "migration_name": "20260908180503_h3_attendance_foundation",
+      "checksum": "513d362d61e72e7c79172b416d1eed6267e443498c5b51b0202c078f29e1dfa4",
+      "finished_at": "2026-09-08T18:23:33.316Z",
+      "rolled_back_at": null
+    },
+    {
+      "migration_name": "20260911120000_h4_employee_self_service",
+      "checksum": "c8a304ccd975fe8b9f30de1be451ee2aee69484e777efdcc4b475a39d9d0ed73",
+      "finished_at": "2026-09-11T15:27:03.667Z",
+      "rolled_back_at": null
+    },
+    {
+      "migration_name": "20260914160000_h5_leave_management",
+      "checksum": "fe04d4e297e4a2e452f8c2c3b457e4285f5f750e2be88ff318daf931f3283aaf",
+      "finished_at": "2026-09-14T06:46:07.283Z",
+      "rolled_back_at": null
+    },
+    {
+      "migration_name": "20260914173000_h5_leave_integrity_followup",
+      "checksum": "3325017fba8425e0c7ce709dc1e7c1a0d38b4e7de1b0f7521a458f5c273632a1",
+      "finished_at": "2026-09-14T07:54:43.842Z",
+      "rolled_back_at": null
+    },
+    {
+      "migration_name": "20260915120000_h5_leave_workflow_simplification",
+      "checksum": "5c5277f49e163cc55eb8c3deeebb60a4aec42217fc65cc69919f5b2c8a5851d0",
+      "finished_at": null,
+      "rolled_back_at": "2026-09-15T15:11:50.071Z"
+    },
+    {
+      "migration_name": "20260915120000_h5_leave_workflow_simplification",
+      "checksum": "c6562cfbd06d7c56b56304d821c30a514bd4d959f94821bbd3aa055a93eeae54",
+      "finished_at": "2026-09-15T15:12:55.610Z",
+      "rolled_back_at": null
+    },
+    {
+      "migration_name": "20260917120000_h5_final_leave_simplification",
+      "checksum": "5e7ecb553b4f5bb793018fca9d0e09a70a3934a73d689cd7405360ca8b9fe3c6",
+      "finished_at": "2026-09-17T14:00:10.299Z",
+      "rolled_back_at": null
+    },
+    {
+      "migration_name": "20260918120000_s1_tenant_branding",
+      "checksum": "5028a2d95b17f4c643e8e7ffd6c73615f850bf2395604eda5552be261a9d4aeb",
+      "finished_at": "2026-09-17T15:18:11.600Z",
+      "rolled_back_at": null
+    },
+    {
+      "migration_name": "20260924190000_h6_1_payroll_foundation",
+      "checksum": "a79538204f6ae391107532f432219415648bbfe96193f9313782ba25206bb3dd",
+      "finished_at": "2026-09-24T04:59:35.749Z",
+      "rolled_back_at": null
+    },
+    {
+      "migration_name": "20260928120000_h6_2_simple_payroll_calculation",
+      "checksum": "7810038d537709df6c327be4380b65cf2858b7ca907175f6fbae4f3a430dae35",
+      "finished_at": "2026-09-28T05:31:09.932Z",
+      "rolled_back_at": null
+    },
+    {
+      "migration_name": "20260928180000_h6_2_5_payroll_policy",
+      "checksum": "9ef846c9dbe7b8f2823b406685371efb75054d2b2e69d4a51c4d353abceec979",
+      "finished_at": "2026-09-28T06:07:24.117Z",
+      "rolled_back_at": null
+    },
+    {
+      "migration_name": "20260928210000_h6_3_payroll_finalization",
+      "checksum": "e884e60fac32b854a67e9ab20207c397e0c6ef5a5ceb95824a6eb93e4d107d48",
+      "finished_at": "2026-09-28T06:31:59.163Z",
+      "rolled_back_at": null
+    },
+    {
+      "migration_name": "20261017090000_h10_1_exit_clearance",
+      "checksum": "ff13d527ce230b08eaa54d99a6d2c75e493a5235e34903f300f3752cb46c974a",
+      "finished_at": "2026-10-17T09:11:34.537Z",
+      "rolled_back_at": null
+    },
+    {
+      "migration_name": "20261017120000_h10_2_final_separation",
+      "checksum": "8b2cad450524f1eef19fa32c1a8756fb60eb49dec28dfafe469d294b3e041bce",
+      "finished_at": "2026-10-17T09:11:35.179Z",
+      "rolled_back_at": null
+    }
+  ],
+  "catalogSha256": "ae140deb3ef5a8e33e4d4ab19c1c23b38c9014f13a0774bfe01d15b2af1d0ac8",
+  "data": {
+    "columns": [
+      {
+        "table_name": "Applicant",
+        "column_name": "id"
+      },
+      {
+        "table_name": "Applicant",
+        "column_name": "firstName"
+      },
+      {
+        "table_name": "Applicant",
+        "column_name": "lastName"
+      },
+      {
+        "table_name": "Applicant",
+        "column_name": "email"
+      },
+      {
+        "table_name": "Applicant",
+        "column_name": "phone"
+      },
+      {
+        "table_name": "Applicant",
+        "column_name": "createdAt"
+      },
+      {
+        "table_name": "Applicant",
+        "column_name": "updatedAt"
+      },
+      {
+        "table_name": "Application",
+        "column_name": "id"
+      },
+      {
+        "table_name": "Application",
+        "column_name": "jobId"
+      },
+      {
+        "table_name": "Application",
+        "column_name": "applicantId"
+      },
+      {
+        "table_name": "Application",
+        "column_name": "status"
+      },
+      {
+        "table_name": "Application",
+        "column_name": "coverLetter"
+      },
+      {
+        "table_name": "Application",
+        "column_name": "appliedAt"
+      },
+      {
+        "table_name": "Application",
+        "column_name": "updatedAt"
+      },
+      {
+        "table_name": "ApplicationStatusHistory",
+        "column_name": "id"
+      },
+      {
+        "table_name": "ApplicationStatusHistory",
+        "column_name": "applicationId"
+      },
+      {
+        "table_name": "ApplicationStatusHistory",
+        "column_name": "fromStatus"
+      },
+      {
+        "table_name": "ApplicationStatusHistory",
+        "column_name": "toStatus"
+      },
+      {
+        "table_name": "ApplicationStatusHistory",
+        "column_name": "changedById"
+      },
+      {
+        "table_name": "ApplicationStatusHistory",
+        "column_name": "createdAt"
+      },
+      {
+        "table_name": "Assessment",
+        "column_name": "id"
+      },
+      {
+        "table_name": "Assessment",
+        "column_name": "applicationId"
+      },
+      {
+        "table_name": "Assessment",
+        "column_name": "title"
+      },
+      {
+        "table_name": "Assessment",
+        "column_name": "type"
+      },
+      {
+        "table_name": "Assessment",
+        "column_name": "description"
+      },
+      {
+        "table_name": "Assessment",
+        "column_name": "dueDate"
+      },
+      {
+        "table_name": "Assessment",
+        "column_name": "status"
+      },
+      {
+        "table_name": "Assessment",
+        "column_name": "score"
+      },
+      {
+        "table_name": "Assessment",
+        "column_name": "maxScore"
+      },
+      {
+        "table_name": "Assessment",
+        "column_name": "passingScore"
+      },
+      {
+        "table_name": "Assessment",
+        "column_name": "submittedAt"
+      },
+      {
+        "table_name": "Assessment",
+        "column_name": "evaluatedAt"
+      },
+      {
+        "table_name": "Assessment",
+        "column_name": "evaluatorId"
+      },
+      {
+        "table_name": "Assessment",
+        "column_name": "reviewerNotes"
+      },
+      {
+        "table_name": "Assessment",
+        "column_name": "createdAt"
+      },
+      {
+        "table_name": "Assessment",
+        "column_name": "updatedAt"
+      },
+      {
+        "table_name": "AttendanceCorrection",
+        "column_name": "id"
+      },
+      {
+        "table_name": "AttendanceCorrection",
+        "column_name": "organizationId"
+      },
+      {
+        "table_name": "AttendanceCorrection",
+        "column_name": "dailyAttendanceRecordId"
+      },
+      {
+        "table_name": "AttendanceCorrection",
+        "column_name": "revision"
+      },
+      {
+        "table_name": "AttendanceCorrection",
+        "column_name": "correctedTimeIn"
+      },
+      {
+        "table_name": "AttendanceCorrection",
+        "column_name": "correctedTimeOut"
+      },
+      {
+        "table_name": "AttendanceCorrection",
+        "column_name": "correctedStatus"
+      },
+      {
+        "table_name": "AttendanceCorrection",
+        "column_name": "reason"
+      },
+      {
+        "table_name": "AttendanceCorrection",
+        "column_name": "previousState"
+      },
+      {
+        "table_name": "AttendanceCorrection",
+        "column_name": "correctedState"
+      },
+      {
+        "table_name": "AttendanceCorrection",
+        "column_name": "createdById"
+      },
+      {
+        "table_name": "AttendanceCorrection",
+        "column_name": "createdAt"
+      },
+      {
+        "table_name": "AttendanceEvent",
+        "column_name": "id"
+      },
+      {
+        "table_name": "AttendanceEvent",
+        "column_name": "organizationId"
+      },
+      {
+        "table_name": "AttendanceEvent",
+        "column_name": "employeeId"
+      },
+      {
+        "table_name": "AttendanceEvent",
+        "column_name": "occurredAt"
+      },
+      {
+        "table_name": "AttendanceEvent",
+        "column_name": "direction"
+      },
+      {
+        "table_name": "AttendanceEvent",
+        "column_name": "source"
+      },
+      {
+        "table_name": "AttendanceEvent",
+        "column_name": "sourceReference"
+      },
+      {
+        "table_name": "AttendanceEvent",
+        "column_name": "metadata"
+      },
+      {
+        "table_name": "AttendanceEvent",
+        "column_name": "createdById"
+      },
+      {
+        "table_name": "AttendanceEvent",
+        "column_name": "createdAt"
+      },
+      {
+        "table_name": "CandidateEvaluation",
+        "column_name": "id"
+      },
+      {
+        "table_name": "CandidateEvaluation",
+        "column_name": "interviewId"
+      },
+      {
+        "table_name": "CandidateEvaluation",
+        "column_name": "communicationScore"
+      },
+      {
+        "table_name": "CandidateEvaluation",
+        "column_name": "technicalScore"
+      },
+      {
+        "table_name": "CandidateEvaluation",
+        "column_name": "problemSolvingScore"
+      },
+      {
+        "table_name": "CandidateEvaluation",
+        "column_name": "experienceScore"
+      },
+      {
+        "table_name": "CandidateEvaluation",
+        "column_name": "cultureFitScore"
+      },
+      {
+        "table_name": "CandidateEvaluation",
+        "column_name": "overallScore"
+      },
+      {
+        "table_name": "CandidateEvaluation",
+        "column_name": "recommendation"
+      },
+      {
+        "table_name": "CandidateEvaluation",
+        "column_name": "comments"
+      },
+      {
+        "table_name": "CandidateEvaluation",
+        "column_name": "evaluatedById"
+      },
+      {
+        "table_name": "CandidateEvaluation",
+        "column_name": "createdAt"
+      },
+      {
+        "table_name": "CandidateEvaluation",
+        "column_name": "updatedAt"
+      },
+      {
+        "table_name": "DailyAttendanceRecord",
+        "column_name": "id"
+      },
+      {
+        "table_name": "DailyAttendanceRecord",
+        "column_name": "organizationId"
+      },
+      {
+        "table_name": "DailyAttendanceRecord",
+        "column_name": "employeeId"
+      },
+      {
+        "table_name": "DailyAttendanceRecord",
+        "column_name": "employmentRecordId"
+      },
+      {
+        "table_name": "DailyAttendanceRecord",
+        "column_name": "scheduleAssignmentId"
+      },
+      {
+        "table_name": "DailyAttendanceRecord",
+        "column_name": "attendanceDate"
+      },
+      {
+        "table_name": "DailyAttendanceRecord",
+        "column_name": "timeZoneSnapshot"
+      },
+      {
+        "table_name": "DailyAttendanceRecord",
+        "column_name": "scheduledStartAt"
+      },
+      {
+        "table_name": "DailyAttendanceRecord",
+        "column_name": "scheduledEndAt"
+      },
+      {
+        "table_name": "DailyAttendanceRecord",
+        "column_name": "lateGraceSeconds"
+      },
+      {
+        "table_name": "DailyAttendanceRecord",
+        "column_name": "scheduledUnpaidBreakSeconds"
+      },
+      {
+        "table_name": "DailyAttendanceRecord",
+        "column_name": "firstTimeIn"
+      },
+      {
+        "table_name": "DailyAttendanceRecord",
+        "column_name": "lastTimeOut"
+      },
+      {
+        "table_name": "DailyAttendanceRecord",
+        "column_name": "workedSeconds"
+      },
+      {
+        "table_name": "DailyAttendanceRecord",
+        "column_name": "lateSeconds"
+      },
+      {
+        "table_name": "DailyAttendanceRecord",
+        "column_name": "undertimeSeconds"
+      },
+      {
+        "table_name": "DailyAttendanceRecord",
+        "column_name": "overtimeSeconds"
+      },
+      {
+        "table_name": "DailyAttendanceRecord",
+        "column_name": "attendanceStatus"
+      },
+      {
+        "table_name": "DailyAttendanceRecord",
+        "column_name": "derivation"
+      },
+      {
+        "table_name": "DailyAttendanceRecord",
+        "column_name": "hasUnclassifiedEvents"
+      },
+      {
+        "table_name": "DailyAttendanceRecord",
+        "column_name": "hasOutBeforeIn"
+      },
+      {
+        "table_name": "DailyAttendanceRecord",
+        "column_name": "correctionVersion"
+      },
+      {
+        "table_name": "DailyAttendanceRecord",
+        "column_name": "remarks"
+      },
+      {
+        "table_name": "DailyAttendanceRecord",
+        "column_name": "finalizedAt"
+      },
+      {
+        "table_name": "DailyAttendanceRecord",
+        "column_name": "lastCalculatedAt"
+      },
+      {
+        "table_name": "DailyAttendanceRecord",
+        "column_name": "createdAt"
+      },
+      {
+        "table_name": "DailyAttendanceRecord",
+        "column_name": "updatedAt"
+      },
+      {
+        "table_name": "DailyAttendanceRecord",
+        "column_name": "approvedLeaveRequestDayId"
+      },
+      {
+        "table_name": "DailyAttendanceRecord",
+        "column_name": "approvedLeaveSeconds"
+      },
+      {
+        "table_name": "DailyAttendanceRecord",
+        "column_name": "disposition"
+      },
+      {
+        "table_name": "DailyAttendanceRecord",
+        "column_name": "hasLeaveAttendanceConflict"
+      },
+      {
+        "table_name": "DailyAttendanceRecord",
+        "column_name": "leavePaidSnapshot"
+      },
+      {
+        "table_name": "DailyAttendanceRecord",
+        "column_name": "leaveTypeCodeSnapshot"
+      },
+      {
+        "table_name": "DailyAttendanceRecord",
+        "column_name": "leaveTypeNameSnapshot"
+      },
+      {
+        "table_name": "Document",
+        "column_name": "id"
+      },
+      {
+        "table_name": "Document",
+        "column_name": "applicantId"
+      },
+      {
+        "table_name": "Document",
+        "column_name": "applicationId"
+      },
+      {
+        "table_name": "Document",
+        "column_name": "fileName"
+      },
+      {
+        "table_name": "Document",
+        "column_name": "fileType"
+      },
+      {
+        "table_name": "Document",
+        "column_name": "fileSize"
+      },
+      {
+        "table_name": "Document",
+        "column_name": "storageKey"
+      },
+      {
+        "table_name": "Document",
+        "column_name": "createdAt"
+      },
+      {
+        "table_name": "Employee",
+        "column_name": "id"
+      },
+      {
+        "table_name": "Employee",
+        "column_name": "organizationId"
+      },
+      {
+        "table_name": "Employee",
+        "column_name": "sourceApplicationId"
+      },
+      {
+        "table_name": "Employee",
+        "column_name": "applicantId"
+      },
+      {
+        "table_name": "Employee",
+        "column_name": "employeeNumber"
+      },
+      {
+        "table_name": "Employee",
+        "column_name": "firstName"
+      },
+      {
+        "table_name": "Employee",
+        "column_name": "lastName"
+      },
+      {
+        "table_name": "Employee",
+        "column_name": "email"
+      },
+      {
+        "table_name": "Employee",
+        "column_name": "phone"
+      },
+      {
+        "table_name": "Employee",
+        "column_name": "employeeStatus"
+      },
+      {
+        "table_name": "Employee",
+        "column_name": "createdById"
+      },
+      {
+        "table_name": "Employee",
+        "column_name": "createdAt"
+      },
+      {
+        "table_name": "Employee",
+        "column_name": "updatedAt"
+      },
+      {
+        "table_name": "EmployeeAccount",
+        "column_name": "id"
+      },
+      {
+        "table_name": "EmployeeAccount",
+        "column_name": "organizationId"
+      },
+      {
+        "table_name": "EmployeeAccount",
+        "column_name": "userId"
+      },
+      {
+        "table_name": "EmployeeAccount",
+        "column_name": "employeeId"
+      },
+      {
+        "table_name": "EmployeeAccount",
+        "column_name": "status"
+      },
+      {
+        "table_name": "EmployeeAccount",
+        "column_name": "activationTokenHash"
+      },
+      {
+        "table_name": "EmployeeAccount",
+        "column_name": "activationTokenExpiresAt"
+      },
+      {
+        "table_name": "EmployeeAccount",
+        "column_name": "invitedAt"
+      },
+      {
+        "table_name": "EmployeeAccount",
+        "column_name": "activatedAt"
+      },
+      {
+        "table_name": "EmployeeAccount",
+        "column_name": "disabledAt"
+      },
+      {
+        "table_name": "EmployeeAccount",
+        "column_name": "disabledReason"
+      },
+      {
+        "table_name": "EmployeeAccount",
+        "column_name": "createdById"
+      },
+      {
+        "table_name": "EmployeeAccount",
+        "column_name": "createdAt"
+      },
+      {
+        "table_name": "EmployeeAccount",
+        "column_name": "updatedAt"
+      },
+      {
+        "table_name": "EmployeeAccountAudit",
+        "column_name": "id"
+      },
+      {
+        "table_name": "EmployeeAccountAudit",
+        "column_name": "organizationId"
+      },
+      {
+        "table_name": "EmployeeAccountAudit",
+        "column_name": "employeeAccountId"
+      },
+      {
+        "table_name": "EmployeeAccountAudit",
+        "column_name": "actorUserId"
+      },
+      {
+        "table_name": "EmployeeAccountAudit",
+        "column_name": "action"
+      },
+      {
+        "table_name": "EmployeeAccountAudit",
+        "column_name": "details"
+      },
+      {
+        "table_name": "EmployeeAccountAudit",
+        "column_name": "createdAt"
+      },
+      {
+        "table_name": "EmployeeClearanceItem",
+        "column_name": "id"
+      },
+      {
+        "table_name": "EmployeeClearanceItem",
+        "column_name": "organizationId"
+      },
+      {
+        "table_name": "EmployeeClearanceItem",
+        "column_name": "caseId"
+      },
+      {
+        "table_name": "EmployeeClearanceItem",
+        "column_name": "category"
+      },
+      {
+        "table_name": "EmployeeClearanceItem",
+        "column_name": "title"
+      },
+      {
+        "table_name": "EmployeeClearanceItem",
+        "column_name": "description"
+      },
+      {
+        "table_name": "EmployeeClearanceItem",
+        "column_name": "isRequired"
+      },
+      {
+        "table_name": "EmployeeClearanceItem",
+        "column_name": "status"
+      },
+      {
+        "table_name": "EmployeeClearanceItem",
+        "column_name": "responsibleUnit"
+      },
+      {
+        "table_name": "EmployeeClearanceItem",
+        "column_name": "reviewedById"
+      },
+      {
+        "table_name": "EmployeeClearanceItem",
+        "column_name": "reviewedAt"
+      },
+      {
+        "table_name": "EmployeeClearanceItem",
+        "column_name": "remarks"
+      },
+      {
+        "table_name": "EmployeeClearanceItem",
+        "column_name": "requestKey"
+      },
+      {
+        "table_name": "EmployeeClearanceItem",
+        "column_name": "createdAt"
+      },
+      {
+        "table_name": "EmployeeClearanceItem",
+        "column_name": "updatedAt"
+      },
+      {
+        "table_name": "EmployeeCompensation",
+        "column_name": "id"
+      },
+      {
+        "table_name": "EmployeeCompensation",
+        "column_name": "organizationId"
+      },
+      {
+        "table_name": "EmployeeCompensation",
+        "column_name": "employeeId"
+      },
+      {
+        "table_name": "EmployeeCompensation",
+        "column_name": "compensationType"
+      },
+      {
+        "table_name": "EmployeeCompensation",
+        "column_name": "baseRate"
+      },
+      {
+        "table_name": "EmployeeCompensation",
+        "column_name": "payFrequency"
+      },
+      {
+        "table_name": "EmployeeCompensation",
+        "column_name": "currency"
+      },
+      {
+        "table_name": "EmployeeCompensation",
+        "column_name": "effectiveFrom"
+      },
+      {
+        "table_name": "EmployeeCompensation",
+        "column_name": "effectiveTo"
+      },
+      {
+        "table_name": "EmployeeCompensation",
+        "column_name": "status"
+      },
+      {
+        "table_name": "EmployeeCompensation",
+        "column_name": "createdAt"
+      },
+      {
+        "table_name": "EmployeeCompensation",
+        "column_name": "updatedAt"
+      },
+      {
+        "table_name": "EmployeeNumberSequence",
+        "column_name": "organizationId"
+      },
+      {
+        "table_name": "EmployeeNumberSequence",
+        "column_name": "year"
+      },
+      {
+        "table_name": "EmployeeNumberSequence",
+        "column_name": "nextValue"
+      },
+      {
+        "table_name": "EmployeeNumberSequence",
+        "column_name": "updatedAt"
+      },
+      {
+        "table_name": "EmployeeScheduleAssignment",
+        "column_name": "id"
+      },
+      {
+        "table_name": "EmployeeScheduleAssignment",
+        "column_name": "organizationId"
+      },
+      {
+        "table_name": "EmployeeScheduleAssignment",
+        "column_name": "employeeId"
+      },
+      {
+        "table_name": "EmployeeScheduleAssignment",
+        "column_name": "scheduleVersionId"
+      },
+      {
+        "table_name": "EmployeeScheduleAssignment",
+        "column_name": "effectiveFrom"
+      },
+      {
+        "table_name": "EmployeeScheduleAssignment",
+        "column_name": "effectiveTo"
+      },
+      {
+        "table_name": "EmployeeScheduleAssignment",
+        "column_name": "createdById"
+      },
+      {
+        "table_name": "EmployeeScheduleAssignment",
+        "column_name": "createdAt"
+      },
+      {
+        "table_name": "EmployeeSeparationAudit",
+        "column_name": "id"
+      },
+      {
+        "table_name": "EmployeeSeparationAudit",
+        "column_name": "organizationId"
+      },
+      {
+        "table_name": "EmployeeSeparationAudit",
+        "column_name": "caseId"
+      },
+      {
+        "table_name": "EmployeeSeparationAudit",
+        "column_name": "actorUserId"
+      },
+      {
+        "table_name": "EmployeeSeparationAudit",
+        "column_name": "action"
+      },
+      {
+        "table_name": "EmployeeSeparationAudit",
+        "column_name": "previousValues"
+      },
+      {
+        "table_name": "EmployeeSeparationAudit",
+        "column_name": "newValues"
+      },
+      {
+        "table_name": "EmployeeSeparationAudit",
+        "column_name": "remarks"
+      },
+      {
+        "table_name": "EmployeeSeparationAudit",
+        "column_name": "createdAt"
+      },
+      {
+        "table_name": "EmployeeSeparationCase",
+        "column_name": "id"
+      },
+      {
+        "table_name": "EmployeeSeparationCase",
+        "column_name": "organizationId"
+      },
+      {
+        "table_name": "EmployeeSeparationCase",
+        "column_name": "employeeId"
+      },
+      {
+        "table_name": "EmployeeSeparationCase",
+        "column_name": "separationType"
+      },
+      {
+        "table_name": "EmployeeSeparationCase",
+        "column_name": "reason"
+      },
+      {
+        "table_name": "EmployeeSeparationCase",
+        "column_name": "noticeDate"
+      },
+      {
+        "table_name": "EmployeeSeparationCase",
+        "column_name": "proposedLastWorkingDay"
+      },
+      {
+        "table_name": "EmployeeSeparationCase",
+        "column_name": "proposedEffectiveDate"
+      },
+      {
+        "table_name": "EmployeeSeparationCase",
+        "column_name": "noticeCompliance"
+      },
+      {
+        "table_name": "EmployeeSeparationCase",
+        "column_name": "noticeExceptionReason"
+      },
+      {
+        "table_name": "EmployeeSeparationCase",
+        "column_name": "noticeExceptionById"
+      },
+      {
+        "table_name": "EmployeeSeparationCase",
+        "column_name": "noticeExceptionAt"
+      },
+      {
+        "table_name": "EmployeeSeparationCase",
+        "column_name": "noticeRemarks"
+      },
+      {
+        "table_name": "EmployeeSeparationCase",
+        "column_name": "policySnapshot"
+      },
+      {
+        "table_name": "EmployeeSeparationCase",
+        "column_name": "initiatedById"
+      },
+      {
+        "table_name": "EmployeeSeparationCase",
+        "column_name": "initiatedAt"
+      },
+      {
+        "table_name": "EmployeeSeparationCase",
+        "column_name": "status"
+      },
+      {
+        "table_name": "EmployeeSeparationCase",
+        "column_name": "administrativeRemarks"
+      },
+      {
+        "table_name": "EmployeeSeparationCase",
+        "column_name": "inactiveEmployeeJustification"
+      },
+      {
+        "table_name": "EmployeeSeparationCase",
+        "column_name": "cancelledById"
+      },
+      {
+        "table_name": "EmployeeSeparationCase",
+        "column_name": "cancelledAt"
+      },
+      {
+        "table_name": "EmployeeSeparationCase",
+        "column_name": "cancellationReason"
+      },
+      {
+        "table_name": "EmployeeSeparationCase",
+        "column_name": "version"
+      },
+      {
+        "table_name": "EmployeeSeparationCase",
+        "column_name": "versionOfDetails"
+      },
+      {
+        "table_name": "EmployeeSeparationCase",
+        "column_name": "requestKey"
+      },
+      {
+        "table_name": "EmployeeSeparationCase",
+        "column_name": "requestFingerprint"
+      },
+      {
+        "table_name": "EmployeeSeparationCase",
+        "column_name": "createdAt"
+      },
+      {
+        "table_name": "EmployeeSeparationCase",
+        "column_name": "updatedAt"
+      },
+      {
+        "table_name": "EmployeeSeparationCase",
+        "column_name": "approvalDecision"
+      },
+      {
+        "table_name": "EmployeeSeparationCase",
+        "column_name": "approvalRemarks"
+      },
+      {
+        "table_name": "EmployeeSeparationCase",
+        "column_name": "approvedAt"
+      },
+      {
+        "table_name": "EmployeeSeparationCase",
+        "column_name": "approvedById"
+      },
+      {
+        "table_name": "EmployeeSeparationCase",
+        "column_name": "approvedDetailsVersion"
+      },
+      {
+        "table_name": "EmployeeSeparationCase",
+        "column_name": "backdatedJustification"
+      },
+      {
+        "table_name": "EmployeeSeparationCase",
+        "column_name": "completedAt"
+      },
+      {
+        "table_name": "EmployeeSeparationCase",
+        "column_name": "completedById"
+      },
+      {
+        "table_name": "EmployeeSeparationCase",
+        "column_name": "completionSnapshot"
+      },
+      {
+        "table_name": "EmployeeSeparationCase",
+        "column_name": "executionRemarks"
+      },
+      {
+        "table_name": "EmployeeSeparationReview",
+        "column_name": "id"
+      },
+      {
+        "table_name": "EmployeeSeparationReview",
+        "column_name": "organizationId"
+      },
+      {
+        "table_name": "EmployeeSeparationReview",
+        "column_name": "caseId"
+      },
+      {
+        "table_name": "EmployeeSeparationReview",
+        "column_name": "kind"
+      },
+      {
+        "table_name": "EmployeeSeparationReview",
+        "column_name": "evidence"
+      },
+      {
+        "table_name": "EmployeeSeparationReview",
+        "column_name": "recordedById"
+      },
+      {
+        "table_name": "EmployeeSeparationReview",
+        "column_name": "recordedAt"
+      },
+      {
+        "table_name": "EmployeeSeparationReview",
+        "column_name": "caseVersion"
+      },
+      {
+        "table_name": "EmployeeStatusHistory",
+        "column_name": "id"
+      },
+      {
+        "table_name": "EmployeeStatusHistory",
+        "column_name": "employeeId"
+      },
+      {
+        "table_name": "EmployeeStatusHistory",
+        "column_name": "fromStatus"
+      },
+      {
+        "table_name": "EmployeeStatusHistory",
+        "column_name": "toStatus"
+      },
+      {
+        "table_name": "EmployeeStatusHistory",
+        "column_name": "changedById"
+      },
+      {
+        "table_name": "EmployeeStatusHistory",
+        "column_name": "reason"
+      },
+      {
+        "table_name": "EmployeeStatusHistory",
+        "column_name": "createdAt"
+      },
+      {
+        "table_name": "EmploymentDecisionHistory",
+        "column_name": "id"
+      },
+      {
+        "table_name": "EmploymentDecisionHistory",
+        "column_name": "employeeId"
+      },
+      {
+        "table_name": "EmploymentDecisionHistory",
+        "column_name": "probationRecordId"
+      },
+      {
+        "table_name": "EmploymentDecisionHistory",
+        "column_name": "previousEmploymentRecordId"
+      },
+      {
+        "table_name": "EmploymentDecisionHistory",
+        "column_name": "resultingEmploymentRecordId"
+      },
+      {
+        "table_name": "EmploymentDecisionHistory",
+        "column_name": "decision"
+      },
+      {
+        "table_name": "EmploymentDecisionHistory",
+        "column_name": "decisionAt"
+      },
+      {
+        "table_name": "EmploymentDecisionHistory",
+        "column_name": "effectiveAt"
+      },
+      {
+        "table_name": "EmploymentDecisionHistory",
+        "column_name": "changedById"
+      },
+      {
+        "table_name": "EmploymentDecisionHistory",
+        "column_name": "remarks"
+      },
+      {
+        "table_name": "EmploymentDecisionHistory",
+        "column_name": "previousState"
+      },
+      {
+        "table_name": "EmploymentDecisionHistory",
+        "column_name": "newState"
+      },
+      {
+        "table_name": "EmploymentDecisionHistory",
+        "column_name": "createdAt"
+      },
+      {
+        "table_name": "EmploymentRecord",
+        "column_name": "id"
+      },
+      {
+        "table_name": "EmploymentRecord",
+        "column_name": "employeeId"
+      },
+      {
+        "table_name": "EmploymentRecord",
+        "column_name": "jobId"
+      },
+      {
+        "table_name": "EmploymentRecord",
+        "column_name": "acceptedOfferId"
+      },
+      {
+        "table_name": "EmploymentRecord",
+        "column_name": "jobTitle"
+      },
+      {
+        "table_name": "EmploymentRecord",
+        "column_name": "department"
+      },
+      {
+        "table_name": "EmploymentRecord",
+        "column_name": "employmentCategory"
+      },
+      {
+        "table_name": "EmploymentRecord",
+        "column_name": "employmentType"
+      },
+      {
+        "table_name": "EmploymentRecord",
+        "column_name": "hireDate"
+      },
+      {
+        "table_name": "EmploymentRecord",
+        "column_name": "startDate"
+      },
+      {
+        "table_name": "EmploymentRecord",
+        "column_name": "salary"
+      },
+      {
+        "table_name": "EmploymentRecord",
+        "column_name": "payFrequency"
+      },
+      {
+        "table_name": "EmploymentRecord",
+        "column_name": "employmentStatus"
+      },
+      {
+        "table_name": "EmploymentRecord",
+        "column_name": "effectiveFrom"
+      },
+      {
+        "table_name": "EmploymentRecord",
+        "column_name": "effectiveTo"
+      },
+      {
+        "table_name": "EmploymentRecord",
+        "column_name": "createdById"
+      },
+      {
+        "table_name": "EmploymentRecord",
+        "column_name": "createdAt"
+      },
+      {
+        "table_name": "EmploymentRecord",
+        "column_name": "updatedAt"
+      },
+      {
+        "table_name": "Interview",
+        "column_name": "id"
+      },
+      {
+        "table_name": "Interview",
+        "column_name": "applicationId"
+      },
+      {
+        "table_name": "Interview",
+        "column_name": "interviewerId"
+      },
+      {
+        "table_name": "Interview",
+        "column_name": "scheduledAt"
+      },
+      {
+        "table_name": "Interview",
+        "column_name": "durationMinutes"
+      },
+      {
+        "table_name": "Interview",
+        "column_name": "type"
+      },
+      {
+        "table_name": "Interview",
+        "column_name": "location"
+      },
+      {
+        "table_name": "Interview",
+        "column_name": "meetingUrl"
+      },
+      {
+        "table_name": "Interview",
+        "column_name": "notes"
+      },
+      {
+        "table_name": "Interview",
+        "column_name": "status"
+      },
+      {
+        "table_name": "Interview",
+        "column_name": "createdAt"
+      },
+      {
+        "table_name": "Interview",
+        "column_name": "updatedAt"
+      },
+      {
+        "table_name": "Job",
+        "column_name": "id"
+      },
+      {
+        "table_name": "Job",
+        "column_name": "organizationId"
+      },
+      {
+        "table_name": "Job",
+        "column_name": "title"
+      },
+      {
+        "table_name": "Job",
+        "column_name": "slug"
+      },
+      {
+        "table_name": "Job",
+        "column_name": "department"
+      },
+      {
+        "table_name": "Job",
+        "column_name": "employmentType"
+      },
+      {
+        "table_name": "Job",
+        "column_name": "location"
+      },
+      {
+        "table_name": "Job",
+        "column_name": "description"
+      },
+      {
+        "table_name": "Job",
+        "column_name": "responsibilities"
+      },
+      {
+        "table_name": "Job",
+        "column_name": "qualifications"
+      },
+      {
+        "table_name": "Job",
+        "column_name": "requirements"
+      },
+      {
+        "table_name": "Job",
+        "column_name": "status"
+      },
+      {
+        "table_name": "Job",
+        "column_name": "publishedAt"
+      },
+      {
+        "table_name": "Job",
+        "column_name": "closingDate"
+      },
+      {
+        "table_name": "Job",
+        "column_name": "createdAt"
+      },
+      {
+        "table_name": "Job",
+        "column_name": "updatedAt"
+      },
+      {
+        "table_name": "Job",
+        "column_name": "category"
+      },
+      {
+        "table_name": "JobRequirement",
+        "column_name": "id"
+      },
+      {
+        "table_name": "JobRequirement",
+        "column_name": "jobId"
+      },
+      {
+        "table_name": "JobRequirement",
+        "column_name": "name"
+      },
+      {
+        "table_name": "JobRequirement",
+        "column_name": "type"
+      },
+      {
+        "table_name": "JobRequirement",
+        "column_name": "description"
+      },
+      {
+        "table_name": "JobRequirement",
+        "column_name": "isRequired"
+      },
+      {
+        "table_name": "JobRequirement",
+        "column_name": "createdAt"
+      },
+      {
+        "table_name": "LeaveCycle",
+        "column_name": "id"
+      },
+      {
+        "table_name": "LeaveCycle",
+        "column_name": "organizationId"
+      },
+      {
+        "table_name": "LeaveCycle",
+        "column_name": "leaveTypeId"
+      },
+      {
+        "table_name": "LeaveCycle",
+        "column_name": "code"
+      },
+      {
+        "table_name": "LeaveCycle",
+        "column_name": "name"
+      },
+      {
+        "table_name": "LeaveCycle",
+        "column_name": "startDate"
+      },
+      {
+        "table_name": "LeaveCycle",
+        "column_name": "endDate"
+      },
+      {
+        "table_name": "LeaveCycle",
+        "column_name": "isClosed"
+      },
+      {
+        "table_name": "LeaveCycle",
+        "column_name": "createdAt"
+      },
+      {
+        "table_name": "LeaveCycle",
+        "column_name": "updatedAt"
+      },
+      {
+        "table_name": "LeaveDocument",
+        "column_name": "id"
+      },
+      {
+        "table_name": "LeaveDocument",
+        "column_name": "organizationId"
+      },
+      {
+        "table_name": "LeaveDocument",
+        "column_name": "leaveRequestId"
+      },
+      {
+        "table_name": "LeaveDocument",
+        "column_name": "employeeId"
+      },
+      {
+        "table_name": "LeaveDocument",
+        "column_name": "kindCode"
+      },
+      {
+        "table_name": "LeaveDocument",
+        "column_name": "fileName"
+      },
+      {
+        "table_name": "LeaveDocument",
+        "column_name": "fileType"
+      },
+      {
+        "table_name": "LeaveDocument",
+        "column_name": "fileSize"
+      },
+      {
+        "table_name": "LeaveDocument",
+        "column_name": "storageKey"
+      },
+      {
+        "table_name": "LeaveDocument",
+        "column_name": "uploadedById"
+      },
+      {
+        "table_name": "LeaveDocument",
+        "column_name": "removedAt"
+      },
+      {
+        "table_name": "LeaveDocument",
+        "column_name": "removedById"
+      },
+      {
+        "table_name": "LeaveDocument",
+        "column_name": "createdAt"
+      },
+      {
+        "table_name": "LeaveLedgerEntry",
+        "column_name": "id"
+      },
+      {
+        "table_name": "LeaveLedgerEntry",
+        "column_name": "organizationId"
+      },
+      {
+        "table_name": "LeaveLedgerEntry",
+        "column_name": "employeeId"
+      },
+      {
+        "table_name": "LeaveLedgerEntry",
+        "column_name": "leaveTypeId"
+      },
+      {
+        "table_name": "LeaveLedgerEntry",
+        "column_name": "leaveCycleId"
+      },
+      {
+        "table_name": "LeaveLedgerEntry",
+        "column_name": "leaveRequestId"
+      },
+      {
+        "table_name": "LeaveLedgerEntry",
+        "column_name": "entryType"
+      },
+      {
+        "table_name": "LeaveLedgerEntry",
+        "column_name": "amountUnits"
+      },
+      {
+        "table_name": "LeaveLedgerEntry",
+        "column_name": "reason"
+      },
+      {
+        "table_name": "LeaveLedgerEntry",
+        "column_name": "actorUserId"
+      },
+      {
+        "table_name": "LeaveLedgerEntry",
+        "column_name": "reversesEntryId"
+      },
+      {
+        "table_name": "LeaveLedgerEntry",
+        "column_name": "grantSource"
+      },
+      {
+        "table_name": "LeaveLedgerEntry",
+        "column_name": "beforeBalance"
+      },
+      {
+        "table_name": "LeaveLedgerEntry",
+        "column_name": "afterBalance"
+      },
+      {
+        "table_name": "LeaveLedgerEntry",
+        "column_name": "createdAt"
+      },
+      {
+        "table_name": "LeaveRequest",
+        "column_name": "id"
+      },
+      {
+        "table_name": "LeaveRequest",
+        "column_name": "organizationId"
+      },
+      {
+        "table_name": "LeaveRequest",
+        "column_name": "employeeId"
+      },
+      {
+        "table_name": "LeaveRequest",
+        "column_name": "leaveTypeId"
+      },
+      {
+        "table_name": "LeaveRequest",
+        "column_name": "leaveCycleId"
+      },
+      {
+        "table_name": "LeaveRequest",
+        "column_name": "requestedStartDate"
+      },
+      {
+        "table_name": "LeaveRequest",
+        "column_name": "requestedEndDate"
+      },
+      {
+        "table_name": "LeaveRequest",
+        "column_name": "requestedUnits"
+      },
+      {
+        "table_name": "LeaveRequest",
+        "column_name": "requestCategoryCode"
+      },
+      {
+        "table_name": "LeaveRequest",
+        "column_name": "reason"
+      },
+      {
+        "table_name": "LeaveRequest",
+        "column_name": "status"
+      },
+      {
+        "table_name": "LeaveRequest",
+        "column_name": "eligibilityAttestation"
+      },
+      {
+        "table_name": "LeaveRequest",
+        "column_name": "policySnapshot"
+      },
+      {
+        "table_name": "LeaveRequest",
+        "column_name": "leaveTypeCodeSnapshot"
+      },
+      {
+        "table_name": "LeaveRequest",
+        "column_name": "leaveTypeNameSnapshot"
+      },
+      {
+        "table_name": "LeaveRequest",
+        "column_name": "leavePaidSnapshot"
+      },
+      {
+        "table_name": "LeaveRequest",
+        "column_name": "countingModeSnapshot"
+      },
+      {
+        "table_name": "LeaveRequest",
+        "column_name": "submittedAt"
+      },
+      {
+        "table_name": "LeaveRequest",
+        "column_name": "reviewedAt"
+      },
+      {
+        "table_name": "LeaveRequest",
+        "column_name": "reviewedById"
+      },
+      {
+        "table_name": "LeaveRequest",
+        "column_name": "reviewerRemarks"
+      },
+      {
+        "table_name": "LeaveRequest",
+        "column_name": "eligibilityVerifiedAt"
+      },
+      {
+        "table_name": "LeaveRequest",
+        "column_name": "eligibilityVerifiedById"
+      },
+      {
+        "table_name": "LeaveRequest",
+        "column_name": "eligibilityVerification"
+      },
+      {
+        "table_name": "LeaveRequest",
+        "column_name": "attendanceSyncStatus"
+      },
+      {
+        "table_name": "LeaveRequest",
+        "column_name": "attendanceSyncedAt"
+      },
+      {
+        "table_name": "LeaveRequest",
+        "column_name": "attendanceSyncError"
+      },
+      {
+        "table_name": "LeaveRequest",
+        "column_name": "createdAt"
+      },
+      {
+        "table_name": "LeaveRequest",
+        "column_name": "updatedAt"
+      },
+      {
+        "table_name": "LeaveRequest",
+        "column_name": "employeeNameSnapshot"
+      },
+      {
+        "table_name": "LeaveRequest",
+        "column_name": "organizationNameSnapshot"
+      },
+      {
+        "table_name": "LeaveRequest",
+        "column_name": "organizationTimeZoneSnapshot"
+      },
+      {
+        "table_name": "LeaveRequest",
+        "column_name": "expectedReturnDateSnapshot"
+      },
+      {
+        "table_name": "LeaveRequest",
+        "column_name": "reviewerNameSnapshot"
+      },
+      {
+        "table_name": "LeaveRequest",
+        "column_name": "calculationFinalizedAt"
+      },
+      {
+        "table_name": "LeaveRequestAudit",
+        "column_name": "id"
+      },
+      {
+        "table_name": "LeaveRequestAudit",
+        "column_name": "organizationId"
+      },
+      {
+        "table_name": "LeaveRequestAudit",
+        "column_name": "leaveRequestId"
+      },
+      {
+        "table_name": "LeaveRequestAudit",
+        "column_name": "actorUserId"
+      },
+      {
+        "table_name": "LeaveRequestAudit",
+        "column_name": "action"
+      },
+      {
+        "table_name": "LeaveRequestAudit",
+        "column_name": "details"
+      },
+      {
+        "table_name": "LeaveRequestAudit",
+        "column_name": "createdAt"
+      },
+      {
+        "table_name": "LeaveRequestDay",
+        "column_name": "id"
+      },
+      {
+        "table_name": "LeaveRequestDay",
+        "column_name": "organizationId"
+      },
+      {
+        "table_name": "LeaveRequestDay",
+        "column_name": "leaveRequestId"
+      },
+      {
+        "table_name": "LeaveRequestDay",
+        "column_name": "employeeId"
+      },
+      {
+        "table_name": "LeaveRequestDay",
+        "column_name": "attendanceDate"
+      },
+      {
+        "table_name": "LeaveRequestDay",
+        "column_name": "employmentRecordId"
+      },
+      {
+        "table_name": "LeaveRequestDay",
+        "column_name": "scheduleAssignmentId"
+      },
+      {
+        "table_name": "LeaveRequestDay",
+        "column_name": "isScheduledWorkday"
+      },
+      {
+        "table_name": "LeaveRequestDay",
+        "column_name": "scheduledStartSecond"
+      },
+      {
+        "table_name": "LeaveRequestDay",
+        "column_name": "scheduledEndSecond"
+      },
+      {
+        "table_name": "LeaveRequestDay",
+        "column_name": "scheduledUnpaidBreakSeconds"
+      },
+      {
+        "table_name": "LeaveRequestDay",
+        "column_name": "scheduledNetSeconds"
+      },
+      {
+        "table_name": "LeaveRequestDay",
+        "column_name": "chargeUnits"
+      },
+      {
+        "table_name": "LeaveRequestDay",
+        "column_name": "leaveSeconds"
+      },
+      {
+        "table_name": "LeaveRequestDay",
+        "column_name": "employmentSnapshot"
+      },
+      {
+        "table_name": "LeaveRequestDay",
+        "column_name": "scheduleSnapshot"
+      },
+      {
+        "table_name": "LeaveRequestDay",
+        "column_name": "createdAt"
+      },
+      {
+        "table_name": "LeaveType",
+        "column_name": "id"
+      },
+      {
+        "table_name": "LeaveType",
+        "column_name": "organizationId"
+      },
+      {
+        "table_name": "LeaveType",
+        "column_name": "code"
+      },
+      {
+        "table_name": "LeaveType",
+        "column_name": "name"
+      },
+      {
+        "table_name": "LeaveType",
+        "column_name": "description"
+      },
+      {
+        "table_name": "LeaveType",
+        "column_name": "isActive"
+      },
+      {
+        "table_name": "LeaveType",
+        "column_name": "isPaid"
+      },
+      {
+        "table_name": "LeaveType",
+        "column_name": "countingMode"
+      },
+      {
+        "table_name": "LeaveType",
+        "column_name": "balanceTracked"
+      },
+      {
+        "table_name": "LeaveType",
+        "column_name": "defaultGrantUnits"
+      },
+      {
+        "table_name": "LeaveType",
+        "column_name": "requiredEmploymentStatus"
+      },
+      {
+        "table_name": "LeaveType",
+        "column_name": "minimumServiceMonths"
+      },
+      {
+        "table_name": "LeaveType",
+        "column_name": "maximumRequestUnits"
+      },
+      {
+        "table_name": "LeaveType",
+        "column_name": "maximumApprovedOccurrences"
+      },
+      {
+        "table_name": "LeaveType",
+        "column_name": "occurrenceLimitScope"
+      },
+      {
+        "table_name": "LeaveType",
+        "column_name": "allowsRetrospectiveFiling"
+      },
+      {
+        "table_name": "LeaveType",
+        "column_name": "requiresEligibilityVerification"
+      },
+      {
+        "table_name": "LeaveType",
+        "column_name": "requestCategoryOptions"
+      },
+      {
+        "table_name": "LeaveType",
+        "column_name": "attestationRules"
+      },
+      {
+        "table_name": "LeaveType",
+        "column_name": "documentRules"
+      },
+      {
+        "table_name": "LeaveType",
+        "column_name": "policyReference"
+      },
+      {
+        "table_name": "LeaveType",
+        "column_name": "createdAt"
+      },
+      {
+        "table_name": "LeaveType",
+        "column_name": "updatedAt"
+      },
+      {
+        "table_name": "Offer",
+        "column_name": "id"
+      },
+      {
+        "table_name": "Offer",
+        "column_name": "applicationId"
+      },
+      {
+        "table_name": "Offer",
+        "column_name": "salary"
+      },
+      {
+        "table_name": "Offer",
+        "column_name": "payFrequency"
+      },
+      {
+        "table_name": "Offer",
+        "column_name": "employmentType"
+      },
+      {
+        "table_name": "Offer",
+        "column_name": "startDate"
+      },
+      {
+        "table_name": "Offer",
+        "column_name": "expirationDate"
+      },
+      {
+        "table_name": "Offer",
+        "column_name": "benefits"
+      },
+      {
+        "table_name": "Offer",
+        "column_name": "allowances"
+      },
+      {
+        "table_name": "Offer",
+        "column_name": "additionalTerms"
+      },
+      {
+        "table_name": "Offer",
+        "column_name": "notes"
+      },
+      {
+        "table_name": "Offer",
+        "column_name": "status"
+      },
+      {
+        "table_name": "Offer",
+        "column_name": "createdById"
+      },
+      {
+        "table_name": "Offer",
+        "column_name": "approvedById"
+      },
+      {
+        "table_name": "Offer",
+        "column_name": "createdAt"
+      },
+      {
+        "table_name": "Offer",
+        "column_name": "updatedAt"
+      },
+      {
+        "table_name": "Offer",
+        "column_name": "contractExecutedAt"
+      },
+      {
+        "table_name": "Offer",
+        "column_name": "contractSignedByEmployee"
+      },
+      {
+        "table_name": "Offer",
+        "column_name": "contractSignedByPresident"
+      },
+      {
+        "table_name": "Offer",
+        "column_name": "probationPeriodMonths"
+      },
+      {
+        "table_name": "Offer",
+        "column_name": "probationaryTerms"
+      },
+      {
+        "table_name": "OnboardingProcess",
+        "column_name": "id"
+      },
+      {
+        "table_name": "OnboardingProcess",
+        "column_name": "applicationId"
+      },
+      {
+        "table_name": "OnboardingProcess",
+        "column_name": "status"
+      },
+      {
+        "table_name": "OnboardingProcess",
+        "column_name": "startDate"
+      },
+      {
+        "table_name": "OnboardingProcess",
+        "column_name": "targetCompletionDate"
+      },
+      {
+        "table_name": "OnboardingProcess",
+        "column_name": "completedAt"
+      },
+      {
+        "table_name": "OnboardingProcess",
+        "column_name": "notes"
+      },
+      {
+        "table_name": "OnboardingProcess",
+        "column_name": "createdAt"
+      },
+      {
+        "table_name": "OnboardingProcess",
+        "column_name": "updatedAt"
+      },
+      {
+        "table_name": "OnboardingTask",
+        "column_name": "id"
+      },
+      {
+        "table_name": "OnboardingTask",
+        "column_name": "onboardingProcessId"
+      },
+      {
+        "table_name": "OnboardingTask",
+        "column_name": "title"
+      },
+      {
+        "table_name": "OnboardingTask",
+        "column_name": "description"
+      },
+      {
+        "table_name": "OnboardingTask",
+        "column_name": "type"
+      },
+      {
+        "table_name": "OnboardingTask",
+        "column_name": "status"
+      },
+      {
+        "table_name": "OnboardingTask",
+        "column_name": "isRequired"
+      },
+      {
+        "table_name": "OnboardingTask",
+        "column_name": "dueDate"
+      },
+      {
+        "table_name": "OnboardingTask",
+        "column_name": "submittedAt"
+      },
+      {
+        "table_name": "OnboardingTask",
+        "column_name": "verifiedAt"
+      },
+      {
+        "table_name": "OnboardingTask",
+        "column_name": "verifiedById"
+      },
+      {
+        "table_name": "OnboardingTask",
+        "column_name": "reviewerNotes"
+      },
+      {
+        "table_name": "OnboardingTask",
+        "column_name": "fileName"
+      },
+      {
+        "table_name": "OnboardingTask",
+        "column_name": "fileType"
+      },
+      {
+        "table_name": "OnboardingTask",
+        "column_name": "fileSize"
+      },
+      {
+        "table_name": "OnboardingTask",
+        "column_name": "storageKey"
+      },
+      {
+        "table_name": "OnboardingTask",
+        "column_name": "createdAt"
+      },
+      {
+        "table_name": "OnboardingTask",
+        "column_name": "updatedAt"
+      },
+      {
+        "table_name": "Organization",
+        "column_name": "id"
+      },
+      {
+        "table_name": "Organization",
+        "column_name": "name"
+      },
+      {
+        "table_name": "Organization",
+        "column_name": "slug"
+      },
+      {
+        "table_name": "Organization",
+        "column_name": "createdAt"
+      },
+      {
+        "table_name": "Organization",
+        "column_name": "updatedAt"
+      },
+      {
+        "table_name": "Organization",
+        "column_name": "careersEnabled"
+      },
+      {
+        "table_name": "Organization",
+        "column_name": "description"
+      },
+      {
+        "table_name": "Organization",
+        "column_name": "logoUrl"
+      },
+      {
+        "table_name": "Organization",
+        "column_name": "employeeNumberPrefix"
+      },
+      {
+        "table_name": "Organization",
+        "column_name": "timeZone"
+      },
+      {
+        "table_name": "OrganizationBranding",
+        "column_name": "id"
+      },
+      {
+        "table_name": "OrganizationBranding",
+        "column_name": "organizationId"
+      },
+      {
+        "table_name": "OrganizationBranding",
+        "column_name": "displayName"
+      },
+      {
+        "table_name": "OrganizationBranding",
+        "column_name": "tagline"
+      },
+      {
+        "table_name": "OrganizationBranding",
+        "column_name": "primaryColor"
+      },
+      {
+        "table_name": "OrganizationBranding",
+        "column_name": "accentColor"
+      },
+      {
+        "table_name": "OrganizationBranding",
+        "column_name": "logoStorageKey"
+      },
+      {
+        "table_name": "OrganizationBranding",
+        "column_name": "loginImageStorageKey"
+      },
+      {
+        "table_name": "OrganizationBranding",
+        "column_name": "address"
+      },
+      {
+        "table_name": "OrganizationBranding",
+        "column_name": "contactEmail"
+      },
+      {
+        "table_name": "OrganizationBranding",
+        "column_name": "contactPhone"
+      },
+      {
+        "table_name": "OrganizationBranding",
+        "column_name": "createdAt"
+      },
+      {
+        "table_name": "OrganizationBranding",
+        "column_name": "updatedAt"
+      },
+      {
+        "table_name": "OrganizationBrandingAudit",
+        "column_name": "id"
+      },
+      {
+        "table_name": "OrganizationBrandingAudit",
+        "column_name": "organizationId"
+      },
+      {
+        "table_name": "OrganizationBrandingAudit",
+        "column_name": "actorUserId"
+      },
+      {
+        "table_name": "OrganizationBrandingAudit",
+        "column_name": "action"
+      },
+      {
+        "table_name": "OrganizationBrandingAudit",
+        "column_name": "details"
+      },
+      {
+        "table_name": "OrganizationBrandingAudit",
+        "column_name": "createdAt"
+      },
+      {
+        "table_name": "OrganizationPayrollPolicy",
+        "column_name": "id"
+      },
+      {
+        "table_name": "OrganizationPayrollPolicy",
+        "column_name": "organizationId"
+      },
+      {
+        "table_name": "OrganizationPayrollPolicy",
+        "column_name": "version"
+      },
+      {
+        "table_name": "OrganizationPayrollPolicy",
+        "column_name": "effectiveFrom"
+      },
+      {
+        "table_name": "OrganizationPayrollPolicy",
+        "column_name": "effectiveTo"
+      },
+      {
+        "table_name": "OrganizationPayrollPolicy",
+        "column_name": "status"
+      },
+      {
+        "table_name": "OrganizationPayrollPolicy",
+        "column_name": "dailyPayBasis"
+      },
+      {
+        "table_name": "OrganizationPayrollPolicy",
+        "column_name": "lateDeductionRule"
+      },
+      {
+        "table_name": "OrganizationPayrollPolicy",
+        "column_name": "lateDeductionParameter"
+      },
+      {
+        "table_name": "OrganizationPayrollPolicy",
+        "column_name": "absenceDeductionRule"
+      },
+      {
+        "table_name": "OrganizationPayrollPolicy",
+        "column_name": "absenceDeductionParameter"
+      },
+      {
+        "table_name": "OrganizationPayrollPolicy",
+        "column_name": "undertimeDeductionRule"
+      },
+      {
+        "table_name": "OrganizationPayrollPolicy",
+        "column_name": "undertimeDeductionParameter"
+      },
+      {
+        "table_name": "OrganizationPayrollPolicy",
+        "column_name": "roundingRule"
+      },
+      {
+        "table_name": "OrganizationPayrollPolicy",
+        "column_name": "createdById"
+      },
+      {
+        "table_name": "OrganizationPayrollPolicy",
+        "column_name": "createdAt"
+      },
+      {
+        "table_name": "OrganizationPayrollPolicy",
+        "column_name": "updatedAt"
+      },
+      {
+        "table_name": "ParsedResume",
+        "column_name": "id"
+      },
+      {
+        "table_name": "ParsedResume",
+        "column_name": "documentId"
+      },
+      {
+        "table_name": "ParsedResume",
+        "column_name": "rawText"
+      },
+      {
+        "table_name": "ParsedResume",
+        "column_name": "summary"
+      },
+      {
+        "table_name": "ParsedResume",
+        "column_name": "skills"
+      },
+      {
+        "table_name": "ParsedResume",
+        "column_name": "education"
+      },
+      {
+        "table_name": "ParsedResume",
+        "column_name": "workExperience"
+      },
+      {
+        "table_name": "ParsedResume",
+        "column_name": "certifications"
+      },
+      {
+        "table_name": "ParsedResume",
+        "column_name": "languages"
+      },
+      {
+        "table_name": "ParsedResume",
+        "column_name": "totalExperienceYears"
+      },
+      {
+        "table_name": "ParsedResume",
+        "column_name": "matchScore"
+      },
+      {
+        "table_name": "ParsedResume",
+        "column_name": "matchDetails"
+      },
+      {
+        "table_name": "ParsedResume",
+        "column_name": "parsedAt"
+      },
+      {
+        "table_name": "ParsedResume",
+        "column_name": "parseError"
+      },
+      {
+        "table_name": "PayrollEntry",
+        "column_name": "id"
+      },
+      {
+        "table_name": "PayrollEntry",
+        "column_name": "organizationId"
+      },
+      {
+        "table_name": "PayrollEntry",
+        "column_name": "payrollPeriodId"
+      },
+      {
+        "table_name": "PayrollEntry",
+        "column_name": "employeeId"
+      },
+      {
+        "table_name": "PayrollEntry",
+        "column_name": "employeeCompensationId"
+      },
+      {
+        "table_name": "PayrollEntry",
+        "column_name": "baseAmount"
+      },
+      {
+        "table_name": "PayrollEntry",
+        "column_name": "grossAmount"
+      },
+      {
+        "table_name": "PayrollEntry",
+        "column_name": "totalDeductions"
+      },
+      {
+        "table_name": "PayrollEntry",
+        "column_name": "netAmount"
+      },
+      {
+        "table_name": "PayrollEntry",
+        "column_name": "status"
+      },
+      {
+        "table_name": "PayrollEntry",
+        "column_name": "createdAt"
+      },
+      {
+        "table_name": "PayrollEntry",
+        "column_name": "updatedAt"
+      },
+      {
+        "table_name": "PayrollEntry",
+        "column_name": "calculationSnapshot"
+      },
+      {
+        "table_name": "PayrollPeriod",
+        "column_name": "id"
+      },
+      {
+        "table_name": "PayrollPeriod",
+        "column_name": "organizationId"
+      },
+      {
+        "table_name": "PayrollPeriod",
+        "column_name": "name"
+      },
+      {
+        "table_name": "PayrollPeriod",
+        "column_name": "periodStart"
+      },
+      {
+        "table_name": "PayrollPeriod",
+        "column_name": "periodEnd"
+      },
+      {
+        "table_name": "PayrollPeriod",
+        "column_name": "payDate"
+      },
+      {
+        "table_name": "PayrollPeriod",
+        "column_name": "status"
+      },
+      {
+        "table_name": "PayrollPeriod",
+        "column_name": "createdAt"
+      },
+      {
+        "table_name": "PayrollPeriod",
+        "column_name": "updatedAt"
+      },
+      {
+        "table_name": "PayrollPeriod",
+        "column_name": "finalizedById"
+      },
+      {
+        "table_name": "PayrollPeriod",
+        "column_name": "finalizedAt"
+      },
+      {
+        "table_name": "PayrollPolicyLeaveTreatment",
+        "column_name": "id"
+      },
+      {
+        "table_name": "PayrollPolicyLeaveTreatment",
+        "column_name": "organizationId"
+      },
+      {
+        "table_name": "PayrollPolicyLeaveTreatment",
+        "column_name": "payrollPolicyId"
+      },
+      {
+        "table_name": "PayrollPolicyLeaveTreatment",
+        "column_name": "leaveTypeId"
+      },
+      {
+        "table_name": "PayrollPolicyLeaveTreatment",
+        "column_name": "treatment"
+      },
+      {
+        "table_name": "PayrollPolicyLeaveTreatment",
+        "column_name": "createdAt"
+      },
+      {
+        "table_name": "ProbationRecord",
+        "column_name": "id"
+      },
+      {
+        "table_name": "ProbationRecord",
+        "column_name": "employeeId"
+      },
+      {
+        "table_name": "ProbationRecord",
+        "column_name": "employmentRecordId"
+      },
+      {
+        "table_name": "ProbationRecord",
+        "column_name": "category"
+      },
+      {
+        "table_name": "ProbationRecord",
+        "column_name": "startedAt"
+      },
+      {
+        "table_name": "ProbationRecord",
+        "column_name": "expectedEndAt"
+      },
+      {
+        "table_name": "ProbationRecord",
+        "column_name": "probationStatus"
+      },
+      {
+        "table_name": "ProbationRecord",
+        "column_name": "renewalCount"
+      },
+      {
+        "table_name": "ProbationRecord",
+        "column_name": "maxRenewals"
+      },
+      {
+        "table_name": "ProbationRecord",
+        "column_name": "completedAt"
+      },
+      {
+        "table_name": "ProbationRecord",
+        "column_name": "decision"
+      },
+      {
+        "table_name": "ProbationRecord",
+        "column_name": "decisionAt"
+      },
+      {
+        "table_name": "ProbationRecord",
+        "column_name": "decisionById"
+      },
+      {
+        "table_name": "ProbationRecord",
+        "column_name": "policySnapshot"
+      },
+      {
+        "table_name": "ProbationRecord",
+        "column_name": "remarks"
+      },
+      {
+        "table_name": "ProbationRecord",
+        "column_name": "createdAt"
+      },
+      {
+        "table_name": "ProbationRecord",
+        "column_name": "updatedAt"
+      },
+      {
+        "table_name": "ProbationRecord",
+        "column_name": "previousProbationRecordId"
+      },
+      {
+        "table_name": "ProbationRecord",
+        "column_name": "closedBySeparationCaseId"
+      },
+      {
+        "table_name": "RecruitmentDocument",
+        "column_name": "id"
+      },
+      {
+        "table_name": "RecruitmentDocument",
+        "column_name": "applicationId"
+      },
+      {
+        "table_name": "RecruitmentDocument",
+        "column_name": "type"
+      },
+      {
+        "table_name": "RecruitmentDocument",
+        "column_name": "title"
+      },
+      {
+        "table_name": "RecruitmentDocument",
+        "column_name": "status"
+      },
+      {
+        "table_name": "RecruitmentDocument",
+        "column_name": "isRequired"
+      },
+      {
+        "table_name": "RecruitmentDocument",
+        "column_name": "isConditional"
+      },
+      {
+        "table_name": "RecruitmentDocument",
+        "column_name": "notes"
+      },
+      {
+        "table_name": "RecruitmentDocument",
+        "column_name": "fileName"
+      },
+      {
+        "table_name": "RecruitmentDocument",
+        "column_name": "fileType"
+      },
+      {
+        "table_name": "RecruitmentDocument",
+        "column_name": "fileSize"
+      },
+      {
+        "table_name": "RecruitmentDocument",
+        "column_name": "storageKey"
+      },
+      {
+        "table_name": "RecruitmentDocument",
+        "column_name": "verifiedAt"
+      },
+      {
+        "table_name": "RecruitmentDocument",
+        "column_name": "verifiedById"
+      },
+      {
+        "table_name": "RecruitmentDocument",
+        "column_name": "createdAt"
+      },
+      {
+        "table_name": "RecruitmentDocument",
+        "column_name": "updatedAt"
+      },
+      {
+        "table_name": "User",
+        "column_name": "id"
+      },
+      {
+        "table_name": "User",
+        "column_name": "organizationId"
+      },
+      {
+        "table_name": "User",
+        "column_name": "name"
+      },
+      {
+        "table_name": "User",
+        "column_name": "email"
+      },
+      {
+        "table_name": "User",
+        "column_name": "passwordHash"
+      },
+      {
+        "table_name": "User",
+        "column_name": "role"
+      },
+      {
+        "table_name": "User",
+        "column_name": "createdAt"
+      },
+      {
+        "table_name": "User",
+        "column_name": "updatedAt"
+      },
+      {
+        "table_name": "WorkScheduleBreak",
+        "column_name": "id"
+      },
+      {
+        "table_name": "WorkScheduleBreak",
+        "column_name": "scheduleDayId"
+      },
+      {
+        "table_name": "WorkScheduleBreak",
+        "column_name": "startSecond"
+      },
+      {
+        "table_name": "WorkScheduleBreak",
+        "column_name": "endSecond"
+      },
+      {
+        "table_name": "WorkScheduleBreak",
+        "column_name": "isPaid"
+      },
+      {
+        "table_name": "WorkScheduleDay",
+        "column_name": "id"
+      },
+      {
+        "table_name": "WorkScheduleDay",
+        "column_name": "scheduleVersionId"
+      },
+      {
+        "table_name": "WorkScheduleDay",
+        "column_name": "isoWeekday"
+      },
+      {
+        "table_name": "WorkScheduleDay",
+        "column_name": "isWorkday"
+      },
+      {
+        "table_name": "WorkScheduleDay",
+        "column_name": "expectedStartSecond"
+      },
+      {
+        "table_name": "WorkScheduleDay",
+        "column_name": "expectedEndSecond"
+      },
+      {
+        "table_name": "WorkScheduleGroup",
+        "column_name": "id"
+      },
+      {
+        "table_name": "WorkScheduleGroup",
+        "column_name": "organizationId"
+      },
+      {
+        "table_name": "WorkScheduleGroup",
+        "column_name": "scheduleKey"
+      },
+      {
+        "table_name": "WorkScheduleGroup",
+        "column_name": "name"
+      },
+      {
+        "table_name": "WorkScheduleGroup",
+        "column_name": "description"
+      },
+      {
+        "table_name": "WorkScheduleGroup",
+        "column_name": "isArchived"
+      },
+      {
+        "table_name": "WorkScheduleGroup",
+        "column_name": "createdById"
+      },
+      {
+        "table_name": "WorkScheduleGroup",
+        "column_name": "createdAt"
+      },
+      {
+        "table_name": "WorkScheduleGroup",
+        "column_name": "updatedAt"
+      },
+      {
+        "table_name": "WorkScheduleVersion",
+        "column_name": "id"
+      },
+      {
+        "table_name": "WorkScheduleVersion",
+        "column_name": "scheduleGroupId"
+      },
+      {
+        "table_name": "WorkScheduleVersion",
+        "column_name": "version"
+      },
+      {
+        "table_name": "WorkScheduleVersion",
+        "column_name": "displayName"
+      },
+      {
+        "table_name": "WorkScheduleVersion",
+        "column_name": "lateGraceSeconds"
+      },
+      {
+        "table_name": "WorkScheduleVersion",
+        "column_name": "createdById"
+      },
+      {
+        "table_name": "WorkScheduleVersion",
+        "column_name": "createdAt"
+      }
+    ],
+    "tables": [
+      {
+        "table": "Applicant",
+        "count": 25,
+        "fingerprint": "098bdf8c4baff5df5409e750e8e89710"
+      },
+      {
+        "table": "Application",
+        "count": 22,
+        "fingerprint": "bfb4cd31d977fe6b1593e5167f49dd68"
+      },
+      {
+        "table": "ApplicationStatusHistory",
+        "count": 27,
+        "fingerprint": "ae817a84e2b0450f45b604b187c52cc9"
+      },
+      {
+        "table": "Assessment",
+        "count": 10,
+        "fingerprint": "5b78213f66c99c9a12d81848e93f5acd"
+      },
+      {
+        "table": "AttendanceCorrection",
+        "count": 0,
+        "fingerprint": "d41d8cd98f00b204e9800998ecf8427e"
+      },
+      {
+        "table": "AttendanceEvent",
+        "count": 0,
+        "fingerprint": "d41d8cd98f00b204e9800998ecf8427e"
+      },
+      {
+        "table": "CandidateEvaluation",
+        "count": 12,
+        "fingerprint": "b84fc5f6674e9988f80917d1092fad09"
+      },
+      {
+        "table": "DailyAttendanceRecord",
+        "count": 77,
+        "fingerprint": "59196384f3cc73fc744c9305bf1f5cd7"
+      },
+      {
+        "table": "Document",
+        "count": 12,
+        "fingerprint": "c97e99e430827592db78f538fff1f082"
+      },
+      {
+        "table": "Employee",
+        "count": 7,
+        "fingerprint": "18710c074d7045e38ddb95e617f2d9b7"
+      },
+      {
+        "table": "EmployeeAccount",
+        "count": 3,
+        "fingerprint": "f8601798f2045c6166cabd7b1c5f824b"
+      },
+      {
+        "table": "EmployeeAccountAudit",
+        "count": 25,
+        "fingerprint": "a42044f33a0e08c11ee078e566711509"
+      },
+      {
+        "table": "EmployeeClearanceItem",
+        "count": 0,
+        "fingerprint": "d41d8cd98f00b204e9800998ecf8427e"
+      },
+      {
+        "table": "EmployeeCompensation",
+        "count": 0,
+        "fingerprint": "d41d8cd98f00b204e9800998ecf8427e"
+      },
+      {
+        "table": "EmployeeNumberSequence",
+        "count": 1,
+        "fingerprint": "be27c9f5c4b7a2ef8d5e4f92abe40bfb"
+      },
+      {
+        "table": "EmployeeScheduleAssignment",
+        "count": 4,
+        "fingerprint": "794c7c94097870835d13fcf8fa1471bd"
+      },
+      {
+        "table": "EmployeeSeparationAudit",
+        "count": 0,
+        "fingerprint": "d41d8cd98f00b204e9800998ecf8427e"
+      },
+      {
+        "table": "EmployeeSeparationCase",
+        "count": 0,
+        "fingerprint": "d41d8cd98f00b204e9800998ecf8427e"
+      },
+      {
+        "table": "EmployeeSeparationReview",
+        "count": 0,
+        "fingerprint": "d41d8cd98f00b204e9800998ecf8427e"
+      },
+      {
+        "table": "EmployeeStatusHistory",
+        "count": 6,
+        "fingerprint": "1065d48bf6b7409264709a8f545e6808"
+      },
+      {
+        "table": "EmploymentDecisionHistory",
+        "count": 5,
+        "fingerprint": "905ace741fd6802b138b3634edca4e3a"
+      },
+      {
+        "table": "EmploymentRecord",
+        "count": 11,
+        "fingerprint": "866b5b947205ce9d7dd23e8c0a735fda"
+      },
+      {
+        "table": "Interview",
+        "count": 16,
+        "fingerprint": "13126c6cd989b8c2acd334009b37dcec"
+      },
+      {
+        "table": "Job",
+        "count": 6,
+        "fingerprint": "598d00216b1655592a62b8d69088f0fa"
+      },
+      {
+        "table": "JobRequirement",
+        "count": 11,
+        "fingerprint": "64696280e11013d3036737894b4cd6f8"
+      },
+      {
+        "table": "LeaveCycle",
+        "count": 2,
+        "fingerprint": "6b302135175cdb0481c712a52a23f18a"
+      },
+      {
+        "table": "LeaveDocument",
+        "count": 0,
+        "fingerprint": "d41d8cd98f00b204e9800998ecf8427e"
+      },
+      {
+        "table": "LeaveLedgerEntry",
+        "count": 2,
+        "fingerprint": "7f64668f7dbad9c61efcc4d7ffa27713"
+      },
+      {
+        "table": "LeaveRequest",
+        "count": 1,
+        "fingerprint": "783f6e374910086c80336797b48ba780"
+      },
+      {
+        "table": "LeaveRequestAudit",
+        "count": 6,
+        "fingerprint": "2d87817ddac9a927ae5a9c6c3b908f47"
+      },
+      {
+        "table": "LeaveRequestDay",
+        "count": 1,
+        "fingerprint": "151c4f1d20d912d69b207ded742fbba0"
+      },
+      {
+        "table": "LeaveType",
+        "count": 6,
+        "fingerprint": "57131786030627710ace19ecd8a3eb7e"
+      },
+      {
+        "table": "Offer",
+        "count": 10,
+        "fingerprint": "b5666ffda2cc67502878c7c65a89002f"
+      },
+      {
+        "table": "OnboardingProcess",
+        "count": 5,
+        "fingerprint": "ea1b88fc0fb2f9cddeb2a238278594a9"
+      },
+      {
+        "table": "OnboardingTask",
+        "count": 20,
+        "fingerprint": "f4ef008b98873da047f8af0577160165"
+      },
+      {
+        "table": "Organization",
+        "count": 3,
+        "fingerprint": "3545ba5e8f057b4af7106d510018b637"
+      },
+      {
+        "table": "OrganizationBranding",
+        "count": 1,
+        "fingerprint": "87cbbe104182a64af64f10c5e0f24a78"
+      },
+      {
+        "table": "OrganizationBrandingAudit",
+        "count": 0,
+        "fingerprint": "d41d8cd98f00b204e9800998ecf8427e"
+      },
+      {
+        "table": "OrganizationPayrollPolicy",
+        "count": 0,
+        "fingerprint": "d41d8cd98f00b204e9800998ecf8427e"
+      },
+      {
+        "table": "ParsedResume",
+        "count": 3,
+        "fingerprint": "bc48ff509376f5e817f17d4238b96b73"
+      },
+      {
+        "table": "PayrollEntry",
+        "count": 0,
+        "fingerprint": "d41d8cd98f00b204e9800998ecf8427e"
+      },
+      {
+        "table": "PayrollPeriod",
+        "count": 0,
+        "fingerprint": "d41d8cd98f00b204e9800998ecf8427e"
+      },
+      {
+        "table": "PayrollPolicyLeaveTreatment",
+        "count": 0,
+        "fingerprint": "d41d8cd98f00b204e9800998ecf8427e"
+      },
+      {
+        "table": "ProbationRecord",
+        "count": 8,
+        "fingerprint": "496a1cc5d40d9d9cfe478653267404f9"
+      },
+      {
+        "table": "RecruitmentDocument",
+        "count": 127,
+        "fingerprint": "56fc3e667c262d98aabf69fc1e35426a"
+      },
+      {
+        "table": "User",
+        "count": 8,
+        "fingerprint": "4afed43d3cba0cec877e8f745da1e10b"
+      },
+      {
+        "table": "WorkScheduleBreak",
+        "count": 15,
+        "fingerprint": "13e596a197186780a2f9c400bb4853ec"
+      },
+      {
+        "table": "WorkScheduleDay",
+        "count": 28,
+        "fingerprint": "135525a8fa2d7f04d20fb07811a66607"
+      },
+      {
+        "table": "WorkScheduleGroup",
+        "count": 4,
+        "fingerprint": "6d5f506c2e61e9b80a507825b90b9367"
+      },
+      {
+        "table": "WorkScheduleVersion",
+        "count": 4,
+        "fingerprint": "a94cfd3f116c76a3f8ea62e54da6defe"
+      }
+    ]
+  }
+}

@@ -1,0 +1,51 @@
+[
+  {
+    "query": "",
+    "total": 62,
+    "page": 1,
+    "idsMatch": true,
+    "rendered": 20
+  },
+  {
+    "query": "?page=2",
+    "total": 62,
+    "page": 2,
+    "idsMatch": true,
+    "rendered": 20
+  },
+  {
+    "query": "?page=4",
+    "total": 62,
+    "page": 4,
+    "idsMatch": true,
+    "rendered": 2
+  },
+  {
+    "query": "?page=99999999",
+    "total": 62,
+    "page": 4,
+    "idsMatch": true,
+    "rendered": 2
+  },
+  {
+    "query": "?page=-4&status=invalid",
+    "total": 62,
+    "page": 1,
+    "idsMatch": true,
+    "rendered": 20
+  },
+  {
+    "query": "?search=UI&status=PUBLISHED",
+    "total": 16,
+    "page": 1,
+    "idsMatch": true,
+    "rendered": 16
+  },
+  {
+    "query": "?search=UI%20Department&status=DRAFT",
+    "total": 15,
+    "page": 1,
+    "idsMatch": true,
+    "rendered": 15
+  }
+]

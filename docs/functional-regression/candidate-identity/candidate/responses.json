@@ -1,0 +1,622 @@
+[
+  {
+    "label": "ORGANIZATION_ADMIN permitted document",
+    "status": 200,
+    "cacheControl": "private, no-store",
+    "nosniff": "nosniff",
+    "containsPrivateBytes": true,
+    "containsIdentity": false
+  },
+  {
+    "label": "ORGANIZATION_ADMIN permitted document",
+    "status": 200,
+    "cacheControl": "private, no-store",
+    "nosniff": "nosniff",
+    "containsPrivateBytes": true,
+    "containsIdentity": false
+  },
+  {
+    "label": "ORGANIZATION_ADMIN permitted document",
+    "status": 200,
+    "cacheControl": "private, no-store",
+    "nosniff": "nosniff",
+    "containsPrivateBytes": true,
+    "containsIdentity": false
+  },
+  {
+    "label": "HR_ADMIN permitted document",
+    "status": 200,
+    "cacheControl": "private, no-store",
+    "nosniff": "nosniff",
+    "containsPrivateBytes": true,
+    "containsIdentity": false
+  },
+  {
+    "label": "HR_ADMIN permitted document",
+    "status": 200,
+    "cacheControl": "private, no-store",
+    "nosniff": "nosniff",
+    "containsPrivateBytes": true,
+    "containsIdentity": false
+  },
+  {
+    "label": "HR_ADMIN permitted document",
+    "status": 200,
+    "cacheControl": "private, no-store",
+    "nosniff": "nosniff",
+    "containsPrivateBytes": true,
+    "containsIdentity": false
+  },
+  {
+    "label": "HIRING_MANAGER permitted document",
+    "status": 200,
+    "cacheControl": "private, no-store",
+    "nosniff": "nosniff",
+    "containsPrivateBytes": true,
+    "containsIdentity": false
+  },
+  {
+    "label": "HIRING_MANAGER permitted document",
+    "status": 200,
+    "cacheControl": "private, no-store",
+    "nosniff": "nosniff",
+    "containsPrivateBytes": true,
+    "containsIdentity": false
+  },
+  {
+    "label": "HIRING_MANAGER permitted document",
+    "status": 200,
+    "cacheControl": "private, no-store",
+    "nosniff": "nosniff",
+    "containsPrivateBytes": true,
+    "containsIdentity": false
+  },
+  {
+    "label": "Employee denied",
+    "status": 401,
+    "cacheControl": null,
+    "nosniff": null,
+    "containsPrivateBytes": false,
+    "containsIdentity": false
+  },
+  {
+    "label": "No credentials denied",
+    "status": 401,
+    "cacheControl": null,
+    "nosniff": null,
+    "containsPrivateBytes": false,
+    "containsIdentity": false
+  },
+  {
+    "label": "Invalid staff cookie cannot use appId",
+    "status": 401,
+    "cacheControl": null,
+    "nosniff": null,
+    "containsPrivateBytes": false,
+    "containsIdentity": false
+  },
+  {
+    "label": "Wrong tenant staff denied",
+    "status": 401,
+    "cacheControl": null,
+    "nosniff": null,
+    "containsPrivateBytes": false,
+    "containsIdentity": false
+  },
+  {
+    "label": "Employee denied",
+    "status": 403,
+    "cacheControl": null,
+    "nosniff": null,
+    "containsPrivateBytes": false,
+    "containsIdentity": false
+  },
+  {
+    "label": "No credentials denied",
+    "status": 403,
+    "cacheControl": null,
+    "nosniff": null,
+    "containsPrivateBytes": false,
+    "containsIdentity": false
+  },
+  {
+    "label": "Invalid staff cookie cannot use appId",
+    "status": 403,
+    "cacheControl": null,
+    "nosniff": null,
+    "containsPrivateBytes": false,
+    "containsIdentity": false
+  },
+  {
+    "label": "Wrong tenant staff denied",
+    "status": 403,
+    "cacheControl": null,
+    "nosniff": null,
+    "containsPrivateBytes": false,
+    "containsIdentity": false
+  },
+  {
+    "label": "Employee denied",
+    "status": 403,
+    "cacheControl": null,
+    "nosniff": null,
+    "containsPrivateBytes": false,
+    "containsIdentity": false
+  },
+  {
+    "label": "No credentials denied",
+    "status": 403,
+    "cacheControl": null,
+    "nosniff": null,
+    "containsPrivateBytes": false,
+    "containsIdentity": false
+  },
+  {
+    "label": "Invalid staff cookie cannot use appId",
+    "status": 403,
+    "cacheControl": null,
+    "nosniff": null,
+    "containsPrivateBytes": false,
+    "containsIdentity": false
+  },
+  {
+    "label": "Wrong tenant staff denied",
+    "status": 403,
+    "cacheControl": null,
+    "nosniff": null,
+    "containsPrivateBytes": false,
+    "containsIdentity": false
+  },
+  {
+    "label": "Staff may read another candidate in same organization",
+    "status": 200,
+    "cacheControl": "private, no-store",
+    "nosniff": "nosniff",
+    "containsPrivateBytes": true,
+    "containsIdentity": false
+  },
+  {
+    "label": "Changed ID cannot retrieve foreign document",
+    "status": 403,
+    "cacheControl": null,
+    "nosniff": null,
+    "containsPrivateBytes": false,
+    "containsIdentity": false
+  },
+  {
+    "label": "Anonymous foreign tenant cannot override host with appId",
+    "status": 403,
+    "cacheControl": null,
+    "nosniff": null,
+    "containsPrivateBytes": false,
+    "containsIdentity": false
+  },
+  {
+    "label": "Unprovisioned tenant cannot fall back to public careers access",
+    "status": 403,
+    "cacheControl": null,
+    "nosniff": null,
+    "containsPrivateBytes": false,
+    "containsIdentity": false
+  },
+  {
+    "label": "Mismatched candidate application and document IDs denied",
+    "status": 403,
+    "cacheControl": null,
+    "nosniff": null,
+    "containsPrivateBytes": false,
+    "containsIdentity": false
+  },
+  {
+    "label": "Missing record safe",
+    "status": 404,
+    "cacheControl": null,
+    "nosniff": null,
+    "containsPrivateBytes": false,
+    "containsIdentity": false
+  },
+  {
+    "label": "Missing record safe",
+    "status": 404,
+    "cacheControl": null,
+    "nosniff": null,
+    "containsPrivateBytes": false,
+    "containsIdentity": false
+  },
+  {
+    "label": "Missing record safe",
+    "status": 404,
+    "cacheControl": null,
+    "nosniff": null,
+    "containsPrivateBytes": false,
+    "containsIdentity": false
+  },
+  {
+    "label": "Inaccessible stored file safe",
+    "status": 404,
+    "cacheControl": null,
+    "nosniff": null,
+    "containsPrivateBytes": false,
+    "containsIdentity": false
+  },
+  {
+    "label": "Role downgrade rejects old JWT",
+    "status": 401,
+    "cacheControl": null,
+    "nosniff": null,
+    "containsPrivateBytes": false,
+    "containsIdentity": false
+  },
+  {
+    "label": "Role downgrade rejects old JWT",
+    "status": 403,
+    "cacheControl": null,
+    "nosniff": null,
+    "containsPrivateBytes": false,
+    "containsIdentity": false
+  },
+  {
+    "label": "Role downgrade rejects old JWT",
+    "status": 403,
+    "cacheControl": null,
+    "nosniff": null,
+    "containsPrivateBytes": false,
+    "containsIdentity": false
+  },
+  {
+    "action": "uploadRecruitmentDocumentAction",
+    "status": 200,
+    "returnedError": true,
+    "containsFixtureIdentity": true
+  },
+  {
+    "action": "uploadRecruitmentDocumentAction",
+    "status": 200,
+    "returnedError": true,
+    "containsFixtureIdentity": false
+  },
+  {
+    "action": "uploadRecruitmentDocumentAction",
+    "status": 200,
+    "returnedError": true,
+    "containsFixtureIdentity": false
+  },
+  {
+    "action": "uploadOnboardingTaskDocumentAction",
+    "status": 200,
+    "returnedError": true,
+    "containsFixtureIdentity": false
+  },
+  {
+    "action": "uploadOnboardingTaskDocumentAction",
+    "status": 200,
+    "returnedError": true,
+    "containsFixtureIdentity": true
+  },
+  {
+    "action": "verifyRecruitmentDocumentAction",
+    "status": 200,
+    "returnedError": true,
+    "containsFixtureIdentity": true
+  },
+  {
+    "action": "submitCandidateRecruitmentDocumentAction",
+    "status": 200,
+    "returnedError": true,
+    "containsFixtureIdentity": false
+  },
+  {
+    "action": "rejectRecruitmentDocumentAction",
+    "status": 200,
+    "returnedError": true,
+    "containsFixtureIdentity": true
+  },
+  {
+    "action": "submitCandidateRecruitmentDocumentAction",
+    "status": 404,
+    "returnedError": false,
+    "containsFixtureIdentity": false
+  },
+  {
+    "action": "submitCandidateRecruitmentDocumentAction",
+    "status": 200,
+    "returnedError": true,
+    "containsFixtureIdentity": false
+  },
+  {
+    "action": "submitCandidateRecruitmentDocumentAction",
+    "status": 200,
+    "returnedError": true,
+    "containsFixtureIdentity": false
+  },
+  {
+    "action": "submitCandidateOnboardingDocumentAction",
+    "status": 200,
+    "returnedError": true,
+    "containsFixtureIdentity": false
+  },
+  {
+    "action": "submitCandidateOnboardingDocumentAction",
+    "status": 200,
+    "returnedError": true,
+    "containsFixtureIdentity": false
+  },
+  {
+    "action": "submitCandidateOnboardingDocumentAction",
+    "status": 200,
+    "returnedError": true,
+    "containsFixtureIdentity": false
+  },
+  {
+    "action": "submitCandidateOnboardingDocumentAction",
+    "status": 200,
+    "returnedError": true,
+    "containsFixtureIdentity": false
+  },
+  {
+    "action": "submitCandidateOnboardingDocumentAction",
+    "status": 200,
+    "returnedError": true,
+    "containsFixtureIdentity": false
+  },
+  {
+    "action": "getCandidatePortalData",
+    "status": 200,
+    "returnedError": false,
+    "containsFixtureIdentity": false
+  },
+  {
+    "label": "Staff historical read after APPLIED",
+    "status": 200,
+    "cacheControl": "private, no-store",
+    "nosniff": "nosniff",
+    "containsPrivateBytes": true,
+    "containsIdentity": false
+  },
+  {
+    "label": "Staff historical read after SCREENING",
+    "status": 200,
+    "cacheControl": "private, no-store",
+    "nosniff": "nosniff",
+    "containsPrivateBytes": true,
+    "containsIdentity": false
+  },
+  {
+    "label": "Staff historical read after SHORTLISTED",
+    "status": 200,
+    "cacheControl": "private, no-store",
+    "nosniff": "nosniff",
+    "containsPrivateBytes": true,
+    "containsIdentity": false
+  },
+  {
+    "label": "Staff historical read after INTERVIEW",
+    "status": 200,
+    "cacheControl": "private, no-store",
+    "nosniff": "nosniff",
+    "containsPrivateBytes": true,
+    "containsIdentity": false
+  },
+  {
+    "label": "Staff historical read after ASSESSMENT",
+    "status": 200,
+    "cacheControl": "private, no-store",
+    "nosniff": "nosniff",
+    "containsPrivateBytes": true,
+    "containsIdentity": false
+  },
+  {
+    "label": "Staff historical read after OFFER",
+    "status": 200,
+    "cacheControl": "private, no-store",
+    "nosniff": "nosniff",
+    "containsPrivateBytes": true,
+    "containsIdentity": false
+  },
+  {
+    "label": "Staff historical read after HIRED",
+    "status": 200,
+    "cacheControl": "private, no-store",
+    "nosniff": "nosniff",
+    "containsPrivateBytes": true,
+    "containsIdentity": false
+  },
+  {
+    "label": "Staff historical read after REJECTED",
+    "status": 200,
+    "cacheControl": "private, no-store",
+    "nosniff": "nosniff",
+    "containsPrivateBytes": true,
+    "containsIdentity": false
+  },
+  {
+    "label": "Staff historical read after WITHDRAWN",
+    "status": 200,
+    "cacheControl": "private, no-store",
+    "nosniff": "nosniff",
+    "containsPrivateBytes": true,
+    "containsIdentity": false
+  },
+  {
+    "label": "Raw local storage URL cannot bypass handler",
+    "status": 404,
+    "cacheControl": "private, no-cache, no-store, max-age=0, must-revalidate",
+    "nosniff": null,
+    "containsPrivateBytes": false,
+    "containsIdentity": false
+  },
+  {
+    "label": "Raw local storage URL cannot bypass handler",
+    "status": 404,
+    "cacheControl": "private, no-cache, no-store, max-age=0, must-revalidate",
+    "nosniff": null,
+    "containsPrivateBytes": false,
+    "containsIdentity": false
+  },
+  {
+    "action": "submitApplicationAction",
+    "status": 200,
+    "returnedError": true,
+    "containsFixtureIdentity": false
+  },
+  {
+    "action": "submitApplicationAction",
+    "status": 200,
+    "returnedError": true,
+    "containsFixtureIdentity": false
+  },
+  {
+    "action": "submitApplicationAction",
+    "status": 200,
+    "returnedError": true,
+    "containsFixtureIdentity": false
+  },
+  {
+    "action": "submitApplicationAction",
+    "status": 200,
+    "returnedError": true,
+    "containsFixtureIdentity": false
+  },
+  {
+    "label": "New public-upload resume remains isolated from foreign staff organization",
+    "status": 403,
+    "cacheControl": null,
+    "nosniff": null,
+    "containsPrivateBytes": false,
+    "containsIdentity": false
+  },
+  {
+    "label": "Authorized organization can read its public application upload",
+    "status": 200,
+    "cacheControl": "private, no-store",
+    "nosniff": "nosniff",
+    "containsPrivateBytes": true,
+    "containsIdentity": false
+  },
+  {
+    "action": "verifyCandidateEmail",
+    "status": 200,
+    "returnedError": true,
+    "containsFixtureIdentity": false
+  },
+  {
+    "label": "Verified candidate downloads own private document",
+    "status": 200,
+    "cacheControl": "private, no-store",
+    "nosniff": "nosniff",
+    "containsPrivateBytes": true,
+    "containsIdentity": false
+  },
+  {
+    "label": "Verified candidate downloads own private document",
+    "status": 200,
+    "cacheControl": "private, no-store",
+    "nosniff": "nosniff",
+    "containsPrivateBytes": true,
+    "containsIdentity": false
+  },
+  {
+    "label": "Verified candidate wrong tenant denied",
+    "status": 403,
+    "cacheControl": null,
+    "nosniff": null,
+    "containsPrivateBytes": false,
+    "containsIdentity": false
+  },
+  {
+    "label": "Foreign candidate cannot use another application ID",
+    "status": 403,
+    "cacheControl": null,
+    "nosniff": null,
+    "containsPrivateBytes": false,
+    "containsIdentity": false
+  },
+  {
+    "action": "submitCandidateRecruitmentDocumentAction",
+    "status": 200,
+    "returnedError": true,
+    "containsFixtureIdentity": false
+  },
+  {
+    "action": "submitCandidateRecruitmentDocumentAction",
+    "status": 200,
+    "returnedError": true,
+    "containsFixtureIdentity": false
+  },
+  {
+    "action": "submitCandidateRecruitmentDocumentAction",
+    "status": 200,
+    "returnedError": true,
+    "containsFixtureIdentity": false
+  },
+  {
+    "action": "submitCandidateRecruitmentDocumentAction",
+    "status": 200,
+    "returnedError": true,
+    "containsFixtureIdentity": false
+  },
+  {
+    "action": "submitCandidateOnboardingDocumentAction",
+    "status": 200,
+    "returnedError": true,
+    "containsFixtureIdentity": false
+  },
+  {
+    "action": "submitCandidateOnboardingDocumentAction",
+    "status": 200,
+    "returnedError": true,
+    "containsFixtureIdentity": false
+  },
+  {
+    "action": "setCandidateAccessRevoked",
+    "status": 500,
+    "returnedError": false,
+    "containsFixtureIdentity": false
+  },
+  {
+    "action": "setCandidateAccessRevoked",
+    "status": 500,
+    "returnedError": false,
+    "containsFixtureIdentity": false
+  },
+  {
+    "action": "setCandidateAccessRevoked",
+    "status": 200,
+    "returnedError": true,
+    "containsFixtureIdentity": true
+  },
+  {
+    "label": "HR revocation denies existing candidate cookie",
+    "status": 403,
+    "cacheControl": null,
+    "nosniff": null,
+    "containsPrivateBytes": false,
+    "containsIdentity": false
+  },
+  {
+    "action": "setCandidateAccessRevoked",
+    "status": 200,
+    "returnedError": true,
+    "containsFixtureIdentity": true
+  },
+  {
+    "label": "HR re-enable requires fresh verification",
+    "status": 403,
+    "cacheControl": null,
+    "nosniff": null,
+    "containsPrivateBytes": false,
+    "containsIdentity": false
+  },
+  {
+    "action": "completeOnboardingAction",
+    "status": 200,
+    "returnedError": true,
+    "containsFixtureIdentity": true
+  },
+  {
+    "action": "updateApplicationStatusAction",
+    "status": 200,
+    "returnedError": true,
+    "containsFixtureIdentity": true
+  }
+]

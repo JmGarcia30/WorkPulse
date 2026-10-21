@@ -11,7 +11,7 @@ const verification = JSON.parse(fs.readFileSync(helper.directory + '/schema-and-
 if (!verification.h10Applied || !verification.h10ChecksumMatch || verification.identity.endpointSha256 !== config.identity.endpointSha256) helper.fail('UNVERIFIED_TARGET');
 const securityOnly = process.env.FR_PROFILE_SECURITY === '1';
 const candidateOnly = process.env.FR_CANDIDATE_DOCUMENTS === '1';
-const evidenceRoot = process.env.FR_CANDIDATE_REVIEW === '1' ? 'docs/functional-regression/candidate-documents' : 'docs/functional-regression/profile-security';
+const evidenceRoot = process.env.FR_IDENTITY_REVIEW === '1' ? 'docs/functional-regression/candidate-identity' : process.env.FR_CANDIDATE_REVIEW === '1' ? 'docs/functional-regression/candidate-documents' : 'docs/functional-regression/profile-security';
 const directory = candidateOnly ? evidenceRoot + (process.env.FR_DELETED_DOCUMENTS === '1' ? '/deleted' : '/candidate') : process.env.FR_SECURITY_BASELINE === '1' ? 'docs/functional-regression/profile-security/baseline' : securityOnly ? evidenceRoot + '/http' : process.env.FR_SECURITY_FUNCTIONAL === '1' ? evidenceRoot + '/browser' : 'docs/functional-regression';
 fs.mkdirSync(directory, { recursive: true });
 const save = (name, data) => fs.writeFileSync(`${directory}/${name}.json`, JSON.stringify(data, null, 2));
@@ -56,6 +56,7 @@ async function main() {
   let app, server, session;
   try {
     await db.$transaction(async tx => {
+      if (process.env.FR_IDENTITY_REVIEW === '1') for (const sql of fs.readFileSync('prisma/migrations/20261021000100_candidate_access/migration.sql', 'utf8').split(';').filter(x => x.trim())) await tx.$executeRawUnsafe(sql);
       globalThis.prisma = fixtureClient(tx);
       const password = randomBytes(24).toString('hex'), passwordHash = await hash(password, 10);
       const org = await tx.organization.create({ data: { name: 'Functional Regression Fixture', slug, timeZone: 'Asia/Manila' } });
@@ -94,8 +95,8 @@ async function main() {
       session = await browser({ port, production: true, email: users.ORGANIZATION_ADMIN.email, password, tenantHost });
       ok(true, 'Normal password login reaches fixture-only Dashboard');
       if (candidateOnly) {
-        await require('./test-candidate-document-http.cjs')({ tx, org, foreign, users, primary, job, otherJob, candidate, tenantHost, port, session, save, ok });
-        save('candidate-result', { assertionsPassed: true, scenarios: checks.length, candidateIdentityPolicyResolved: false, secureAcrossAllPaths: false });
+        await require(process.env.FR_IDENTITY_REVIEW === '1' ? './test-candidate-identity-http.cjs' : './test-candidate-document-http.cjs')({ tx, org, foreign, users, primary, job, otherJob, candidate, tenantHost, port, session, save, ok });
+        save('candidate-result', { assertionsPassed: true, scenarios: checks.length, candidateIdentityPolicyResolved: process.env.FR_IDENTITY_REVIEW === '1', secureAcrossAllPaths: process.env.FR_IDENTITY_REVIEW === '1' });
         await session.close(); session = null;
         await new Promise(resolve => server.close(resolve)); server = null;
         await app.close(); app = null;

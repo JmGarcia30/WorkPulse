@@ -1,11 +1,5 @@
-import { TableSkeleton } from '@/components/ui/TableSkeleton';
+import { PageSkeleton } from '@/components/ui/PageSkeleton';
 
-export default function InterviewsLoading() {
-  return (
-    <div className="space-y-6">
-      <div className="h-8 w-64 bg-slate-200 rounded-lg animate-pulse" />
-      <div className="h-24 rounded-md border border-slate-200 bg-white p-4 animate-pulse" />
-      <TableSkeleton rows={6} />
-    </div>
-  );
+export default function Loading() {
+  return <PageSkeleton kind="interviews" label="interviews" />;
 }

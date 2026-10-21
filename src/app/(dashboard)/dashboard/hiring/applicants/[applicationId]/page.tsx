@@ -1,4 +1,5 @@
 import { notFound } from 'next/navigation';
+import { setCandidateAccessRevoked } from '@/features/careers/verification-actions';
 import { requireBackOfficeContext } from '@/lib/auth/guards';
 import { prisma } from '@/lib/db/prisma';
 import {
@@ -188,6 +189,11 @@ export default async function CandidateProfilePage({
   });
 
   return (
+    <>
+    {['ORGANIZATION_ADMIN', 'HR_ADMIN'].includes(user.role) && <div className="flex gap-4 mb-4">
+      <form action={setCandidateAccessRevoked.bind(null, applicationId, true)}><button className="text-sm text-red-700 underline">Revoke candidate access</button></form>
+      <form action={setCandidateAccessRevoked.bind(null, applicationId, false)}><button className="text-sm underline">Allow fresh email verification</button></form>
+    </div>}
     <ApplicantProfileView
       application={application}
       organizationUsers={organizationUsers}
@@ -205,5 +211,6 @@ export default async function CandidateProfilePage({
         canViewEmployees: canViewEmp,
       }}
     />
+    </>
   );
 }

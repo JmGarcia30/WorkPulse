@@ -1,0 +1,10 @@
+{
+  "roleChangesRequireFreshLogin": true,
+  "roleRestorationMakesSameClaimsValidAgain": true,
+  "perTokenRevocationBlacklistSupported": false,
+  "currentMembershipVerified": true,
+  "jwtExpiryAndSignatureVerified": true,
+  "testsInspectWholeBodies": true,
+  "htmlAndRsc": true,
+  "secretOrBodiesSaved": false
+}

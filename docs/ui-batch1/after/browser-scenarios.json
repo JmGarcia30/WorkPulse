@@ -1,0 +1,34 @@
+[
+  {
+    "scenario": "Normal password login reaches fixture-only Dashboard",
+    "passed": true
+  },
+  {
+    "scenario": "Five comparable warmed production Job Openings navigations completed",
+    "passed": true
+  },
+  {
+    "scenario": "Real database filtering, total counts, stable tied-date ordering, clamping, empty state, application counts and filter-preserving pagination",
+    "passed": true
+  },
+  {
+    "scenario": "Hiring Manager retains listing/view access without create/edit actions",
+    "passed": true
+  },
+  {
+    "scenario": "Wrong-tenant staff cannot receive job listing data",
+    "passed": true
+  },
+  {
+    "scenario": "Ten actual route-transition skeletons stay light and static, preserve shell and fit all widths, including reduced motion",
+    "passed": true
+  },
+  {
+    "scenario": "Job detail, creation and edit screens fit all five widths without console/runtime errors",
+    "passed": true
+  },
+  {
+    "scenario": "Job Openings and Employee Records checked at all five viewport widths",
+    "passed": true
+  }
+]

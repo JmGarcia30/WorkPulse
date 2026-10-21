@@ -1,0 +1,116 @@
+{
+  "phase": "before",
+  "mode": "production; same 62-job fixture; 1280px; one warm-up plus five samples; warm assets/server with a fresh employee-page document/router per sample; no injected latency",
+  "measurements": [
+    {
+      "route": "Job Openings",
+      "completed": true,
+      "expectedContent": true,
+      "renderedError": false,
+      "navigationMs": 535,
+      "networkRequests": 38,
+      "documentRequests": 0,
+      "failedHttpResponses": [],
+      "runtimeExceptions": 0,
+      "consoleErrors": 0
+    },
+    {
+      "route": "Job Openings",
+      "completed": true,
+      "expectedContent": true,
+      "renderedError": false,
+      "navigationMs": 518,
+      "networkRequests": 22,
+      "documentRequests": 0,
+      "failedHttpResponses": [],
+      "runtimeExceptions": 0,
+      "consoleErrors": 0
+    },
+    {
+      "route": "Job Openings",
+      "completed": true,
+      "expectedContent": true,
+      "renderedError": false,
+      "navigationMs": 506,
+      "networkRequests": 22,
+      "documentRequests": 0,
+      "failedHttpResponses": [],
+      "runtimeExceptions": 0,
+      "consoleErrors": 0
+    },
+    {
+      "route": "Job Openings",
+      "completed": true,
+      "expectedContent": true,
+      "renderedError": false,
+      "navigationMs": 514,
+      "networkRequests": 22,
+      "documentRequests": 0,
+      "failedHttpResponses": [],
+      "runtimeExceptions": 0,
+      "consoleErrors": 0
+    },
+    {
+      "route": "Job Openings",
+      "completed": true,
+      "expectedContent": true,
+      "renderedError": false,
+      "navigationMs": 814,
+      "networkRequests": 22,
+      "documentRequests": 0,
+      "failedHttpResponses": [],
+      "runtimeExceptions": 0,
+      "consoleErrors": 0
+    }
+  ],
+  "queries": [
+    {
+      "durationMs": 441,
+      "take": null,
+      "skip": null,
+      "selected": null,
+      "rows": 62,
+      "returnedBytes": 1132076
+    },
+    {
+      "durationMs": 337,
+      "take": null,
+      "skip": null,
+      "selected": null,
+      "rows": 62,
+      "returnedBytes": 1132076
+    },
+    {
+      "durationMs": 311,
+      "take": null,
+      "skip": null,
+      "selected": null,
+      "rows": 62,
+      "returnedBytes": 1132076
+    },
+    {
+      "durationMs": 306,
+      "take": null,
+      "skip": null,
+      "selected": null,
+      "rows": 62,
+      "returnedBytes": 1132076
+    },
+    {
+      "durationMs": 319,
+      "take": null,
+      "skip": null,
+      "selected": null,
+      "rows": 62,
+      "returnedBytes": 1132076
+    },
+    {
+      "durationMs": 603,
+      "take": null,
+      "skip": null,
+      "selected": null,
+      "rows": 62,
+      "returnedBytes": 1132076
+    }
+  ]
+}

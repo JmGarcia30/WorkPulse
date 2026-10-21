@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import { requireBackOfficeContext } from '@/lib/auth/guards';
-import { prisma } from '@/lib/db/prisma';
+import { getJobList, JOB_PAGE_SIZE } from '@/features/hiring/job-list';
 import { canManageJobs } from '@/lib/permissions/rbac';
 import { JobStatus } from '@prisma/client';
 import {
@@ -16,33 +16,16 @@ interface JobsPageProps {
   searchParams: Promise<{
     status?: string;
     search?: string;
+    page?: string;
   }>;
 }
 
 export default async function JobsPage({ searchParams }: JobsPageProps) {
   const user = await requireBackOfficeContext();
 
-  const params = await searchParams;
-  const statusFilter = params.status;
-  const searchQuery = params.search?.trim();
-
-  // Multi-tenant isolated jobs lookup
-  const jobs = await prisma.job.findMany({
-    where: {
-      organizationId: user.organizationId,
-      status: statusFilter && statusFilter !== 'ALL' ? (statusFilter as JobStatus) : undefined,
-      OR: searchQuery
-        ? [
-            { title: { contains: searchQuery, mode: 'insensitive' } },
-            { department: { contains: searchQuery, mode: 'insensitive' } },
-          ]
-        : undefined,
-    },
-    orderBy: { createdAt: 'desc' },
-    include: {
-      _count: { select: { applications: true } },
-    },
-  });
+  const { jobs, totalCount, totalPages, page, status, search: searchQuery } = await getJobList(user.organizationId, await searchParams);
+  const statusFilter = status || 'ALL';
+  const pageUrl = (target: number) => '/dashboard/hiring/jobs?' + new URLSearchParams({ ...(searchQuery ? { search: searchQuery } : {}), status: statusFilter, page: String(target) });
 
   const canEdit = canManageJobs(user);
 
@@ -57,7 +40,7 @@ export default async function JobsPage({ searchParams }: JobsPageProps) {
         title="Job Postings"
         badge={
           <span className="flex h-5 items-center justify-center rounded-full bg-slate-100 px-2 text-[11px] font-bold text-slate-700 border border-slate-200/80 tabular-nums">
-            {jobs.length} Positions
+            {totalCount} Positions
           </span>
         }
         description="Manage organization recruitment requisitions and career openings"
@@ -65,7 +48,7 @@ export default async function JobsPage({ searchParams }: JobsPageProps) {
           canEdit ? (
             <Link
               href="/dashboard/hiring/jobs/new"
-              className="inline-flex items-center gap-2 rounded-xl bg-[var(--tenant-primary)] px-4 py-2 text-xs sm:text-sm font-bold text-[var(--tenant-primary-foreground)] hover:brightness-95 transition shadow-2xs"
+              className="inline-flex w-full justify-center sm:w-auto items-center gap-2 rounded-xl bg-[var(--tenant-primary)] px-4 py-2 text-xs sm:text-sm font-bold text-[var(--tenant-primary-foreground)] hover:brightness-95 transition shadow-2xs"
             >
               <Plus className="h-4 w-4" />
               <span>Create Job Posting</span>
@@ -75,10 +58,10 @@ export default async function JobsPage({ searchParams }: JobsPageProps) {
       />
 
       {/* Search & Filter Bar */}
-      <div className="flex flex-col sm:flex-row items-center justify-between gap-3 rounded-lg border border-[var(--wp-border)] bg-white p-5">
-        <form method="GET" className="flex-1 w-full flex items-center gap-2">
+      <div className="flex min-w-0 flex-col gap-3 rounded-lg border border-[var(--wp-border)] bg-[var(--wp-surface)] p-4 xl:flex-row xl:items-center">
+        <form method="GET" className="flex min-w-0 w-full flex-1 flex-wrap items-center gap-2">
           {statusFilter && <input type="hidden" aria-label="Status" name="status" value={statusFilter} />}
-          <div className="relative flex-1">
+          <div className="relative min-w-0 flex-1">
             <Search className="absolute left-3.5 top-3 h-4 w-4 text-[var(--wp-text-muted)]" />
             <input
               type="text"
@@ -97,7 +80,7 @@ export default async function JobsPage({ searchParams }: JobsPageProps) {
         </form>
 
         {/* Filter Pills */}
-        <div className="flex items-center gap-1.5 overflow-x-auto w-full sm:w-auto">
+        <div className="flex w-full flex-wrap items-center gap-1.5 xl:w-auto">
           {['ALL', 'PUBLISHED', 'DRAFT', 'CLOSED', 'ARCHIVED'].map((st) => {
             const isActive = (statusFilter || 'ALL') === st;
             return (
@@ -107,7 +90,7 @@ export default async function JobsPage({ searchParams }: JobsPageProps) {
                   ...(searchQuery ? { search: searchQuery } : {}),
                   status: st,
                 }).toString()}`}
-                className={`rounded-md px-4 py-1.5 text-sm font-bold transition-all ${
+                className={`rounded-md px-3 py-2 text-xs sm:text-sm font-bold transition-colors ${
                   isActive
                     ? 'bg-[var(--tenant-primary)] text-[var(--tenant-primary-foreground)] '
                     : 'bg-[var(--wp-surface-subtle)] text-[var(--wp-text-muted)] hover:text-[var(--wp-text)] hover:bg-slate-100'
@@ -120,8 +103,24 @@ export default async function JobsPage({ searchParams }: JobsPageProps) {
         </div>
       </div>
 
+      {/* Mobile cards use the same records and permissions as the desktop table. */}
+      <div className="divide-y divide-[var(--wp-border)] overflow-hidden rounded-lg border border-[var(--wp-border)] bg-[var(--wp-surface)] md:hidden">
+        {jobs.length === 0 ? <p className="p-8 text-center text-sm text-[var(--wp-text-muted)]">No job postings found.</p> : jobs.map(job => <article key={job.id} aria-label={job.title} className="min-w-0 space-y-4 p-4">
+          <div className="space-y-2">
+            <Link href={`/dashboard/hiring/jobs/${job.id}`} className="block font-bold text-[var(--wp-text)] [overflow-wrap:anywhere] hover:underline">{job.title}</Link>
+            <span className={`inline-flex rounded-md px-2.5 py-1 text-xs font-semibold ${job.status === JobStatus.PUBLISHED ? 'bg-emerald-100 text-emerald-800' : job.status === JobStatus.DRAFT ? 'bg-amber-100 text-amber-800' : 'bg-slate-100 text-slate-700'}`}>{job.status}</span>
+          </div>
+          <dl className="grid min-w-0 grid-cols-2 gap-x-4 gap-y-3 text-xs">
+            {([['Department', job.department], ['Location', job.location], ['Applicants', job._count.applications], ['Closing date', job.closingDate ? new Date(job.closingDate).toLocaleDateString() : 'No deadline']] as const).map(([label, value]) => <div key={label} className="min-w-0"><dt className="text-[var(--wp-text-muted)]">{label}</dt><dd className="mt-1 font-medium text-[var(--wp-text)] [overflow-wrap:anywhere]">{value}</dd></div>)}
+          </dl>
+          <div className="flex flex-wrap gap-2">
+            <Link href={`/dashboard/hiring/jobs/${job.id}`} className="inline-flex items-center gap-2 rounded-md border border-[var(--wp-border)] bg-[var(--wp-surface-subtle)] px-3 py-2 text-xs font-semibold"><Eye className="h-4 w-4" aria-hidden="true" />View Details</Link>
+            {canEdit && <Link href={`/dashboard/hiring/jobs/${job.id}/edit`} className="inline-flex items-center gap-2 rounded-md border border-[var(--wp-border)] bg-[var(--wp-surface-subtle)] px-3 py-2 text-xs font-semibold"><Edit className="h-4 w-4" aria-hidden="true" />Edit Job</Link>}
+          </div>
+        </article>)}
+      </div>
       {/* Jobs Data Table */}
-      <div className="rounded-lg border border-[var(--wp-border)] bg-white overflow-hidden">
+      <div className="hidden rounded-lg border border-[var(--wp-border)] bg-[var(--wp-surface)] overflow-hidden md:block">
         <div className="overflow-x-auto">
           <table className="w-full text-left text-sm">
             <thead className="border-b border-[var(--wp-border)] bg-[var(--wp-surface-subtle)] text-[var(--wp-text-muted)] uppercase tracking-wider">
@@ -149,7 +148,7 @@ export default async function JobsPage({ searchParams }: JobsPageProps) {
                     key={job.id}
                     className="hover:bg-[#F8F9FA]/70 transition"
                   >
-                    <td className="px-5 py-4 font-bold text-[var(--wp-text)]">
+                    <td className="min-w-40 max-w-64 px-5 py-4 font-bold text-[var(--wp-text)] [overflow-wrap:anywhere]">
                       <Link
                         href={`/dashboard/hiring/jobs/${job.id}`}
                         className="hover:underline"
@@ -157,10 +156,10 @@ export default async function JobsPage({ searchParams }: JobsPageProps) {
                         {job.title}
                       </Link>
                     </td>
-                    <td className="px-5 py-4 text-[var(--wp-text)] font-medium">
+                    <td className="max-w-40 px-5 py-4 text-[var(--wp-text)] font-medium [overflow-wrap:anywhere]">
                       {job.department}
                     </td>
-                    <td className="px-5 py-4 text-[var(--wp-text-muted)]">
+                    <td className="max-w-40 px-5 py-4 text-[var(--wp-text-muted)] [overflow-wrap:anywhere]">
                       {job.location}
                     </td>
                     <td className="px-5 py-4">
@@ -211,6 +210,14 @@ export default async function JobsPage({ searchParams }: JobsPageProps) {
             </tbody>
           </table>
         </div>
+      </div>
+      <div className="flex flex-col flex-wrap items-center justify-between gap-3 text-xs text-[var(--wp-text-muted)] sm:flex-row">
+        <p>{totalCount ? `Showing ${(page - 1) * JOB_PAGE_SIZE + 1}?${Math.min(page * JOB_PAGE_SIZE, totalCount)} of ${totalCount} positions` : '0 positions'}</p>
+        {totalPages > 1 && <nav aria-label="Job pagination" className="flex max-w-full flex-wrap items-center justify-center gap-2">
+          {page > 1 ? <Link href={pageUrl(page - 1)} className="rounded-md border border-[var(--wp-border)] bg-[var(--wp-surface)] px-3 py-2">Previous</Link> : <span aria-disabled="true" className="px-3 py-2 opacity-50">Previous</span>}
+          <span aria-current="page">Page {page} of {totalPages}</span>
+          {page < totalPages ? <Link href={pageUrl(page + 1)} className="rounded-md border border-[var(--wp-border)] bg-[var(--wp-surface)] px-3 py-2">Next</Link> : <span aria-disabled="true" className="px-3 py-2 opacity-50">Next</span>}
+        </nav>}
       </div>
     </div>
   );

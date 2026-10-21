@@ -150,7 +150,7 @@ export function EmployeeDirectoryTable({
   return (
     <div>
       {/* Desktop Table View (>= md) */}
-      <div className="hidden md:block overflow-x-auto">
+      <div className="relative hidden md:block overflow-x-auto">
         <table className="w-full border-collapse text-left text-xs">
           <thead>
             <tr className="border-b border-slate-100 bg-slate-50/75 text-[11px] font-bold uppercase tracking-wider text-slate-500">

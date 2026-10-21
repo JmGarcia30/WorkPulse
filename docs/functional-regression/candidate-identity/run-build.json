@@ -1,0 +1,10 @@
+{
+  "exitCode": 0,
+  "elapsedMs": 57228,
+  "output": [
+    "{\"name\":\"prisma\",\"exitCode\":0,\"elapsedMs\":1457}",
+    "{\"name\":\"typescript\",\"exitCode\":0,\"elapsedMs\":7073}",
+    "{\"name\":\"build\",\"exitCode\":0,\"elapsedMs\":48538}",
+    ""
+  ]
+}

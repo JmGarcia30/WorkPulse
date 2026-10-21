@@ -1,3 +1,5 @@
+> October 21 follow-up: CD-01 and CD-05 are now implemented and tested. See the [candidate identity security implementation](../candidate-identity/REPORT.md). The findings below preserve the earlier audit state.
+
 # WorkPulse — Profile authorization security follow-up
 
 October 21, 2026. **FR-02 is fixed and retested. Overall merge recommendation remains HOLD**, pending review of the separate candidate-document access policy and the previously recorded functional coverage gaps.

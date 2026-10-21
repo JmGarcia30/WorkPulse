@@ -321,6 +321,9 @@ export async function updateApplicationStatusAction(
       where: { id: applicationId },
       data: { status: newStatus },
     });
+    if (newStatus === 'REJECTED' || newStatus === 'WITHDRAWN') {
+      await tx.candidateAccess.upsert({ where: { applicationId }, create: { applicationId, revoked: true }, update: { revoked: true, linkHash: null, sessionHash: null, delivered: false } });
+    }
 
     // 2. Record ApplicationStatusHistory
     await tx.applicationStatusHistory.create({

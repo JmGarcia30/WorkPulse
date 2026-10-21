@@ -1,0 +1,164 @@
+{
+  "phase": "after",
+  "mode": "production; same 62-job fixture; 1280px; one warm-up plus five samples; warm assets/server with a fresh employee-page document/router per sample; no injected latency",
+  "measurements": [
+    {
+      "route": "Job Openings",
+      "completed": true,
+      "expectedContent": true,
+      "renderedError": false,
+      "navigationMs": 312,
+      "networkRequests": 35,
+      "documentRequests": 0,
+      "failedHttpResponses": [],
+      "runtimeExceptions": 0,
+      "consoleErrors": 0
+    },
+    {
+      "route": "Job Openings",
+      "completed": true,
+      "expectedContent": true,
+      "renderedError": false,
+      "navigationMs": 314,
+      "networkRequests": 35,
+      "documentRequests": 0,
+      "failedHttpResponses": [],
+      "runtimeExceptions": 0,
+      "consoleErrors": 0
+    },
+    {
+      "route": "Job Openings",
+      "completed": true,
+      "expectedContent": true,
+      "renderedError": false,
+      "navigationMs": 382,
+      "networkRequests": 35,
+      "documentRequests": 0,
+      "failedHttpResponses": [],
+      "runtimeExceptions": 0,
+      "consoleErrors": 0
+    },
+    {
+      "route": "Job Openings",
+      "completed": true,
+      "expectedContent": true,
+      "renderedError": false,
+      "navigationMs": 311,
+      "networkRequests": 35,
+      "documentRequests": 0,
+      "failedHttpResponses": [],
+      "runtimeExceptions": 0,
+      "consoleErrors": 0
+    },
+    {
+      "route": "Job Openings",
+      "completed": true,
+      "expectedContent": true,
+      "renderedError": false,
+      "navigationMs": 307,
+      "networkRequests": 35,
+      "documentRequests": 0,
+      "failedHttpResponses": [],
+      "runtimeExceptions": 0,
+      "consoleErrors": 0
+    }
+  ],
+  "queries": [
+    {
+      "durationMs": 112,
+      "take": 20,
+      "skip": 0,
+      "selected": [
+        "id",
+        "title",
+        "department",
+        "location",
+        "status",
+        "closingDate",
+        "_count"
+      ],
+      "rows": 20,
+      "returnedBytes": 4482
+    },
+    {
+      "durationMs": 56,
+      "take": 20,
+      "skip": 0,
+      "selected": [
+        "id",
+        "title",
+        "department",
+        "location",
+        "status",
+        "closingDate",
+        "_count"
+      ],
+      "rows": 20,
+      "returnedBytes": 4482
+    },
+    {
+      "durationMs": 55,
+      "take": 20,
+      "skip": 0,
+      "selected": [
+        "id",
+        "title",
+        "department",
+        "location",
+        "status",
+        "closingDate",
+        "_count"
+      ],
+      "rows": 20,
+      "returnedBytes": 4482
+    },
+    {
+      "durationMs": 90,
+      "take": 20,
+      "skip": 0,
+      "selected": [
+        "id",
+        "title",
+        "department",
+        "location",
+        "status",
+        "closingDate",
+        "_count"
+      ],
+      "rows": 20,
+      "returnedBytes": 4482
+    },
+    {
+      "durationMs": 62,
+      "take": 20,
+      "skip": 0,
+      "selected": [
+        "id",
+        "title",
+        "department",
+        "location",
+        "status",
+        "closingDate",
+        "_count"
+      ],
+      "rows": 20,
+      "returnedBytes": 4482
+    },
+    {
+      "durationMs": 56,
+      "take": 20,
+      "skip": 0,
+      "selected": [
+        "id",
+        "title",
+        "department",
+        "location",
+        "status",
+        "closingDate",
+        "_count"
+      ],
+      "rows": 20,
+      "returnedBytes": 4482
+    }
+  ]
+}

@@ -442,6 +442,7 @@ export async function updateOnboardingTaskStatusAction(
     const parentProcess = task.onboardingProcess;
 
     if (isAllComplete && parentProcess.status !== OnboardingStatus.COMPLETED) {
+      await tx.candidateAccess.upsert({ where: { applicationId: parentProcess.applicationId }, create: { applicationId: parentProcess.applicationId, revoked: true }, update: { revoked: true, linkHash: null, sessionHash: null, delivered: false } });
       await tx.onboardingProcess.update({
         where: { id: parentProcess.id },
         data: {
@@ -639,12 +640,15 @@ export async function completeOnboardingAction(onboardingProcessId: string) {
     };
   }
 
-  await prisma.onboardingProcess.update({
-    where: { id: onboardingProcessId },
-    data: {
-      status: OnboardingStatus.COMPLETED,
-      completedAt: new Date(),
-    },
+  await prisma.$transaction(async tx => {
+    await tx.candidateAccess.upsert({ where: { applicationId: process.applicationId }, create: { applicationId: process.applicationId, revoked: true }, update: { revoked: true, linkHash: null, sessionHash: null, delivered: false } });
+    await tx.onboardingProcess.update({
+      where: { id: onboardingProcessId },
+      data: {
+        status: OnboardingStatus.COMPLETED,
+        completedAt: new Date(),
+      },
+    });
   });
 
   revalidatePath('/dashboard/hiring/onboarding');

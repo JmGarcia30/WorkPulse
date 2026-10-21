@@ -1,3 +1,5 @@
+> October 21 follow-up: CD-01 and CD-05 are now implemented and tested. See the [candidate identity security implementation](../candidate-identity/REPORT.md). The findings below preserve the earlier audit state.
+
 # WorkPulse — Candidate document authorization review
 
 October 21, 2026. **HOLD MERGE. Candidate-document authorization is not secure across all identified paths.** Established staff/tenant/file-state restrictions were corrected and tested. Critical candidate ownership and credential-lifetime decisions remain unanswered; no new candidate authentication architecture or product permissions were invented.

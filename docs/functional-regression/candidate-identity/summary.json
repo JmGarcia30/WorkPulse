@@ -1,0 +1,39 @@
+{
+  "baseline": "5e09206ae591e42d3bb71add03d3c71b4371305b",
+  "cd01": "fixed in tested candidate paths",
+  "cd05": "public application never updates shared identity",
+  "candidate": {
+    "assertionsPassed": true,
+    "scenarios": 106,
+    "candidateIdentityPolicyResolved": true,
+    "secureAcrossAllPaths": true
+  },
+  "profile": {
+    "passed": true,
+    "scenarios": 71
+  },
+  "browser": {
+    "passed": true,
+    "scenarios": 45,
+    "productionBuildWithDashboardCorrection": true,
+    "realConcurrentCommitsCovered": false
+  },
+  "integrity": {
+    "tablesChecked": 50,
+    "differences": [],
+    "schemasUnchanged": true,
+    "catalogUnchanged": true,
+    "migrationsUnchanged": true,
+    "originalEnvUnchanged": true
+  },
+  "build": 0,
+  "typescript": 0,
+  "prisma": 0,
+  "eslint": 0,
+  "liveSmtpTested": false,
+  "liveHostedStorageTested": false,
+  "independentConcurrentCommitsTested": false,
+  "pushed": false,
+  "deployed": false,
+  "productionMigrationsApplied": false
+}

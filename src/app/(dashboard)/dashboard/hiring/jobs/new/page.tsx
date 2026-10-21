@@ -14,7 +14,7 @@ export default async function NewJobPage() {
   }
 
   return (
-    <div className="max-w-4xl mx-auto space-y-6">
+    <div className="min-w-0 max-w-4xl mx-auto space-y-6 [overflow-wrap:anywhere]">
       {/* Top Header with Breadcrumb and Title */}
       <HiringPageHeader
         breadcrumbs={[
@@ -23,7 +23,7 @@ export default async function NewJobPage() {
           { label: 'New Job' },
         ]}
         title={
-          <div className="flex items-center gap-2.5">
+          <div className="flex min-w-0 items-center gap-2.5">
             <Link
               href="/dashboard/hiring/jobs"
               className="rounded-lg p-1.5 text-slate-500 hover:bg-slate-100 hover:text-slate-900 transition"
@@ -31,7 +31,7 @@ export default async function NewJobPage() {
             >
               <ArrowLeft className="h-4 w-4" />
             </Link>
-            <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-slate-900">
+            <h1 className="min-w-0 text-xl sm:text-2xl font-bold tracking-tight text-slate-900">
               Create New Job Posting
             </h1>
           </div>
@@ -163,7 +163,7 @@ export default async function NewJobPage() {
         <RequirementsBuilder />
 
         {/* Action Controls */}
-        <div className="flex items-center justify-end gap-3 pt-2">
+        <div className="flex flex-col items-stretch justify-end gap-3 pt-2 sm:flex-row sm:items-center">
           <button
             type="submit"
             name="status"

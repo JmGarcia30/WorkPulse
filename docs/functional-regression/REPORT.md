@@ -1,3 +1,5 @@
+> October 21 follow-up: CD-01 and CD-05 are now implemented and tested. See the [candidate identity security implementation](candidate-identity/REPORT.md). The findings below preserve the earlier audit state.
+
 # WORKPULSE — COMPREHENSIVE FUNCTIONAL REGRESSION REPORT
 
 Testing completed October 21, 2026 (Asia/Singapore), following the October 20 performance sprint.

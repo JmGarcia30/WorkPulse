@@ -730,12 +730,27 @@ model Application {
   offers               Offer[]
   onboarding           OnboardingProcess?
   employee             Employee?
+  candidateAccess      CandidateAccess?
 
   @@unique([jobId, applicantId])
   @@index([jobId])
   @@index([applicantId])
   @@index([status])
   @@index([appliedAt])
+}
+
+model CandidateAccess {
+  applicationId String @id
+  linkHash String? @unique
+  linkExpiresAt DateTime?
+  delivered Boolean @default(false)
+  sessionHash String? @unique
+  sessionExpiresAt DateTime?
+  revoked Boolean @default(false)
+  lastSentAt DateTime?
+  windowStartedAt DateTime @default(now())
+  sendCount Int @default(0)
+  application Application @relation(fields: [applicationId], references: [id], onDelete: Cascade)
 }
 
 model Document {

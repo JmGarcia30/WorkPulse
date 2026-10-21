@@ -87,10 +87,10 @@ export default async function ApplyPage({ params, searchParams }: ApplyPageProps
 
         <div className="space-y-2">
           <h1 className="text-2xl font-bold text-[#111111]">
-            Application Submitted Successfully!
+            Application request received
           </h1>
           <p className="text-xs text-[#6B6B6B] max-w-md mx-auto leading-relaxed">
-            Thank you for applying to the position of <strong className="text-[#111111]">{job.title}</strong> at {org.name}.
+            If your request is eligible, check your application email for a verification link. You must verify your email before accessing candidate documents.
           </p>
         </div>
 

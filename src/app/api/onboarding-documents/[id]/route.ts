@@ -1,3 +1,4 @@
+import { candidateHasAccess } from '@/features/careers/candidate-access';
 import { NextRequest, NextResponse } from 'next/server';
 import { COOKIE_NAME, getSession } from '@/lib/auth/session';
 import { requireBackOfficeContext } from '@/lib/auth/guards';
@@ -23,7 +24,7 @@ export async function GET(
   }
   const { id: taskId } = await params;
   const candidateAppId = request.nextUrl.searchParams.get('appId');
-  if (!user && !candidateAppId) return new NextResponse('Forbidden', { status: 403 });
+  if (!user && (!candidateAppId || !await candidateHasAccess(candidateAppId))) return new NextResponse('Forbidden', { status: 403 });
 
   // Look up task and enforce tenant isolation: Task -> Process -> Application -> Job -> Organization
   const task = await prisma.onboardingTask.findUnique({
@@ -55,8 +56,7 @@ export async function GET(
     if (!canViewHiringData(user) || user.organizationId !== taskOrgId) return new NextResponse('Forbidden', { status: 403 });
     // Authorized HR user
   } else {
-    // Legacy ID-only candidate path, not verified ownership. See the open
-    // candidate-document credential policy before accepting this for merge.
+    // The session is verified above; IDs only select the owned resource.
     if (!candidateAppId || candidateAppId !== task.onboardingProcess.applicationId) {
       return new NextResponse('Unauthorized access to onboarding document', { status: 403 });
     }

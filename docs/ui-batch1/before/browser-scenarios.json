@@ -1,0 +1,14 @@
+[
+  {
+    "scenario": "Normal password login reaches fixture-only Dashboard",
+    "passed": true
+  },
+  {
+    "scenario": "Five comparable warmed production Job Openings navigations completed",
+    "passed": true
+  },
+  {
+    "scenario": "Job Openings and Employee Records checked at all five viewport widths",
+    "passed": true
+  }
+]

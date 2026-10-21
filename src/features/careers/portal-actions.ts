@@ -1,5 +1,6 @@
 'use server';
 
+import { candidateHasAccess, candidateWriteScope, validCandidateId } from './candidate-access';
 import { revalidatePath } from 'next/cache';
 import { prisma } from '@/lib/db/prisma';
 import { localStorageProvider } from '@/lib/storage';
@@ -10,7 +11,6 @@ import {
 } from '@prisma/client';
 import { areRecruitmentDocumentsSatisfied } from '@/features/hiring/saga-requirements';
 import { databaseSlugForTenant } from '@/lib/tenant/host';
-import { candidatePortalMatchesRequestTenant } from '@/features/hiring/document-access';
 
 const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
 const ALLOWED_MIME_TYPES = [
@@ -29,11 +29,10 @@ function candidateDocumentMimeType(file: File) {
 }
 
 /**
- * Legacy ID-based portal data: checks tenant/relationships, not candidate identity.
- * Ownership credentials remain a merge blocker; see the candidate document report.
+ * Private portal data requires a live application-specific candidate session.
  */
 export async function getCandidatePortalData(organizationSlug: string, applicationId: string) {
-  if (!await candidatePortalMatchesRequestTenant(organizationSlug)) return null;
+  if (!await candidateHasAccess(applicationId, organizationSlug)) return null;
   const application = await prisma.application.findFirst({
     where: {
       id: applicationId,
@@ -111,10 +110,7 @@ export async function getCandidatePortalData(organizationSlug: string, applicati
 }
 
 /**
- * Legacy public candidate upload action for application document slots.
- * Validates strict isolation: documentId must belong to applicationId,
- * and applicationId must belong to organizationSlug. These relationships do not
- * authenticate the caller as the candidate; the credential policy remains open.
+ * Candidate uploads require verified ownership plus matching tenant and application.
  */
 export async function submitCandidateRecruitmentDocumentAction(
   organizationSlug: string,
@@ -122,7 +118,8 @@ export async function submitCandidateRecruitmentDocumentAction(
   documentId: string,
   formData: FormData
 ) {
-  if (!await candidatePortalMatchesRequestTenant(organizationSlug)) return { error: 'Document not found or access denied.' };
+  if (!validCandidateId(documentId)) return { error: 'Document not found or access denied.' };
+  if (!await candidateHasAccess(applicationId, organizationSlug)) return { error: 'Document not found or access denied.' };
   // 1. Strict Tenant & Application Isolation Check
   const doc = await prisma.recruitmentDocument.findFirst({
     where: {
@@ -214,7 +211,7 @@ export async function submitCandidateRecruitmentDocumentAction(
   }
 
   const updated = await prisma.recruitmentDocument.updateMany({
-    where: { id: documentId, status: { notIn: [RecruitmentDocumentStatus.VERIFIED, RecruitmentDocumentStatus.NOT_APPLICABLE] } },
+    where: { id: documentId, applicationId, application: await candidateWriteScope(), status: { notIn: [RecruitmentDocumentStatus.VERIFIED, RecruitmentDocumentStatus.NOT_APPLICABLE] } },
     data: {
       fileName: file.name,
       fileType: mimeType,
@@ -256,9 +253,9 @@ export async function submitCandidateOnboardingDocumentAction(
   taskId: string,
   formData: FormData
 ) {
-  if (!await candidatePortalMatchesRequestTenant(organizationSlug)) return { error: 'Document not found or access denied.' };
-  // 1. Check task/application relationships. There is no authenticated candidate
-  // session yet; tenant validation alone does not establish ownership.
+  if (!validCandidateId(taskId)) return { error: 'Document not found or access denied.' };
+  if (!await candidateHasAccess(applicationId, organizationSlug)) return { error: 'Document not found or access denied.' };
+  // Check task/application relationships after authenticating candidate ownership.
   const task = await prisma.onboardingTask.findFirst({
     where: {
       id: taskId,
@@ -328,7 +325,7 @@ export async function submitCandidateOnboardingDocumentAction(
 
   // 4. Update OnboardingTask
   const updated = await prisma.onboardingTask.updateMany({
-    where: { id: taskId, type: 'DOCUMENT', status: { notIn: [OnboardingTaskStatus.VERIFIED, OnboardingTaskStatus.WAIVED] } },
+    where: { id: taskId, onboardingProcess: { applicationId, application: await candidateWriteScope() }, type: 'DOCUMENT', status: { notIn: [OnboardingTaskStatus.VERIFIED, OnboardingTaskStatus.WAIVED] } },
     data: {
       fileName: file.name,
       fileType: mimeType,

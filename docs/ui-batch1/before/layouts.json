@@ -1,0 +1,4062 @@
+[
+  {
+    "route": "/dashboard/hiring/jobs",
+    "viewport": 320,
+    "width": 320,
+    "scrollWidth": 320,
+    "overflow": false,
+    "visibleActions": [
+      {
+        "label": "Hiring",
+        "href": "/dashboard/hiring/pipeline"
+      },
+      {
+        "label": "Create Job Posting",
+        "href": "/dashboard/hiring/jobs/new"
+      },
+      {
+        "label": "ALL",
+        "href": "/dashboard/hiring/jobs?status=ALL"
+      },
+      {
+        "label": "PUBLISHED",
+        "href": "/dashboard/hiring/jobs?status=PUBLISHED"
+      },
+      {
+        "label": "DRAFT",
+        "href": "/dashboard/hiring/jobs?status=DRAFT"
+      },
+      {
+        "label": "CLOSED",
+        "href": "/dashboard/hiring/jobs?status=CLOSED"
+      },
+      {
+        "label": "ARCHIVED",
+        "href": "/dashboard/hiring/jobs?status=ARCHIVED"
+      },
+      {
+        "label": "UI Position 060 LongTitleLongTitleLongTitleLongTitleLongTitleLongTitleLongTitleLongTitleLongTitleLongTitleLongTitleLongTitleLongTitleLongTitleLongTitleLongTitleLongTitleLongTitle",
+        "href": "/dashboard/hiring/jobs/ui-job-060-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-060-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-060-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 059",
+        "href": "/dashboard/hiring/jobs/ui-job-059-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-059-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-059-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 058",
+        "href": "/dashboard/hiring/jobs/ui-job-058-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-058-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-058-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 057",
+        "href": "/dashboard/hiring/jobs/ui-job-057-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-057-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-057-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 055",
+        "href": "/dashboard/hiring/jobs/ui-job-055-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-055-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-055-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 056",
+        "href": "/dashboard/hiring/jobs/ui-job-056-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-056-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-056-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 054",
+        "href": "/dashboard/hiring/jobs/ui-job-054-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-054-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-054-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 052",
+        "href": "/dashboard/hiring/jobs/ui-job-052-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-052-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-052-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 053",
+        "href": "/dashboard/hiring/jobs/ui-job-053-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-053-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-053-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 051",
+        "href": "/dashboard/hiring/jobs/ui-job-051-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-051-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-051-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 049",
+        "href": "/dashboard/hiring/jobs/ui-job-049-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-049-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-049-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 050",
+        "href": "/dashboard/hiring/jobs/ui-job-050-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-050-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-050-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 048",
+        "href": "/dashboard/hiring/jobs/ui-job-048-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-048-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-048-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 046",
+        "href": "/dashboard/hiring/jobs/ui-job-046-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-046-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-046-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 047",
+        "href": "/dashboard/hiring/jobs/ui-job-047-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-047-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-047-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 045",
+        "href": "/dashboard/hiring/jobs/ui-job-045-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-045-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-045-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 043",
+        "href": "/dashboard/hiring/jobs/ui-job-043-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-043-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-043-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 044",
+        "href": "/dashboard/hiring/jobs/ui-job-044-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-044-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-044-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 042",
+        "href": "/dashboard/hiring/jobs/ui-job-042-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-042-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-042-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 040",
+        "href": "/dashboard/hiring/jobs/ui-job-040-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-040-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-040-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 041",
+        "href": "/dashboard/hiring/jobs/ui-job-041-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-041-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-041-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 039",
+        "href": "/dashboard/hiring/jobs/ui-job-039-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-039-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-039-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 037",
+        "href": "/dashboard/hiring/jobs/ui-job-037-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-037-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-037-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 038",
+        "href": "/dashboard/hiring/jobs/ui-job-038-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-038-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-038-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 036",
+        "href": "/dashboard/hiring/jobs/ui-job-036-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-036-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-036-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 034",
+        "href": "/dashboard/hiring/jobs/ui-job-034-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-034-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-034-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 035",
+        "href": "/dashboard/hiring/jobs/ui-job-035-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-035-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-035-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 033",
+        "href": "/dashboard/hiring/jobs/ui-job-033-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-033-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-033-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 030",
+        "href": "/dashboard/hiring/jobs/ui-job-030-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-030-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-030-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 031",
+        "href": "/dashboard/hiring/jobs/ui-job-031-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-031-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-031-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 032",
+        "href": "/dashboard/hiring/jobs/ui-job-032-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-032-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-032-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 029",
+        "href": "/dashboard/hiring/jobs/ui-job-029-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-029-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-029-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 028",
+        "href": "/dashboard/hiring/jobs/ui-job-028-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-028-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-028-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 027",
+        "href": "/dashboard/hiring/jobs/ui-job-027-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-027-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-027-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 024",
+        "href": "/dashboard/hiring/jobs/ui-job-024-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-024-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-024-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 026",
+        "href": "/dashboard/hiring/jobs/ui-job-026-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-026-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-026-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 025",
+        "href": "/dashboard/hiring/jobs/ui-job-025-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-025-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-025-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 022",
+        "href": "/dashboard/hiring/jobs/ui-job-022-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-022-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-022-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 023",
+        "href": "/dashboard/hiring/jobs/ui-job-023-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-023-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-023-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 021",
+        "href": "/dashboard/hiring/jobs/ui-job-021-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-021-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-021-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 019",
+        "href": "/dashboard/hiring/jobs/ui-job-019-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-019-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-019-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 020",
+        "href": "/dashboard/hiring/jobs/ui-job-020-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-020-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-020-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 018",
+        "href": "/dashboard/hiring/jobs/ui-job-018-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-018-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-018-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 015",
+        "href": "/dashboard/hiring/jobs/ui-job-015-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-015-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-015-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 017",
+        "href": "/dashboard/hiring/jobs/ui-job-017-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-017-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-017-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 016",
+        "href": "/dashboard/hiring/jobs/ui-job-016-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-016-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-016-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 014",
+        "href": "/dashboard/hiring/jobs/ui-job-014-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-014-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-014-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 013",
+        "href": "/dashboard/hiring/jobs/ui-job-013-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-013-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-013-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 012",
+        "href": "/dashboard/hiring/jobs/ui-job-012-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-012-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-012-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 009",
+        "href": "/dashboard/hiring/jobs/ui-job-009-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-009-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-009-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 011",
+        "href": "/dashboard/hiring/jobs/ui-job-011-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-011-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-011-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 010",
+        "href": "/dashboard/hiring/jobs/ui-job-010-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-010-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-010-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 007",
+        "href": "/dashboard/hiring/jobs/ui-job-007-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-007-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-007-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 008",
+        "href": "/dashboard/hiring/jobs/ui-job-008-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-008-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-008-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 006",
+        "href": "/dashboard/hiring/jobs/ui-job-006-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-006-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-006-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 004",
+        "href": "/dashboard/hiring/jobs/ui-job-004-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-004-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-004-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 005",
+        "href": "/dashboard/hiring/jobs/ui-job-005-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-005-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-005-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 003",
+        "href": "/dashboard/hiring/jobs/ui-job-003-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-003-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-003-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 001",
+        "href": "/dashboard/hiring/jobs/ui-job-001-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-001-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-001-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 002",
+        "href": "/dashboard/hiring/jobs/ui-job-002-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-002-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-002-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 000",
+        "href": "/dashboard/hiring/jobs/ui-job-000-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-000-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-000-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "Regression Position",
+        "href": "/dashboard/hiring/jobs/cmvi6cbej000bujq4hxjgwllp"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/cmvi6cbej000bujq4hxjgwllp"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/cmvi6cbej000bujq4hxjgwllp/edit"
+      }
+    ],
+    "overflowing": []
+  },
+  {
+    "route": "/dashboard/employees",
+    "viewport": 320,
+    "width": 320,
+    "scrollWidth": 320,
+    "overflow": false,
+    "visibleActions": [
+      {
+        "label": "Dashboard",
+        "href": "/dashboard"
+      },
+      {
+        "label": "Regression Primary",
+        "href": "/dashboard/employees/cmvi6cc7w000nujq45osm1w3h"
+      },
+      {
+        "label": "View Profile",
+        "href": "/dashboard/employees/cmvi6cc7w000nujq45osm1w3h"
+      },
+      {
+        "label": "Regression Secondary",
+        "href": "/dashboard/employees/cmvi6cd7n0015ujq4h77af6l6"
+      },
+      {
+        "label": "View Profile",
+        "href": "/dashboard/employees/cmvi6cd7n0015ujq4h77af6l6"
+      }
+    ],
+    "overflowing": []
+  },
+  {
+    "route": "/dashboard/hiring/jobs",
+    "viewport": 375,
+    "width": 375,
+    "scrollWidth": 375,
+    "overflow": false,
+    "visibleActions": [
+      {
+        "label": "Hiring",
+        "href": "/dashboard/hiring/pipeline"
+      },
+      {
+        "label": "Create Job Posting",
+        "href": "/dashboard/hiring/jobs/new"
+      },
+      {
+        "label": "ALL",
+        "href": "/dashboard/hiring/jobs?status=ALL"
+      },
+      {
+        "label": "PUBLISHED",
+        "href": "/dashboard/hiring/jobs?status=PUBLISHED"
+      },
+      {
+        "label": "DRAFT",
+        "href": "/dashboard/hiring/jobs?status=DRAFT"
+      },
+      {
+        "label": "CLOSED",
+        "href": "/dashboard/hiring/jobs?status=CLOSED"
+      },
+      {
+        "label": "ARCHIVED",
+        "href": "/dashboard/hiring/jobs?status=ARCHIVED"
+      },
+      {
+        "label": "UI Position 060 LongTitleLongTitleLongTitleLongTitleLongTitleLongTitleLongTitleLongTitleLongTitleLongTitleLongTitleLongTitleLongTitleLongTitleLongTitleLongTitleLongTitleLongTitle",
+        "href": "/dashboard/hiring/jobs/ui-job-060-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-060-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-060-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 059",
+        "href": "/dashboard/hiring/jobs/ui-job-059-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-059-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-059-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 058",
+        "href": "/dashboard/hiring/jobs/ui-job-058-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-058-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-058-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 057",
+        "href": "/dashboard/hiring/jobs/ui-job-057-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-057-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-057-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 055",
+        "href": "/dashboard/hiring/jobs/ui-job-055-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-055-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-055-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 056",
+        "href": "/dashboard/hiring/jobs/ui-job-056-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-056-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-056-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 054",
+        "href": "/dashboard/hiring/jobs/ui-job-054-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-054-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-054-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 052",
+        "href": "/dashboard/hiring/jobs/ui-job-052-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-052-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-052-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 053",
+        "href": "/dashboard/hiring/jobs/ui-job-053-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-053-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-053-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 051",
+        "href": "/dashboard/hiring/jobs/ui-job-051-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-051-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-051-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 049",
+        "href": "/dashboard/hiring/jobs/ui-job-049-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-049-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-049-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 050",
+        "href": "/dashboard/hiring/jobs/ui-job-050-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-050-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-050-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 048",
+        "href": "/dashboard/hiring/jobs/ui-job-048-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-048-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-048-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 046",
+        "href": "/dashboard/hiring/jobs/ui-job-046-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-046-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-046-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 047",
+        "href": "/dashboard/hiring/jobs/ui-job-047-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-047-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-047-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 045",
+        "href": "/dashboard/hiring/jobs/ui-job-045-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-045-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-045-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 043",
+        "href": "/dashboard/hiring/jobs/ui-job-043-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-043-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-043-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 044",
+        "href": "/dashboard/hiring/jobs/ui-job-044-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-044-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-044-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 042",
+        "href": "/dashboard/hiring/jobs/ui-job-042-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-042-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-042-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 040",
+        "href": "/dashboard/hiring/jobs/ui-job-040-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-040-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-040-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 041",
+        "href": "/dashboard/hiring/jobs/ui-job-041-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-041-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-041-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 039",
+        "href": "/dashboard/hiring/jobs/ui-job-039-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-039-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-039-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 037",
+        "href": "/dashboard/hiring/jobs/ui-job-037-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-037-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-037-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 038",
+        "href": "/dashboard/hiring/jobs/ui-job-038-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-038-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-038-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 036",
+        "href": "/dashboard/hiring/jobs/ui-job-036-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-036-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-036-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 034",
+        "href": "/dashboard/hiring/jobs/ui-job-034-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-034-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-034-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 035",
+        "href": "/dashboard/hiring/jobs/ui-job-035-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-035-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-035-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 033",
+        "href": "/dashboard/hiring/jobs/ui-job-033-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-033-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-033-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 030",
+        "href": "/dashboard/hiring/jobs/ui-job-030-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-030-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-030-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 031",
+        "href": "/dashboard/hiring/jobs/ui-job-031-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-031-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-031-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 032",
+        "href": "/dashboard/hiring/jobs/ui-job-032-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-032-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-032-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 029",
+        "href": "/dashboard/hiring/jobs/ui-job-029-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-029-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-029-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 028",
+        "href": "/dashboard/hiring/jobs/ui-job-028-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-028-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-028-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 027",
+        "href": "/dashboard/hiring/jobs/ui-job-027-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-027-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-027-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 024",
+        "href": "/dashboard/hiring/jobs/ui-job-024-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-024-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-024-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 026",
+        "href": "/dashboard/hiring/jobs/ui-job-026-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-026-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-026-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 025",
+        "href": "/dashboard/hiring/jobs/ui-job-025-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-025-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-025-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 022",
+        "href": "/dashboard/hiring/jobs/ui-job-022-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-022-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-022-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 023",
+        "href": "/dashboard/hiring/jobs/ui-job-023-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-023-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-023-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 021",
+        "href": "/dashboard/hiring/jobs/ui-job-021-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-021-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-021-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 019",
+        "href": "/dashboard/hiring/jobs/ui-job-019-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-019-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-019-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 020",
+        "href": "/dashboard/hiring/jobs/ui-job-020-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-020-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-020-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 018",
+        "href": "/dashboard/hiring/jobs/ui-job-018-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-018-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-018-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 015",
+        "href": "/dashboard/hiring/jobs/ui-job-015-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-015-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-015-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 017",
+        "href": "/dashboard/hiring/jobs/ui-job-017-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-017-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-017-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 016",
+        "href": "/dashboard/hiring/jobs/ui-job-016-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-016-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-016-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 014",
+        "href": "/dashboard/hiring/jobs/ui-job-014-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-014-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-014-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 013",
+        "href": "/dashboard/hiring/jobs/ui-job-013-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-013-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-013-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 012",
+        "href": "/dashboard/hiring/jobs/ui-job-012-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-012-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-012-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 009",
+        "href": "/dashboard/hiring/jobs/ui-job-009-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-009-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-009-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 011",
+        "href": "/dashboard/hiring/jobs/ui-job-011-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-011-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-011-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 010",
+        "href": "/dashboard/hiring/jobs/ui-job-010-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-010-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-010-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 007",
+        "href": "/dashboard/hiring/jobs/ui-job-007-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-007-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-007-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 008",
+        "href": "/dashboard/hiring/jobs/ui-job-008-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-008-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-008-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 006",
+        "href": "/dashboard/hiring/jobs/ui-job-006-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-006-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-006-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 004",
+        "href": "/dashboard/hiring/jobs/ui-job-004-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-004-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-004-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 005",
+        "href": "/dashboard/hiring/jobs/ui-job-005-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-005-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-005-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 003",
+        "href": "/dashboard/hiring/jobs/ui-job-003-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-003-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-003-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 001",
+        "href": "/dashboard/hiring/jobs/ui-job-001-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-001-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-001-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 002",
+        "href": "/dashboard/hiring/jobs/ui-job-002-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-002-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-002-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 000",
+        "href": "/dashboard/hiring/jobs/ui-job-000-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-000-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-000-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "Regression Position",
+        "href": "/dashboard/hiring/jobs/cmvi6cbej000bujq4hxjgwllp"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/cmvi6cbej000bujq4hxjgwllp"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/cmvi6cbej000bujq4hxjgwllp/edit"
+      }
+    ],
+    "overflowing": []
+  },
+  {
+    "route": "/dashboard/employees",
+    "viewport": 375,
+    "width": 375,
+    "scrollWidth": 375,
+    "overflow": false,
+    "visibleActions": [
+      {
+        "label": "Dashboard",
+        "href": "/dashboard"
+      },
+      {
+        "label": "Regression Primary",
+        "href": "/dashboard/employees/cmvi6cc7w000nujq45osm1w3h"
+      },
+      {
+        "label": "View Profile",
+        "href": "/dashboard/employees/cmvi6cc7w000nujq45osm1w3h"
+      },
+      {
+        "label": "Regression Secondary",
+        "href": "/dashboard/employees/cmvi6cd7n0015ujq4h77af6l6"
+      },
+      {
+        "label": "View Profile",
+        "href": "/dashboard/employees/cmvi6cd7n0015ujq4h77af6l6"
+      }
+    ],
+    "overflowing": []
+  },
+  {
+    "route": "/dashboard/hiring/jobs",
+    "viewport": 390,
+    "width": 390,
+    "scrollWidth": 390,
+    "overflow": false,
+    "visibleActions": [
+      {
+        "label": "Hiring",
+        "href": "/dashboard/hiring/pipeline"
+      },
+      {
+        "label": "Create Job Posting",
+        "href": "/dashboard/hiring/jobs/new"
+      },
+      {
+        "label": "ALL",
+        "href": "/dashboard/hiring/jobs?status=ALL"
+      },
+      {
+        "label": "PUBLISHED",
+        "href": "/dashboard/hiring/jobs?status=PUBLISHED"
+      },
+      {
+        "label": "DRAFT",
+        "href": "/dashboard/hiring/jobs?status=DRAFT"
+      },
+      {
+        "label": "CLOSED",
+        "href": "/dashboard/hiring/jobs?status=CLOSED"
+      },
+      {
+        "label": "ARCHIVED",
+        "href": "/dashboard/hiring/jobs?status=ARCHIVED"
+      },
+      {
+        "label": "UI Position 060 LongTitleLongTitleLongTitleLongTitleLongTitleLongTitleLongTitleLongTitleLongTitleLongTitleLongTitleLongTitleLongTitleLongTitleLongTitleLongTitleLongTitleLongTitle",
+        "href": "/dashboard/hiring/jobs/ui-job-060-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-060-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-060-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 059",
+        "href": "/dashboard/hiring/jobs/ui-job-059-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-059-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-059-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 058",
+        "href": "/dashboard/hiring/jobs/ui-job-058-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-058-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-058-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 057",
+        "href": "/dashboard/hiring/jobs/ui-job-057-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-057-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-057-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 055",
+        "href": "/dashboard/hiring/jobs/ui-job-055-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-055-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-055-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 056",
+        "href": "/dashboard/hiring/jobs/ui-job-056-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-056-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-056-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 054",
+        "href": "/dashboard/hiring/jobs/ui-job-054-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-054-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-054-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 052",
+        "href": "/dashboard/hiring/jobs/ui-job-052-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-052-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-052-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 053",
+        "href": "/dashboard/hiring/jobs/ui-job-053-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-053-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-053-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 051",
+        "href": "/dashboard/hiring/jobs/ui-job-051-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-051-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-051-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 049",
+        "href": "/dashboard/hiring/jobs/ui-job-049-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-049-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-049-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 050",
+        "href": "/dashboard/hiring/jobs/ui-job-050-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-050-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-050-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 048",
+        "href": "/dashboard/hiring/jobs/ui-job-048-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-048-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-048-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 046",
+        "href": "/dashboard/hiring/jobs/ui-job-046-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-046-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-046-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 047",
+        "href": "/dashboard/hiring/jobs/ui-job-047-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-047-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-047-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 045",
+        "href": "/dashboard/hiring/jobs/ui-job-045-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-045-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-045-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 043",
+        "href": "/dashboard/hiring/jobs/ui-job-043-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-043-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-043-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 044",
+        "href": "/dashboard/hiring/jobs/ui-job-044-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-044-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-044-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 042",
+        "href": "/dashboard/hiring/jobs/ui-job-042-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-042-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-042-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 040",
+        "href": "/dashboard/hiring/jobs/ui-job-040-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-040-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-040-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 041",
+        "href": "/dashboard/hiring/jobs/ui-job-041-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-041-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-041-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 039",
+        "href": "/dashboard/hiring/jobs/ui-job-039-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-039-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-039-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 037",
+        "href": "/dashboard/hiring/jobs/ui-job-037-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-037-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-037-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 038",
+        "href": "/dashboard/hiring/jobs/ui-job-038-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-038-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-038-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 036",
+        "href": "/dashboard/hiring/jobs/ui-job-036-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-036-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-036-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 034",
+        "href": "/dashboard/hiring/jobs/ui-job-034-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-034-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-034-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 035",
+        "href": "/dashboard/hiring/jobs/ui-job-035-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-035-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-035-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 033",
+        "href": "/dashboard/hiring/jobs/ui-job-033-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-033-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-033-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 030",
+        "href": "/dashboard/hiring/jobs/ui-job-030-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-030-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-030-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 031",
+        "href": "/dashboard/hiring/jobs/ui-job-031-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-031-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-031-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 032",
+        "href": "/dashboard/hiring/jobs/ui-job-032-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-032-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-032-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 029",
+        "href": "/dashboard/hiring/jobs/ui-job-029-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-029-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-029-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 028",
+        "href": "/dashboard/hiring/jobs/ui-job-028-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-028-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-028-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 027",
+        "href": "/dashboard/hiring/jobs/ui-job-027-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-027-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-027-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 024",
+        "href": "/dashboard/hiring/jobs/ui-job-024-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-024-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-024-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 026",
+        "href": "/dashboard/hiring/jobs/ui-job-026-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-026-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-026-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 025",
+        "href": "/dashboard/hiring/jobs/ui-job-025-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-025-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-025-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 022",
+        "href": "/dashboard/hiring/jobs/ui-job-022-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-022-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-022-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 023",
+        "href": "/dashboard/hiring/jobs/ui-job-023-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-023-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-023-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 021",
+        "href": "/dashboard/hiring/jobs/ui-job-021-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-021-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-021-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 019",
+        "href": "/dashboard/hiring/jobs/ui-job-019-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-019-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-019-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 020",
+        "href": "/dashboard/hiring/jobs/ui-job-020-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-020-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-020-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 018",
+        "href": "/dashboard/hiring/jobs/ui-job-018-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-018-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-018-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 015",
+        "href": "/dashboard/hiring/jobs/ui-job-015-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-015-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-015-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 017",
+        "href": "/dashboard/hiring/jobs/ui-job-017-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-017-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-017-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 016",
+        "href": "/dashboard/hiring/jobs/ui-job-016-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-016-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-016-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 014",
+        "href": "/dashboard/hiring/jobs/ui-job-014-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-014-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-014-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 013",
+        "href": "/dashboard/hiring/jobs/ui-job-013-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-013-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-013-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 012",
+        "href": "/dashboard/hiring/jobs/ui-job-012-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-012-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-012-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 009",
+        "href": "/dashboard/hiring/jobs/ui-job-009-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-009-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-009-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 011",
+        "href": "/dashboard/hiring/jobs/ui-job-011-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-011-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-011-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 010",
+        "href": "/dashboard/hiring/jobs/ui-job-010-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-010-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-010-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 007",
+        "href": "/dashboard/hiring/jobs/ui-job-007-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-007-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-007-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 008",
+        "href": "/dashboard/hiring/jobs/ui-job-008-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-008-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-008-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 006",
+        "href": "/dashboard/hiring/jobs/ui-job-006-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-006-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-006-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 004",
+        "href": "/dashboard/hiring/jobs/ui-job-004-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-004-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-004-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 005",
+        "href": "/dashboard/hiring/jobs/ui-job-005-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-005-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-005-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 003",
+        "href": "/dashboard/hiring/jobs/ui-job-003-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-003-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-003-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 001",
+        "href": "/dashboard/hiring/jobs/ui-job-001-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-001-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-001-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 002",
+        "href": "/dashboard/hiring/jobs/ui-job-002-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-002-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-002-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 000",
+        "href": "/dashboard/hiring/jobs/ui-job-000-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-000-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-000-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "Regression Position",
+        "href": "/dashboard/hiring/jobs/cmvi6cbej000bujq4hxjgwllp"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/cmvi6cbej000bujq4hxjgwllp"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/cmvi6cbej000bujq4hxjgwllp/edit"
+      }
+    ],
+    "overflowing": []
+  },
+  {
+    "route": "/dashboard/employees",
+    "viewport": 390,
+    "width": 390,
+    "scrollWidth": 390,
+    "overflow": false,
+    "visibleActions": [
+      {
+        "label": "Dashboard",
+        "href": "/dashboard"
+      },
+      {
+        "label": "Regression Primary",
+        "href": "/dashboard/employees/cmvi6cc7w000nujq45osm1w3h"
+      },
+      {
+        "label": "View Profile",
+        "href": "/dashboard/employees/cmvi6cc7w000nujq45osm1w3h"
+      },
+      {
+        "label": "Regression Secondary",
+        "href": "/dashboard/employees/cmvi6cd7n0015ujq4h77af6l6"
+      },
+      {
+        "label": "View Profile",
+        "href": "/dashboard/employees/cmvi6cd7n0015ujq4h77af6l6"
+      }
+    ],
+    "overflowing": []
+  },
+  {
+    "route": "/dashboard/hiring/jobs",
+    "viewport": 768,
+    "width": 768,
+    "scrollWidth": 760,
+    "overflow": false,
+    "visibleActions": [
+      {
+        "label": "Hiring",
+        "href": "/dashboard/hiring/pipeline"
+      },
+      {
+        "label": "Create Job Posting",
+        "href": "/dashboard/hiring/jobs/new"
+      },
+      {
+        "label": "ALL",
+        "href": "/dashboard/hiring/jobs?status=ALL"
+      },
+      {
+        "label": "PUBLISHED",
+        "href": "/dashboard/hiring/jobs?status=PUBLISHED"
+      },
+      {
+        "label": "DRAFT",
+        "href": "/dashboard/hiring/jobs?status=DRAFT"
+      },
+      {
+        "label": "CLOSED",
+        "href": "/dashboard/hiring/jobs?status=CLOSED"
+      },
+      {
+        "label": "ARCHIVED",
+        "href": "/dashboard/hiring/jobs?status=ARCHIVED"
+      },
+      {
+        "label": "UI Position 060 LongTitleLongTitleLongTitleLongTitleLongTitleLongTitleLongTitleLongTitleLongTitleLongTitleLongTitleLongTitleLongTitleLongTitleLongTitleLongTitleLongTitleLongTitle",
+        "href": "/dashboard/hiring/jobs/ui-job-060-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-060-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-060-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 059",
+        "href": "/dashboard/hiring/jobs/ui-job-059-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-059-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-059-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 058",
+        "href": "/dashboard/hiring/jobs/ui-job-058-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-058-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-058-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 057",
+        "href": "/dashboard/hiring/jobs/ui-job-057-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-057-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-057-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 055",
+        "href": "/dashboard/hiring/jobs/ui-job-055-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-055-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-055-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 056",
+        "href": "/dashboard/hiring/jobs/ui-job-056-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-056-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-056-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 054",
+        "href": "/dashboard/hiring/jobs/ui-job-054-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-054-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-054-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 052",
+        "href": "/dashboard/hiring/jobs/ui-job-052-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-052-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-052-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 053",
+        "href": "/dashboard/hiring/jobs/ui-job-053-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-053-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-053-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 051",
+        "href": "/dashboard/hiring/jobs/ui-job-051-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-051-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-051-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 049",
+        "href": "/dashboard/hiring/jobs/ui-job-049-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-049-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-049-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 050",
+        "href": "/dashboard/hiring/jobs/ui-job-050-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-050-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-050-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 048",
+        "href": "/dashboard/hiring/jobs/ui-job-048-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-048-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-048-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 046",
+        "href": "/dashboard/hiring/jobs/ui-job-046-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-046-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-046-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 047",
+        "href": "/dashboard/hiring/jobs/ui-job-047-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-047-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-047-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 045",
+        "href": "/dashboard/hiring/jobs/ui-job-045-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-045-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-045-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 043",
+        "href": "/dashboard/hiring/jobs/ui-job-043-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-043-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-043-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 044",
+        "href": "/dashboard/hiring/jobs/ui-job-044-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-044-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-044-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 042",
+        "href": "/dashboard/hiring/jobs/ui-job-042-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-042-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-042-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 040",
+        "href": "/dashboard/hiring/jobs/ui-job-040-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-040-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-040-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 041",
+        "href": "/dashboard/hiring/jobs/ui-job-041-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-041-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-041-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 039",
+        "href": "/dashboard/hiring/jobs/ui-job-039-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-039-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-039-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 037",
+        "href": "/dashboard/hiring/jobs/ui-job-037-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-037-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-037-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 038",
+        "href": "/dashboard/hiring/jobs/ui-job-038-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-038-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-038-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 036",
+        "href": "/dashboard/hiring/jobs/ui-job-036-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-036-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-036-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 034",
+        "href": "/dashboard/hiring/jobs/ui-job-034-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-034-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-034-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 035",
+        "href": "/dashboard/hiring/jobs/ui-job-035-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-035-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-035-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 033",
+        "href": "/dashboard/hiring/jobs/ui-job-033-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-033-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-033-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 030",
+        "href": "/dashboard/hiring/jobs/ui-job-030-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-030-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-030-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 031",
+        "href": "/dashboard/hiring/jobs/ui-job-031-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-031-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-031-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 032",
+        "href": "/dashboard/hiring/jobs/ui-job-032-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-032-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-032-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 029",
+        "href": "/dashboard/hiring/jobs/ui-job-029-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-029-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-029-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 028",
+        "href": "/dashboard/hiring/jobs/ui-job-028-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-028-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-028-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 027",
+        "href": "/dashboard/hiring/jobs/ui-job-027-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-027-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-027-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 024",
+        "href": "/dashboard/hiring/jobs/ui-job-024-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-024-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-024-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 026",
+        "href": "/dashboard/hiring/jobs/ui-job-026-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-026-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-026-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 025",
+        "href": "/dashboard/hiring/jobs/ui-job-025-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-025-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-025-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 022",
+        "href": "/dashboard/hiring/jobs/ui-job-022-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-022-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-022-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 023",
+        "href": "/dashboard/hiring/jobs/ui-job-023-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-023-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-023-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 021",
+        "href": "/dashboard/hiring/jobs/ui-job-021-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-021-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-021-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 019",
+        "href": "/dashboard/hiring/jobs/ui-job-019-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-019-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-019-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 020",
+        "href": "/dashboard/hiring/jobs/ui-job-020-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-020-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-020-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 018",
+        "href": "/dashboard/hiring/jobs/ui-job-018-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-018-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-018-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 015",
+        "href": "/dashboard/hiring/jobs/ui-job-015-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-015-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-015-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 017",
+        "href": "/dashboard/hiring/jobs/ui-job-017-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-017-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-017-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 016",
+        "href": "/dashboard/hiring/jobs/ui-job-016-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-016-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-016-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 014",
+        "href": "/dashboard/hiring/jobs/ui-job-014-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-014-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-014-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 013",
+        "href": "/dashboard/hiring/jobs/ui-job-013-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-013-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-013-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 012",
+        "href": "/dashboard/hiring/jobs/ui-job-012-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-012-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-012-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 009",
+        "href": "/dashboard/hiring/jobs/ui-job-009-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-009-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-009-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 011",
+        "href": "/dashboard/hiring/jobs/ui-job-011-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-011-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-011-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 010",
+        "href": "/dashboard/hiring/jobs/ui-job-010-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-010-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-010-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 007",
+        "href": "/dashboard/hiring/jobs/ui-job-007-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-007-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-007-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 008",
+        "href": "/dashboard/hiring/jobs/ui-job-008-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-008-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-008-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 006",
+        "href": "/dashboard/hiring/jobs/ui-job-006-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-006-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-006-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 004",
+        "href": "/dashboard/hiring/jobs/ui-job-004-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-004-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-004-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 005",
+        "href": "/dashboard/hiring/jobs/ui-job-005-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-005-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-005-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 003",
+        "href": "/dashboard/hiring/jobs/ui-job-003-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-003-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-003-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 001",
+        "href": "/dashboard/hiring/jobs/ui-job-001-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-001-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-001-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 002",
+        "href": "/dashboard/hiring/jobs/ui-job-002-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-002-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-002-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 000",
+        "href": "/dashboard/hiring/jobs/ui-job-000-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-000-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-000-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "Regression Position",
+        "href": "/dashboard/hiring/jobs/cmvi6cbej000bujq4hxjgwllp"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/cmvi6cbej000bujq4hxjgwllp"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/cmvi6cbej000bujq4hxjgwllp/edit"
+      }
+    ],
+    "overflowing": []
+  },
+  {
+    "route": "/dashboard/employees",
+    "viewport": 768,
+    "width": 768,
+    "scrollWidth": 1415,
+    "overflow": true,
+    "visibleActions": [
+      {
+        "label": "Dashboard",
+        "href": "/dashboard"
+      },
+      {
+        "label": "Regression Primary",
+        "href": "/dashboard/employees/cmvi6cc7w000nujq45osm1w3h"
+      },
+      {
+        "label": "View Profile",
+        "href": "/dashboard/employees/cmvi6cc7w000nujq45osm1w3h"
+      },
+      {
+        "label": "Regression Secondary",
+        "href": "/dashboard/employees/cmvi6cd7n0015ujq4h77af6l6"
+      },
+      {
+        "label": "View Profile",
+        "href": "/dashboard/employees/cmvi6cd7n0015ujq4h77af6l6"
+      }
+    ],
+    "overflowing": []
+  },
+  {
+    "route": "/dashboard/hiring/jobs",
+    "viewport": 1280,
+    "width": 1280,
+    "scrollWidth": 1272,
+    "overflow": false,
+    "visibleActions": [
+      {
+        "label": "Hiring",
+        "href": "/dashboard/hiring/pipeline"
+      },
+      {
+        "label": "Create Job Posting",
+        "href": "/dashboard/hiring/jobs/new"
+      },
+      {
+        "label": "ALL",
+        "href": "/dashboard/hiring/jobs?status=ALL"
+      },
+      {
+        "label": "PUBLISHED",
+        "href": "/dashboard/hiring/jobs?status=PUBLISHED"
+      },
+      {
+        "label": "DRAFT",
+        "href": "/dashboard/hiring/jobs?status=DRAFT"
+      },
+      {
+        "label": "CLOSED",
+        "href": "/dashboard/hiring/jobs?status=CLOSED"
+      },
+      {
+        "label": "ARCHIVED",
+        "href": "/dashboard/hiring/jobs?status=ARCHIVED"
+      },
+      {
+        "label": "UI Position 060 LongTitleLongTitleLongTitleLongTitleLongTitleLongTitleLongTitleLongTitleLongTitleLongTitleLongTitleLongTitleLongTitleLongTitleLongTitleLongTitleLongTitleLongTitle",
+        "href": "/dashboard/hiring/jobs/ui-job-060-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-060-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-060-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 059",
+        "href": "/dashboard/hiring/jobs/ui-job-059-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-059-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-059-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 058",
+        "href": "/dashboard/hiring/jobs/ui-job-058-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-058-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-058-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 057",
+        "href": "/dashboard/hiring/jobs/ui-job-057-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-057-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-057-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 055",
+        "href": "/dashboard/hiring/jobs/ui-job-055-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-055-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-055-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 056",
+        "href": "/dashboard/hiring/jobs/ui-job-056-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-056-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-056-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 054",
+        "href": "/dashboard/hiring/jobs/ui-job-054-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-054-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-054-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 052",
+        "href": "/dashboard/hiring/jobs/ui-job-052-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-052-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-052-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 053",
+        "href": "/dashboard/hiring/jobs/ui-job-053-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-053-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-053-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 051",
+        "href": "/dashboard/hiring/jobs/ui-job-051-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-051-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-051-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 049",
+        "href": "/dashboard/hiring/jobs/ui-job-049-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-049-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-049-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 050",
+        "href": "/dashboard/hiring/jobs/ui-job-050-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-050-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-050-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 048",
+        "href": "/dashboard/hiring/jobs/ui-job-048-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-048-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-048-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 046",
+        "href": "/dashboard/hiring/jobs/ui-job-046-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-046-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-046-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 047",
+        "href": "/dashboard/hiring/jobs/ui-job-047-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-047-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-047-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 045",
+        "href": "/dashboard/hiring/jobs/ui-job-045-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-045-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-045-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 043",
+        "href": "/dashboard/hiring/jobs/ui-job-043-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-043-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-043-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 044",
+        "href": "/dashboard/hiring/jobs/ui-job-044-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-044-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-044-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 042",
+        "href": "/dashboard/hiring/jobs/ui-job-042-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-042-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-042-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 040",
+        "href": "/dashboard/hiring/jobs/ui-job-040-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-040-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-040-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 041",
+        "href": "/dashboard/hiring/jobs/ui-job-041-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-041-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-041-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 039",
+        "href": "/dashboard/hiring/jobs/ui-job-039-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-039-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-039-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 037",
+        "href": "/dashboard/hiring/jobs/ui-job-037-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-037-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-037-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 038",
+        "href": "/dashboard/hiring/jobs/ui-job-038-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-038-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-038-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 036",
+        "href": "/dashboard/hiring/jobs/ui-job-036-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-036-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-036-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 034",
+        "href": "/dashboard/hiring/jobs/ui-job-034-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-034-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-034-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 035",
+        "href": "/dashboard/hiring/jobs/ui-job-035-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-035-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-035-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 033",
+        "href": "/dashboard/hiring/jobs/ui-job-033-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-033-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-033-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 030",
+        "href": "/dashboard/hiring/jobs/ui-job-030-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-030-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-030-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 031",
+        "href": "/dashboard/hiring/jobs/ui-job-031-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-031-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-031-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 032",
+        "href": "/dashboard/hiring/jobs/ui-job-032-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-032-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-032-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 029",
+        "href": "/dashboard/hiring/jobs/ui-job-029-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-029-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-029-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 028",
+        "href": "/dashboard/hiring/jobs/ui-job-028-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-028-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-028-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 027",
+        "href": "/dashboard/hiring/jobs/ui-job-027-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-027-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-027-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 024",
+        "href": "/dashboard/hiring/jobs/ui-job-024-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-024-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-024-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 026",
+        "href": "/dashboard/hiring/jobs/ui-job-026-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-026-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-026-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 025",
+        "href": "/dashboard/hiring/jobs/ui-job-025-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-025-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-025-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 022",
+        "href": "/dashboard/hiring/jobs/ui-job-022-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-022-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-022-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 023",
+        "href": "/dashboard/hiring/jobs/ui-job-023-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-023-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-023-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 021",
+        "href": "/dashboard/hiring/jobs/ui-job-021-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-021-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-021-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 019",
+        "href": "/dashboard/hiring/jobs/ui-job-019-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-019-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-019-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 020",
+        "href": "/dashboard/hiring/jobs/ui-job-020-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-020-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-020-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 018",
+        "href": "/dashboard/hiring/jobs/ui-job-018-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-018-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-018-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 015",
+        "href": "/dashboard/hiring/jobs/ui-job-015-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-015-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-015-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 017",
+        "href": "/dashboard/hiring/jobs/ui-job-017-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-017-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-017-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 016",
+        "href": "/dashboard/hiring/jobs/ui-job-016-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-016-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-016-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 014",
+        "href": "/dashboard/hiring/jobs/ui-job-014-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-014-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-014-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 013",
+        "href": "/dashboard/hiring/jobs/ui-job-013-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-013-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-013-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 012",
+        "href": "/dashboard/hiring/jobs/ui-job-012-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-012-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-012-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 009",
+        "href": "/dashboard/hiring/jobs/ui-job-009-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-009-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-009-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 011",
+        "href": "/dashboard/hiring/jobs/ui-job-011-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-011-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-011-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 010",
+        "href": "/dashboard/hiring/jobs/ui-job-010-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-010-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-010-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 007",
+        "href": "/dashboard/hiring/jobs/ui-job-007-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-007-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-007-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 008",
+        "href": "/dashboard/hiring/jobs/ui-job-008-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-008-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-008-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 006",
+        "href": "/dashboard/hiring/jobs/ui-job-006-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-006-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-006-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 004",
+        "href": "/dashboard/hiring/jobs/ui-job-004-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-004-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-004-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 005",
+        "href": "/dashboard/hiring/jobs/ui-job-005-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-005-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-005-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 003",
+        "href": "/dashboard/hiring/jobs/ui-job-003-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-003-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-003-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 001",
+        "href": "/dashboard/hiring/jobs/ui-job-001-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-001-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-001-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 002",
+        "href": "/dashboard/hiring/jobs/ui-job-002-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-002-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-002-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "UI Position 000",
+        "href": "/dashboard/hiring/jobs/ui-job-000-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/ui-job-000-cmvi6cayg0000ujq4ygtzlg54"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/ui-job-000-cmvi6cayg0000ujq4ygtzlg54/edit"
+      },
+      {
+        "label": "Regression Position",
+        "href": "/dashboard/hiring/jobs/cmvi6cbej000bujq4hxjgwllp"
+      },
+      {
+        "label": "View Details",
+        "href": "/dashboard/hiring/jobs/cmvi6cbej000bujq4hxjgwllp"
+      },
+      {
+        "label": "Edit Job",
+        "href": "/dashboard/hiring/jobs/cmvi6cbej000bujq4hxjgwllp/edit"
+      }
+    ],
+    "overflowing": []
+  },
+  {
+    "route": "/dashboard/employees",
+    "viewport": 1280,
+    "width": 1280,
+    "scrollWidth": 1423,
+    "overflow": true,
+    "visibleActions": [
+      {
+        "label": "Dashboard",
+        "href": "/dashboard"
+      },
+      {
+        "label": "Regression Primary",
+        "href": "/dashboard/employees/cmvi6cc7w000nujq45osm1w3h"
+      },
+      {
+        "label": "View Profile",
+        "href": "/dashboard/employees/cmvi6cc7w000nujq45osm1w3h"
+      },
+      {
+        "label": "Regression Secondary",
+        "href": "/dashboard/employees/cmvi6cd7n0015ujq4h77af6l6"
+      },
+      {
+        "label": "View Profile",
+        "href": "/dashboard/employees/cmvi6cd7n0015ujq4h77af6l6"
+      }
+    ],
+    "overflowing": []
+  }
+]

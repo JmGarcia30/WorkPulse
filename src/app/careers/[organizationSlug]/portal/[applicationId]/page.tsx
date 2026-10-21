@@ -1,5 +1,5 @@
 import { Metadata } from 'next';
-import { notFound } from 'next/navigation';
+import { requestCandidateVerification } from '@/features/careers/verification-actions';
 import Link from 'next/link';
 import { getCandidatePortalData } from '@/features/careers/portal-actions';
 import { CandidatePortalClient } from '@/components/careers/CandidatePortalClient';
@@ -39,7 +39,7 @@ export default async function CandidatePortalPage({ params }: CandidatePortalPag
   const data = await getCandidatePortalData(organizationSlug, applicationId);
 
   if (!data) {
-    notFound();
+    return <div className="max-w-md mx-auto p-8 space-y-4"><h1 className="text-xl font-bold">Candidate email verification</h1><p>Enter your application email. If eligible, we will send a verification link. Check your inbox; requests are limited.</p><form action={requestCandidateVerification.bind(null, organizationSlug, applicationId)} className="space-y-4"><input name="email" type="email" required autoComplete="email" aria-label="Application email" className="border rounded p-2 w-full" /><button className="rounded bg-indigo-600 text-white px-4 py-2">Send verification link</button></form></div>;
   }
 
   const { application, category, evaluation } = data;

@@ -1,0 +1,7 @@
+{
+  "exitCode": 0,
+  "elapsedMs": 262,
+  "output": [
+    "UX Payroll: pending state replaces stale success; controls lock; returned success and errors remain visible."
+  ]
+}

@@ -2,7 +2,7 @@
 const fs = require('node:fs'), path = require('node:path'), assert = require('node:assert/strict');
 const { encodeReply } = require('next/dist/compiled/react-server-dom-webpack/client.edge');
 const { ApplicationStatus } = require('@prisma/client');
-module.exports = async function test({ tx, org, foreign, users, primary, otherJob, candidate, tenantHost, port, session, save, ok }) {
+module.exports = async function test({ tx, org, foreign, users, primary, otherJob, candidate, tenantHost, port, session, save, ok, identityReview = false }) {
   const { SignJWT } = await import('jose');
   const manifest = JSON.parse(fs.readFileSync('.next/server/server-reference-manifest.json'));
   const rows = [], risks = [], ownedPaths = new Set();
@@ -29,6 +29,7 @@ module.exports = async function test({ tx, org, foreign, users, primary, otherJo
     const text = await response.text();
     await rememberFiles();
     record({ action: name, status: response.status, returnedError: /"error"|Unauthorized|access denied|cannot be replaced|cannot accept/.test(text), containsFixtureIdentity: text.includes(primary.employee.email) });
+    if (options.capture) return { text, cookie: response.headers.get('set-cookie'), redirect: response.headers.get('x-action-redirect') };
     return text;
   }
   async function download(label, route, options = {}) {
@@ -149,15 +150,39 @@ module.exports = async function test({ tx, org, foreign, users, primary, otherJo
     const applicationForm = new FormData();
     for (const [key, value] of Object.entries({ jobId: otherJob.id, organizationSlug: foreign.slug, firstName: 'UNVERIFIED-MODIFICATION', lastName: 'Synthetic', email: primary.employee.email, phone: '09000000008', coverLetter: 'Isolated application ownership probe' })) applicationForm.set(key, value);
     applicationForm.set('resume', file());
+    const originalIdentity = await tx.applicant.findUniqueOrThrow({ where: { id: primary.employee.applicantId } });
     await action('submitApplicationAction', [applicationForm], { cookie: '', host: foreign.slug + '.localhost', route: `/careers/${foreign.slug}/${otherJob.slug}/apply` });
     const reapplied = await tx.application.findUniqueOrThrow({ where: { jobId_applicantId: { jobId: otherJob.id, applicantId: primary.employee.applicantId } }, include: { documents: true, applicant: true } });
     applicationIds.push(reapplied.id); await rememberFiles();
     assert.equal(reapplied.documents.length, 1); ok(true, 'Public application stores resume against its new application');
     risks.push({ path: 'public initial application', suppliedEmailWithoutOwnershipProofChangesSharedApplicantIdentityAcrossOrganizations: reapplied.applicant.firstName === 'UNVERIFIED-MODIFICATION' });
+    if (identityReview) {
+      for (const key of ['firstName', 'lastName', 'phone', 'email']) assert.equal(reapplied.applicant[key], originalIdentity[key]);
+      ok(true, 'Cross-organization reapplication preserves all shared identity fields');
+      await action('submitApplicationAction', [applicationForm], { cookie: '', host: foreign.slug + '.localhost', route: `/careers/${foreign.slug}/${otherJob.slug}/apply` });
+      assert.equal(await tx.application.count({ where: { jobId: otherJob.id, applicantId: primary.employee.applicantId } }), 1);
+      assert.equal(await tx.document.count({ where: { applicationId: reapplied.id } }), 1);
+      ok(true, 'Duplicate unverified submission returns neutral response and preserves unique application and resume');
+      const invalidForm = new FormData();
+      for (const [key, value] of applicationForm.entries()) invalidForm.set(key, value);
+      invalidForm.set('resume', new File(['invalid'], 'invalid.exe'));
+      const options = { cookie: '', host: foreign.slug + '.localhost', route: `/careers/${foreign.slug}/${otherJob.slug}/apply`, capture: true };
+      const known = await action('submitApplicationAction', [invalidForm], options);
+      invalidForm.set('email', `unseen-${org.id}@fixture.invalid`);
+      const unknown = await action('submitApplicationAction', [invalidForm], options);
+      assert.equal(known.redirect, unknown.redirect);
+      ok(true, 'File-validation responses cannot distinguish existing and unknown application emails');
+    }
     await download('New public-upload resume remains isolated from foreign staff organization', '/api/resumes/' + reapplied.documents[0].id);
     const foreignReader = await tx.user.create({ data: { organizationId: foreign.id, role: 'HR_ADMIN', name: 'Synthetic foreign reviewer', email: 'foreign-reader-' + org.id + '@fixture.invalid' } });
     await download('Authorized organization can read its public application upload', '/api/resumes/' + reapplied.documents[0].id, { cookie: await token(foreignReader), host: foreign.slug + '.localhost', allow: true });
 
+    if (identityReview) {
+    assert(risks.every(r => !r.matchingIdsWithoutCandidateCredentialCanWrite && !r.matchingIdsExposeIdentityWithoutCandidateCredential && !r.matchingIdsReturnFileWithoutCandidateCredential && !r.suppliedEmailWithoutOwnershipProofChangesSharedApplicantIdentityAcrossOrganizations));
+    ok(true, 'All six original CD-01/CD-05 exposure probes denied');
+    await require('./test-candidate-identity-extra.cjs')({ tx, org, foreign, primary, candidate, recruitment, task, routes, portalRoute, action, download, headers, base, marker, form, ok, save });
+
+    }
     // Actual browser file selection/change workflow, not an action stub.
     await session.send('Page.navigate', { url: `http://${tenantHost}:${port}${applicantRoute}` });
     for (let i = 0; i < 150; i++) { if (await session.evaluate(`!!document.querySelector('button[aria-label="More options"]')`)) break; await new Promise(resolve => setTimeout(resolve, 100)); }
@@ -173,7 +198,7 @@ module.exports = async function test({ tx, org, foreign, users, primary, otherJo
     assert(browserSaved); ok(true, 'Browser staff upload persists replacement through real form');
     const browserDownload = await session.evaluate(`(async()=>{const response=await fetch('${routes[1]}');return {status:response.status,noStore:response.headers.get('cache-control')?.includes('no-store'),bytesMatch:(await response.text()).includes(${JSON.stringify(marker)})}})()`);
     assert(browserDownload.status === 200 && browserDownload.noStore && browserDownload.bytesMatch); ok(true, 'Browser preview/download receives exact uploaded fixture bytes');
-    save('open-policy-exposures', { candidateOwnershipProofMissing: true, secureAcrossAllPaths: false, findings: risks, liveBlobAndEmailTested: false });
+    save(identityReview ? 'fixed-exposures' : 'open-policy-exposures', { candidateOwnershipProofMissing: !identityReview, secureAcrossAllPaths: identityReview, findings: risks, liveBlobAndEmailTested: false });
   } finally {
     // Only keys belonging to this run's new fixture applications are removed.
     await rememberFiles();

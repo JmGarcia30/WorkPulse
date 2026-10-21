@@ -4,7 +4,7 @@ const { spawn, spawnSync } = require('node:child_process');
 const helper = require('./batch0-recovery-environment.cjs');
 const config = helper.configuration();
 const candidateReview = process.env.FR_CANDIDATE_REVIEW === '1';
-const directory = candidateReview ? 'docs/functional-regression/candidate-documents' : 'docs/functional-regression/profile-security';
+const directory = process.env.FR_IDENTITY_REVIEW === '1' ? 'docs/functional-regression/candidate-identity' : candidateReview ? 'docs/functional-regression/candidate-documents' : 'docs/functional-regression/profile-security';
 fs.mkdirSync(directory, { recursive: true });
 const save = (name, data) => fs.writeFileSync(`${directory}/${name}.json`, JSON.stringify(data, null, 2));
 const env = { ...config.environment, NODE_ENV: 'production', DATABASE_URL: helper.readOnly(config.pooled), H10_TEST_DATABASE_URL: helper.readOnly(config.direct) };

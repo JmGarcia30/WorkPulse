@@ -5,7 +5,8 @@ import { prisma } from '@/lib/db/prisma';
 import { localStorageProvider } from '@/lib/storage';
 import { JobStatus, ApplicationStatus, RecruitmentDocumentType, RecruitmentDocumentStatus } from '@prisma/client';
 import { ensureRecruitmentDocumentsExist } from '@/features/hiring/saga-requirements';
-import { sendApplicationConfirmationEmail } from '@/lib/email';
+import { issueCandidateLink } from './candidate-access';
+import { candidatePortalMatchesRequestTenant } from '@/features/hiring/document-access';
 import { databaseSlugForTenant } from '@/lib/tenant/host';
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -36,6 +37,7 @@ export async function submitApplicationAction(formData: FormData): Promise<void>
   const publicOrganizationSlug = requestedOrganizationSlug && databaseSlugForTenant(requestedOrganizationSlug) === orgSlug
     ? requestedOrganizationSlug
     : orgSlug;
+  if (!await candidatePortalMatchesRequestTenant(publicOrganizationSlug)) redirect('/careers');
   const applyPath = `/careers/${publicOrganizationSlug}/${job.slug}/apply`;
 
   if (!firstName || !lastName || !emailRaw || !phone || !coverLetter) {
@@ -63,24 +65,14 @@ export async function submitApplicationAction(formData: FormData): Promise<void>
     },
   });
 
-  if (existingApplicant) {
-    const existingApp = await prisma.application.findUnique({
+  const existingApp = existingApplicant ? await prisma.application.findUnique({
       where: {
         jobId_applicantId: {
           jobId: job.id,
           applicantId: existingApplicant.id,
         },
       },
-    });
-
-    if (existingApp) {
-      redirect(
-        `${applyPath}?error=${encodeURIComponent(
-          'You have already submitted an active application for this job opening with this email address.'
-        )}`
-      );
-    }
-  }
+    }) : null;
 
   // 4. Strict Resume File Validation (PDF and DOCX only, Max 5MB)
   let documentMeta: {
@@ -115,27 +107,35 @@ export async function submitApplicationAction(formData: FormData): Promise<void>
       );
     }
 
-    const arrayBuffer = await resumeFile.arrayBuffer();
-    const buffer = Buffer.from(arrayBuffer);
+    if (!existingApp) {
+      const arrayBuffer = await resumeFile.arrayBuffer();
+      const buffer = Buffer.from(arrayBuffer);
 
-    const uploadResult = await localStorageProvider.upload(
-      buffer,
-      resumeFile.name,
-      resolvedMimeType
-    );
+      const uploadResult = await localStorageProvider.upload(
+        buffer,
+        resumeFile.name,
+        resolvedMimeType
+      );
 
-    documentMeta = {
-      fileName: resumeFile.name,
-      fileType: resolvedMimeType,
-      fileSize: resumeFile.size,
-      storageKey: uploadResult.storageKey,
-    };
+      documentMeta = {
+        fileName: resumeFile.name,
+        fileType: resolvedMimeType,
+        fileSize: resumeFile.size,
+        storageKey: uploadResult.storageKey,
+      };
+    }
   }
 
+  // Validate the same public fields/files before responding, regardless of
+  // whether this address already has an application. Never replace its files.
+  if (existingApp) {
+    try { await issueCandidateLink(publicOrganizationSlug, existingApp.id, normalizedEmail); } catch {}
+    redirect(`${applyPath}?success=true`);
+  }
 
   let application;
   try {
-    // 5. Create or update Applicant record
+    // 5. Reuse shared identity without applying unverified name/phone changes
     let applicant = existingApplicant;
     if (!applicant) {
       applicant = await prisma.applicant.create({
@@ -146,12 +146,7 @@ export async function submitApplicationAction(formData: FormData): Promise<void>
           phone,
         },
       });
-    } else {
-      applicant = await prisma.applicant.update({
-        where: { id: applicant.id },
-        data: { firstName, lastName, phone },
-      });
-    }
+    } // Existing shared identity is immutable through public submissions.
 
     // 6. Create Application record
     application = await prisma.application.create({
@@ -194,25 +189,14 @@ export async function submitApplicationAction(formData: FormData): Promise<void>
       });
     }
 
-    // 8. Dispatch Free Email Notification with Portal Access Link
-    await sendApplicationConfirmationEmail({
-      to: normalizedEmail,
-      candidateName: `${firstName} ${lastName}`,
-      jobTitle: job.title,
-      organizationName: job.organization.name || 'St. Aloysius Gonzaga Academy',
-      organizationSlug: publicOrganizationSlug,
-      applicationId: application.id,
-    });
+    // 8. Deliver an application-bound email verification link.
+    try { await issueCandidateLink(publicOrganizationSlug, application.id, normalizedEmail); } catch {}
   } catch (error: unknown) {
     if (typeof error === 'object' && error !== null && 'code' in error && error.code === 'P2002') {
-      redirect(
-        `${applyPath}?error=${encodeURIComponent(
-          'You have already submitted an active application for this job opening with this email address.'
-        )}`
-      );
+      redirect(`${applyPath}?success=true`);
     }
     throw error;
   }
 
-  redirect(`${applyPath}?success=true&appId=${application.id}`);
+  redirect(`${applyPath}?success=true`);
 }
