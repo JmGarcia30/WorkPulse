@@ -1,0 +1,338 @@
+[
+  {
+    "cycle": 0,
+    "route": "Employees",
+    "completed": true,
+    "expectedContent": true,
+    "renderedError": false,
+    "navigationMs": 2699,
+    "networkRequests": 6,
+    "documentRequests": 0,
+    "failedHttpResponses": [],
+    "runtimeExceptions": 0,
+    "consoleErrors": 0,
+    "rendering": {
+      "rscRequests": 1,
+      "rscLastResponseMs": 2581.2000000001863,
+      "newScriptBytes": 167822,
+      "newScripts": 2,
+      "longTasks": 0,
+      "longTaskMs": 0
+    }
+  },
+  {
+    "cycle": 0,
+    "route": "Employee Profile",
+    "completed": true,
+    "expectedContent": true,
+    "renderedError": false,
+    "navigationMs": 5293,
+    "networkRequests": 13,
+    "documentRequests": 0,
+    "failedHttpResponses": [],
+    "runtimeExceptions": 0,
+    "consoleErrors": 0,
+    "rendering": {
+      "rscRequests": 2,
+      "rscLastResponseMs": 5268.300000000279,
+      "newScriptBytes": 177622,
+      "newScripts": 3,
+      "longTasks": 0,
+      "longTaskMs": 0
+    }
+  },
+  {
+    "cycle": 0,
+    "route": "Hiring",
+    "completed": true,
+    "expectedContent": true,
+    "renderedError": false,
+    "navigationMs": 3163,
+    "networkRequests": 13,
+    "documentRequests": 0,
+    "failedHttpResponses": [],
+    "runtimeExceptions": 0,
+    "consoleErrors": 0,
+    "rendering": {
+      "rscRequests": 2,
+      "rscLastResponseMs": 3043.1999999997206,
+      "newScriptBytes": 185653,
+      "newScripts": 3,
+      "longTasks": 0,
+      "longTaskMs": 0
+    }
+  },
+  {
+    "cycle": 0,
+    "route": "Dashboard",
+    "completed": true,
+    "expectedContent": true,
+    "renderedError": false,
+    "navigationMs": 2142,
+    "networkRequests": 10,
+    "documentRequests": 0,
+    "failedHttpResponses": [],
+    "runtimeExceptions": 0,
+    "consoleErrors": 0,
+    "rendering": {
+      "rscRequests": 2,
+      "rscLastResponseMs": 2044.5999999996275,
+      "newScriptBytes": 767,
+      "newScripts": 1,
+      "longTasks": 0,
+      "longTaskMs": 0
+    }
+  },
+  {
+    "cycle": 1,
+    "route": "Employees",
+    "completed": true,
+    "expectedContent": true,
+    "renderedError": false,
+    "navigationMs": 1387,
+    "networkRequests": 10,
+    "documentRequests": 0,
+    "failedHttpResponses": [],
+    "runtimeExceptions": 0,
+    "consoleErrors": 0,
+    "rendering": {
+      "rscRequests": 2,
+      "rscLastResponseMs": 1361.5,
+      "newScriptBytes": 767,
+      "newScripts": 1,
+      "longTasks": 0,
+      "longTaskMs": 0
+    }
+  },
+  {
+    "cycle": 1,
+    "route": "Employee Profile",
+    "completed": true,
+    "expectedContent": true,
+    "renderedError": false,
+    "navigationMs": 1675,
+    "networkRequests": 10,
+    "documentRequests": 0,
+    "failedHttpResponses": [],
+    "runtimeExceptions": 0,
+    "consoleErrors": 0,
+    "rendering": {
+      "rscRequests": 2,
+      "rscLastResponseMs": 1656.6999999997206,
+      "newScriptBytes": 768,
+      "newScripts": 1,
+      "longTasks": 0,
+      "longTaskMs": 0
+    }
+  },
+  {
+    "cycle": 1,
+    "route": "Hiring",
+    "completed": true,
+    "expectedContent": true,
+    "renderedError": false,
+    "navigationMs": 1529,
+    "networkRequests": 10,
+    "documentRequests": 0,
+    "failedHttpResponses": [],
+    "runtimeExceptions": 0,
+    "consoleErrors": 0,
+    "rendering": {
+      "rscRequests": 2,
+      "rscLastResponseMs": 1379.1000000000931,
+      "newScriptBytes": 768,
+      "newScripts": 1,
+      "longTasks": 0,
+      "longTaskMs": 0
+    }
+  },
+  {
+    "cycle": 1,
+    "route": "Dashboard",
+    "completed": true,
+    "expectedContent": true,
+    "renderedError": false,
+    "navigationMs": 2066,
+    "networkRequests": 9,
+    "documentRequests": 0,
+    "failedHttpResponses": [],
+    "runtimeExceptions": 0,
+    "consoleErrors": 0,
+    "rendering": {
+      "rscRequests": 2,
+      "rscLastResponseMs": 1996.6000000000931,
+      "newScriptBytes": 769,
+      "newScripts": 1,
+      "longTasks": 0,
+      "longTaskMs": 0
+    }
+  },
+  {
+    "cycle": 2,
+    "route": "Employees",
+    "completed": true,
+    "expectedContent": true,
+    "renderedError": false,
+    "navigationMs": 1549,
+    "networkRequests": 10,
+    "documentRequests": 0,
+    "failedHttpResponses": [],
+    "runtimeExceptions": 0,
+    "consoleErrors": 0,
+    "rendering": {
+      "rscRequests": 2,
+      "rscLastResponseMs": 1476.5,
+      "newScriptBytes": 767,
+      "newScripts": 1,
+      "longTasks": 0,
+      "longTaskMs": 0
+    }
+  },
+  {
+    "cycle": 2,
+    "route": "Employee Profile",
+    "completed": true,
+    "expectedContent": true,
+    "renderedError": false,
+    "navigationMs": 2358,
+    "networkRequests": 10,
+    "documentRequests": 0,
+    "failedHttpResponses": [],
+    "runtimeExceptions": 0,
+    "consoleErrors": 0,
+    "rendering": {
+      "rscRequests": 2,
+      "rscLastResponseMs": 2337.3000000002794,
+      "newScriptBytes": 767,
+      "newScripts": 1,
+      "longTasks": 0,
+      "longTaskMs": 0
+    }
+  },
+  {
+    "cycle": 2,
+    "route": "Hiring",
+    "completed": true,
+    "expectedContent": true,
+    "renderedError": false,
+    "navigationMs": 1665,
+    "networkRequests": 10,
+    "documentRequests": 0,
+    "failedHttpResponses": [],
+    "runtimeExceptions": 0,
+    "consoleErrors": 0,
+    "rendering": {
+      "rscRequests": 2,
+      "rscLastResponseMs": 1559.6000000000931,
+      "newScriptBytes": 768,
+      "newScripts": 1,
+      "longTasks": 0,
+      "longTaskMs": 0
+    }
+  },
+  {
+    "cycle": 2,
+    "route": "Dashboard",
+    "completed": true,
+    "expectedContent": true,
+    "renderedError": false,
+    "navigationMs": 1886,
+    "networkRequests": 9,
+    "documentRequests": 0,
+    "failedHttpResponses": [],
+    "runtimeExceptions": 0,
+    "consoleErrors": 0,
+    "rendering": {
+      "rscRequests": 2,
+      "rscLastResponseMs": 1761.2000000001863,
+      "newScriptBytes": 769,
+      "newScripts": 1,
+      "longTasks": 1,
+      "longTaskMs": 63
+    }
+  },
+  {
+    "cycle": 3,
+    "route": "Employees",
+    "completed": true,
+    "expectedContent": true,
+    "renderedError": false,
+    "navigationMs": 1996,
+    "networkRequests": 9,
+    "documentRequests": 0,
+    "failedHttpResponses": [],
+    "runtimeExceptions": 0,
+    "consoleErrors": 0,
+    "rendering": {
+      "rscRequests": 2,
+      "rscLastResponseMs": 1898.6999999997206,
+      "newScriptBytes": 768,
+      "newScripts": 1,
+      "longTasks": 0,
+      "longTaskMs": 0
+    }
+  },
+  {
+    "cycle": 3,
+    "route": "Employee Profile",
+    "completed": true,
+    "expectedContent": true,
+    "renderedError": false,
+    "navigationMs": 2106,
+    "networkRequests": 10,
+    "documentRequests": 0,
+    "failedHttpResponses": [],
+    "runtimeExceptions": 0,
+    "consoleErrors": 0,
+    "rendering": {
+      "rscRequests": 2,
+      "rscLastResponseMs": 2087.6999999997206,
+      "newScriptBytes": 767,
+      "newScripts": 1,
+      "longTasks": 0,
+      "longTaskMs": 0
+    }
+  },
+  {
+    "cycle": 3,
+    "route": "Hiring",
+    "completed": true,
+    "expectedContent": true,
+    "renderedError": false,
+    "navigationMs": 1409,
+    "networkRequests": 9,
+    "documentRequests": 0,
+    "failedHttpResponses": [],
+    "runtimeExceptions": 0,
+    "consoleErrors": 0,
+    "rendering": {
+      "rscRequests": 2,
+      "rscLastResponseMs": 1332.4000000003725,
+      "newScriptBytes": 769,
+      "newScripts": 1,
+      "longTasks": 0,
+      "longTaskMs": 0
+    }
+  },
+  {
+    "cycle": 3,
+    "route": "Dashboard",
+    "completed": true,
+    "expectedContent": true,
+    "renderedError": false,
+    "navigationMs": 1506,
+    "networkRequests": 9,
+    "documentRequests": 0,
+    "failedHttpResponses": [],
+    "runtimeExceptions": 0,
+    "consoleErrors": 0,
+    "rendering": {
+      "rscRequests": 2,
+      "rscLastResponseMs": 1427,
+      "newScriptBytes": 766,
+      "newScripts": 1,
+      "longTasks": 0,
+      "longTaskMs": 0
+    }
+  }
+]

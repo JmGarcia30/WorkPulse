@@ -38,13 +38,13 @@ export function PayrollPeriodForm() {
 
 export function PayrollGenerationForm({ periods, selectedPeriodId, disabled = false }: { periods: Array<{ id: string; name: string }>; selectedPeriodId?: string; disabled?: boolean }) {
   const [state, action, pending] = useActionState(generatePayrollAction, initialState);
-  return <form action={action} className="mt-5 grid gap-3 rounded-2xl bg-slate-50 p-4 md:grid-cols-[minmax(0,1fr)_auto]">
-    <div className="md:col-span-2"><StatusMessage state={state} /></div>
-    {state.setupErrors?.length ? <div role="alert" className="md:col-span-2 rounded-xl border border-amber-200 bg-amber-50 p-3 text-xs text-amber-950">
+  return <form action={action} aria-busy={pending} className="mt-5 grid gap-3 rounded-2xl bg-slate-50 p-4 md:grid-cols-[minmax(0,1fr)_auto]">
+    <div className="md:col-span-2">{pending ? <p role="status" className="text-xs text-slate-600">Payroll generation is in progress. Keep this page open until the result appears.</p> : <StatusMessage state={state} />}</div>
+    {!pending && state.setupErrors?.length ? <div role="alert" className="md:col-span-2 rounded-xl border border-amber-200 bg-amber-50 p-3 text-xs text-amber-950">
       <p className="font-bold">Setup required for {state.setupErrors.length} {state.setupErrors.length === 1 ? 'employee' : 'employees'}</p>
       <ul className="mt-2 list-disc space-y-1 pl-5">{state.setupErrors.map(item => <li key={`${item.employeeNumber}-${item.message}`}><span className="font-semibold">{item.employeeNumber} · {item.employeeName}:</span> {item.message}</li>)}</ul>
     </div> : null}
-    <label className="grid gap-1 text-xs font-semibold">Payroll period<select name="payrollPeriodId" required defaultValue={selectedPeriodId} className="rounded-xl border bg-white px-3 py-2.5 font-normal"><option value="">Select a period</option>{periods.map(period => <option key={period.id} value={period.id}>{period.name}</option>)}</select></label>
+    <label className="grid gap-1 text-xs font-semibold">Payroll period<select name="payrollPeriodId" disabled={pending} required defaultValue={selectedPeriodId} className="rounded-xl border bg-white px-3 py-2.5 font-normal"><option value="">Select a period</option>{periods.map(period => <option key={period.id} value={period.id}>{period.name}</option>)}</select></label>
     <button disabled={pending || periods.length === 0 || disabled} className="self-end rounded-xl bg-emerald-700 px-5 py-2.5 text-xs font-bold text-white disabled:opacity-50">{pending ? 'Generating…' : 'Generate / Recalculate Payroll'}</button>
   </form>;
 }

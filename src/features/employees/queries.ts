@@ -172,45 +172,64 @@ export async function getOrganizationEmployees(
   };
 }
 
-export function getOrganizationEmployeeById(
+export type EmployeeProfileReadTab = 'overview' | 'probation' | 'history' | 'decisions' | 'compliance' | 'account';
+
+export async function getOrganizationEmployeeById(
   organizationId: string,
-  employeeId: string
+  employeeId: string,
+  tab?: EmployeeProfileReadTab,
+  db: Prisma.TransactionClient = prisma,
 ) {
-  return prisma.employee.findFirst({
-    where: { id: employeeId, organizationId },
-    include: {
-      sourceApplication: {
-        include: {
-          onboarding: { include: { tasks: true } },
+  // Undefined preserves the complete read used by existing service callers.
+  // Tabs load their own histories; counts keep every navigation badge exact.
+  const [employee, probationRecords, employmentDecisions, statusHistory, employeeAccount] = await Promise.all([
+    db.employee.findFirst({
+      where: { id: employeeId, organizationId },
+      include: {
+        _count: { select: { employmentDecisions: true, statusHistory: true } },
+        sourceApplication: {
+          include: {
+            onboarding: { include: { tasks: true } },
+          },
+        },
+        employmentRecords: {
+          orderBy: { effectiveFrom: 'desc' },
+          include: {
+            probation: true,
+            acceptedOffer: tab === undefined || tab === 'compliance',
+          },
         },
       },
-      employmentRecords: {
-        orderBy: { effectiveFrom: 'desc' },
-        include: {
-          probation: true,
-          acceptedOffer: true,
-        },
+    }),
+    tab === undefined || tab === 'probation' ? db.probationRecord.findMany({
+      where: { employeeId, employee: { organizationId } },
+      orderBy: [{ startedAt: 'desc' }, { createdAt: 'desc' }],
+      include: { decisionBy: { select: { name: true } } },
+    }) : Promise.resolve([]),
+    tab === undefined || tab === 'decisions' ? db.employmentDecisionHistory.findMany({
+      where: { employeeId, employee: { organizationId } },
+      orderBy: { decisionAt: 'desc' },
+      include: { changedBy: { select: { name: true } } },
+    }) : Promise.resolve([]),
+    tab === undefined || tab === 'decisions' ? db.employeeStatusHistory.findMany({
+      where: { employeeId, employee: { organizationId } },
+      orderBy: { createdAt: 'desc' },
+      include: { changedBy: { select: { name: true } } },
+    }) : Promise.resolve([]),
+    tab === undefined || tab === 'account' ? db.employeeAccount.findFirst({
+      where: { employeeId, organizationId },
+      include: {
+        user: { select: { email: true } },
+        audits: { orderBy: { createdAt: 'desc' }, take: 10 },
       },
-      probationRecords: {
-        orderBy: [{ startedAt: 'desc' }, { createdAt: 'desc' }],
-        include: {
-          decisionBy: { select: { name: true } },
-        },
-      },
-      employmentDecisions: {
-        orderBy: { decisionAt: 'desc' },
-        include: { changedBy: { select: { name: true } } },
-      },
-      statusHistory: {
-        orderBy: { createdAt: 'desc' },
-        include: { changedBy: { select: { name: true } } },
-      },
-      employeeAccount: {
-        include: {
-          user: { select: { email: true } },
-          audits: { orderBy: { createdAt: 'desc' }, take: 10 },
-        },
-      },
-    },
-  });
+    }) : Promise.resolve(null),
+  ]);
+  if (!employee) return null;
+  return {
+    ...employee,
+    probationRecords,
+    employmentDecisions,
+    statusHistory,
+    employeeAccount,
+  };
 }

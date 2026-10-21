@@ -1,0 +1,12 @@
+{
+  "mode": "local production build via test-only Next custom server",
+  "fixtureCounts": {
+    "organizations": 2,
+    "employees": 2,
+    "candidateApplications": 3
+  },
+  "transactionMode": "one outer rollback transaction; nested app transactions use serialized savepoints",
+  "trueCommitAndConcurrentTransactionCoverage": false,
+  "schemaChanges": false,
+  "fallbackConnectionReadOnly": true
+}

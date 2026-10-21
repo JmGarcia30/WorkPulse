@@ -1,0 +1,12 @@
+{
+  "suite": "h3",
+  "completed": true,
+  "originalSourceEditedOnDisk": false,
+  "fixtureCleanup": "outer transaction rolled back",
+  "ddlExecuted": false,
+  "realCommitAndConcurrentTransactionCoverage": false,
+  "adaptation": [
+    "legacy cleanup/bootstrap replaced by rollback ownership",
+    "nested transactions use serialized savepoints"
+  ]
+}

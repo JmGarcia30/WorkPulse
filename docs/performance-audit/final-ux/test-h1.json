@@ -1,0 +1,12 @@
+{
+  "name": "test-h1",
+  "exitCode": 0,
+  "elapsedMs": 66819,
+  "assertions": [
+    "H10.1 and H10.2 migrations replayed in the isolated test schema.",
+    "UX Profile: full-read and all six tab payloads match the frozen oracle; tenant isolation passes.",
+    "UX Profile: full-read and all six tab payloads match the frozen oracle; tenant isolation passes.",
+    "H1 Employee Core tests passed: 22 assertions.",
+    "REGRESSION test:h1: PASS"
+  ]
+}

@@ -1,0 +1,80 @@
+[
+  {
+    "route": "Profile probation",
+    "completed": true,
+    "expectedContent": true,
+    "renderedError": false,
+    "navigationMs": 536,
+    "networkRequests": 3,
+    "documentRequests": 0,
+    "failedHttpResponses": [],
+    "runtimeExceptions": 0,
+    "consoleErrors": 0,
+    "activeTab": true
+  },
+  {
+    "route": "Profile history",
+    "completed": true,
+    "expectedContent": true,
+    "renderedError": false,
+    "navigationMs": 499,
+    "networkRequests": 3,
+    "documentRequests": 0,
+    "failedHttpResponses": [],
+    "runtimeExceptions": 0,
+    "consoleErrors": 0,
+    "activeTab": true
+  },
+  {
+    "route": "Profile decisions",
+    "completed": true,
+    "expectedContent": true,
+    "renderedError": false,
+    "navigationMs": 522,
+    "networkRequests": 3,
+    "documentRequests": 0,
+    "failedHttpResponses": [],
+    "runtimeExceptions": 0,
+    "consoleErrors": 0,
+    "activeTab": true
+  },
+  {
+    "route": "Profile compliance",
+    "completed": true,
+    "expectedContent": true,
+    "renderedError": false,
+    "navigationMs": 676,
+    "networkRequests": 3,
+    "documentRequests": 0,
+    "failedHttpResponses": [],
+    "runtimeExceptions": 0,
+    "consoleErrors": 0,
+    "activeTab": true
+  },
+  {
+    "route": "Profile account",
+    "completed": true,
+    "expectedContent": true,
+    "renderedError": false,
+    "navigationMs": 582,
+    "networkRequests": 3,
+    "documentRequests": 0,
+    "failedHttpResponses": [],
+    "runtimeExceptions": 0,
+    "consoleErrors": 0,
+    "activeTab": true
+  },
+  {
+    "route": "Profile overview",
+    "completed": true,
+    "expectedContent": true,
+    "renderedError": false,
+    "navigationMs": 513,
+    "networkRequests": 3,
+    "documentRequests": 0,
+    "failedHttpResponses": [],
+    "runtimeExceptions": 0,
+    "consoleErrors": 0,
+    "activeTab": true
+  }
+]

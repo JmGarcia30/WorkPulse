@@ -1,0 +1,5 @@
+{
+  "code": "Error",
+  "stage": "Persisted role downgrade rejects stale admin JWT on Profile without employee payload",
+  "message": "SCENARIO_FAILED"
+}

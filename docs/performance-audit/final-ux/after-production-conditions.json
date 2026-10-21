@@ -1,0 +1,14 @@
+{
+  "mode": "production",
+  "branch": "workpulse-batch0-recovery",
+  "warmCycles": [
+    1,
+    2,
+    3
+  ],
+  "firstCycleExcluded": true,
+  "readOnlyServer": true,
+  "normalLogin": true,
+  "serverCompileLines": [],
+  "runtimeCodes": []
+}

@@ -1,0 +1,7 @@
+{
+  "exitCode": 0,
+  "elapsedMs": 1132,
+  "output": [
+    "UX Hiring: parallel default reads, valid filters, foreign-ID fallback, blank filters and tenant scope pass."
+  ]
+}

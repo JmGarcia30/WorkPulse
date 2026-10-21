@@ -1,0 +1,10 @@
+{
+  "headProfileUsesCookieSession": true,
+  "headProfileUsesPersistedReadGuard": false,
+  "headLayoutUsesPersistedReadGuard": true,
+  "preOptimizationHttpBehaviorCompared": true,
+  "comparedCommit": "ea1fc23b5efe1fefa27c87d77fd6d6e4712525ec",
+  "preOptimizationHttpStatus": 307,
+  "preOptimizationResponseIncludesFixtureIdentity": true,
+  "attribution": "Disclosure predates final UX sprint; origin before this baseline is not established"
+}

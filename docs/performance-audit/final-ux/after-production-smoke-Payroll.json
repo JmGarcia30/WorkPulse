@@ -1,0 +1,12 @@
+{
+  "route": "Payroll",
+  "completed": true,
+  "expectedContent": true,
+  "renderedError": false,
+  "navigationMs": 558,
+  "networkRequests": 5,
+  "documentRequests": 0,
+  "failedHttpResponses": [],
+  "runtimeExceptions": 0,
+  "consoleErrors": 0
+}

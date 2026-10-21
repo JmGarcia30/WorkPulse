@@ -1,0 +1,16 @@
+{
+  "separateFromStaffSessionRegression": true,
+  "requiresDocumentAndApplicationIdentifiers": true,
+  "results": [
+    {
+      "endpoint": "recruitment-documents",
+      "status": 200,
+      "matchingApplicationIdentifierAloneReturnsFile": true
+    },
+    {
+      "endpoint": "onboarding-documents",
+      "status": 200,
+      "matchingApplicationIdentifierAloneReturnsFile": true
+    }
+  ]
+}

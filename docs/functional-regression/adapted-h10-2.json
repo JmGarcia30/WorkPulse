@@ -1,0 +1,18 @@
+{
+  "suite": "h10-2",
+  "completed": true,
+  "checks": 57,
+  "skipped": [
+    "Database-trigger fault injection replaced by client-boundary audit-write failure injection",
+    "Real concurrent attendance-writer/separation execution lock race"
+  ],
+  "originalSourceEditedOnDisk": false,
+  "fixtureCleanup": "outer transaction rolled back",
+  "ddlExecuted": false,
+  "realCommitAndConcurrentTransactionCoverage": false,
+  "adaptation": [
+    "legacy cleanup/bootstrap replaced by rollback ownership",
+    "nested transactions use serialized savepoints",
+    "SAGA organization reused read-only; new fixture records only"
+  ]
+}

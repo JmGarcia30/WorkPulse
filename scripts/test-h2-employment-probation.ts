@@ -20,6 +20,7 @@ import {
   renewTeachingProbation,
 } from '../src/features/employees/lifecycle';
 import { getOrganizationEmployeeById } from '../src/features/employees/queries';
+import { assertProfileTabParity } from './assert-final-ux-profile';
 
 function assert(condition: unknown, message: string): asserts condition {
   if (!condition) throw new Error(`ASSERTION FAILED: ${message}`);
@@ -176,6 +177,7 @@ async function main() {
     assert(inactive?.statusHistory.some((entry) => entry.toStatus === EmployeeStatus.INACTIVE), 'not renewed records employee status history');
     assert(inactive?.employmentDecisions.length === 1 && inactive.employmentDecisions[0].decision === ProbationDecision.NOT_RENEWED, 'not renewed records one audit event');
     assert(await getOrganizationEmployeeById('wrong-tenant', staff.employee.id) === null, 'profile query remains tenant-isolated');
+    await assertProfileTabParity(organization.id, notRenewedFixture.employee.id);
 
     const protectedFixture = await createEmployee({ organizationId: organization.id, actorUserId: actor.id, category: EmploymentCategory.NON_TEACHING, suffix: 'tenant-protected', startedAt: new Date('2025-01-01Z'), expectedEndAt: new Date('2025-07-01Z') });
     applicantIds.push(protectedFixture.applicant.id);

@@ -1,0 +1,75 @@
+{
+  "mergeRecommendation": "HOLD",
+  "findings": [
+    {
+      "id": "FR-01",
+      "title": "Bounded Dashboard employee alert membership/order differs from legacy Prisma reads",
+      "severity": "MEDIUM",
+      "optimizationAttribution": "CONFIRMED",
+      "status": "FIXED_AND_RETESTED",
+      "applicationFile": "src/features/dashboard/employee-alerts.ts",
+      "regressionTest": "scripts/test-functional-dashboard-boundary.cjs"
+    },
+    {
+      "id": "FR-02",
+      "title": "Profile redirect response includes employee identity after persisted role downgrade with stale admin JWT",
+      "severity": "HIGH",
+      "optimizationAttribution": "REPRODUCED_AT_PRE_FINAL_UX_COMMIT",
+      "status": "FIXED_AND_RETESTED",
+      "evidence": "profile-security/summary.json",
+      "observedStatus": 307,
+      "responseIncludesFixtureIdentity": false,
+      "staleProfileHttpStatuses": [
+        307,
+        200
+      ],
+      "staleProfileProtectedReads": 0
+    }
+  ],
+  "nativeConcurrentCommitsVerified": false,
+  "productionTouched": false,
+  "schemasOrMigrationsModified": false,
+  "securityPolicyReview": {
+    "status": "OPEN_CONFIRMED_HIGH_RISK",
+    "title": "Candidate ownership is unverified across ID-based portal/actions/downloads and shared Applicant reapplication updates",
+    "evidence": "candidate-documents/candidate/open-policy-exposures.json",
+    "candidateIdentityPolicyResolved": false
+  },
+  "mergeHoldReasons": [
+    "Verified application ownership, credential lifetime/revocation and legacy candidate URLs remain undecided",
+    "Unverified email-based shared Applicant updates remain exploitable",
+    "Prior independent-transaction/concurrency and remaining external workflow coverage gaps"
+  ],
+  "candidateDocumentFindings": [
+    {
+      "id": "CD-01",
+      "severity": "HIGH",
+      "status": "OPEN",
+      "title": "Identifiers alone grant candidate portal/file read and upload access"
+    },
+    {
+      "id": "CD-02",
+      "severity": "HIGH",
+      "status": "FIXED_AND_RETESTED",
+      "title": "Missing request-tenant checks on reviewed document paths"
+    },
+    {
+      "id": "CD-03",
+      "severity": "MEDIUM",
+      "status": "FIXED_AND_RETESTED",
+      "title": "Candidate upload bypasses verified/waived/non-document UI restrictions"
+    },
+    {
+      "id": "CD-04",
+      "severity": "HIGH",
+      "status": "FIXED_AND_RETESTED",
+      "title": "Active MIME types accepted via extension fallback and trusted in inline responses"
+    },
+    {
+      "id": "CD-05",
+      "severity": "HIGH",
+      "status": "OPEN",
+      "title": "Unverified public reapplication changes shared Applicant identity across organizations"
+    }
+  ]
+}

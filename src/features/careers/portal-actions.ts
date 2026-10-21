@@ -10,6 +10,7 @@ import {
 } from '@prisma/client';
 import { areRecruitmentDocumentsSatisfied } from '@/features/hiring/saga-requirements';
 import { databaseSlugForTenant } from '@/lib/tenant/host';
+import { candidatePortalMatchesRequestTenant } from '@/features/hiring/document-access';
 
 const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
 const ALLOWED_MIME_TYPES = [
@@ -21,10 +22,18 @@ const ALLOWED_MIME_TYPES = [
   'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
 ];
 
+function candidateDocumentMimeType(file: File) {
+  if (file.type && file.type !== 'application/octet-stream') return file.type;
+  const extension = file.name.toLowerCase().split('.').pop();
+  return ({ pdf: 'application/pdf', png: 'image/png', jpg: 'image/jpeg', jpeg: 'image/jpeg', webp: 'image/webp', doc: 'application/msword', docx: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' } as Record<string, string>)[extension || ''] || 'application/octet-stream';
+}
+
 /**
- * Validates candidate portal access and loads portal details securely.
+ * Legacy ID-based portal data: checks tenant/relationships, not candidate identity.
+ * Ownership credentials remain a merge blocker; see the candidate document report.
  */
 export async function getCandidatePortalData(organizationSlug: string, applicationId: string) {
+  if (!await candidatePortalMatchesRequestTenant(organizationSlug)) return null;
   const application = await prisma.application.findFirst({
     where: {
       id: applicationId,
@@ -102,9 +111,10 @@ export async function getCandidatePortalData(organizationSlug: string, applicati
 }
 
 /**
- * Public candidate upload action for their assigned document slots.
+ * Legacy public candidate upload action for application document slots.
  * Validates strict isolation: documentId must belong to applicationId,
- * and applicationId must belong to organizationSlug.
+ * and applicationId must belong to organizationSlug. These relationships do not
+ * authenticate the caller as the candidate; the credential policy remains open.
  */
 export async function submitCandidateRecruitmentDocumentAction(
   organizationSlug: string,
@@ -112,6 +122,7 @@ export async function submitCandidateRecruitmentDocumentAction(
   documentId: string,
   formData: FormData
 ) {
+  if (!await candidatePortalMatchesRequestTenant(organizationSlug)) return { error: 'Document not found or access denied.' };
   // 1. Strict Tenant & Application Isolation Check
   const doc = await prisma.recruitmentDocument.findFirst({
     where: {
@@ -145,6 +156,11 @@ export async function submitCandidateRecruitmentDocumentAction(
     };
   }
 
+  // Match the portal's existing upload controls on the server as well.
+  if (doc.status === RecruitmentDocumentStatus.VERIFIED || doc.status === RecruitmentDocumentStatus.NOT_APPLICABLE) {
+    return { error: 'Verified or waived documents cannot be replaced. Contact HR for review.' };
+  }
+
   // 2. Validate File Presence & Size
   const file = formData.get('file') as File | null;
   if (!file || file.size === 0) {
@@ -163,7 +179,7 @@ export async function submitCandidateRecruitmentDocumentAction(
   }
 
   // 3. MIME type validation
-  const mimeType = file.type || 'application/octet-stream';
+  const mimeType = candidateDocumentMimeType(file);
   const fileNameLower = file.name.toLowerCase();
   const hasValidExtension =
     fileNameLower.endsWith('.pdf') ||
@@ -174,7 +190,7 @@ export async function submitCandidateRecruitmentDocumentAction(
     fileNameLower.endsWith('.doc') ||
     fileNameLower.endsWith('.docx');
 
-  if (!ALLOWED_MIME_TYPES.includes(mimeType) && !hasValidExtension) {
+  if (!ALLOWED_MIME_TYPES.includes(mimeType) || !hasValidExtension) {
     return {
       error: 'Invalid file format. Please upload PDF, Word Document (DOC/DOCX), or image (JPG, PNG, WEBP).',
     };
@@ -197,8 +213,8 @@ export async function submitCandidateRecruitmentDocumentAction(
       : `Candidate re-uploaded on ${new Date().toLocaleDateString()}`;
   }
 
-  await prisma.recruitmentDocument.update({
-    where: { id: documentId },
+  const updated = await prisma.recruitmentDocument.updateMany({
+    where: { id: documentId, status: { notIn: [RecruitmentDocumentStatus.VERIFIED, RecruitmentDocumentStatus.NOT_APPLICABLE] } },
     data: {
       fileName: file.name,
       fileType: mimeType,
@@ -210,6 +226,10 @@ export async function submitCandidateRecruitmentDocumentAction(
       verifiedById: null,
     },
   });
+  if (!updated.count) {
+    await localStorageProvider.delete(uploadResult.storageKey);
+    return { error: 'Document changed during upload. Contact HR for review.' };
+  }
 
   // Revalidate both candidate portal and HR dashboard safely
   try {
@@ -236,7 +256,9 @@ export async function submitCandidateOnboardingDocumentAction(
   taskId: string,
   formData: FormData
 ) {
-  // 1. Verify candidate task belongs to the authenticated applicant portal session
+  if (!await candidatePortalMatchesRequestTenant(organizationSlug)) return { error: 'Document not found or access denied.' };
+  // 1. Check task/application relationships. There is no authenticated candidate
+  // session yet; tenant validation alone does not establish ownership.
   const task = await prisma.onboardingTask.findFirst({
     where: {
       id: taskId,
@@ -259,6 +281,10 @@ export async function submitCandidateOnboardingDocumentAction(
     };
   }
 
+  if (task.type !== 'DOCUMENT' || task.status === OnboardingTaskStatus.VERIFIED || task.status === OnboardingTaskStatus.WAIVED) {
+    return { error: 'This task cannot accept a candidate document. Contact HR for review.' };
+  }
+
   // 2. Validate file
   const file = formData.get('file') as File | null;
   if (!file || file.size === 0) {
@@ -275,7 +301,7 @@ export async function submitCandidateOnboardingDocumentAction(
     };
   }
 
-  const mimeType = file.type || 'application/octet-stream';
+  const mimeType = candidateDocumentMimeType(file);
   const fileNameLower = file.name.toLowerCase();
   const hasValidExtension =
     fileNameLower.endsWith('.pdf') ||
@@ -286,7 +312,7 @@ export async function submitCandidateOnboardingDocumentAction(
     fileNameLower.endsWith('.doc') ||
     fileNameLower.endsWith('.docx');
 
-  if (!ALLOWED_MIME_TYPES.includes(mimeType) && !hasValidExtension) {
+  if (!ALLOWED_MIME_TYPES.includes(mimeType) || !hasValidExtension) {
     return {
       error: 'Invalid file format. Please upload PDF, Word Document (DOC/DOCX), or image (JPG, PNG, WEBP).',
     };
@@ -301,8 +327,8 @@ export async function submitCandidateOnboardingDocumentAction(
   );
 
   // 4. Update OnboardingTask
-  await prisma.onboardingTask.update({
-    where: { id: taskId },
+  const updated = await prisma.onboardingTask.updateMany({
+    where: { id: taskId, type: 'DOCUMENT', status: { notIn: [OnboardingTaskStatus.VERIFIED, OnboardingTaskStatus.WAIVED] } },
     data: {
       fileName: file.name,
       fileType: mimeType,
@@ -313,6 +339,10 @@ export async function submitCandidateOnboardingDocumentAction(
       reviewerNotes: `Submitted by applicant on ${new Date().toLocaleDateString()}`,
     },
   });
+  if (!updated.count) {
+    await localStorageProvider.delete(uploadResult.storageKey);
+    return { error: 'Task changed during upload. Contact HR for review.' };
+  }
 
   // Revalidate both candidate portal and HR dashboard
   try {

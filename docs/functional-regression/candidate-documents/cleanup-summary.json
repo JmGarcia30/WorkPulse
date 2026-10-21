@@ -1,0 +1,22 @@
+[
+  {
+    "name": "candidate",
+    "rollbackConfirmed": true,
+    "fixtureOrganizationsRemaining": 0
+  },
+  {
+    "name": "deleted",
+    "rollbackConfirmed": true,
+    "fixtureOrganizationsRemaining": 0
+  },
+  {
+    "name": "http",
+    "rollbackConfirmed": true,
+    "fixtureOrganizationsRemaining": 0
+  },
+  {
+    "name": "browser",
+    "rollbackConfirmed": true,
+    "fixtureOrganizationsRemaining": 0
+  }
+]

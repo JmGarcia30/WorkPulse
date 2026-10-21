@@ -1,0 +1,29 @@
+{
+  "validationExitCodes": {
+    "candidate": 0,
+    "deleted-documents": 0,
+    "http": 0,
+    "browser": 0,
+    "document-headers": 0,
+    "recruitment-core": 0,
+    "session-unit": 0,
+    "test-h4-employee-self-service": 0,
+    "test-h8-analytics": 0,
+    "test-final-ux-hiring": 0,
+    "test-final-ux-payroll-state": 0,
+    "test-runtime-startup": 0,
+    "typescript": 0,
+    "eslint": 0,
+    "prisma": 0,
+    "build": 0,
+    "diff-check": 0
+  },
+  "documentAssertions": 66,
+  "deletedScenarios": 4,
+  "profileSecurityScenarios": 71,
+  "browserScenarios": 45,
+  "knownExposureFindings": 6,
+  "candidateOwnershipPolicyResolved": false,
+  "secureAcrossAllPaths": false,
+  "mergeRecommendation": "HOLD"
+}

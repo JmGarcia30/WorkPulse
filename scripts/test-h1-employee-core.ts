@@ -26,6 +26,7 @@ import {
   resolveInitialProbationTerms,
 } from '../src/features/employees/domain';
 import { getOrganizationEmployeeById } from '../src/features/employees/queries';
+import { assertProfileTabParity } from './assert-final-ux-profile';
 
 function assert(condition: unknown, message: string): asserts condition {
   if (!condition) throw new Error(`ASSERTION FAILED: ${message}`);
@@ -378,6 +379,7 @@ async function main() {
 
     const wrongTenant = await getOrganizationEmployeeById('another-tenant', first.employeeId);
     assert(wrongTenant === null, 'cross-tenant Employee profile lookup returns no record');
+    await assertProfileTabParity(organization.id, first.employeeId);
     let crossTenantRejected = false;
     try {
       await convertApplicationToEmployee({

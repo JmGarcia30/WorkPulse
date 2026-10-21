@@ -1,0 +1,18 @@
+[
+  {
+    "scenario": "Normal password login reaches fixture-only Dashboard",
+    "passed": true
+  },
+  {
+    "scenario": "Deleted fixture document returns safe not-found",
+    "passed": true
+  },
+  {
+    "scenario": "Resume without owning application cannot be retrieved",
+    "passed": true
+  },
+  {
+    "scenario": "Task without uploaded file is safe not-found",
+    "passed": true
+  }
+]

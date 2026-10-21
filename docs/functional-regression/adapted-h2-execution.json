@@ -1,0 +1,10 @@
+{
+  "name": "adapted-h2-execution",
+  "exitCode": 0,
+  "elapsedMs": 54417,
+  "assertions": [
+    "UX Profile: full-read and all six tab payloads match the frozen oracle; tenant isolation passes.",
+    "H2 Employment & Probation tests passed: 24 assertions.",
+    "FR h2: existing fixture assertions pass under no-DDL rollback adapter; true concurrent commits NOT covered."
+  ]
+}

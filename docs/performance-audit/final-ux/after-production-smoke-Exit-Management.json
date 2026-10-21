@@ -1,0 +1,12 @@
+{
+  "route": "Exit Management",
+  "completed": true,
+  "expectedContent": true,
+  "renderedError": false,
+  "navigationMs": 1455,
+  "networkRequests": 7,
+  "documentRequests": 0,
+  "failedHttpResponses": [],
+  "runtimeExceptions": 0,
+  "consoleErrors": 0
+}

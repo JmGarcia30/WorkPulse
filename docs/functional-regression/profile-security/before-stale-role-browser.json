@@ -1,0 +1,11 @@
+{
+  "name": "stale-role-browser",
+  "exitCode": 1,
+  "elapsedMs": 14498,
+  "assertions": [
+    "✓ Running next.config.ts took 70ms"
+  ],
+  "diagnostics": [
+    "{\"code\":\"Error\",\"message\":\"SCENARIO_FAILED\"}"
+  ]
+}

@@ -1,0 +1,8 @@
+{
+  "name": "test-s1-saas-shell",
+  "exitCode": 0,
+  "elapsedMs": 632,
+  "assertions": [
+    "S1 SaaS shell: all assertions passed."
+  ]
+}

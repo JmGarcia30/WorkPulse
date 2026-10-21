@@ -4,7 +4,6 @@ import {
   ApplicationStatus,
   AssessmentStatus,
   AttendanceStatus,
-  EmployeeStatus,
   JobStatus,
   LeaveRequestStatus,
   OfferStatus,
@@ -28,6 +27,7 @@ import {
   parseAttendanceDate,
 } from '@/features/attendance/domain';
 import { resolveAnalyticsRange } from '@/features/analytics/date-range';
+import { readDashboardEmployeeAlerts } from './employee-alerts';
 
 export interface ScheduleItem {
   id: string;
@@ -180,6 +180,8 @@ export async function readDashboardData(session: UserSessionPayload, asOf = new 
       COUNT(*) FILTER (WHERE "createdAt" >= ${monthRange.fromInstant} AND "createdAt" < ${monthRange.throughInstant}) AS "hires"
     FROM "Employee" WHERE "organizationId" = ${organizationId}
   `)) : Promise.resolve([]);
+
+  const employeeAlertsPromise = readDashboardEmployeeAlerts(db, organizationId, hasPayrollAccess, hasHrAccess);
 
   // Run all primary queries in parallel
   const [
@@ -415,50 +417,10 @@ export async function readDashboardData(session: UserSessionPayload, asOf = new 
       : Promise.resolve([]),
 
     // 18. Employees missing active compensation
-    hasPayrollAccess
-      ? db.employee.findMany({
-          where: {
-            organizationId,
-            employeeStatus: EmployeeStatus.ACTIVE,
-            employeeCompensations: { none: { status: 'ACTIVE' } },
-          },
-          select: {
-            id: true,
-            firstName: true,
-            lastName: true,
-            employeeNumber: true,
-            employmentRecords: {
-              orderBy: { effectiveFrom: 'desc' },
-              take: 1,
-              select: { department: true },
-            },
-          },
-          take: 10,
-        })
-      : Promise.resolve([]),
+    employeeAlertsPromise.then(rows => rows.filter(row => row.kind === 'compensation')),
 
     // 19. Incomplete employee records
-    hasHrAccess
-      ? db.employee.findMany({
-          where: {
-            organizationId,
-            employeeStatus: EmployeeStatus.ACTIVE,
-            OR: [{ employmentRecords: { none: {} } }, { employeeAccount: { is: null } }],
-          },
-          select: {
-            id: true,
-            firstName: true,
-            lastName: true,
-            employeeNumber: true,
-            employmentRecords: {
-              orderBy: { effectiveFrom: 'desc' },
-              take: 1,
-              select: { department: true },
-            },
-          },
-          take: 10,
-        })
-      : Promise.resolve([]),
+    employeeAlertsPromise.then(rows => rows.filter(row => row.kind === 'setup')),
   ]);
 
   // Attendance Rate calculation (Reliable H8 definition)
@@ -770,7 +732,7 @@ export async function readDashboardData(session: UserSessionPayload, asOf = new 
     attentionQueue.push({
       id: `compensation-${item.id}`,
       employeeOrCandidate: `${item.firstName} ${item.lastName}`,
-      departmentOrRole: item.employmentRecords[0]?.department ?? 'Staff',
+      departmentOrRole: item.department ?? 'Staff',
       actionRequired: 'Missing active salary compensation structure',
       category: 'Payroll',
       dueDate: 'Setup Required',
@@ -785,7 +747,7 @@ export async function readDashboardData(session: UserSessionPayload, asOf = new 
     attentionQueue.push({
       id: `setup-${item.id}`,
       employeeOrCandidate: `${item.firstName} ${item.lastName}`,
-      departmentOrRole: item.employmentRecords[0]?.department ?? 'Staff',
+      departmentOrRole: item.department ?? 'Staff',
       actionRequired: 'Incomplete employment history or portal user account',
       category: 'Setup',
       dueDate: 'Action Required',

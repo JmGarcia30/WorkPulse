@@ -2,7 +2,7 @@
 
 import { revalidatePath } from 'next/cache';
 import { prisma } from '@/lib/db/prisma';
-import { getSession } from '@/lib/auth/session';
+import { getDocumentStaffContext } from './document-access';
 import { canManageJobs } from '@/lib/permissions/rbac';
 import { localStorageProvider } from '@/lib/storage';
 import { extractResumeText, type ExtractionResult } from '@/lib/ai/extract-text';
@@ -22,7 +22,7 @@ export async function parseResumeAction(
   | { success: true; matchScore: number; skillsCount: number }
   | { error: string }
 > {
-  const user = await getSession();
+  const user = await getDocumentStaffContext();
   if (!user || !canManageJobs(user)) {
     return { error: 'Unauthorized to parse resumes.' };
   }

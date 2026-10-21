@@ -1,0 +1,11 @@
+{
+  "name": "test-dashboard-boundary",
+  "exitCode": 1,
+  "elapsedMs": 10436,
+  "assertions": [
+    "FR DASHBOARD_BOUNDARY {\"observedLegacyIdOrder\":true,\"outcomes\":[{\"role\":\"HR_ADMIN\",\"fullModelEqual\":false,\"sameCounts\":true,\"samePreviewMembers\":false,\"sameOrder\":false,\"previewLengths\":[20,20]},{\"role\":\"ORGANIZATION_ADMIN\",\"fullModelEqual\":false,\"sameCounts\":true,\"samePreviewMembers\":false,\"sameOrder\":false,\"previewLengths\":[20,20]},{\"role\":\"HIRING_MANAGER\",\"fullModelEqual\":true,\"sameCounts\":true,\"samePreviewMembers\":true,\"sameOrder\":true,\"previewLengths\":[0,0]}]}"
+  ],
+  "diagnostics": [
+    "AssertionError Dashboard bounded employee alerts must preserve legacy selection and ordering beyond ten employees"
+  ]
+}

@@ -1,0 +1,25 @@
+{
+  "readOnly": true,
+  "rows": [
+    {
+      "kind": "Document",
+      "files": 12,
+      "url_keys": 0,
+      "unassigned": 9
+    },
+    {
+      "kind": "RecruitmentDocument",
+      "files": 20,
+      "url_keys": 0,
+      "unassigned": 0
+    },
+    {
+      "kind": "OnboardingTask",
+      "files": 10,
+      "url_keys": 0,
+      "unassigned": 0
+    }
+  ],
+  "rawKeysOrUrlsSaved": false,
+  "hostedAssetPermissionsInspected": false
+}

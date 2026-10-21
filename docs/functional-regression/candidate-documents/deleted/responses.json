@@ -1,0 +1,26 @@
+[
+  {
+    "label": "Deleted fixture document returns safe not-found",
+    "status": 404,
+    "cacheControl": null,
+    "nosniff": null,
+    "containsPrivateBytes": false,
+    "containsIdentity": false
+  },
+  {
+    "label": "Resume without owning application cannot be retrieved",
+    "status": 404,
+    "cacheControl": null,
+    "nosniff": null,
+    "containsPrivateBytes": false,
+    "containsIdentity": false
+  },
+  {
+    "label": "Task without uploaded file is safe not-found",
+    "status": 404,
+    "cacheControl": null,
+    "nosniff": null,
+    "containsPrivateBytes": false,
+    "containsIdentity": false
+  }
+]

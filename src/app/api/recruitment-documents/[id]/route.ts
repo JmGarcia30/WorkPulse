@@ -1,14 +1,29 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getSession } from '@/lib/auth/session';
+import { COOKIE_NAME, getSession } from '@/lib/auth/session';
+import { requireBackOfficeContext } from '@/lib/auth/guards';
 import { prisma } from '@/lib/db/prisma';
 import { localStorageProvider } from '@/lib/storage';
 import { canViewHiringData } from '@/lib/permissions/rbac';
+import { candidateDocumentMatchesRequestTenant, safeCandidateDocumentContentType } from '@/features/hiring/document-access';
 
 export async function GET(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
+  let user = await getSession();
+  // An invalid/revoked staff session must not fall through to candidate access.
+  if (request.cookies.has(COOKIE_NAME) && !user) return new NextResponse('Forbidden', { status: 403 });
+  if (user) {
+    try { user = await requireBackOfficeContext(); }
+    catch (error) {
+      if (error instanceof Error && ['UNAUTHENTICATED', 'FORBIDDEN'].includes(error.message)) return new NextResponse('Forbidden', { status: 403 });
+      throw error;
+    }
+    if (!canViewHiringData(user)) return new NextResponse('Forbidden', { status: 403 });
+  }
   const { id: documentId } = await params;
+  const candidateAppId = request.nextUrl.searchParams.get('appId');
+  if (!user && !candidateAppId) return new NextResponse('Forbidden', { status: 403 });
 
   const doc = await prisma.recruitmentDocument.findUnique({
     where: { id: documentId },
@@ -28,17 +43,16 @@ export async function GET(
   }
 
   // Authorization: check HR user session with tenant isolation
-  const user = await getSession();
   const orgId = doc.application.job.organizationId;
+  if (!await candidateDocumentMatchesRequestTenant(orgId)) return new NextResponse('Forbidden', { status: 403 });
 
   // Allow if HR belongs to the organization
   if (user) {
     if (!canViewHiringData(user) || user.organizationId !== orgId) return new NextResponse('Forbidden', { status: 403 });
     // Authorized
   } else {
-    // Also allow candidate if query token or candidate context matches
-    const searchParams = request.nextUrl.searchParams;
-    const candidateAppId = searchParams.get('appId');
+    // Legacy ID-only candidate path; appId is not an ownership credential.
+    // The unresolved candidate credential policy remains a merge blocker.
     if (!candidateAppId || candidateAppId !== doc.applicationId) {
       return new NextResponse('Unauthorized access to candidate document', { status: 403 });
     }
@@ -46,16 +60,17 @@ export async function GET(
 
   try {
     const { buffer, contentType } = await localStorageProvider.get(doc.storageKey);
+    const safeType = safeCandidateDocumentContentType(contentType || doc.fileType || undefined);
 
     return new NextResponse(new Uint8Array(buffer), {
       headers: {
-        'Content-Type': contentType || doc.fileType || 'application/octet-stream',
-        'Content-Disposition': `inline; filename="${encodeURIComponent(doc.fileName || 'document')}"`,
-        'Cache-Control': 'private, max-age=3600',
+        'Content-Type': safeType,
+        'Content-Disposition': `${safeType === 'application/octet-stream' ? 'attachment' : 'inline'}; filename="${encodeURIComponent(doc.fileName || 'document')}"`,
+        'Cache-Control': 'private, no-store',
+        'X-Content-Type-Options': 'nosniff',
       },
     });
-  } catch (error) {
-    console.error('Error reading recruitment document from storage:', error);
-    return new NextResponse('Error reading document from storage', { status: 500 });
+  } catch {
+    return new NextResponse('File unavailable', { status: 404 });
   }
 }

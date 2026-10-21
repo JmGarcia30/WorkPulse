@@ -1,0 +1,9 @@
+{
+  "name": "adapted-h3-execution",
+  "exitCode": 0,
+  "elapsedMs": 39354,
+  "assertions": [
+    "H3 Attendance Foundation tests passed: 39 assertions.",
+    "FR h3: existing fixture assertions pass under no-DDL rollback adapter; true concurrent commits NOT covered."
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "exitCode": 0,
+  "elapsedMs": 94,
+  "output": [
+    "warning: in the working copy of 'scripts/batch0-recovery-browser.cjs', LF will be replaced by CRLF the next time Git touches it",
+    "warning: in the working copy of 'scripts/test-h1-employee-core.ts', LF will be replaced by CRLF the next time Git touches it",
+    "warning: in the working copy of 'scripts/test-h2-employment-probation.ts', LF will be replaced by CRLF the next time Git touches it",
+    "warning: in the working copy of 'scripts/test-h8-analytics.ts', LF will be replaced by CRLF the next time Git touches it",
+    "warning: in the working copy of 'src/app/(dashboard)/dashboard/employees/[employeeId]/page.tsx', LF will be replaced by CRLF the next time Git touches it",
+    "warning: in the working copy of 'src/app/(dashboard)/dashboard/hiring/pipeline/page.tsx', LF will be replaced by CRLF the next time Git touches it",
+    "warning: in the working copy of 'src/components/payroll/PayrollSetupForms.tsx', LF will be replaced by CRLF the next time Git touches it",
+    "warning: in the working copy of 'src/features/careers/portal-actions.ts', LF will be replaced by CRLF the next time Git touches it",
+    "warning: in the working copy of 'src/features/dashboard/read-model.ts', LF will be replaced by CRLF the next time Git touches it",
+    "warning: in the working copy of 'src/features/hiring/onboarding-actions.ts', LF will be replaced by CRLF the next time Git touches it",
+    "warning: in the working copy of 'src/features/hiring/recruitment-document-actions.ts', LF will be replaced by CRLF the next time Git touches it",
+    "warning: in the working copy of 'src/features/hiring/resume-parser-actions.ts', LF will be replaced by CRLF the next time Git touches it",
+    "warning: in the working copy of 'src/lib/auth/guards.ts', LF will be replaced by CRLF the next time Git touches it",
+    "warning: in the working copy of 'src/lib/auth/session.ts', LF will be replaced by CRLF the next time Git touches it"
+  ]
+}

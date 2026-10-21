@@ -1,0 +1,10 @@
+[
+  {
+    "scenario": "Normal password login reaches fixture-only Dashboard",
+    "passed": true
+  },
+  {
+    "scenario": "Persisted role downgrade rejects stale admin JWT on Profile without employee payload",
+    "passed": false
+  }
+]

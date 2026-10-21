@@ -167,13 +167,22 @@ async function main() {
       const result = await readAnalytics(session(a.hr), tx, {}, asOf);
       if (process.env.WORKPULSE_BATCH2_PARITY === '1') {
         const { readDashboardData } = await import('../src/features/dashboard/read-model');
-        const { readDashboardData: legacyDashboard } = await import('./reference/batch2-dashboard');
+        const { readDashboardData: legacyDashboard } = process.env.WORKPULSE_FINAL_UX_PARITY === '1'
+          ? await import('./reference/final-ux-dashboard')
+          : await import('./reference/batch2-dashboard');
         const { readOrganizationBranding } = await import('../src/features/organization-branding/data');
         const branding = await readOrganizationBranding(tx, { id: a.organization.id });
         ok(branding, 'fixture organization branding resolves');
         for (const actor of [a.hr, admin, manager]) {
           const original = await legacyDashboard(session(actor), asOf, tx, branding);
           const optimized = await readDashboardData(session(actor), asOf, tx, branding);
+          if (process.env.WORKPULSE_FINAL_UX_DIAGNOSTICS === '1' && JSON.stringify(original) !== JSON.stringify(optimized)) {
+            const beforeIds = original?.attentionQueue.map(row => row.id) ?? [];
+            const afterIds = optimized?.attentionQueue.map(row => row.id) ?? [];
+            const sameMembers = JSON.stringify([...beforeIds].sort()) === JSON.stringify([...afterIds].sort());
+            const changedSections = Object.keys(original ?? {}).filter(key => JSON.stringify(original?.[key as keyof typeof original]) !== JSON.stringify(optimized?.[key as keyof typeof optimized]));
+            console.log('FR DASHBOARD_DIFF ' + JSON.stringify({ role: actor.role, changedSections, sameAttentionMembers: sameMembers, expectedOrderInActualPositions: beforeIds.map(id => afterIds.indexOf(id)), queueSizes: [beforeIds.length, afterIds.length] }));
+          }
           ok(JSON.stringify(original) === JSON.stringify(optimized), `Dashboard complete view model matches the prior implementation for ${actor.role}`);
         }
       }

@@ -1,6 +1,16 @@
 import { SignJWT, jwtVerify } from 'jose';
 import { cookies } from 'next/headers';
 import { Role } from '@prisma/client';
+import { cache } from 'react';
+import { prisma } from '@/lib/db/prisma';
+import { measureDevelopment } from '@/lib/performance/diagnostics';
+
+// Memoized only within a Server Component render, never across requests.
+// Server Actions and Route Handlers execute a fresh lookup.
+const getCurrentSessionUser = cache(async (userId: string) => measureDevelopment('session validation', () => prisma.user.findUnique({
+  where: { id: userId },
+  select: { id: true, name: true, email: true, role: true, organizationId: true },
+})));
 
 function sessionSecret() {
   const configured = process.env.SESSION_SECRET;
@@ -46,18 +56,19 @@ export async function getSession(): Promise<UserSessionPayload | null> {
   const token = cookieStore.get(COOKIE_NAME)?.value;
   if (!token) return null;
 
+  let payload;
   try {
-    const { payload } = await jwtVerify(token, sessionSecret());
-    return {
-      userId: payload.userId as string,
-      email: payload.email as string,
-      name: payload.name as string,
-      role: payload.role as Role,
-      organizationId: payload.organizationId as string,
-    };
+    ({ payload } = await jwtVerify(token, sessionSecret()));
   } catch {
     return null;
   }
+  if (typeof payload.userId !== 'string' || typeof payload.organizationId !== 'string' || typeof payload.role !== 'string') return null;
+  // A signed JWT authenticates its issuance, not today's permissions. Preserve
+  // the existing guard policy: role/membership changes require a fresh login.
+  // Database failures propagate rather than silently becoming anonymous access.
+  const user = await getCurrentSessionUser(payload.userId);
+  if (!user || user.role !== payload.role || user.organizationId !== payload.organizationId) return null;
+  return { userId: user.id, email: user.email, name: user.name, role: user.role, organizationId: user.organizationId };
 }
 
 export async function destroySession(): Promise<void> {

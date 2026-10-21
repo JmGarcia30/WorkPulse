@@ -3,9 +3,9 @@
 const {spawn}=require('node:child_process');
 const path=require('node:path');
 const pause=ms=>new Promise(r=>setTimeout(r,ms));
-module.exports=async function browser({port,production,email,password,employeeLogin=false}){
-  const debugPort=production?9231:9230,origin='http://saga.localhost:'+port;
-  const chrome=spawn('C:/Program Files/Google/Chrome/Application/chrome.exe',['--headless=new','--disable-gpu','--no-proxy-server','--no-first-run','--no-default-browser-check','--disable-background-networking','--host-resolver-rules=MAP saga.localhost 127.0.0.1','--remote-debugging-port='+debugPort,'--user-data-dir='+path.resolve('.next/recovery-browser-'+port),'about:blank'],{windowsHide:true,stdio:'ignore'});
+module.exports=async function browser({port,production,email,password,employeeLogin=false,tenantHost='saga.localhost'}){
+  const debugPort=production?9231:9230,origin='http://'+tenantHost+':'+port;
+  const chrome=spawn('C:/Program Files/Google/Chrome/Application/chrome.exe',['--headless=new','--disable-gpu','--no-proxy-server','--no-first-run','--no-default-browser-check','--disable-background-networking','--host-resolver-rules=MAP '+tenantHost+' 127.0.0.1','--remote-debugging-port='+debugPort,'--user-data-dir='+path.resolve('.next/recovery-browser-'+port),'about:blank'],{windowsHide:true,stdio:'ignore'});
   let ws;const pending=new Map();let next=0,events=[];
   const error=code=>Object.assign(new Error(code),{code});
   try{
@@ -39,12 +39,12 @@ module.exports=async function browser({port,production,email,password,employeeLo
       let state,completed=false;
       for(let i=0;i<900;i++){
         await pause(100);
-        state=await evaluate('(()=>{const t=document.querySelector("main")?.innerText||"";return {path:location.pathname,expected:'+JSON.stringify(expected)+'.every(x=>t.toLowerCase().includes(x.toLowerCase())),error:/Something went wrong while loading|could not be completed|Unable to load|Access Denied/.test(t),loading:!!document.querySelector("main [role=status]"),quiet:performance.now()-window.__recoveryLast,mutations:window.__recoveryMutations,ms:window.__recoveryLast-window.__recoveryStart}})()');
-        if(state.error)break;if(state.path===route&&state.expected&&!state.loading&&state.mutations>0&&state.quiet>600){completed=true;break;}
+        state=await evaluate('(()=>{const t=document.querySelector("main")?.innerText||"";return {path:location.pathname,expected:'+JSON.stringify(expected)+'.every(x=>t.toLowerCase().includes(x.toLowerCase())),error:/Something went wrong while loading|could not be completed|Unable to load|Access Denied/.test(t),loading:[...document.querySelectorAll("main [role=status]")].some(e=>e.getClientRects().length>0&&getComputedStyle(e).visibility!=="hidden"),quiet:performance.now()-window.__recoveryLast,mutations:window.__recoveryMutations,ms:window.__recoveryLast-window.__recoveryStart}})()');
+        if(state.error)break;if(state.path===route.split('?')[0]&&state.expected&&!state.loading&&state.mutations>0&&state.quiet>600){completed=true;break;}
       }
       const requests=events.filter(e=>e.method==='Network.requestWillBeSent');
-      return {route:name,completed,expectedContent:state?.expected||false,renderedError:state?.error||false,navigationMs:Math.round(state?.ms||0),networkRequests:requests.length,documentRequests:requests.filter(e=>e.params.type==='Document').length,failedHttpResponses:events.filter(e=>e.method==='Network.responseReceived'&&e.params.response.status>=400).map(e=>e.params.response.status),runtimeExceptions:events.filter(e=>e.method==='Runtime.exceptionThrown').length};
+      return {route:name,completed,expectedContent:state?.expected||false,renderedError:state?.error||false,navigationMs:Math.round(state?.ms||0),networkRequests:requests.length,documentRequests:requests.filter(e=>e.params.type==='Document').length,failedHttpResponses:events.filter(e=>e.method==='Network.responseReceived'&&e.params.response.status>=400).map(e=>e.params.response.status),runtimeExceptions:events.filter(e=>e.method==='Runtime.exceptionThrown').length,consoleErrors:events.filter(e=>e.method==='Runtime.consoleAPICalled'&&e.params.type==='error').length};
     }
-    return {cookie,navigate,close:async()=>{await send('Network.clearBrowserCookies').catch(()=>{});await send('Network.clearBrowserCache').catch(()=>{});ws?.close();chrome.kill();await pause(200);}};
+    return {cookie,navigate,evaluate,send,close:async()=>{await send('Network.clearBrowserCookies').catch(()=>{});await send('Network.clearBrowserCache').catch(()=>{});ws?.close();chrome.kill();await pause(200);}};
   }catch(e){ws?.close();chrome.kill();throw e;}
 };

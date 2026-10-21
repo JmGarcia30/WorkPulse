@@ -2,7 +2,7 @@
 
 import { revalidatePath } from 'next/cache';
 import { prisma } from '@/lib/db/prisma';
-import { getSession } from '@/lib/auth/session';
+import { getDocumentStaffContext } from './document-access';
 import { canManageRecruitmentDocuments } from '@/lib/permissions/rbac';
 import { RecruitmentDocumentStatus, OnboardingTaskStatus } from '@prisma/client';
 import { ensureRecruitmentDocumentsExist } from './saga-requirements';
@@ -34,7 +34,7 @@ function safeRevalidatePath(path: string) {
  * Derives organization ownership from Application -> Job -> Organization.
  */
 export async function initializeRecruitmentDocumentsAction(applicationId: string) {
-  const user = await getSession();
+  const user = await getDocumentStaffContext();
   if (!user || !canManageRecruitmentDocuments(user)) {
     return { error: 'Unauthorized to initialize recruitment documents.' };
   }
@@ -65,7 +65,7 @@ export async function verifyRecruitmentDocumentAction(
   documentId: string,
   reviewerNotes?: string
 ) {
-  const user = await getSession();
+  const user = await getDocumentStaffContext();
   if (!user || !canManageRecruitmentDocuments(user)) {
     return { error: 'Unauthorized to verify recruitment documents.' };
   }
@@ -178,7 +178,7 @@ export async function rejectRecruitmentDocumentAction(
   documentId: string,
   rejectionReason: string
 ) {
-  const user = await getSession();
+  const user = await getDocumentStaffContext();
   if (!user || !canManageRecruitmentDocuments(user)) {
     return { error: 'Unauthorized to reject recruitment documents.' };
   }
@@ -253,7 +253,7 @@ export async function updateRecruitmentDocumentStatusAction(
   status: RecruitmentDocumentStatus,
   notes?: string
 ) {
-  const user = await getSession();
+  const user = await getDocumentStaffContext();
   if (!user || !canManageRecruitmentDocuments(user)) {
     return { error: 'Unauthorized to modify recruitment documents.' };
   }
@@ -305,7 +305,7 @@ export async function uploadRecruitmentDocumentAction(
   documentId: string,
   formData: FormData
 ) {
-  const user = await getSession();
+  const user = await getDocumentStaffContext();
   if (!user || !canManageRecruitmentDocuments(user)) {
     return { error: 'Unauthorized to upload recruitment documents.' };
   }

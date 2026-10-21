@@ -2,7 +2,7 @@
 
 import { revalidatePath } from 'next/cache';
 import { prisma } from '@/lib/db/prisma';
-import { getSession } from '@/lib/auth/session';
+import { getDocumentStaffContext } from './document-access';
 import { canManageOnboarding, canVerifyOnboardingTasks } from '@/lib/permissions/rbac';
 import {
   OnboardingStatus,
@@ -159,7 +159,7 @@ export async function initializeOnboardingAction(
   applicationId: string,
   options?: { startDate?: Date; notes?: string }
 ) {
-  const user = await getSession();
+  const user = await getDocumentStaffContext();
   if (!user || !canManageOnboarding(user)) {
     return { error: 'Unauthorized to initialize onboarding.' };
   }
@@ -225,7 +225,7 @@ export async function initializeOnboardingAction(
  * Ensures verified credentials (TOR, Diploma, LET, NBI) carry over without duplicate uploads.
  */
 export async function syncOnboardingWithRecruitmentDocsAction(applicationId: string) {
-  const user = await getSession();
+  const user = await getDocumentStaffContext();
   if (!user || !canManageOnboarding(user)) {
     return { error: 'Unauthorized to reconcile onboarding documents.' };
   }
@@ -360,7 +360,7 @@ export async function updateOnboardingTaskStatusAction(
   newStatus: OnboardingTaskStatus,
   reviewerNotes?: string
 ) {
-  const user = await getSession();
+  const user = await getDocumentStaffContext();
   if (!user || !canVerifyOnboardingTasks(user)) {
     return { error: 'Unauthorized to update onboarding task status.' };
   }
@@ -473,7 +473,7 @@ export async function uploadOnboardingTaskDocumentAction(
   taskId: string,
   formData: FormData
 ) {
-  const user = await getSession();
+  const user = await getDocumentStaffContext();
   if (!user || !canManageOnboarding(user)) {
     return { error: 'Unauthorized to upload onboarding documents.' };
   }
@@ -563,7 +563,7 @@ export async function createCustomOnboardingTaskAction(
     dueDate?: string;
   }
 ) {
-  const user = await getSession();
+  const user = await getDocumentStaffContext();
   if (!user || !canManageOnboarding(user)) {
     return { error: 'Unauthorized to create onboarding tasks.' };
   }
@@ -610,7 +610,7 @@ export async function createCustomOnboardingTaskAction(
  * Manually mark an onboarding process as Completed.
  */
 export async function completeOnboardingAction(onboardingProcessId: string) {
-  const user = await getSession();
+  const user = await getDocumentStaffContext();
   if (!user || !canManageOnboarding(user)) {
     return { error: 'Unauthorized to complete onboarding.' };
   }

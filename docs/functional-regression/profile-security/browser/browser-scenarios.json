@@ -1,0 +1,182 @@
+[
+  {
+    "scenario": "Normal password login reaches fixture-only Dashboard",
+    "passed": true
+  },
+  {
+    "scenario": "Profile identity and effective employment information complete",
+    "passed": true
+  },
+  {
+    "scenario": "Profile probation navigates without errors",
+    "passed": true
+  },
+  {
+    "scenario": "Profile history navigates without errors",
+    "passed": true
+  },
+  {
+    "scenario": "Profile decisions navigates without errors",
+    "passed": true
+  },
+  {
+    "scenario": "Profile compliance navigates without errors",
+    "passed": true
+  },
+  {
+    "scenario": "Compliance selective read includes required onboarding task",
+    "passed": true
+  },
+  {
+    "scenario": "Profile account navigates without errors",
+    "passed": true
+  },
+  {
+    "scenario": "Account selective read includes email, activation and audit history",
+    "passed": true
+  },
+  {
+    "scenario": "Profile overview navigates without errors",
+    "passed": true
+  },
+  {
+    "scenario": "Invalid employment effective date displays validation and writes no decision",
+    "passed": true
+  },
+  {
+    "scenario": "Regularization saves exactly one employment decision after validation recovery",
+    "passed": true
+  },
+  {
+    "scenario": "Regularization preserves prior employment and creates effective-dated successor",
+    "passed": true
+  },
+  {
+    "scenario": "Decision selective read includes persisted actor",
+    "passed": true
+  },
+  {
+    "scenario": "Pipeline excludes foreign job/application information",
+    "passed": true
+  },
+  {
+    "scenario": "Pipeline status action persists SCREENING and exactly one transition history",
+    "passed": true
+  },
+  {
+    "scenario": "Foreign job filter preserves tenant-scoped fallback without foreign information",
+    "passed": true
+  },
+  {
+    "scenario": "Owned job filter remains selected and data reloads after status update",
+    "passed": true
+  },
+  {
+    "scenario": "Job edit form persists changes",
+    "passed": true
+  },
+  {
+    "scenario": "Parallel pipeline reload reflects saved job title and current candidate",
+    "passed": true
+  },
+  {
+    "scenario": "Real payroll request shows pending and locks duplicate submission controls",
+    "passed": true
+  },
+  {
+    "scenario": "Payroll completion corresponds to persisted exact Decimal amounts",
+    "passed": true
+  },
+  {
+    "scenario": "Partial payroll generation reports missing compensation instead of false all-employee success",
+    "passed": true
+  },
+  {
+    "scenario": "Repeated payroll submission preserves one entry without duplicates",
+    "passed": true
+  },
+  {
+    "scenario": "Rendered workflow /dashboard/attendance",
+    "passed": true
+  },
+  {
+    "scenario": "Rendered workflow /dashboard/leave",
+    "passed": true
+  },
+  {
+    "scenario": "Rendered workflow /dashboard/analytics",
+    "passed": true
+  },
+  {
+    "scenario": "Rendered workflow /dashboard/employees/exit",
+    "passed": true
+  },
+  {
+    "scenario": "Rendered workflow /dashboard/hiring/jobs",
+    "passed": true
+  },
+  {
+    "scenario": "Rendered workflow /dashboard/hiring/applicants/[fixture]",
+    "passed": true
+  },
+  {
+    "scenario": "Missing employee profile uses not-found state",
+    "passed": true
+  },
+  {
+    "scenario": "Profile recovers after not-found navigation",
+    "passed": true
+  },
+  {
+    "scenario": "Persisted role downgrade rejects stale admin JWT on Profile without employee payload",
+    "passed": true
+  },
+  {
+    "scenario": "Tenant mismatch denies session on foreign Dashboard without own fixture employee data",
+    "passed": true
+  },
+  {
+    "scenario": "Hiring Manager navigation hides employee and payroll modules",
+    "passed": true
+  },
+  {
+    "scenario": "Hiring Manager direct Profile URL redirects without HR access",
+    "passed": true
+  },
+  {
+    "scenario": "Normal employee login reaches ESS Dashboard with own linked employee",
+    "passed": true
+  },
+  {
+    "scenario": "ESS profile exposes only own employee information",
+    "passed": true
+  },
+  {
+    "scenario": "ESS rendered own workflow /employee/employment",
+    "passed": true
+  },
+  {
+    "scenario": "ESS rendered own workflow /employee/attendance",
+    "passed": true
+  },
+  {
+    "scenario": "ESS rendered own workflow /employee/leave",
+    "passed": true
+  },
+  {
+    "scenario": "ESS rendered own workflow /employee/payroll",
+    "passed": true
+  },
+  {
+    "scenario": "Unauthenticated Dashboard navigation redirects to login",
+    "passed": true
+  },
+  {
+    "scenario": "Invalid password shows validation and creates no session",
+    "passed": true
+  },
+  {
+    "scenario": "Login recovers successfully after invalid credentials",
+    "passed": true
+  }
+]

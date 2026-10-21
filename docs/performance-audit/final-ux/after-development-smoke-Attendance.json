@@ -1,0 +1,12 @@
+{
+  "route": "Attendance",
+  "completed": true,
+  "expectedContent": true,
+  "renderedError": false,
+  "navigationMs": 3141,
+  "networkRequests": 16,
+  "documentRequests": 0,
+  "failedHttpResponses": [],
+  "runtimeExceptions": 0,
+  "consoleErrors": 0
+}

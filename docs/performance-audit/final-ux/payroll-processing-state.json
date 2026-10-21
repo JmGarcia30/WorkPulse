@@ -1,0 +1,8 @@
+{
+  "name": "payroll-processing-state",
+  "exitCode": 0,
+  "elapsedMs": 230,
+  "assertions": [
+    "UX Payroll: pending state replaces stale success; controls lock; returned success and errors remain visible."
+  ]
+}

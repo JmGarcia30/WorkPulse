@@ -1,0 +1,29 @@
+{
+  "branch": "workpulse-batch0-recovery",
+  "samples": [
+    {
+      "iteration": 0,
+      "roundTripMs": 80.33500000000004,
+      "explainWallMs": 156.52049999999986,
+      "planningMs": 0.093,
+      "databaseExecutionMs": 0.052
+    },
+    {
+      "iteration": 1,
+      "roundTripMs": 76.95080000000007,
+      "explainWallMs": 78.94509999999991,
+      "planningMs": 0.099,
+      "databaseExecutionMs": 0.037
+    },
+    {
+      "iteration": 2,
+      "roundTripMs": 77.13110000000006,
+      "explainWallMs": 77.10429999999997,
+      "planningMs": 0.096,
+      "databaseExecutionMs": 0.039
+    }
+  ],
+  "protectedTables": 46,
+  "differences": [],
+  "originalEnvUnchanged": true
+}

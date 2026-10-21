@@ -1,0 +1,24 @@
+{
+  "name": "test-h8-analytics",
+  "exitCode": 1,
+  "elapsedMs": 20902,
+  "assertions": [
+    "PASS 1: default month follows tenant timezone at UTC month boundary",
+    "PASS 2: Last Month resolves exact calendar bounds",
+    "PASS 3: Last Month handles year rollover",
+    "PASS 4: local date boundaries preserve daylight-saving transitions",
+    "PASS 5: invalid filters rejected: {\"preset\":\"custom\",\"from\":\"2026-02-30\",\"to\":\"2026-03-01\"}",
+    "PASS 6: invalid filters rejected: {\"preset\":\"custom\",\"from\":\"2026-10-12\",\"to\":\"2026-10-01\"}",
+    "PASS 7: invalid filters rejected: {\"preset\":\"custom\",\"from\":\"2025-01-01\",\"to\":\"2026-10-01\"}",
+    "PASS 8: invalid filters rejected: {\"preset\":\"custom\"}",
+    "PASS 9: invalid filters rejected: {\"category\":\"FAKE\"}",
+    "PASS 10: invalid filters rejected: {\"preset\":\"FAKE\"}",
+    "PASS 11: fixture organization branding resolves"
+  ],
+  "diagnostics": [
+    "Error: FAIL: Dashboard complete view model matches the prior implementation for HR_ADMIN",
+    "    at ok (G:\\CAPSTONE\\WorkPulse\\scripts\\test-h8-analytics.ts:14:21)",
+    "    at prisma.$transaction.timeout (G:\\CAPSTONE\\WorkPulse\\scripts\\test-h8-analytics.ts:179:11)",
+    "    at async main (G:\\CAPSTONE\\WorkPulse\\scripts\\test-h8-analytics.ts:42:5)"
+  ]
+}

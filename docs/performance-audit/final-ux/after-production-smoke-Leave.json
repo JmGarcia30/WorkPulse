@@ -1,0 +1,12 @@
+{
+  "route": "Leave",
+  "completed": true,
+  "expectedContent": true,
+  "renderedError": false,
+  "navigationMs": 780,
+  "networkRequests": 4,
+  "documentRequests": 0,
+  "failedHttpResponses": [],
+  "runtimeExceptions": 0,
+  "consoleErrors": 0
+}

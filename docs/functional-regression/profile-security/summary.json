@@ -1,0 +1,28 @@
+{
+  "finalHttpExitCode": 0,
+  "scenarios": 71,
+  "responseAssertions": 70,
+  "staleProfileResponses": 12,
+  "staleStatuses": [
+    307,
+    200
+  ],
+  "staleSensitiveMarkers": 0,
+  "staleProtectedReads": 0,
+  "authorizedProfileSessionUserReads": [
+    1
+  ],
+  "authorizedProfileLoadingShells": 12,
+  "browser": {
+    "passed": true,
+    "scenarios": 45,
+    "productionBuildWithDashboardCorrection": true,
+    "realConcurrentCommitsCovered": false
+  },
+  "baselineCommit": "ea1fc23b5efe1fefa27c87d77fd6d6e4712525ec",
+  "baselineDisclosure": {
+    "status": 307,
+    "redirectOrError": true,
+    "includesFixtureIdentity": true
+  }
+}

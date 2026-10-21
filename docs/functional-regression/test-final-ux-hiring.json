@@ -1,0 +1,8 @@
+{
+  "name": "test-final-ux-hiring",
+  "exitCode": 0,
+  "elapsedMs": 645,
+  "assertions": [
+    "UX Hiring: parallel default reads, valid filters, foreign-ID fallback, blank filters and tenant scope pass."
+  ]
+}

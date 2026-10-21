@@ -1,0 +1,9 @@
+{
+  "exitCode": 0,
+  "elapsedMs": 25379,
+  "output": [
+    "G:\\CAPSTONE\\WorkPulse\\src\\app\\api\\resumes\\[id]\\route.ts",
+    "  56:12  warning  'error' is defined but never used  @typescript-eslint/no-unused-vars",
+    "✖ 1 problem (0 errors, 1 warning)"
+  ]
+}

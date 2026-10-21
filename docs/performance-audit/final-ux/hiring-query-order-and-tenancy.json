@@ -1,0 +1,8 @@
+{
+  "name": "hiring-query-order-and-tenancy",
+  "exitCode": 0,
+  "elapsedMs": 631,
+  "assertions": [
+    "UX Hiring: parallel default reads, valid filters, foreign-ID fallback, blank filters and tenant scope pass."
+  ]
+}

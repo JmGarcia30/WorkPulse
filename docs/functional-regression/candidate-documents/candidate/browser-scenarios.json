@@ -1,0 +1,266 @@
+[
+  {
+    "scenario": "Normal password login reaches fixture-only Dashboard",
+    "passed": true
+  },
+  {
+    "scenario": "ORGANIZATION_ADMIN permitted document",
+    "passed": true
+  },
+  {
+    "scenario": "ORGANIZATION_ADMIN permitted document",
+    "passed": true
+  },
+  {
+    "scenario": "ORGANIZATION_ADMIN permitted document",
+    "passed": true
+  },
+  {
+    "scenario": "HR_ADMIN permitted document",
+    "passed": true
+  },
+  {
+    "scenario": "HR_ADMIN permitted document",
+    "passed": true
+  },
+  {
+    "scenario": "HR_ADMIN permitted document",
+    "passed": true
+  },
+  {
+    "scenario": "HIRING_MANAGER permitted document",
+    "passed": true
+  },
+  {
+    "scenario": "HIRING_MANAGER permitted document",
+    "passed": true
+  },
+  {
+    "scenario": "HIRING_MANAGER permitted document",
+    "passed": true
+  },
+  {
+    "scenario": "Employee denied",
+    "passed": true
+  },
+  {
+    "scenario": "No credentials denied",
+    "passed": true
+  },
+  {
+    "scenario": "Invalid staff cookie cannot use appId",
+    "passed": true
+  },
+  {
+    "scenario": "Wrong tenant staff denied",
+    "passed": true
+  },
+  {
+    "scenario": "Employee denied",
+    "passed": true
+  },
+  {
+    "scenario": "No credentials denied",
+    "passed": true
+  },
+  {
+    "scenario": "Invalid staff cookie cannot use appId",
+    "passed": true
+  },
+  {
+    "scenario": "Wrong tenant staff denied",
+    "passed": true
+  },
+  {
+    "scenario": "Employee denied",
+    "passed": true
+  },
+  {
+    "scenario": "No credentials denied",
+    "passed": true
+  },
+  {
+    "scenario": "Invalid staff cookie cannot use appId",
+    "passed": true
+  },
+  {
+    "scenario": "Wrong tenant staff denied",
+    "passed": true
+  },
+  {
+    "scenario": "Staff may read another candidate in same organization",
+    "passed": true
+  },
+  {
+    "scenario": "Changed ID cannot retrieve foreign document",
+    "passed": true
+  },
+  {
+    "scenario": "Anonymous foreign tenant cannot override host with appId",
+    "passed": true
+  },
+  {
+    "scenario": "Unprovisioned tenant cannot fall back to public careers access",
+    "passed": true
+  },
+  {
+    "scenario": "Mismatched candidate application and document IDs denied",
+    "passed": true
+  },
+  {
+    "scenario": "Missing record safe",
+    "passed": true
+  },
+  {
+    "scenario": "Missing record safe",
+    "passed": true
+  },
+  {
+    "scenario": "Missing record safe",
+    "passed": true
+  },
+  {
+    "scenario": "Inaccessible stored file safe",
+    "passed": true
+  },
+  {
+    "scenario": "Role downgrade rejects old JWT",
+    "passed": true
+  },
+  {
+    "scenario": "Role downgrade rejects old JWT",
+    "passed": true
+  },
+  {
+    "scenario": "Role downgrade rejects old JWT",
+    "passed": true
+  },
+  {
+    "scenario": "Hiring Manager recruitment upload persists",
+    "passed": true
+  },
+  {
+    "scenario": "Wrong request tenant prevents staff mutation",
+    "passed": true
+  },
+  {
+    "scenario": "Foreign document ID prevents staff mutation",
+    "passed": true
+  },
+  {
+    "scenario": "Hiring Manager cannot upload onboarding",
+    "passed": true
+  },
+  {
+    "scenario": "Administrator onboarding upload persists",
+    "passed": true
+  },
+  {
+    "scenario": "Verification records real persisted reviewer",
+    "passed": true
+  },
+  {
+    "scenario": "Direct candidate action cannot overwrite verified file",
+    "passed": true
+  },
+  {
+    "scenario": "Rejection persists reviewer feedback",
+    "passed": true
+  },
+  {
+    "scenario": "Wrong tenant prevents candidate upload",
+    "passed": true
+  },
+  {
+    "scenario": "Active HTML MIME cannot bypass validation with PDF extension",
+    "passed": true
+  },
+  {
+    "scenario": "Direct candidate action cannot overwrite verified onboarding file",
+    "passed": true
+  },
+  {
+    "scenario": "Waived onboarding file remains unchanged",
+    "passed": true
+  },
+  {
+    "scenario": "Non-document task cannot be completed via document upload",
+    "passed": true
+  },
+  {
+    "scenario": "Onboarding upload also rejects disguised HTML",
+    "passed": true
+  },
+  {
+    "scenario": "Foreign-host portal HTML and metadata contain no candidate identity",
+    "passed": true
+  },
+  {
+    "scenario": "Staff historical read after APPLIED",
+    "passed": true
+  },
+  {
+    "scenario": "Staff historical read after SCREENING",
+    "passed": true
+  },
+  {
+    "scenario": "Staff historical read after SHORTLISTED",
+    "passed": true
+  },
+  {
+    "scenario": "Staff historical read after INTERVIEW",
+    "passed": true
+  },
+  {
+    "scenario": "Staff historical read after ASSESSMENT",
+    "passed": true
+  },
+  {
+    "scenario": "Staff historical read after OFFER",
+    "passed": true
+  },
+  {
+    "scenario": "Staff historical read after HIRED",
+    "passed": true
+  },
+  {
+    "scenario": "Staff historical read after REJECTED",
+    "passed": true
+  },
+  {
+    "scenario": "Staff historical read after WITHDRAWN",
+    "passed": true
+  },
+  {
+    "scenario": "Raw local storage URL cannot bypass handler",
+    "passed": true
+  },
+  {
+    "scenario": "Raw local storage URL cannot bypass handler",
+    "passed": true
+  },
+  {
+    "scenario": "Public application stores resume against its new application",
+    "passed": true
+  },
+  {
+    "scenario": "New public-upload resume remains isolated from foreign staff organization",
+    "passed": true
+  },
+  {
+    "scenario": "Authorized organization can read its public application upload",
+    "passed": true
+  },
+  {
+    "scenario": "Browser recruitment preview link uses authorized endpoint",
+    "passed": true
+  },
+  {
+    "scenario": "Browser staff upload persists replacement through real form",
+    "passed": true
+  },
+  {
+    "scenario": "Browser preview/download receives exact uploaded fixture bytes",
+    "passed": true
+  }
+]

@@ -1,0 +1,8 @@
+{
+  "name": "test-final-ux-payroll-state",
+  "exitCode": 0,
+  "elapsedMs": 332,
+  "assertions": [
+    "UX Payroll: pending state replaces stale success; controls lock; returned success and errors remain visible."
+  ]
+}

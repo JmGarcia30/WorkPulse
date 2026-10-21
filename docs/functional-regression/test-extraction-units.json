@@ -1,0 +1,11 @@
+{
+  "name": "test-extraction-units",
+  "exitCode": 0,
+  "elapsedMs": 3134,
+  "assertions": [
+    "   ✓ Normalization tests passed.",
+    "   ✓ Quality evaluation tests passed.",
+    "   ✓ Schema validation tests passed.",
+    "   ✓ Unsupported MIME type test passed."
+  ]
+}

@@ -1,0 +1,38 @@
+{
+  "observedLegacyIdOrder": true,
+  "outcomes": [
+    {
+      "role": "HR_ADMIN",
+      "fullModelEqual": true,
+      "sameCounts": true,
+      "samePreviewMembers": true,
+      "sameOrder": true,
+      "previewLengths": [
+        20,
+        20
+      ]
+    },
+    {
+      "role": "ORGANIZATION_ADMIN",
+      "fullModelEqual": true,
+      "sameCounts": true,
+      "samePreviewMembers": true,
+      "sameOrder": true,
+      "previewLengths": [
+        20,
+        20
+      ]
+    },
+    {
+      "role": "HIRING_MANAGER",
+      "fullModelEqual": true,
+      "sameCounts": true,
+      "samePreviewMembers": true,
+      "sameOrder": true,
+      "previewLengths": [
+        0,
+        0
+      ]
+    }
+  ]
+}

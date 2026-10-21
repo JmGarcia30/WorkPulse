@@ -30,23 +30,18 @@ export default async function PipelinePage({ searchParams }: PipelinePageProps) 
   const rawJobId = params.jobId?.trim();
 
   // 1. Fetch organization jobs (Server-side multi-tenant filtering)
-  const organizationJobs = await prisma.job.findMany({
+  const jobsPromise = prisma.job.findMany({
     where: { organizationId: user.organizationId },
     select: { id: true, title: true, department: true },
     orderBy: { title: 'asc' },
   });
 
-  // 2. Validate selected jobId belongs to authenticated user's organization
-  let validJobId: string | undefined = undefined;
-  if (rawJobId) {
-    const jobExistsInOrg = organizationJobs.some((j) => j.id === rawJobId);
-    if (jobExistsInOrg) {
-      validJobId = rawJobId;
-    }
-  }
-
-  // 3. Fetch applications strictly belonging to user's organization
-  const applications = await prisma.application.findMany({
+  // The unfiltered pipeline doesn't depend on the job selector. Only filtered
+  // requests wait for ownership validation, preserving invalid-ID behavior.
+  const selectedJobPromise = rawJobId
+    ? jobsPromise.then(jobs => jobs.some(job => job.id === rawJobId) ? rawJobId : undefined)
+    : Promise.resolve(undefined);
+  const applicationsPromise = selectedJobPromise.then(validJobId => prisma.application.findMany({
     where: {
       job: {
         organizationId: user.organizationId,
@@ -74,7 +69,10 @@ export default async function PipelinePage({ searchParams }: PipelinePageProps) 
         },
       },
     },
-  });
+  }));
+  const [organizationJobs, validJobId, applications] = await Promise.all([
+    jobsPromise, selectedJobPromise, applicationsPromise,
+  ]);
 
   const canEditStatus = canUpdateApplicationStatus(user);
 

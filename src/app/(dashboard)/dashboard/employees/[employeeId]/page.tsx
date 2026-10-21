@@ -1,6 +1,6 @@
 import { notFound, redirect } from 'next/navigation';
 import { EmploymentCategory, EmployeeStatus, ProbationStatus } from '@prisma/client';
-import { getSession } from '@/lib/auth/session';
+import { getBackOfficeReadContext } from '@/lib/auth/guards';
 import { canManageEmploymentLifecycle, canViewEmployees } from '@/lib/permissions/rbac';
 import { getOrganizationEmployeeById } from '@/features/employees/queries';
 import { deriveProbationReviewState } from '@/features/employees/domain';
@@ -33,8 +33,13 @@ export default async function EmployeeProfilePage({
   params,
   searchParams,
 }: EmployeeProfilePageProps) {
-  const user = await getSession();
-  if (!user) redirect('/login');
+  let user;
+  try {
+    user = await getBackOfficeReadContext();
+  } catch (error) {
+    if (error instanceof Error && ['UNAUTHENTICATED', 'FORBIDDEN'].includes(error.message)) redirect('/login');
+    throw error;
+  }
   if (!canViewEmployees(user)) redirect('/dashboard');
 
   const { employeeId } = await params;
@@ -52,7 +57,7 @@ export default async function EmployeeProfilePage({
     ? (rawTab as ProfileTabId)
     : 'overview';
 
-  const employee = await getOrganizationEmployeeById(user.organizationId, employeeId);
+  const employee = await getOrganizationEmployeeById(user.organizationId, employeeId, activeTab);
   if (!employee) notFound();
 
   const now = new Date();
@@ -128,7 +133,7 @@ export default async function EmployeeProfilePage({
         badges={{
           probationNeedsAttention: review?.needsAttention ?? false,
           historyCount: employee.employmentRecords.length,
-          decisionsCount: employee.employmentDecisions.length + employee.statusHistory.length,
+          decisionsCount: employee._count.employmentDecisions + employee._count.statusHistory,
           complianceTasksTotal: requiredTasks.length,
           complianceTasksSatisfied: satisfiedTasks.length,
         }}
