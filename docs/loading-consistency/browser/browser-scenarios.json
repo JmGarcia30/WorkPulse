@@ -1,0 +1,26 @@
+[
+  {
+    "scenario": "Normal password login reaches fixture-only Dashboard",
+    "passed": true
+  },
+  {
+    "scenario": "21 real HR transitions show light, static, responsive fallbacks, preserve shell and resolve without browser errors",
+    "passed": true
+  },
+  {
+    "scenario": "12 real employee transitions preserve navigation, fit all widths and complete",
+    "passed": true
+  },
+  {
+    "scenario": "Injected read failure reaches existing error boundary and replaces loading feedback while preserving the header",
+    "passed": true
+  },
+  {
+    "scenario": "Anonymous candidate still sees verification only; protected employee navigation still redirects to login",
+    "passed": true
+  },
+  {
+    "scenario": "All skeleton variants fit 375, 768 and 1280px without animation, including reduced motion",
+    "passed": true
+  }
+]

@@ -1,0 +1,227 @@
+[
+  {
+    "page": "src/app/(dashboard)/dashboard/analytics/page.tsx",
+    "before": "src/app/(dashboard)/dashboard/analytics/loading.tsx",
+    "after": "src/app/(dashboard)/dashboard/analytics/loading.tsx"
+  },
+  {
+    "page": "src/app/(dashboard)/dashboard/attendance/page.tsx",
+    "before": "src/app/(dashboard)/dashboard/attendance/loading.tsx",
+    "after": "src/app/(dashboard)/dashboard/attendance/loading.tsx"
+  },
+  {
+    "page": "src/app/(dashboard)/dashboard/attendance/schedules/page.tsx",
+    "before": "src/app/(dashboard)/dashboard/attendance/loading.tsx",
+    "after": "src/app/(dashboard)/dashboard/attendance/schedules/loading.tsx"
+  },
+  {
+    "page": "src/app/(dashboard)/dashboard/attendance/[employeeId]/page.tsx",
+    "before": "src/app/(dashboard)/dashboard/attendance/loading.tsx",
+    "after": "src/app/(dashboard)/dashboard/attendance/[employeeId]/loading.tsx"
+  },
+  {
+    "page": "src/app/(dashboard)/dashboard/employees/exit/new/page.tsx",
+    "before": "src/app/(dashboard)/dashboard/employees/loading.tsx",
+    "after": "src/app/(dashboard)/dashboard/employees/exit/new/loading.tsx"
+  },
+  {
+    "page": "src/app/(dashboard)/dashboard/employees/exit/page.tsx",
+    "before": "src/app/(dashboard)/dashboard/employees/loading.tsx",
+    "after": "src/app/(dashboard)/dashboard/employees/exit/loading.tsx"
+  },
+  {
+    "page": "src/app/(dashboard)/dashboard/employees/exit/[caseId]/page.tsx",
+    "before": "src/app/(dashboard)/dashboard/employees/loading.tsx",
+    "after": "src/app/(dashboard)/dashboard/employees/exit/[caseId]/loading.tsx"
+  },
+  {
+    "page": "src/app/(dashboard)/dashboard/employees/page.tsx",
+    "before": "src/app/(dashboard)/dashboard/employees/loading.tsx",
+    "after": "src/app/(dashboard)/dashboard/employees/loading.tsx"
+  },
+  {
+    "page": "src/app/(dashboard)/dashboard/employees/[employeeId]/page.tsx",
+    "before": "src/app/(dashboard)/dashboard/employees/[employeeId]/loading.tsx",
+    "after": "src/app/(dashboard)/dashboard/employees/[employeeId]/loading.tsx"
+  },
+  {
+    "page": "src/app/(dashboard)/dashboard/hiring/applicants/page.tsx",
+    "before": "src/app/(dashboard)/dashboard/loading.tsx",
+    "after": "src/app/(dashboard)/dashboard/hiring/loading.tsx"
+  },
+  {
+    "page": "src/app/(dashboard)/dashboard/hiring/applicants/[applicationId]/page.tsx",
+    "before": "src/app/(dashboard)/dashboard/loading.tsx",
+    "after": "src/app/(dashboard)/dashboard/hiring/applicants/[applicationId]/loading.tsx"
+  },
+  {
+    "page": "src/app/(dashboard)/dashboard/hiring/assessments/page.tsx",
+    "before": "src/app/(dashboard)/dashboard/loading.tsx",
+    "after": "src/app/(dashboard)/dashboard/hiring/loading.tsx"
+  },
+  {
+    "page": "src/app/(dashboard)/dashboard/hiring/interviews/page.tsx",
+    "before": "src/app/(dashboard)/dashboard/hiring/interviews/loading.tsx",
+    "after": "src/app/(dashboard)/dashboard/hiring/interviews/loading.tsx"
+  },
+  {
+    "page": "src/app/(dashboard)/dashboard/hiring/jobs/new/page.tsx",
+    "before": "src/app/(dashboard)/dashboard/hiring/jobs/loading.tsx",
+    "after": "src/app/(dashboard)/dashboard/hiring/jobs/new/loading.tsx"
+  },
+  {
+    "page": "src/app/(dashboard)/dashboard/hiring/jobs/page.tsx",
+    "before": "src/app/(dashboard)/dashboard/hiring/jobs/loading.tsx",
+    "after": "src/app/(dashboard)/dashboard/hiring/jobs/loading.tsx"
+  },
+  {
+    "page": "src/app/(dashboard)/dashboard/hiring/jobs/[jobId]/edit/page.tsx",
+    "before": "src/app/(dashboard)/dashboard/hiring/jobs/loading.tsx",
+    "after": "src/app/(dashboard)/dashboard/hiring/jobs/[jobId]/edit/loading.tsx"
+  },
+  {
+    "page": "src/app/(dashboard)/dashboard/hiring/jobs/[jobId]/page.tsx",
+    "before": "src/app/(dashboard)/dashboard/hiring/jobs/loading.tsx",
+    "after": "src/app/(dashboard)/dashboard/hiring/jobs/[jobId]/loading.tsx"
+  },
+  {
+    "page": "src/app/(dashboard)/dashboard/hiring/offers/page.tsx",
+    "before": "src/app/(dashboard)/dashboard/loading.tsx",
+    "after": "src/app/(dashboard)/dashboard/hiring/loading.tsx"
+  },
+  {
+    "page": "src/app/(dashboard)/dashboard/hiring/onboarding/page.tsx",
+    "before": "src/app/(dashboard)/dashboard/loading.tsx",
+    "after": "src/app/(dashboard)/dashboard/hiring/loading.tsx"
+  },
+  {
+    "page": "src/app/(dashboard)/dashboard/hiring/pipeline/page.tsx",
+    "before": "src/app/(dashboard)/dashboard/hiring/pipeline/loading.tsx",
+    "after": "src/app/(dashboard)/dashboard/hiring/pipeline/loading.tsx"
+  },
+  {
+    "page": "src/app/(dashboard)/dashboard/leave/balances/page.tsx",
+    "before": "src/app/(dashboard)/dashboard/leave/loading.tsx",
+    "after": "src/app/(dashboard)/dashboard/leave/balances/loading.tsx"
+  },
+  {
+    "page": "src/app/(dashboard)/dashboard/leave/page.tsx",
+    "before": "src/app/(dashboard)/dashboard/leave/loading.tsx",
+    "after": "src/app/(dashboard)/dashboard/leave/loading.tsx"
+  },
+  {
+    "page": "src/app/(dashboard)/dashboard/leave/requests/[requestId]/form/page.tsx",
+    "before": "src/app/(dashboard)/dashboard/leave/loading.tsx",
+    "after": "src/app/(dashboard)/dashboard/leave/requests/loading.tsx"
+  },
+  {
+    "page": "src/app/(dashboard)/dashboard/leave/requests/[requestId]/page.tsx",
+    "before": "src/app/(dashboard)/dashboard/leave/loading.tsx",
+    "after": "src/app/(dashboard)/dashboard/leave/requests/loading.tsx"
+  },
+  {
+    "page": "src/app/(dashboard)/dashboard/leave/settings/page.tsx",
+    "before": "src/app/(dashboard)/dashboard/leave/loading.tsx",
+    "after": "src/app/(dashboard)/dashboard/leave/settings/loading.tsx"
+  },
+  {
+    "page": "src/app/(dashboard)/dashboard/organization/page.tsx",
+    "before": "src/app/(dashboard)/dashboard/loading.tsx",
+    "after": "src/app/(dashboard)/dashboard/organization/loading.tsx"
+  },
+  {
+    "page": "src/app/(dashboard)/dashboard/page.tsx",
+    "before": "src/app/(dashboard)/dashboard/loading.tsx",
+    "after": "src/app/(dashboard)/dashboard/loading.tsx"
+  },
+  {
+    "page": "src/app/(dashboard)/dashboard/payroll/page.tsx",
+    "before": "src/app/(dashboard)/dashboard/payroll/loading.tsx",
+    "after": "src/app/(dashboard)/dashboard/payroll/loading.tsx"
+  },
+  {
+    "page": "src/app/(dashboard)/dashboard/payroll/payslips/[entryId]/page.tsx",
+    "before": "src/app/(dashboard)/dashboard/payroll/loading.tsx",
+    "after": "src/app/(dashboard)/dashboard/payroll/payslips/loading.tsx"
+  },
+  {
+    "page": "src/app/(employee)/employee/attendance/page.tsx",
+    "before": null,
+    "after": "src/app/(employee)/employee/attendance/loading.tsx"
+  },
+  {
+    "page": "src/app/(employee)/employee/employment/page.tsx",
+    "before": null,
+    "after": "src/app/(employee)/employee/employment/loading.tsx"
+  },
+  {
+    "page": "src/app/(employee)/employee/leave/new/page.tsx",
+    "before": null,
+    "after": "src/app/(employee)/employee/leave/new/loading.tsx"
+  },
+  {
+    "page": "src/app/(employee)/employee/leave/page.tsx",
+    "before": null,
+    "after": "src/app/(employee)/employee/leave/loading.tsx"
+  },
+  {
+    "page": "src/app/(employee)/employee/leave/[requestId]/form/page.tsx",
+    "before": null,
+    "after": "src/app/(employee)/employee/leave/[requestId]/loading.tsx"
+  },
+  {
+    "page": "src/app/(employee)/employee/leave/[requestId]/page.tsx",
+    "before": null,
+    "after": "src/app/(employee)/employee/leave/[requestId]/loading.tsx"
+  },
+  {
+    "page": "src/app/(employee)/employee/page.tsx",
+    "before": null,
+    "after": "src/app/(employee)/employee/loading.tsx"
+  },
+  {
+    "page": "src/app/(employee)/employee/payroll/page.tsx",
+    "before": null,
+    "after": "src/app/(employee)/employee/payroll/loading.tsx"
+  },
+  {
+    "page": "src/app/(employee)/employee/payroll/[entryId]/page.tsx",
+    "before": null,
+    "after": "src/app/(employee)/employee/payroll/[entryId]/loading.tsx"
+  },
+  {
+    "page": "src/app/(employee)/employee/profile/page.tsx",
+    "before": null,
+    "after": "src/app/(employee)/employee/profile/loading.tsx"
+  },
+  {
+    "page": "src/app/careers/page.tsx",
+    "before": null,
+    "after": "src/app/careers/loading.tsx"
+  },
+  {
+    "page": "src/app/careers/[organizationSlug]/page.tsx",
+    "before": "src/app/careers/[organizationSlug]/loading.tsx",
+    "after": "src/app/careers/[organizationSlug]/loading.tsx"
+  },
+  {
+    "page": "src/app/careers/[organizationSlug]/portal/[applicationId]/page.tsx",
+    "before": "src/app/careers/[organizationSlug]/loading.tsx",
+    "after": "src/app/careers/[organizationSlug]/portal/loading.tsx"
+  },
+  {
+    "page": "src/app/careers/[organizationSlug]/portal/[applicationId]/verify/page.tsx",
+    "before": "src/app/careers/[organizationSlug]/loading.tsx",
+    "after": "src/app/careers/[organizationSlug]/portal/loading.tsx"
+  },
+  {
+    "page": "src/app/careers/[organizationSlug]/[jobSlug]/apply/page.tsx",
+    "before": "src/app/careers/[organizationSlug]/loading.tsx",
+    "after": "src/app/careers/[organizationSlug]/[jobSlug]/apply/loading.tsx"
+  },
+  {
+    "page": "src/app/careers/[organizationSlug]/[jobSlug]/page.tsx",
+    "before": "src/app/careers/[organizationSlug]/loading.tsx",
+    "after": "src/app/careers/[organizationSlug]/[jobSlug]/loading.tsx"
+  }
+]

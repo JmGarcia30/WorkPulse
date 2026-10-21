@@ -1,0 +1,7 @@
+{
+  "exitCode": 0,
+  "elapsedMs": 2009,
+  "output": [
+    "{\"staticAccessibleVariants\":21,\"scopedPages\":45,\"previouslyUncovered\":11,\"moreSpecificBoundaries\":34}"
+  ]
+}

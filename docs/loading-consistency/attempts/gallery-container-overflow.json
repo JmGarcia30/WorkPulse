@@ -1,0 +1,111 @@
+{
+  "width": 768,
+  "scroll": 1100,
+  "nodes": [
+    {
+      "tag": "MAIN",
+      "cls": "",
+      "width": 1100,
+      "x": 0,
+      "overflow": "visible"
+    },
+    {
+      "tag": "DIV",
+      "cls": "min-w-0 space-y-6",
+      "width": 1052,
+      "x": 24,
+      "overflow": "visible"
+    },
+    {
+      "tag": "DIV",
+      "cls": "min-w-0 space-y-6",
+      "width": 1052,
+      "x": 24,
+      "overflow": "visible"
+    },
+    {
+      "tag": "DIV",
+      "cls": "flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between",
+      "width": 1052,
+      "x": 24,
+      "overflow": "visible"
+    },
+    {
+      "tag": "DIV",
+      "cls": "min-w-0 flex-1 space-y-3",
+      "width": 880,
+      "x": 24,
+      "overflow": "visible"
+    },
+    {
+      "tag": "DIV",
+      "cls": "max-w-full rounded-md bg-[var(--wp-border)] h-10 w-full sm:w-40",
+      "width": 160,
+      "x": 916,
+      "overflow": "visible"
+    },
+    {
+      "tag": "DIV",
+      "cls": "min-w-0 rounded-lg border border-[var(--wp-border)] bg-[var(--wp-surface)] p-5 grid gap-3 sm:grid-cols-2 xl:flex xl:flex-wrap",
+      "width": 1052,
+      "x": 24,
+      "overflow": "visible"
+    },
+    {
+      "tag": "DIV",
+      "cls": "max-w-full rounded-md bg-[var(--wp-border)] h-10 w-full sm:col-span-2 xl:w-72",
+      "width": 1010,
+      "x": 45,
+      "overflow": "visible"
+    },
+    {
+      "tag": "DIV",
+      "cls": "max-w-full rounded-md bg-[var(--wp-border)] h-10 w-full xl:w-36",
+      "width": 499,
+      "x": 556,
+      "overflow": "visible"
+    },
+    {
+      "tag": "DIV",
+      "cls": "max-w-full overflow-x-auto pb-4",
+      "width": 1052,
+      "x": 24,
+      "overflow": "auto"
+    },
+    {
+      "tag": "DIV",
+      "cls": "flex w-max gap-4",
+      "width": 2112,
+      "x": 24,
+      "overflow": "visible"
+    },
+    {
+      "tag": "DIV",
+      "cls": "min-w-0 rounded-lg border border-[var(--wp-border)] bg-[var(--wp-surface)] p-5 w-72 space-y-4",
+      "width": 288,
+      "x": 632,
+      "overflow": "visible"
+    },
+    {
+      "tag": "DIV",
+      "cls": "max-w-full rounded-md bg-[var(--wp-border)] h-6 w-36",
+      "width": 144,
+      "x": 653,
+      "overflow": "visible"
+    },
+    {
+      "tag": "DIV",
+      "cls": "grid min-w-0 gap-4 grid-cols-1",
+      "width": 246,
+      "x": 653,
+      "overflow": "visible"
+    },
+    {
+      "tag": "DIV",
+      "cls": "min-w-0 rounded-lg border border-[var(--wp-border)] bg-[var(--wp-surface)] p-5 space-y-4",
+      "width": 246,
+      "x": 653,
+      "overflow": "visible"
+    }
+  ]
+}

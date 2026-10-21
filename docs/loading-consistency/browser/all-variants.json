@@ -1,0 +1,380 @@
+[
+  {
+    "width": 375,
+    "kind": "dashboard",
+    "overflow": false,
+    "animated": false
+  },
+  {
+    "width": 375,
+    "kind": "employees",
+    "overflow": false,
+    "animated": false
+  },
+  {
+    "width": 375,
+    "kind": "jobs",
+    "overflow": false,
+    "animated": false
+  },
+  {
+    "width": 375,
+    "kind": "attendance",
+    "overflow": false,
+    "animated": false
+  },
+  {
+    "width": 375,
+    "kind": "leave",
+    "overflow": false,
+    "animated": false
+  },
+  {
+    "width": 375,
+    "kind": "payroll",
+    "overflow": false,
+    "animated": false
+  },
+  {
+    "width": 375,
+    "kind": "analytics",
+    "overflow": false,
+    "animated": false
+  },
+  {
+    "width": 375,
+    "kind": "profile",
+    "overflow": false,
+    "animated": false
+  },
+  {
+    "width": 375,
+    "kind": "pipeline",
+    "overflow": false,
+    "animated": false
+  },
+  {
+    "width": 375,
+    "kind": "interviews",
+    "overflow": false,
+    "animated": false
+  },
+  {
+    "width": 375,
+    "kind": "hiring",
+    "overflow": false,
+    "animated": false
+  },
+  {
+    "width": 375,
+    "kind": "list",
+    "overflow": false,
+    "animated": false
+  },
+  {
+    "width": 375,
+    "kind": "records",
+    "overflow": false,
+    "animated": false
+  },
+  {
+    "width": 375,
+    "kind": "detail",
+    "overflow": false,
+    "animated": false
+  },
+  {
+    "width": 375,
+    "kind": "form",
+    "overflow": false,
+    "animated": false
+  },
+  {
+    "width": 375,
+    "kind": "settings",
+    "overflow": false,
+    "animated": false
+  },
+  {
+    "width": 375,
+    "kind": "calendar",
+    "overflow": false,
+    "animated": false
+  },
+  {
+    "width": 375,
+    "kind": "payslip",
+    "overflow": false,
+    "animated": false
+  },
+  {
+    "width": 375,
+    "kind": "self-service",
+    "overflow": false,
+    "animated": false
+  },
+  {
+    "width": 375,
+    "kind": "careers",
+    "overflow": false,
+    "animated": false
+  },
+  {
+    "width": 375,
+    "kind": "candidate",
+    "overflow": false,
+    "animated": false
+  },
+  {
+    "width": 768,
+    "kind": "dashboard",
+    "overflow": false,
+    "animated": false
+  },
+  {
+    "width": 768,
+    "kind": "employees",
+    "overflow": false,
+    "animated": false
+  },
+  {
+    "width": 768,
+    "kind": "jobs",
+    "overflow": false,
+    "animated": false
+  },
+  {
+    "width": 768,
+    "kind": "attendance",
+    "overflow": false,
+    "animated": false
+  },
+  {
+    "width": 768,
+    "kind": "leave",
+    "overflow": false,
+    "animated": false
+  },
+  {
+    "width": 768,
+    "kind": "payroll",
+    "overflow": false,
+    "animated": false
+  },
+  {
+    "width": 768,
+    "kind": "analytics",
+    "overflow": false,
+    "animated": false
+  },
+  {
+    "width": 768,
+    "kind": "profile",
+    "overflow": false,
+    "animated": false
+  },
+  {
+    "width": 768,
+    "kind": "pipeline",
+    "overflow": false,
+    "animated": false
+  },
+  {
+    "width": 768,
+    "kind": "interviews",
+    "overflow": false,
+    "animated": false
+  },
+  {
+    "width": 768,
+    "kind": "hiring",
+    "overflow": false,
+    "animated": false
+  },
+  {
+    "width": 768,
+    "kind": "list",
+    "overflow": false,
+    "animated": false
+  },
+  {
+    "width": 768,
+    "kind": "records",
+    "overflow": false,
+    "animated": false
+  },
+  {
+    "width": 768,
+    "kind": "detail",
+    "overflow": false,
+    "animated": false
+  },
+  {
+    "width": 768,
+    "kind": "form",
+    "overflow": false,
+    "animated": false
+  },
+  {
+    "width": 768,
+    "kind": "settings",
+    "overflow": false,
+    "animated": false
+  },
+  {
+    "width": 768,
+    "kind": "calendar",
+    "overflow": false,
+    "animated": false
+  },
+  {
+    "width": 768,
+    "kind": "payslip",
+    "overflow": false,
+    "animated": false
+  },
+  {
+    "width": 768,
+    "kind": "self-service",
+    "overflow": false,
+    "animated": false
+  },
+  {
+    "width": 768,
+    "kind": "careers",
+    "overflow": false,
+    "animated": false
+  },
+  {
+    "width": 768,
+    "kind": "candidate",
+    "overflow": false,
+    "animated": false
+  },
+  {
+    "width": 1280,
+    "kind": "dashboard",
+    "overflow": false,
+    "animated": false
+  },
+  {
+    "width": 1280,
+    "kind": "employees",
+    "overflow": false,
+    "animated": false
+  },
+  {
+    "width": 1280,
+    "kind": "jobs",
+    "overflow": false,
+    "animated": false
+  },
+  {
+    "width": 1280,
+    "kind": "attendance",
+    "overflow": false,
+    "animated": false
+  },
+  {
+    "width": 1280,
+    "kind": "leave",
+    "overflow": false,
+    "animated": false
+  },
+  {
+    "width": 1280,
+    "kind": "payroll",
+    "overflow": false,
+    "animated": false
+  },
+  {
+    "width": 1280,
+    "kind": "analytics",
+    "overflow": false,
+    "animated": false
+  },
+  {
+    "width": 1280,
+    "kind": "profile",
+    "overflow": false,
+    "animated": false
+  },
+  {
+    "width": 1280,
+    "kind": "pipeline",
+    "overflow": false,
+    "animated": false
+  },
+  {
+    "width": 1280,
+    "kind": "interviews",
+    "overflow": false,
+    "animated": false
+  },
+  {
+    "width": 1280,
+    "kind": "hiring",
+    "overflow": false,
+    "animated": false
+  },
+  {
+    "width": 1280,
+    "kind": "list",
+    "overflow": false,
+    "animated": false
+  },
+  {
+    "width": 1280,
+    "kind": "records",
+    "overflow": false,
+    "animated": false
+  },
+  {
+    "width": 1280,
+    "kind": "detail",
+    "overflow": false,
+    "animated": false
+  },
+  {
+    "width": 1280,
+    "kind": "form",
+    "overflow": false,
+    "animated": false
+  },
+  {
+    "width": 1280,
+    "kind": "settings",
+    "overflow": false,
+    "animated": false
+  },
+  {
+    "width": 1280,
+    "kind": "calendar",
+    "overflow": false,
+    "animated": false
+  },
+  {
+    "width": 1280,
+    "kind": "payslip",
+    "overflow": false,
+    "animated": false
+  },
+  {
+    "width": 1280,
+    "kind": "self-service",
+    "overflow": false,
+    "animated": false
+  },
+  {
+    "width": 1280,
+    "kind": "careers",
+    "overflow": false,
+    "animated": false
+  },
+  {
+    "width": 1280,
+    "kind": "candidate",
+    "overflow": false,
+    "animated": false
+  }
+]

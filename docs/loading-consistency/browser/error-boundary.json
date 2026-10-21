@@ -1,0 +1,6 @@
+{
+  "injectedReadFailureReachedExistingBoundary": true,
+  "loadingRemoved": true,
+  "headerRetained": true,
+  "expectedConsoleErrorExcludedFromNormalFlows": true
+}

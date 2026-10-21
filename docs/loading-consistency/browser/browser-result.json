@@ -1,0 +1,11 @@
+{
+  "passed": true,
+  "realTransitions": 33,
+  "variants": 21,
+  "variantViewportChecks": 63,
+  "viewports": [
+    375,
+    768,
+    1280
+  ]
+}

@@ -1,0 +1,30 @@
+{
+  "applicationAndTestFiles": 33,
+  "newRouteBoundaries": 28,
+  "scopedRoutes": 45,
+  "passed": true,
+  "realTransitions": 33,
+  "variants": 21,
+  "variantViewportChecks": 63,
+  "viewports": [
+    375,
+    768,
+    1280
+  ],
+  "fixtureCleanup": {
+    "rollbackConfirmed": true,
+    "fixtureOrganizationsRemaining": 0
+  },
+  "productionBuildMs": 58636,
+  "typescript": true,
+  "changedFileEslint": true,
+  "loadingUnit": true,
+  "existingUiBatch1Regression": true,
+  "diffCheck": true,
+  "secretPatternFindings": [],
+  "preexistingImpeccableDeletionsPreserved": 2579,
+  "stagedFiles": 0,
+  "migrationsRun": false,
+  "pushed": false,
+  "deployed": false
+}
