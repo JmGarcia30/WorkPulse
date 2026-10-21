@@ -222,7 +222,7 @@ export default async function JobOpeningPage({ params }: JobOpeningPageProps) {
         {/* Bottom CTA Banner */}
         <div className="pt-6 border-t border-[#E8E2D6] flex flex-col sm:flex-row items-center justify-between gap-4">
           <div>
-            <p className="text-xs font-bold text-[#111111]">Ready to join the SAGA faculty &amp; staff?</p>
+            <p className="text-xs font-bold text-[#111111]">{org.slug === 'st-aloysius' ? 'Ready to join the SAGA faculty & staff?' : `Ready to join ${org.name}?`}</p>
             <p className="text-[11px] text-[#6B6B6B] mt-0.5">Submit your curriculum vitae and academic credentials.</p>
           </div>
           <div className="flex items-center gap-3 w-full sm:w-auto">

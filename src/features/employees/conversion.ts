@@ -1,3 +1,4 @@
+import { resolveHiringDocumentPolicy } from '@/features/hiring/document-policy';
 import { prisma } from '@/lib/db/prisma';
 import {
   ApplicationStatus,
@@ -81,6 +82,7 @@ function toReadinessSource(
     status: application.status,
     appliedAt: application.appliedAt,
     jobCategory: application.job.category,
+    hiringPolicy: resolveHiringDocumentPolicy(application.job.organization, application.job.category),
     applicant: application.applicant,
     recruitmentDocuments: application.recruitmentDocuments,
     interviews: application.interviews.map((interview) => ({

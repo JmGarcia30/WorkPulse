@@ -1,5 +1,7 @@
 'use server';
 
+import { ensureRecruitmentDocumentsExist } from '@/features/hiring/document-requirements';
+import { resolveHiringDocumentPolicy, applyDocumentPolicy } from '@/features/hiring/document-policy';
 import { candidateHasAccess, candidateWriteScope, validCandidateId } from './candidate-access';
 import { revalidatePath } from 'next/cache';
 import { prisma } from '@/lib/db/prisma';
@@ -48,6 +50,8 @@ export async function getCandidatePortalData(organizationSlug: string, applicati
         include: {
           organization: {
             select: {
+              id: true,
+              hiringDocumentRequirements: true,
               name: true,
               slug: true,
               logoUrl: true,
@@ -97,15 +101,18 @@ export async function getCandidatePortalData(organizationSlug: string, applicati
   }
 
   const category = application.job.category as EmploymentCategory;
+  const hiringPolicy = resolveHiringDocumentPolicy(application.job.organization, category);
+  application.recruitmentDocuments = applyDocumentPolicy(await ensureRecruitmentDocumentsExist(application.id, application.job.organizationId), hiringPolicy);
   const evaluation = areRecruitmentDocumentsSatisfied(
     application.recruitmentDocuments,
-    category
+    hiringPolicy.requirements
   );
 
   return {
     application,
     category,
     evaluation,
+    isSaga: hiringPolicy.isSaga,
   };
 }
 

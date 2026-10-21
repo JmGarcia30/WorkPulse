@@ -4,7 +4,7 @@ import { redirect } from 'next/navigation';
 import { prisma } from '@/lib/db/prisma';
 import { localStorageProvider } from '@/lib/storage';
 import { JobStatus, ApplicationStatus, RecruitmentDocumentType, RecruitmentDocumentStatus } from '@prisma/client';
-import { ensureRecruitmentDocumentsExist } from '@/features/hiring/saga-requirements';
+import { ensureRecruitmentDocumentsExist } from '@/features/hiring/document-requirements';
 import { issueCandidateLink } from './candidate-access';
 import { candidatePortalMatchesRequestTenant } from '@/features/hiring/document-access';
 import { databaseSlugForTenant } from '@/lib/tenant/host';
@@ -170,7 +170,7 @@ export async function submitApplicationAction(formData: FormData): Promise<void>
     });
 
     // 7. Auto-initialize SAGA Document Requirements Checklist
-    await ensureRecruitmentDocumentsExist(application.id, job.category);
+    await ensureRecruitmentDocumentsExist(application.id, job.organizationId);
 
     // If resume was uploaded, automatically link it to the Letter of Application with Resume requirement
     if (documentMeta) {

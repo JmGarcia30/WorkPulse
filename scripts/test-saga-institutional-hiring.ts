@@ -1,3 +1,4 @@
+import { resolveHiringDocumentPolicy } from '../src/features/hiring/document-policy';
 import {
   PrismaClient,
   EmploymentCategory,
@@ -133,6 +134,7 @@ async function runSagaInstitutionalHiringTests() {
   const teresaReadiness = calculateHiringReadiness({
     status: teresaApp.status,
     jobCategory: teresaApp.job.category,
+    hiringPolicy: resolveHiringDocumentPolicy(org, teresaApp.job.category),
     recruitmentDocuments: teresaApp.recruitmentDocuments,
     interviews: teresaApp.interviews,
     assessments: teresaApp.assessments,
@@ -220,6 +222,7 @@ async function runSagaInstitutionalHiringTests() {
   const robertoReadiness = calculateHiringReadiness({
     status: robertoApp.status,
     jobCategory: robertoApp.job.category,
+    hiringPolicy: resolveHiringDocumentPolicy(org, robertoApp.job.category),
     recruitmentDocuments: robertoApp.recruitmentDocuments,
     interviews: robertoApp.interviews,
     assessments: robertoApp.assessments,
@@ -288,6 +291,7 @@ async function runSagaInstitutionalHiringTests() {
   const teresaNoDemoReadiness = calculateHiringReadiness({
     status: teresaWithoutDemo.status,
     jobCategory: EmploymentCategory.TEACHING,
+    hiringPolicy: resolveHiringDocumentPolicy(org, EmploymentCategory.TEACHING),
     recruitmentDocuments: teresaWithoutDemo.recruitmentDocuments,
     interviews: teresaWithoutDemo.interviews,
     assessments: teresaWithoutDemo.assessments,
@@ -308,6 +312,7 @@ async function runSagaInstitutionalHiringTests() {
   const nonTeachingReadinessWithoutDemo = calculateHiringReadiness({
     status: teresaWithoutDemo.status,
     jobCategory: EmploymentCategory.NON_TEACHING,
+    hiringPolicy: resolveHiringDocumentPolicy(org, EmploymentCategory.NON_TEACHING),
     recruitmentDocuments: robertoApp.recruitmentDocuments,
     interviews: teresaWithoutDemo.interviews,
     assessments: teresaWithoutDemo.assessments,
@@ -345,6 +350,7 @@ async function runSagaInstitutionalHiringTests() {
   const miguelReadiness = calculateHiringReadiness({
     status: miguelApp.status,
     jobCategory: miguelApp.job.category,
+    hiringPolicy: resolveHiringDocumentPolicy(org, miguelApp.job.category),
     recruitmentDocuments: miguelApp.recruitmentDocuments,
     interviews: miguelApp.interviews,
     assessments: miguelApp.assessments,
@@ -384,7 +390,7 @@ async function runSagaInstitutionalHiringTests() {
   console.log('\n--- TEST 7: Document Requirements Validation Engine ---');
   const miguelDocsCheck = areRecruitmentDocumentsSatisfied(
     miguelApp.recruitmentDocuments,
-    EmploymentCategory.TEACHING
+    getSagaDocumentRequirements(EmploymentCategory.TEACHING)
   );
   assert(
     miguelDocsCheck.isSatisfied === false,
@@ -402,7 +408,7 @@ async function runSagaInstitutionalHiringTests() {
 
   const teresaDocsCheck = areRecruitmentDocumentsSatisfied(
     teresaApp.recruitmentDocuments,
-    EmploymentCategory.TEACHING
+    getSagaDocumentRequirements(EmploymentCategory.TEACHING)
   );
   assert(
     teresaDocsCheck.isSatisfied === true,
@@ -411,7 +417,7 @@ async function runSagaInstitutionalHiringTests() {
 
   const robertoDocsCheck = areRecruitmentDocumentsSatisfied(
     robertoApp.recruitmentDocuments,
-    EmploymentCategory.NON_TEACHING
+    getSagaDocumentRequirements(EmploymentCategory.NON_TEACHING)
   );
   assert(
     robertoDocsCheck.isSatisfied === true,

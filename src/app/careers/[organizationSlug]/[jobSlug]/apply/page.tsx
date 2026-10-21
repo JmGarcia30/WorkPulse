@@ -97,10 +97,10 @@ export default async function ApplyPage({ params, searchParams }: ApplyPageProps
         <div className="rounded-xl border border-[rgba(217,169,40,0.3)] bg-[#FAF8F2] p-5 text-xs text-[#111111] text-left space-y-2">
           <div className="font-bold flex items-center gap-2 text-[#9A7415]">
             <span className="h-2 w-2 rounded-full bg-[#D9A928]" />
-            <span>Next Step: SAGA Institutional Credential Submission</span>
+            <span>{org.slug === 'st-aloysius' ? 'Next Step: SAGA Institutional Credential Submission' : 'Next Step: Email verification and document submission'}</span>
           </div>
           <p className="text-[11px] text-[#6B6B6B] leading-relaxed">
-            In accordance with the SAGA Institutional Hiring Policy, all candidates must submit required documents (TOR, Diploma, LET license, 3 Recommendation Letters, and NBI Clearance) for review by the Head of the Department.
+            {org.slug === 'st-aloysius' ? 'In accordance with the SAGA Institutional Hiring Policy, candidates must submit the required credentials for their position for review by the Head of the Department.' : 'Verify your application email to view the documents requested by this organization and upload them securely.'}
           </p>
         </div>
 

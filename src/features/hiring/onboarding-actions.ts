@@ -18,6 +18,8 @@ import {
 } from './onboarding-pipeline';
 import { RecruitmentDocumentStatus, Prisma } from '@prisma/client';
 import { localStorageProvider } from '@/lib/storage';
+import { resolveHiringDocumentPolicy } from './document-policy';
+import type { DefaultOnboardingTaskTemplate } from './onboarding-pipeline';
 
 const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
 const ALLOWED_MIME_TYPES = [
@@ -58,7 +60,9 @@ export async function createSagaOnboardingProcessInTx(
   startDate: Date,
   notes?: string
 ) {
-  const category = (application.job.category === 'TEACHING' ? 'TEACHING' : 'NON_TEACHING') as 'TEACHING' | 'NON_TEACHING';
+  const owned = await tx.application.findUniqueOrThrow({ where: { id: application.id }, select: { job: { select: { category: true, organization: { select: { id: true, slug: true, hiringDocumentRequirements: true } } } } } });
+  const category = owned.job.category;
+  const policy = resolveHiringDocumentPolicy(owned.job.organization, category);
   const targetCompletionDate = new Date(
     startDate.getTime() + 14 * 24 * 60 * 60 * 1000
   );
@@ -71,11 +75,14 @@ export async function createSagaOnboardingProcessInTx(
       targetCompletionDate,
       notes:
         notes ||
-        `SAGA ${category === 'TEACHING' ? 'Faculty' : 'Staff'} Onboarding initialized for ${acceptedOffer?.employmentType || 'institutional'} appointment.`,
+        (policy.isSaga ? `SAGA ${category === 'TEACHING' ? 'Faculty' : 'Staff'} Onboarding initialized for ${acceptedOffer?.employmentType || 'institutional'} appointment.` : 'Organization onboarding initialized.'),
     },
   });
 
-  const templates = getSagaOnboardingTaskTemplates(category);
+  const templates: DefaultOnboardingTaskTemplate[] = policy.isSaga ? getSagaOnboardingTaskTemplates(category) : [
+    ...policy.requirements.map(def => ({ title: def.title, description: def.description || def.submissionTarget, type: OnboardingTaskType.DOCUMENT, isRequired: def.isRequired && !def.isConditional, matchedRecruitmentDocType: def.type })),
+    { title: 'Organization onboarding review', description: 'HR confirms completion of the organization’s onboarding activities.', type: OnboardingTaskType.ORIENTATION, isRequired: true },
+  ];
 
   for (const template of templates) {
     let initialStatus: OnboardingTaskStatus = OnboardingTaskStatus.PENDING;
@@ -104,7 +111,7 @@ export async function createSagaOnboardingProcessInTx(
           verifiedById = match.verifiedById || null;
           reviewerNotes =
             match.notes ||
-            'Auto-verified from verified SAGA Recruitment Document requirements.';
+            'Auto-verified from verified recruitment document requirements.';
         } else if (match.status === RecruitmentDocumentStatus.SUBMITTED) {
           initialStatus = OnboardingTaskStatus.SUBMITTED;
           fileName = match.fileName || null;
@@ -236,7 +243,7 @@ export async function syncOnboardingWithRecruitmentDocsAction(applicationId: str
       job: { organizationId: user.organizationId },
     },
     include: {
-      job: { select: { category: true } },
+      job: { select: { category: true, organization: { select: { id: true, slug: true, hiringDocumentRequirements: true } } } },
       recruitmentDocuments: true,
       offers: true,
       onboarding: { include: { tasks: true } },
@@ -248,6 +255,7 @@ export async function syncOnboardingWithRecruitmentDocsAction(applicationId: str
   }
 
   const isTeaching = application.job.category === 'TEACHING';
+  const policy = resolveHiringDocumentPolicy(application.job.organization, application.job.category);
   const recDocs = application.recruitmentDocuments;
   const tasks = application.onboarding.tasks;
   const acceptedOffer = application.offers.find((o) => o.status === OfferStatus.ACCEPTED);
@@ -256,7 +264,7 @@ export async function syncOnboardingWithRecruitmentDocsAction(applicationId: str
 
   for (const task of tasks) {
     // 1. Non-Teaching category enforcement: If staff role has legacy required PRC LET task, waive it
-    if (!isTeaching && task.title.includes('PRC Board Certification') && task.isRequired) {
+    if (policy.isSaga && !isTeaching && task.title.includes('PRC Board Certification') && task.isRequired) {
       await prisma.onboardingTask.update({
         where: { id: task.id },
         data: {
@@ -272,7 +280,8 @@ export async function syncOnboardingWithRecruitmentDocsAction(applicationId: str
     // 2. Match task to verified RecruitmentDocument
     let matchedDoc: typeof recDocs[0] | undefined;
 
-    for (const [docType, titlePatterns] of Object.entries(RECRUITMENT_DOC_TO_ONBOARDING_TITLE_MAP)) {
+    const mappings = policy.isSaga ? RECRUITMENT_DOC_TO_ONBOARDING_TITLE_MAP : Object.fromEntries(policy.requirements.map(def => [def.type, [def.title]]));
+    for (const [docType, titlePatterns] of Object.entries(mappings)) {
       if (
         titlePatterns.some(
           (p) =>
@@ -303,7 +312,7 @@ export async function syncOnboardingWithRecruitmentDocsAction(applicationId: str
             verifiedById: matchedDoc.verifiedById || user.userId,
             reviewerNotes:
               matchedDoc.notes ||
-              'Auto-verified from verified SAGA Recruitment Document requirements.',
+              'Auto-verified from verified recruitment document requirements.',
           },
         });
         updatedCount++;

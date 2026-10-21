@@ -46,6 +46,8 @@ export default async function JobsPage({ searchParams }: JobsPageProps) {
         description="Manage organization recruitment requisitions and career openings"
         actions={
           canEdit ? (
+            <div className="flex flex-wrap gap-2">
+            <Link href="/dashboard/hiring/settings" className="wp-button-secondary text-xs">Document requirements</Link>
             <Link
               href="/dashboard/hiring/jobs/new"
               className="inline-flex w-full justify-center sm:w-auto items-center gap-2 rounded-xl bg-[var(--tenant-primary)] px-4 py-2 text-xs sm:text-sm font-bold text-[var(--tenant-primary-foreground)] hover:brightness-95 transition shadow-2xs"
@@ -53,6 +55,7 @@ export default async function JobsPage({ searchParams }: JobsPageProps) {
               <Plus className="h-4 w-4" />
               <span>Create Job Posting</span>
             </Link>
+            </div>
           ) : undefined
         }
       />

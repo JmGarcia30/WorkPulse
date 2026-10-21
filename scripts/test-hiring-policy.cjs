@@ -1,0 +1,44 @@
+/* eslint-disable @typescript-eslint/no-require-imports -- Pure policy and readiness regression tests. */
+const assert=require('node:assert/strict'),Module=require('node:module'),cp=require('node:child_process');
+require('tsx/cjs');
+const {resolveHiringDocumentPolicy,applyDocumentPolicy,hiringDocumentPolicySchema}=require('../src/features/hiring/document-policy.ts');
+const {areRecruitmentDocumentsSatisfied}=require('../src/features/hiring/saga-requirements.ts');
+const {calculateHiringReadiness}=require('../src/features/hiring/readiness.ts');
+const baseline=cp.execFileSync('git',['show','HEAD:src/features/hiring/saga-requirements.ts'],{encoding:'utf8'});
+const mod=new Module(require.resolve('../src/features/hiring/saga-requirements.ts'),module);mod.filename=require.resolve('../src/features/hiring/saga-requirements.ts');mod.paths=module.paths;mod.require=name=>name==='@/lib/db/prisma'?{}:require(name);
+mod._compile(require('typescript').transpileModule(baseline,{compilerOptions:{module:1,target:9}}).outputText,mod.filename);
+const saga={id:'actual-saga-id',slug:'st-aloysius',hiringDocumentRequirements:null};
+const custom={type:'OTHER',title:'Company B work eligibility certificate',description:'Company B only',isRequired:true,isConditional:false,submissionTarget:'Company B HR'};
+const b={id:'actual-company-b-id',slug:'company-b',hiringDocumentRequirements:{TEACHING:[custom],NON_TEACHING:[custom]}};
+for(const category of ['TEACHING','NON_TEACHING']){
+ const policy=resolveHiringDocumentPolicy(saga,category);
+ assert.deepEqual(policy.requirements,mod.exports.getSagaDocumentRequirements(category));
+ assert.equal(policy.isSaga,true);
+ assert.equal(policy.requirements.length,11);
+ assert.equal(policy.requirements.find(d=>d.type==='LET_BASIC_EDUCATION')?.isRequired,category==='TEACHING'?true:undefined);
+ const company=resolveHiringDocumentPolicy(b,category);
+ assert.deepEqual(company.requirements,[custom]);assert.equal(company.isSaga,false);assert.equal(company.organizationId,b.id);
+ assert.equal(resolveHiringDocumentPolicy({...b,hiringDocumentRequirements:null},category).requirements.length,1);
+ assert(!resolveHiringDocumentPolicy({...b,hiringDocumentRequirements:null},category).requirements.some(d=>d.type==='DIPLOMA'));
+ const docs=policy.requirements.map(d=>({...d,status:'SUBMITTED'}));
+ assert(areRecruitmentDocumentsSatisfied(docs,policy.requirements).isSatisfied);
+ const missing=docs.filter(d=>d.type!=='DIPLOMA');assert(!areRecruitmentDocumentsSatisfied(missing,policy.requirements).isSatisfied);
+ const legacy=applyDocumentPolicy(docs,company);assert(legacy.filter(d=>d.type!=='OTHER').every(d=>!d.isRequired&&!d.isConditional));
+ const base={status:'OFFER',jobCategory:category,applicant:{firstName:'Test',lastName:'Applicant',email:'test@fixture.invalid'},offers:[{id:'offer',status:'ACCEPTED',startDate:new Date('2026-10-01'),salary:35000,employmentType:'Full-time',contractSignedByPresident:true,contractSignedByEmployee:true}],onboarding:{id:'onboarding',status:'COMPLETED',tasks:[{id:'task',title:'HR review',isRequired:true,status:'VERIFIED'}]}};
+ const ready=calculateHiringReadiness({...base,hiringPolicy:company,recruitmentDocuments:[{...custom,status:'SUBMITTED'}]});
+ assert(ready.isReadyToHire);assert(!ready.checklist.some(c=>['teaching_demo','hod_interview','president_interview'].includes(c.key)));
+ assert(!calculateHiringReadiness({...base,hiringPolicy:company,recruitmentDocuments:[{...custom,status:'REJECTED'}]}).isReadyToHire);
+ const sagaResult=calculateHiringReadiness({...base,hiringPolicy:policy,recruitmentDocuments:docs});
+ assert(!sagaResult.isReadyToHire);assert(sagaResult.checklist.some(c=>c.key==='hod_interview'&&!c.isComplete));
+ const clearedSaga={...base,hiringPolicy:policy,recruitmentDocuments:docs,assessments:[{id:'exam',title:'Written Examination',type:'WRITTEN_EXAMINATION',status:'PASSED'}],interviews:['HEAD_OF_DEPARTMENT','PRESIDENT_FINAL','TEACHING_DEMONSTRATION'].map((type,i)=>({id:String(i),type,status:'COMPLETED'}))};
+ assert(calculateHiringReadiness(clearedSaga).isReadyToHire);
+ const empty=resolveHiringDocumentPolicy({...saga,hiringDocumentRequirements:{TEACHING:[],NON_TEACHING:[]}},category);
+ assert(calculateHiringReadiness({...clearedSaga,hiringPolicy:empty,recruitmentDocuments:[]}).checklist.find(c=>c.key==='documents').isComplete);
+ assert(!calculateHiringReadiness({...base, recruitmentDocuments:[]}).checklist.some(c=>c.key==='hod_interview'));
+}
+assert.throws(()=>resolveHiringDocumentPolicy({...b,id:''},'TEACHING'));
+assert.throws(()=>resolveHiringDocumentPolicy({...b,hiringDocumentRequirements:{}},'TEACHING'));
+assert(!hiringDocumentPolicySchema.safeParse({TEACHING:[custom,custom],NON_TEACHING:[]}).success);
+assert(!hiringDocumentPolicySchema.safeParse({TEACHING:[{...custom,isConditional:true}],NON_TEACHING:[]}).success);
+assert(!hiringDocumentPolicySchema.safeParse({TEACHING:[{...custom,title:' '}],NON_TEACHING:[]}).success);
+console.log('PASS exact SAGA baseline lists, two-category tenant defaults/configuration, legacy-file retention, mandatory/rejected documents, generic versus institutional readiness, and policy validation');

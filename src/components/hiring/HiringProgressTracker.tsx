@@ -5,6 +5,7 @@ import { ApplicationStatus, EmploymentCategory } from '@prisma/client';
 import { Check, XCircle } from 'lucide-react';
 
 interface HiringProgressTrackerProps {
+  isSaga: boolean;
   currentStatus: ApplicationStatus;
   category?: EmploymentCategory | 'TEACHING' | 'NON_TEACHING';
   documentsSatisfied?: boolean;
@@ -52,6 +53,7 @@ const NON_TEACHING_STEPS: StepDef[] = [
 ];
 
 export function HiringProgressTracker({
+  isSaga,
   currentStatus,
   category,
   documentsSatisfied = false,
@@ -66,7 +68,13 @@ export function HiringProgressTracker({
   isReadyToHire = false,
 }: HiringProgressTrackerProps) {
   const isTeaching = category === 'TEACHING';
-  const steps = isTeaching ? TEACHING_STEPS : NON_TEACHING_STEPS;
+  const steps = isSaga ? (isTeaching ? TEACHING_STEPS : NON_TEACHING_STEPS) : [
+    TEACHING_STEPS[0], TEACHING_STEPS[1],
+    { key: 'WRITTEN_EXAM', label: 'Assessments & Interviews', shortLabel: 'Review', description: 'Assigned assessments and interviews' },
+    { ...TEACHING_STEPS[6], description: 'Offer acceptance' },
+    { ...TEACHING_STEPS[7], description: 'Organization onboarding' },
+    { ...TEACHING_STEPS[8], description: 'Hiring prerequisites cleared' }, TEACHING_STEPS[9],
+  ];
 
   // Calculate active stage index dynamically from verified workflow state
   let activeIndex = 0;

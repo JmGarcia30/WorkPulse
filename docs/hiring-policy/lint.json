@@ -1,0 +1,31 @@
+{
+  "exitCode": 0,
+  "elapsedMs": 56431,
+  "output": [
+    "G:\\CAPSTONE\\WorkPulse\\scripts\\test-candidate-portal-and-rejection.ts",
+    "  7:3  warning  'rejectRecruitmentDocumentAction' is defined but never used  @typescript-eslint/no-unused-vars",
+    "  8:3  warning  'verifyRecruitmentDocumentAction' is defined but never used  @typescript-eslint/no-unused-vars",
+    "G:\\CAPSTONE\\WorkPulse\\scripts\\test-saga-institutional-hiring.ts",
+    "   6:3  warning  'RecruitmentDocumentStatus' is defined but never used  @typescript-eslint/no-unused-vars",
+    "   7:3  warning  'AssessmentType' is defined but never used             @typescript-eslint/no-unused-vars",
+    "   8:3  warning  'AssessmentStatus' is defined but never used           @typescript-eslint/no-unused-vars",
+    "  10:3  warning  'InterviewStatus' is defined but never used            @typescript-eslint/no-unused-vars",
+    "  11:3  warning  'EvaluationRecommendation' is defined but never used   @typescript-eslint/no-unused-vars",
+    "  12:3  warning  'OfferStatus' is defined but never used                @typescript-eslint/no-unused-vars",
+    "  13:3  warning  'OnboardingTaskType' is defined but never used         @typescript-eslint/no-unused-vars",
+    "  14:3  warning  'OnboardingTaskStatus' is defined but never used       @typescript-eslint/no-unused-vars",
+    "  15:3  warning  'OnboardingStatus' is defined but never used           @typescript-eslint/no-unused-vars",
+    "G:\\CAPSTONE\\WorkPulse\\src\\components\\careers\\CandidatePortalClient.tsx",
+    "  18:3  warning  'HelpCircle' is defined but never used     @typescript-eslint/no-unused-vars",
+    "  20:3  warning  'ArrowRight' is defined but never used     @typescript-eslint/no-unused-vars",
+    "  25:3  warning  'Download' is defined but never used       @typescript-eslint/no-unused-vars",
+    "  26:3  warning  'GraduationCap' is defined but never used  @typescript-eslint/no-unused-vars",
+    "  27:3  warning  'Briefcase' is defined but never used      @typescript-eslint/no-unused-vars",
+    "  28:3  warning  'Layers' is defined but never used         @typescript-eslint/no-unused-vars",
+    "  84:3  warning  'category' is defined but never used       @typescript-eslint/no-unused-vars",
+    "  85:3  warning  'applicantName' is defined but never used  @typescript-eslint/no-unused-vars",
+    "  86:3  warning  'jobTitle' is defined but never used       @typescript-eslint/no-unused-vars",
+    "  87:3  warning  'orgName' is defined but never used        @typescript-eslint/no-unused-vars",
+    "✖ 21 problems (0 errors, 21 warnings)"
+  ]
+}

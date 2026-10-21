@@ -1,0 +1,41 @@
+{
+  "checks": {
+    "build": true,
+    "typescript": true,
+    "lint": true,
+    "prisma": true,
+    "unit": true,
+    "security": true,
+    "documents": true
+  },
+  "productionBuildMs": 47107,
+  "integration": {
+    "passed": true,
+    "settingsRealHttpPost": true,
+    "organizationIdsServerDerived": true,
+    "sagaCategoryListsPreserved": true,
+    "companyBConfigured": true,
+    "foreignSettingsAndDocumentsDenied": true,
+    "historicalIdsPreserved": true,
+    "ownOnboardingAndConversion": true,
+    "migrationTestedInsideRollbackOnly": true
+  },
+  "cleanup": {
+    "rollbackConfirmed": true,
+    "fixtureOrganizationsRemaining": 0
+  },
+  "migration": {
+    "testedMigration": "20261022000100_hiring_document_policy",
+    "columnAbsentAfterRollback": true,
+    "productionMigrationsRun": false
+  },
+  "frozenFilesChecked": 83,
+  "frozenFilesChanged": [],
+  "impeccableChanged": false,
+  "unintendedDeletions": 0,
+  "secretPatternFindings": [],
+  "productionMigrationsRun": false,
+  "committed": false,
+  "pushed": false,
+  "deployed": false
+}

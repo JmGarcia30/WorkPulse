@@ -1,3 +1,4 @@
+import { resolveHiringDocumentPolicy, applyDocumentPolicy } from '@/features/hiring/document-policy';
 import { notFound } from 'next/navigation';
 import { setCandidateAccessRevoked } from '@/features/careers/verification-actions';
 import { requireBackOfficeContext } from '@/lib/auth/guards';
@@ -14,7 +15,7 @@ import {
   canViewEmployees,
 } from '@/lib/permissions/rbac';
 import { calculateHiringReadiness } from '@/features/hiring/readiness';
-import { ensureRecruitmentDocumentsExist } from '@/features/hiring/saga-requirements';
+import { ensureRecruitmentDocumentsExist } from '@/features/hiring/document-requirements';
 import { ApplicantProfileView } from '@/components/hiring/ApplicantProfileView';
 
 interface CandidateProfilePageProps {
@@ -46,7 +47,7 @@ export default async function CandidateProfilePage({
         job: {
           include: {
             structuredReqs: true,
-            organization: { select: { slug: true, name: true } },
+            organization: { select: { id: true, slug: true, name: true, hiringDocumentRequirements: true } },
           },
         },
         documents: {
@@ -123,13 +124,16 @@ export default async function CandidateProfilePage({
   }
 
   // Idempotently ensure standard SAGA document checklist records are populated
-  if (application.recruitmentDocuments.length === 0) {
+  {
     const seededDocs = await ensureRecruitmentDocumentsExist(
       application.id,
-      application.job.category
+      user.organizationId
     );
     application.recruitmentDocuments = seededDocs as typeof application.recruitmentDocuments;
   }
+
+  const hiringPolicy = resolveHiringDocumentPolicy(application.job.organization, application.job.category);
+  application.recruitmentDocuments = applyDocumentPolicy(application.recruitmentDocuments, hiringPolicy);
 
   const canEditStatus = canUpdateApplicationStatus(user);
   const canManageIv = canManageInterviews(user);
@@ -147,6 +151,7 @@ export default async function CandidateProfilePage({
     status: application.status,
     appliedAt: application.appliedAt,
     jobCategory: application.job.category,
+    hiringPolicy,
     applicant: application.applicant,
     recruitmentDocuments: application.recruitmentDocuments,
     interviews: application.interviews.map((iv) => ({
@@ -195,6 +200,7 @@ export default async function CandidateProfilePage({
       <form action={setCandidateAccessRevoked.bind(null, applicationId, false)}><button className="text-sm underline">Allow fresh email verification</button></form>
     </div>}
     <ApplicantProfileView
+      isSaga={hiringPolicy.isSaga}
       application={application}
       organizationUsers={organizationUsers}
       readiness={readiness}

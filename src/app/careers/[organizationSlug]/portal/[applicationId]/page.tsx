@@ -30,7 +30,7 @@ export async function generateMetadata({
 
   return {
     title: `Candidate Document Portal — ${data.application.applicant.firstName} ${data.application.applicant.lastName} | ${data.application.job.organization.name}`,
-    description: `Track your institutional hiring progress and upload SAGA credential requirements for ${data.application.job.title}.`,
+    description: `Track your institutional hiring progress and upload organization document requirements for ${data.application.job.title}.`,
   };
 }
 
@@ -42,14 +42,14 @@ export default async function CandidatePortalPage({ params }: CandidatePortalPag
     return <div className="max-w-md mx-auto p-8 space-y-4"><h1 className="text-xl font-bold">Candidate email verification</h1><p>Enter your application email. If eligible, we will send a verification link. Check your inbox; requests are limited.</p><form action={requestCandidateVerification.bind(null, organizationSlug, applicationId)} className="space-y-4"><input name="email" type="email" required autoComplete="email" aria-label="Application email" className="border rounded p-2 w-full" /><button className="rounded bg-indigo-600 text-white px-4 py-2">Send verification link</button></form></div>;
   }
 
-  const { application, category, evaluation } = data;
+  const { application, category, evaluation, isSaga } = data;
   const applicant = application.applicant;
   const job = application.job;
   const org = job.organization;
   const isTeaching = category === 'TEACHING';
 
   // SAGA 7-step institutional milestones
-  const steps = [
+  const sagaSteps = [
     {
       step: 1,
       title: 'Submit Requirements',
@@ -115,6 +115,13 @@ export default async function CandidatePortalPage({ params }: CandidatePortalPag
     },
   ];
 
+  const steps = isSaga ? sagaSteps : [
+    { step: 1, title: 'Document requirements', target: 'Hiring team', isComplete: evaluation.isSatisfied, isCurrent: !evaluation.isSatisfied },
+    { step: 2, title: 'Application review', target: 'Hiring team', isComplete: application.offers.some(o => o.status === 'ACCEPTED'), isCurrent: evaluation.isSatisfied && !application.offers.some(o => o.status === 'ACCEPTED') },
+    { step: 3, title: 'Offer acceptance', target: 'Hiring team', isComplete: application.offers.some(o => o.status === 'ACCEPTED'), isCurrent: false },
+    { step: 4, title: 'Onboarding', target: 'Hiring team', isComplete: application.onboarding?.status === 'COMPLETED', isCurrent: application.status === 'HIRED' && application.onboarding?.status !== 'COMPLETED' },
+  ];
+
   return (
     <div className="max-w-4xl mx-auto space-y-8 pb-12">
       {/* Back Link */}
@@ -163,12 +170,12 @@ export default async function CandidatePortalPage({ params }: CandidatePortalPag
               {isTeaching ? (
                 <>
                   <GraduationCap className="h-3.5 w-3.5" />
-                  <span>SAGA Faculty (Teaching)</span>
+                  <span>{isSaga ? 'SAGA Faculty (Teaching)' : 'Teaching'}</span>
                 </>
               ) : (
                 <>
                   <Briefcase className="h-3.5 w-3.5" />
-                  <span>SAGA Staff (Non-Teaching)</span>
+                  <span>{isSaga ? 'SAGA Staff (Non-Teaching)' : 'Non-Teaching'}</span>
                 </>
               )}
             </span>
@@ -179,10 +186,10 @@ export default async function CandidatePortalPage({ params }: CandidatePortalPag
         <div className="border-t border-slate-100 dark:border-slate-800 pt-6 space-y-3">
           <div className="flex items-center justify-between">
             <h3 className="text-xs font-bold text-slate-800 uppercase tracking-wider dark:text-slate-200">
-              SAGA Institutional Hiring Process
+              {isSaga ? 'SAGA Institutional Hiring Process' : 'Application progress'}
             </h3>
             <span className="text-[11px] text-slate-400">
-              Governed by SAGA Institutional Hiring Policy
+              {isSaga ? 'Governed by SAGA Institutional Hiring Policy' : 'Requirements set by the hiring organization'}
             </span>
           </div>
 
@@ -227,6 +234,7 @@ export default async function CandidatePortalPage({ params }: CandidatePortalPag
 
       {/* Main Interactive Checklist Section */}
       <CandidatePortalClient
+        isSaga={isSaga}
         organizationSlug={organizationSlug}
         applicationId={application.id}
         initialDocuments={application.recruitmentDocuments}

@@ -1,0 +1,5 @@
+{
+  "testedMigration": "20261022000100_hiring_document_policy",
+  "columnAbsentAfterRollback": true,
+  "productionMigrationsRun": false
+}

@@ -105,6 +105,7 @@ interface ApplicantProfileViewProps {
   };
   organizationUsers: React.ComponentProps<typeof ApplicantAssessmentsTab>['organizationEvaluators'];
   readiness: HiringReadinessResult;
+  isSaga: boolean;
   initialTab?: string;
   permissions: {
     canEditStatus: boolean;
@@ -123,6 +124,7 @@ export function ApplicantProfileView({
   application,
   organizationUsers,
   readiness,
+  isSaga,
   initialTab = 'overview',
   permissions,
 }: ApplicantProfileViewProps) {
@@ -294,6 +296,7 @@ export function ApplicantProfileView({
 
       {/* 3. Hiring Progress Tracker */}
       <HiringProgressTracker
+        isSaga={isSaga}
         currentStatus={application.status}
         category={application.job.category}
         documentsSatisfied={documentsSatisfied}

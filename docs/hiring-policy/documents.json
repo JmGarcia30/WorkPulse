@@ -1,0 +1,8 @@
+{
+  "exitCode": 0,
+  "elapsedMs": 1040,
+  "output": [
+    "PASS all three actual handlers: HTML/SVG attachment, PDF preview, no-store/nosniff, safe errors; unknown tenant rejection and public careers compatibility",
+    "PASS private Blob SDK contract: private upload/read and keys instead of public URLs; no hosted call"
+  ]
+}

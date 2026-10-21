@@ -5,7 +5,8 @@ import { prisma } from '@/lib/db/prisma';
 import { getDocumentStaffContext } from './document-access';
 import { canManageRecruitmentDocuments } from '@/lib/permissions/rbac';
 import { RecruitmentDocumentStatus, OnboardingTaskStatus } from '@prisma/client';
-import { ensureRecruitmentDocumentsExist } from './saga-requirements';
+import { ensureRecruitmentDocumentsExist } from './document-requirements';
+import { resolveHiringDocumentPolicy } from './document-policy';
 import { RECRUITMENT_DOC_TO_ONBOARDING_TITLE_MAP } from './onboarding-pipeline';
 import { localStorageProvider } from '@/lib/storage';
 import { publicOrigin } from '@/lib/tenant/host';
@@ -52,7 +53,7 @@ export async function initializeRecruitmentDocumentsAction(applicationId: string
     return { error: 'Application not found or access denied.' };
   }
 
-  const docs = await ensureRecruitmentDocumentsExist(application.id, application.job.category);
+  const docs = await ensureRecruitmentDocumentsExist(application.id, user.organizationId);
 
   safeRevalidatePath(`/dashboard/hiring/applicants/${applicationId}`);
   return { success: true, count: docs.length };
@@ -113,7 +114,9 @@ export async function verifyRecruitmentDocumentAction(
     });
 
     if (onboarding) {
-      for (const [docType, titlePatterns] of Object.entries(RECRUITMENT_DOC_TO_ONBOARDING_TITLE_MAP)) {
+      const policy = resolveHiringDocumentPolicy(doc.application.job.organization, doc.application.job.category);
+      const mappings = policy.isSaga ? RECRUITMENT_DOC_TO_ONBOARDING_TITLE_MAP : Object.fromEntries(policy.requirements.map(def => [def.type, [def.title]]));
+      for (const [docType, titlePatterns] of Object.entries(mappings)) {
         if (doc.type === docType) {
           const matchingTask = onboarding.tasks.find((t) =>
             titlePatterns.some(
@@ -137,7 +140,7 @@ export async function verifyRecruitmentDocumentAction(
                 reviewerNotes:
                   reviewerNotes?.trim() ||
                   doc.notes ||
-                  'Auto-verified from verified SAGA Recruitment Document requirements.',
+                  'Auto-verified from verified recruitment document requirements.',
               },
             });
           }

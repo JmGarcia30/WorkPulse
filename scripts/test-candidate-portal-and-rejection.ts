@@ -8,7 +8,8 @@ import {
   verifyRecruitmentDocumentAction,
 } from '../src/features/hiring/recruitment-document-actions';
 import { calculateHiringReadiness } from '../src/features/hiring/readiness';
-import { areRecruitmentDocumentsSatisfied } from '../src/features/hiring/saga-requirements';
+import { areRecruitmentDocumentsSatisfied, getSagaDocumentRequirements } from '../src/features/hiring/saga-requirements';
+import { resolveHiringDocumentPolicy } from '../src/features/hiring/document-policy';
 import { getEmailLogs, clearEmailLogs } from '../src/lib/email';
 import {
   RecruitmentDocumentStatus,
@@ -76,7 +77,7 @@ async function runTests() {
     'Portal data matches target applicant'
   );
   assert(
-    validPortalData?.application.recruitmentDocuments.length! > 0,
+    (validPortalData?.application.recruitmentDocuments.length ?? 0) > 0,
     'Portal retrieves initialized SAGA document requirements'
   );
 
@@ -167,7 +168,7 @@ async function runTests() {
     const allDocs = await prisma.recruitmentDocument.findMany({
       where: { applicationId: app.id },
     });
-    const docEval = areRecruitmentDocumentsSatisfied(allDocs, EmploymentCategory.TEACHING);
+    const docEval = areRecruitmentDocumentsSatisfied(allDocs, getSagaDocumentRequirements(EmploymentCategory.TEACHING));
     assert(docEval.isSatisfied === false, 'Document evaluation blocks readiness when mandatory document is REJECTED');
     assert(
       docEval.missingMandatory.includes('Transcript of Records (TOR)'),
@@ -177,6 +178,7 @@ async function runTests() {
     const readiness = calculateHiringReadiness({
       status: app.status,
       jobCategory: EmploymentCategory.TEACHING,
+      hiringPolicy: resolveHiringDocumentPolicy(app.job.organization, EmploymentCategory.TEACHING),
       recruitmentDocuments: allDocs,
     });
     assert(readiness.isReadyToHire === false, 'Hiring readiness gate is strictly blocked by rejected blurry document');

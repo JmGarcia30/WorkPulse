@@ -61,6 +61,7 @@ interface PortalOnboardingTask {
 }
 
 interface CandidatePortalClientProps {
+  isSaga: boolean;
   organizationSlug: string;
   applicationId: string;
   initialDocuments: PortalDocument[];
@@ -76,6 +77,7 @@ interface CandidatePortalClientProps {
 }
 
 export function CandidatePortalClient({
+  isSaga,
   organizationSlug,
   applicationId,
   initialDocuments,
@@ -274,7 +276,7 @@ export function CandidatePortalClient({
             <div className="rounded-3xl border border-emerald-200 bg-emerald-50/80 p-6 dark:border-emerald-900 dark:bg-emerald-950/40 space-y-2 shadow-xs">
               <div className="flex items-center gap-2 text-emerald-800 dark:text-emerald-300">
                 <CheckCircle2 className="h-5 w-5 text-emerald-600" />
-                <h3 className="text-sm font-extrabold">All Mandatory SAGA Requirements Verified</h3>
+                <h3 className="text-sm font-extrabold">{isSaga ? 'All Mandatory SAGA Requirements Verified' : 'All Mandatory Organization Requirements Verified'}</h3>
               </div>
               <p className="text-xs text-emerald-700 dark:text-emerald-400">
                 Your credentials have been authenticated by the Head of the Department. You are eligible to proceed to the next hiring evaluation stages.
@@ -296,12 +298,12 @@ export function CandidatePortalClient({
           <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-2xs dark:border-slate-800 dark:bg-slate-900 space-y-2">
             <div className="flex items-center gap-2 text-xs font-bold text-slate-800 dark:text-slate-200">
               <Sparkles className="h-4 w-4 text-amber-500" />
-              <span>SAGA Document Clarity & Authentication Guidelines</span>
+              <span>{isSaga ? 'SAGA Document Clarity & Authentication Guidelines' : 'Organization Document Clarity & Authentication Guidelines'}</span>
             </div>
             <ul className="text-[11px] text-slate-600 dark:text-slate-400 space-y-1 list-disc list-inside">
               <li>Ensure all scanned pages are complete, straight, and high-resolution (300 DPI recommended).</li>
-              <li>Official Transcript of Records (TOR) must show the school dry seal or official registrar signature.</li>
-              <li>LET Board Licensure must clearly show the PRC license number and expiration date.</li>
+              {isSaga && <li>Official Transcript of Records (TOR) must show the school dry seal or official registrar signature.</li>}
+              {isSaga && <li>LET Board Licensure must clearly show the PRC license number and expiration date.</li>}
             </ul>
           </div>
 
@@ -309,7 +311,7 @@ export function CandidatePortalClient({
           <div className="space-y-4">
             <div className="flex items-center justify-between pb-1 border-b border-slate-100 dark:border-slate-800">
               <h3 className="text-xs font-bold uppercase tracking-wider text-slate-800 dark:text-slate-200">
-                Required SAGA Document Checklist
+                {isSaga ? 'Required SAGA Document Checklist' : 'Required Organization Document Checklist'}
               </h3>
               <span className="text-[11px] text-slate-500 dark:text-slate-400">
                 {verifiedDocs.length} of {documents.length} verified
@@ -462,7 +464,7 @@ export function CandidatePortalClient({
           <div className="rounded-3xl border border-indigo-100 bg-indigo-50/60 p-5 dark:border-indigo-900/50 dark:bg-indigo-950/30 flex items-start gap-3 text-xs text-indigo-950 dark:text-indigo-200">
             <ShieldCheck className="h-5 w-5 text-indigo-600 shrink-0 mt-0.5" />
             <div className="space-y-1">
-              <p className="font-bold">SAGA Pre-Employment & Onboarding Requirements</p>
+              <p className="font-bold">{isSaga ? 'SAGA Pre-Employment & Onboarding Requirements' : 'Organization Pre-Employment & Onboarding Requirements'}</p>
               <p className="text-[11px] text-indigo-700 dark:text-indigo-300">
                 Congratulations on your appointment! Please submit your pre-employment statutory requirements (Government numbers and Medical fit-to-work clearance) below. Credentials previously submitted during recruitment are automatically recognized.
               </p>

@@ -75,19 +75,6 @@ const REJECTION_PRESETS = [
   },
 ];
 
-function getDocumentDisplayTitle(title: string, type: RecruitmentDocumentType): string {
-  switch (type) {
-    case RecruitmentDocumentType.LET_BASIC_EDUCATION:
-      return 'Licensure Examination for Teachers (LET)';
-    case RecruitmentDocumentType.DIPLOMA:
-      return 'Diploma';
-    case RecruitmentDocumentType.MARRIAGE_CONTRACT:
-      return 'Marriage Contract (if applicable)';
-    default:
-      return title;
-  }
-}
-
 function getDocumentSubtitle(type: RecruitmentDocumentType, fallbackNotes?: string | null): string {
   switch (type) {
     case RecruitmentDocumentType.RESUME_APPLICATION_LETTER:
@@ -121,9 +108,9 @@ function getDocumentSubtitle(type: RecruitmentDocumentType, fallbackNotes?: stri
 
 export function CandidateDocumentsSection({
   applicationId,
-  category,
   documents,
   canManage,
+  organizationSlug,
 }: CandidateDocumentsSectionProps) {
   const [isPending, startTransition] = useTransition();
   const [feedbackMessage, setFeedbackMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
@@ -147,7 +134,7 @@ export function CandidateDocumentsSection({
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  const evaluation = areRecruitmentDocumentsSatisfied(documents, category);
+  const evaluation = areRecruitmentDocumentsSatisfied(documents, documents);
 
   const handleVerify = (documentId: string) => {
     setActiveMenuDocId(null);
@@ -311,8 +298,8 @@ export function CandidateDocumentsSection({
             const isNA = doc.status === RecruitmentDocumentStatus.NOT_APPLICABLE;
             const hasFile = Boolean(doc.fileName);
 
-            const displayTitle = getDocumentDisplayTitle(doc.title, doc.type);
-            const subtitle = getDocumentSubtitle(doc.type, doc.notes);
+            const displayTitle = doc.title;
+            const subtitle = organizationSlug === 'st-aloysius' ? getDocumentSubtitle(doc.type, doc.notes) : (doc.notes || 'Document requested by your hiring team');
 
             // Minimalist badge configuration matching target image
             let badgeLabel = 'Pending';

@@ -3,7 +3,6 @@ import {
   RecruitmentDocumentType,
   RecruitmentDocumentStatus,
 } from '@prisma/client';
-import { prisma } from '@/lib/db/prisma';
 
 export interface DocumentRequirementDefinition {
   type: RecruitmentDocumentType;
@@ -224,7 +223,7 @@ export function areRecruitmentDocumentsSatisfied(
     isRequired: boolean;
     isConditional: boolean;
   }>,
-  category: EmploymentCategory = EmploymentCategory.NON_TEACHING
+  definitions: Array<Pick<DocumentRequirementDefinition, 'type' | 'title' | 'isRequired' | 'isConditional'>>
 ): {
   isSatisfied: boolean;
   mandatoryCount: number;
@@ -232,7 +231,6 @@ export function areRecruitmentDocumentsSatisfied(
   missingMandatory: string[];
   conditionalPending: string[];
 } {
-  const definitions = getSagaDocumentRequirements(category);
   const docMap = new Map(documents.map((d) => [d.type, d]));
 
   const missingMandatory: string[] = [];
@@ -272,41 +270,4 @@ export function areRecruitmentDocumentsSatisfied(
     missingMandatory,
     conditionalPending,
   };
-}
-
-/**
- * Idempotently initialize the SAGA document requirements for an application.
- */
-export async function ensureRecruitmentDocumentsExist(
-  applicationId: string,
-  category: EmploymentCategory = EmploymentCategory.NON_TEACHING
-) {
-  const definitions = getSagaDocumentRequirements(category);
-  const existingDocs = await prisma.recruitmentDocument.findMany({
-    where: { applicationId },
-    select: { type: true },
-  });
-  const existingTypes = new Set(existingDocs.map((d) => d.type));
-
-  const missingToCreate = definitions.filter((def) => !existingTypes.has(def.type));
-
-  if (missingToCreate.length > 0) {
-    await prisma.recruitmentDocument.createMany({
-      data: missingToCreate.map((def) => ({
-        applicationId,
-        type: def.type,
-        title: def.title,
-        status: RecruitmentDocumentStatus.PENDING,
-        isRequired: def.isRequired,
-        isConditional: def.isConditional,
-        notes: def.conditionalNote || null,
-      })),
-      skipDuplicates: true,
-    });
-  }
-
-  return prisma.recruitmentDocument.findMany({
-    where: { applicationId },
-    orderBy: { createdAt: 'asc' },
-  });
 }

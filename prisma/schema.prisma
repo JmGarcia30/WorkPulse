@@ -528,6 +528,7 @@ model Organization {
   description          String?  @db.Text
   logoUrl              String?
   careersEnabled       Boolean  @default(true)
+  hiringDocumentRequirements Json?
   employeeNumberPrefix String?
   timeZone             String   @default("UTC")
   createdAt            DateTime @default(now())

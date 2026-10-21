@@ -1,3 +1,4 @@
+import type { HiringDocumentPolicy } from './document-policy';
 import {
   ApplicationStatus,
   AssessmentStatus,
@@ -48,6 +49,7 @@ export interface ApplicationReadinessSource {
   id?: string;
   status: ApplicationStatus;
   appliedAt?: Date;
+  hiringPolicy?: HiringDocumentPolicy;
   jobCategory?: EmploymentCategory | 'TEACHING' | 'NON_TEACHING';
   applicant?: {
     firstName?: string;
@@ -163,8 +165,8 @@ function calculateHiringReadinessInternal(
   const unmetRequirements: string[] = [];
 
   const category = application.jobCategory as EmploymentCategory | undefined;
-  const isTeaching = category === EmploymentCategory.TEACHING;
-  const isSagaMode = Boolean(category);
+  const isSagaMode = application.hiringPolicy?.isSaga === true;
+  const isTeaching = isSagaMode && category === EmploymentCategory.TEACHING;
 
   // 1. Application Submission Check
   const hasApplicantInfo = application.applicant
@@ -195,7 +197,7 @@ function calculateHiringReadinessInternal(
     const docs = application.recruitmentDocuments || [];
     const docEval = areRecruitmentDocumentsSatisfied(
       docs,
-      category || EmploymentCategory.NON_TEACHING
+      application.hiringPolicy?.requirements ?? docs.map(d => ({ ...d, title: d.title || d.type }))
     );
 
     let docStatusText = 'Required recruitment documents verified';
@@ -204,7 +206,7 @@ function calculateHiringReadinessInternal(
     if (!docEval.isSatisfied) {
       docStatusText = `${docEval.missingMandatory.length} required document(s) missing`;
       docBlockingReason = `Missing mandatory recruitment documents: ${docEval.missingMandatory.slice(0, 3).join(', ')}${docEval.missingMandatory.length > 3 ? '...' : ''}.`;
-    } else if (docs.length === 0) {
+    } else if (isSagaMode && docs.length === 0 && application.hiringPolicy?.requirements.length !== 0) {
       // In SAGA mode without documents initialized
       docStatusText = 'Recruitment documents checklist not initialized';
       docBlockingReason = 'Mandatory recruitment documents must be submitted to the Head of the Department.';
@@ -212,7 +214,7 @@ function calculateHiringReadinessInternal(
       docStatusText = `All ${docEval.mandatoryCount} mandatory recruitment documents satisfied`;
     }
 
-    const isDocComplete = docEval.isSatisfied && docs.length > 0;
+    const isDocComplete = docEval.isSatisfied && (!isSagaMode || application.hiringPolicy?.requirements.length === 0 || docs.length > 0);
     checklist.push({
       key: 'documents',
       label: 'Recruitment Documents Satisfied',

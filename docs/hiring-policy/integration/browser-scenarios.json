@@ -1,0 +1,30 @@
+[
+  {
+    "scenario": "Normal password login reaches fixture-only Dashboard",
+    "passed": true
+  },
+  {
+    "scenario": "Unconfigured Company B receives only neutral resume requirement; foreign organization cannot initialize its checklist",
+    "passed": true
+  },
+  {
+    "scenario": "Real HR settings form saves Company B policy; forged organization ID cannot alter SAGA settings",
+    "passed": true
+  },
+  {
+    "scenario": "Company B uses its configured certificate; historical document IDs and files remain; retired slots stop blocking",
+    "passed": true
+  },
+  {
+    "scenario": "Wrong-tenant HR, Hiring Manager and employee cannot read settings; foreign HR cannot download Company B documents",
+    "passed": true
+  },
+  {
+    "scenario": "Actual SAGA organization keeps both 11-document category lists; Company B cannot initialize or download SAGA documents",
+    "passed": true
+  },
+  {
+    "scenario": "Company B verified document carries into its own onboarding; conversion succeeds without SAGA exams/interviews, remains idempotent and rejects foreign tenant",
+    "passed": true
+  }
+]
