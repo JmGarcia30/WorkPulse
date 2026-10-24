@@ -6,8 +6,9 @@ for trusted dependency injection and integration testing; never expose its conte
 resolver, database instance, or actor identifiers through an action or request.
 The minimal HR interface is under `/dashboard/employees/exit` (including tenant
 prefixes such as `/saga`). Its Server Action independently authorizes the actor
-and delegates all decisions to this service. No employee self-service endpoints
-are added. Final execution requires an explicit confirmation checkbox, remarks,
+and delegates all decisions to this service. Phase 3 adds eligible employee
+submission/tracking at `/employee/resignation` through its own ESS guard, sharing
+the same case creation primitive and lifecycle. Final execution requires an explicit confirmation checkbox, remarks,
 and the latest case version; backend readiness and date checks remain mandatory.
 Employee search returns at most 20 tenant-scoped identities. Case lists support
 bounded pagination, employee search and status filtering.
@@ -43,6 +44,8 @@ readiness flags. Errors have a safe `SeparationError.code` and message.
 `DRAFT -> IN_PROGRESS -> READY_FOR_FINAL_REVIEW -> APPROVED_PENDING_EFFECTIVE -> COMPLETED`
 
 Every state before completion can transition to `CANCELLED` with a reason.
+For an employee-submitted notice, cancellation additionally requires explicit
+confirmation and evidence of the employee's withdrawal; it is not an HR rejection.
 Cancellation is terminal; readiness freezes further case/checklist edits. A new
 case after cancellation requires a new request key. Draft, readiness and approval
 operations never change employee status. Only explicit H10.2 execution does. Already
@@ -70,8 +73,31 @@ The policy resolver matches the existing SAGA organization slug `st-aloysius`.
 Each case stores its policy snapshot. SAGA resignation uses one calendar month,
 with month-end clamping and date-only `YYYY-MM-DD` input / PostgreSQL `DATE`
 storage. It never substitutes 30 days or converts notice dates through time zones.
-Other tenants receive `POLICY_REQUIRED` for resignation until their own notice
-policy is implemented; they do not inherit SAGA's notice rule.
+Other tenants receive `POLICY_REQUIRED` until their HR Administrator configures
+their notice policy in Organization settings → Resignation Notice Policy
+(`/dashboard/settings/exit`). Policies support calendar days or calendar months
+and an explicit choice to allow authorized short-notice exceptions. They do not
+inherit SAGA notice or superior/HRMO review requirements. SAGA settings are fixed.
+Only the current persisted `HR_ADMIN` role can save settings; organization admins
+may inspect them. Tenant and actor identity always come from the existing guard.
+
+Each new case captures the current policy. Settings changes do not rewrite
+configured, approved, completed or cancelled case snapshots. An editable legacy
+case with an unconfigured policy can capture the newly configured policy by
+saving its case details; the existing case audit records old/new snapshots and
+the details revision invalidates old reviews and exceptions as before.
+Missing-policy guidance appears on the case, creation and listing screens.
+
+Phase 1 adds only nullable `Organization.resignationPolicy`; it does not backfill
+existing organizations. `node scripts/exit-policy-recovery.cjs apply` verifies the
+recovery target, applies only this migration and compares existing record
+fingerprints. `node scripts/test-exit-organization-policy.cjs` runs focused tests
+on that verified target with mandatory fixture rollback and preservation checks.
+After `node scripts/exit-policy-checks.cjs build`, run
+`node scripts/test-exit-policy-interface.cjs` for rendered production HTML and
+real HTTP Server Action checks, also using rollback fixtures. This is not visual
+browser coverage. `exit-policy-checks.cjs` also supports `generate`, `types`, and
+`lint`; all modes load only the verified recovery environment.
 
 Short notice is `EXCEPTION_REQUIRED`. `recordNoticeException` requires an explicit
 reason and authorized actor, and records the actor, server time and audit event.
@@ -191,15 +217,106 @@ cases from the active-case flag.
 Final pay readiness reports clearance, outstanding accountabilities, unresolved
 payroll entries/periods, finalized payroll overlaps, and relevant pending,
 overlapping or failed-sync leave. It returns FOLLOW_UP_REQUIRED or
-READY_FOR_FINANCE_REVIEW, with NOT_CALCULATED / NOT_RECORDED calculation/payment
-states. It neither calculates final pay nor represents payment release.
+READY_FOR_FINANCE_REVIEW independently of separation. Calculation/payment states
+now reflect the separate Phase 2 final-pay record when present; without one they
+remain NOT_CALCULATED / NOT_RECORDED. Payroll finalization never proves payment.
 
-There is no scheduler, admin interface, or new Server Action in this batch.
-These operations are server-only backend APIs; a minimal authorized admin
-interface is still needed for normal HR operation. Rehire/reactivation is outside
+## Phase 2: Final Pay Management
+
+The existing Exit case detail page includes a final-pay panel. Current HR_ADMIN
+users can create one draft per case, save explicit reviewed inputs, record HR
+review, approve/finalize the itemized PHP settlement, and record actual partial or
+full payments. Organization Admins retain read access. All service operations use
+the existing tenant/session/role guard and transaction boundary.
+
+The panel reuses recorded payroll, compensation, attendance, leave and employment
+data as evidence. It does not infer payment from payroll status or convert all
+leave balances automatically. Missing/unsupported inputs block review and leave
+totals undetermined. Salary, 13th-month and leave calculations use payroll Decimal
+infrastructure; separation pay, additions/refunds and lawful deductions require
+externally verified amounts and detailed legal/contractual evidence. Qualified
+tax/statutory review and prior-payment reconciliation are explicit requirements.
+
+Final approval requires a completed separation and current reviewed sources.
+Changing case details or financial source records requires reconciliation and
+renewed review. Approval freezes amounts and source evidence in an immutable
+record. It does not block separation, delay ESS termination or restore access.
+Payments are append-only receipts, not bank transfers; outstanding and payment
+status derive from approved net less recorded receipts. Request keys, unique
+references and a parent-row lock prevent duplicate/overpaid receipts.
+
+Organization settings also support a more favorable final-pay deadline (0–30
+calendar days), audited separately from notice policy. Individual cases can
+shorten it further. The clock starts at effective separation, not clearance or
+execution. Favorable deadlines cannot be extended; outstanding balances retain
+overdue tracking. Applicable 13th-month December 24 timing is displayed for
+separate review, including prior-payment/partial-payment allocation.
+
+`20261024000400_employee_final_pay` adds only a nullable organization policy field
+and three new tables. Its custom restrictive tenant FKs, unique indexes and
+history/payment validation triggers must be retained in later migrations.
+`node scripts/final-pay-recovery.cjs apply` applies only that migration on the
+verified recovery target and compares pre-existing data fingerprints.
+`npm run test:final-pay` uses rollback fixtures. After a recovery build,
+`npm run test:final-pay-interface` exercises rendered HTML and real Server Actions.
+See `docs/final-pay/legal-basis.md` for authoritative sources, supported inputs
+and explicitly unsupported calculations/corrections.
+
+There is no scheduler. HR uses the existing Exit Management interface and Server
+Actions for explicit approval and execution. Rehire/reactivation is outside
 H10.2 and is not enabled by completion.
 
 ## Integration tests
+
+### Phase 3: Employee resignation through ESS
+
+Active employees with a current active ESS account and recorded employment can
+submit a reason, proposed last working day and effective date. The server records
+the notice date in the organization timezone. Required fields/calendar dates,
+employment interval and last-day/exclusive-effective ordering are validated.
+Missing notice policy or short notice does not prevent lodging the notice; the
+existing HR policy, exception, documentary-review and readiness rules remain in
+force during processing. SAGA's calendar month and both reviews are preserved.
+
+`ess-resignation-service.ts` derives session/tenant identity on the server. Its
+internal factory rechecks the actual user, account, employee and organization in
+the transaction, sharing employee/account/user row locks with eligibility changes.
+Employees cannot submit another employee/tenant ID, choose a notice date, forge
+HR review, edit the lodged notice, or read HR audits/legal notes/final-pay data.
+One active case per employee and actor-scoped request-key replay protect against
+duplicate notices, including alongside HR-managed exit cases.
+
+The existing dashboard **Requires Attention** queue provides durable in-app HR
+notification from unacknowledged ESS cases (bounded to 15 per tenant view). This
+reuses the current queue rather than introducing a second notification inbox,
+email sender or parallel resignation lifecycle. HR sees each notice in the
+existing Exit list/detail page and can record a receipt message visible to the
+employee. Acknowledgment does not change case state, satisfy either SAGA review,
+clear clearance items, grant permission to resign, change access, or create final
+pay. It is not a prerequisite for administrative readiness/approval/execution.
+
+The original notice and submitted reason/dates are preserved by a snapshot and
+database checks/triggers. HR can add processing remarks, resolve initially missing
+policy, record applicable exceptions/reviews, and use the existing lifecycle.
+Corrections/withdrawal require coordination with HR; this phase does not expose
+employee editing/withdrawal actions. A verified employee withdrawal can be recorded
+through the existing HR cancellation action, retaining its evidence in audit.
+
+Employee tracking exposes only their own ESS notices, status, receipt message,
+notice compliance and clearance counts, with bounded pagination. Internal HR
+remarks, review evidence, audit history and finance details remain private. Only
+normal explicit execution revokes ESS; afterward HR retains the same case and
+Phase 2 final-pay management. No access change or financial calculation occurs on
+submission or acknowledgment.
+
+`20261024000500_ess_resignation_notice` adds provenance/receipt metadata, a scoped
+FK/index and protection constraints/triggers to the existing case table. It adds
+no second notice/case table. Apply only through the verified recovery helper:
+`node scripts/ess-resignation-recovery.cjs apply`. Run
+`npm run test:ess-resignation`, and after a recovery build,
+`npm run test:ess-resignation-interface`. Both use rollback fixtures and record
+preservation evidence under `docs/ess-resignation/`. See the implementation report
+there for exact manual steps and coverage limits.
 
 `npm run test:h10-1` creates a cryptographically random `h10_test_*` schema,
 applies historical migrations unchanged plus H10.1, and removes only that schema

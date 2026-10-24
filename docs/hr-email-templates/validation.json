@@ -1,0 +1,14 @@
+{
+    "templateAssertions":  117,
+    "existingIntegrationAssertions":  125,
+    "browserAssertions":  28,
+    "passed":  true,
+    "typescript":  "passed",
+    "eslint":  "passed",
+    "recoveryReadOnlyBuild":  "passed",
+    "tablesUnchanged":  63,
+    "existingDataUnchanged":  true,
+    "delivery":  "Mocked Gmail and SMTP; no real delivery",
+    "htmlPreviews":  15,
+    "plainTextPreviews":  15
+}

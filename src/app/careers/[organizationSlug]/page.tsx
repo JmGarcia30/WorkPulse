@@ -8,7 +8,8 @@ import { OrganizationHeader } from '@/components/layout/OrganizationHeader';
 import { Search, MapPin, Briefcase, Calendar, ArrowRight } from 'lucide-react';
 import { getOrganizationBranding } from '@/features/organization-branding/read-model';
 import { TenantTheme } from '@/components/layout/TenantTheme';
-import { databaseSlugForTenant, parsePlatformHost } from '@/lib/tenant/host';
+import { databaseSlugForTenant, classifyRequestHost } from '@/lib/tenant/host';
+import { candidatePortalMatchesRequestTenant } from '@/features/hiring/document-access';
 
 interface OrganizationCareersPageProps {
   params: Promise<{ organizationSlug: string }>;
@@ -19,6 +20,7 @@ export async function generateMetadata({
   params,
 }: OrganizationCareersPageProps): Promise<Metadata> {
   const { organizationSlug } = await params;
+  if (!await candidatePortalMatchesRequestTenant(organizationSlug)) notFound();
   const org = await prisma.organization.findUnique({
     where: { slug: databaseSlugForTenant(organizationSlug) },
     select: { name: true, description: true, careersEnabled: true },
@@ -41,14 +43,14 @@ export default async function OrganizationCareersPage({
   searchParams,
 }: OrganizationCareersPageProps) {
   const { organizationSlug } = await params;
+  if (!await candidatePortalMatchesRequestTenant(organizationSlug)) notFound();
   const { search } = await searchParams;
   const searchQuery = search?.trim();
 
   // If SAGA, seamlessly redirect to the official SAGA institutional workspace landing page (#careers section)
   if (organizationSlug === 'saga' || organizationSlug === 'st-aloysius') {
     const requestHeaders = await headers();
-    const host = requestHeaders.get('x-forwarded-host') || requestHeaders.get('host') || '';
-    const parsed = parsePlatformHost(host);
+    const parsed = classifyRequestHost(requestHeaders);
     redirect(parsed.kind === 'tenant' ? '/#careers' : '/saga#careers');
   }
 

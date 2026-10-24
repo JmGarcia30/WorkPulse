@@ -16,11 +16,13 @@ import { TenantLogo } from '@/components/layout/TenantLogo';
 import { TenantNavigation } from './TenantNavigation';
 import styles from './tenant-entry.module.css';
 
-export const metadata: Metadata = {
-  title: 'St. Aloysius Gonzaga Academy | Institutional Workspace',
-  description:
-    'Official workforce operations, faculty portal, and career opportunities for St. Aloysius Gonzaga Academy, Inc.',
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const tenant = await requireRequestTenant();
+  return tenant.slug === 'st-aloysius' ? {
+    title: 'St. Aloysius Gonzaga Academy | Institutional Workspace',
+    description: 'Official workforce operations, faculty portal, and career opportunities for St. Aloysius Gonzaga Academy, Inc.',
+  } : { title: `${tenant.displayName} | WorkPulse workspace`, description: 'Secure organization workspace.' };
+}
 
 export default async function TenantEntryPage() {
   const tenant = await requireRequestTenant();
@@ -29,6 +31,19 @@ export default async function TenantEntryPage() {
   if (session?.organizationId === tenant.organizationId) {
     redirect(landingPathForRole(session.role));
   }
+
+  // New workspaces must not display the institution-specific SAGA landing page.
+  if (tenant.slug !== 'st-aloysius') return <TenantTheme branding={tenant}>
+    <main className="mx-auto flex min-h-screen max-w-xl flex-col items-start justify-center gap-6 px-6 py-12">
+      <TenantLogo branding={tenant} size={88} />
+      <p className="wp-eyebrow">Organization workspace</p>
+      <h1 className="wp-page-title">{tenant.displayName}</h1>
+      <p className="text-[var(--wp-text-muted)]">Secure people operations and employee services for {tenant.displayName}.</p>
+      <Link className="wp-button-primary" href="/login">Sign in to your workspace</Link>
+      {tenant.careersEnabled && <Link className="wp-button-secondary" href={`/careers/${tenant.slug}`}>View career opportunities</Link>}
+      <p className="text-sm text-[var(--wp-text-muted)]">Powered by WorkPulse</p>
+    </main>
+  </TenantTheme>;
 
   const content = getPublicTenantContent(tenant.slug);
   const jobs = tenant.careersEnabled

@@ -290,6 +290,7 @@ async function runTests() {
   const { sendApplicationConfirmationEmail, sendDocumentRejectedEmail, sendDocumentVerifiedEmail } = await import('../src/lib/email');
 
   await sendApplicationConfirmationEmail({
+    organizationId: app.job.organizationId,
     to: 'applicant.test@example.com',
     candidateName: 'Test Applicant',
     jobTitle: 'Math Teacher',
@@ -299,6 +300,7 @@ async function runTests() {
   });
 
   await sendDocumentRejectedEmail({
+    organizationId: app.job.organizationId,
     to: 'applicant.test@example.com',
     candidateName: 'Test Applicant',
     documentTitle: 'Transcript of Records',
@@ -308,6 +310,7 @@ async function runTests() {
   });
 
   await sendDocumentVerifiedEmail({
+    organizationId: app.job.organizationId,
     to: 'applicant.test@example.com',
     candidateName: 'Test Applicant',
     documentTitle: 'Transcript of Records',

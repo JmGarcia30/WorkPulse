@@ -19,7 +19,7 @@ interface EmployeeItem {
 interface CompensationItem {
   id: string;
   compensationType: string;
-  baseRate: number | { toFixed: (digits: number) => string };
+  baseRate: string;
   currency: string;
   payFrequency: string;
   effectiveFrom: Date;
@@ -113,10 +113,7 @@ export function PayrollConfigurationTab({
                 </thead>
                 <tbody className="divide-y divide-slate-100">
                   {compensations.map((record) => {
-                    const rateFormatted =
-                      typeof record.baseRate === 'number'
-                        ? record.baseRate.toFixed(2)
-                        : record.baseRate.toFixed(2);
+                    const rateFormatted = record.baseRate;
 
                     return (
                       <tr key={record.id} className="hover:bg-slate-50/60 transition">

@@ -1,0 +1,12 @@
+{
+  "tablesCompared": 50,
+  "existingDataUnchanged": true,
+  "column": [
+    {
+      "data_type": "jsonb",
+      "is_nullable": "YES",
+      "column_default": null
+    }
+  ],
+  "originalEnvUnchanged": true
+}

@@ -1,0 +1,35 @@
+{
+  "passed": true,
+  "totalAssertions": 130,
+  "evidence": {
+    "tests": {
+      "passed": true,
+      "assertions": 111
+    },
+    "browser-tests": {
+      "passed": true,
+      "assertions": 19
+    },
+    "test-preservation": {
+      "existingDataUnchanged": true,
+      "tablesCompared": 63
+    },
+    "build-preservation": {
+      "existingDataUnchanged": true,
+      "tablesCompared": 63
+    },
+    "browser-preservation": {
+      "existingDataUnchanged": true,
+      "tablesCompared": 63,
+      "syntheticCommittedFixturesRemoved": true,
+      "googleNetworkUsed": false
+    }
+  },
+  "typescriptPassed": true,
+  "buildPassed": true,
+  "targetedESLintPassed": true,
+  "googleCallsSynthetic": true,
+  "originalRecipient": "signed-in HR User.email",
+  "remaining": "Manual confirmation of delivery to a real inbox only",
+  "productionChanged": false
+}

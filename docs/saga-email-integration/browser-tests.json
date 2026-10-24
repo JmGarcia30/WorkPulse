@@ -1,0 +1,30 @@
+{
+  "passed": true,
+  "assertions": 23,
+  "checks": [
+    "HR sidebar exposes Settings → Email Integration",
+    "Settings show disconnected status before authorization",
+    "Email settings fit a mobile viewport",
+    "Actual OAuth redirect requests only send-only Gmail plus email identity",
+    "Central OAuth bridge and callback return to the original tenant with verified account status",
+    "Browser-rendered settings contain no OAuth tokens",
+    "Browser OAuth stores only encrypted credentials for the initiating organization",
+    "Test Email sends through the real Gmail adapter using verified From and current HR recipient",
+    "Connection status persists across browser refresh",
+    "Copied tenant session cannot inspect another organization email settings",
+    "OAuth callback rejects tenant hosts and suppresses referrers",
+    "Disconnect removes the earlier connected banner instead of showing contradictory status",
+    "Disconnect revokes Google authorization and removes stored credentials",
+    "All Google authorization and sending requests were intercepted with synthetic responses",
+    "SAGA HR sees Connect and the unchanged legacy recruitment sender",
+    "SAGA OAuth preserves the saga hostname and does not activate recruitment Gmail",
+    "SAGA activation is disabled until the connection tests successfully",
+    "Real SAGA test action leaves legacy recruitment selected",
+    "Confirmed SAGA activation persists the tested Gmail sender",
+    "Confirmed SAGA revert restores legacy without disconnecting Gmail",
+    "SAGA Disconnect removes credentials and retains its legacy recruitment sender",
+    "Concurrent sends refresh one expired token once and share the updated credential",
+    "Disconnect racing refresh cannot resurrect stored authorization"
+  ],
+  "googleNetworkUsed": false
+}

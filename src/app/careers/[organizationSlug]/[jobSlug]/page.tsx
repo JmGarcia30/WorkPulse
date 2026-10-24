@@ -13,7 +13,8 @@ import {
   ArrowRight,
   ShieldCheck,
 } from 'lucide-react';
-import { databaseSlugForTenant, parsePlatformHost } from '@/lib/tenant/host';
+import { databaseSlugForTenant, classifyRequestHost } from '@/lib/tenant/host';
+import { candidatePortalMatchesRequestTenant } from '@/features/hiring/document-access';
 
 interface JobOpeningPageProps {
   params: Promise<{ organizationSlug: string; jobSlug: string }>;
@@ -23,6 +24,7 @@ export async function generateMetadata({
   params,
 }: JobOpeningPageProps): Promise<Metadata> {
   const { organizationSlug, jobSlug } = await params;
+  if (!await candidatePortalMatchesRequestTenant(organizationSlug)) notFound();
 
   const job = await prisma.job.findFirst({
     where: {
@@ -50,6 +52,7 @@ export async function generateMetadata({
 
 export default async function JobOpeningPage({ params }: JobOpeningPageProps) {
   const { organizationSlug, jobSlug } = await params;
+  if (!await candidatePortalMatchesRequestTenant(organizationSlug)) notFound();
 
   // Strict Multi-Tenant Security Check: Verify Organization & Job Ownership
   const org = await prisma.organization.findUnique({
@@ -79,8 +82,7 @@ export default async function JobOpeningPage({ params }: JobOpeningPageProps) {
   // Determine intelligent back route: always take user back to SAGA landing page careers section
   const isSaga = organizationSlug === 'saga' || organizationSlug === 'st-aloysius';
   const requestHeaders = await headers();
-  const host = requestHeaders.get('x-forwarded-host') || requestHeaders.get('host') || '';
-  const parsed = parsePlatformHost(host);
+  const parsed = classifyRequestHost(requestHeaders);
   const backHref = isSaga
     ? (parsed.kind === 'tenant' ? '/#careers' : '/saga#careers')
     : `/careers/${organizationSlug}`;

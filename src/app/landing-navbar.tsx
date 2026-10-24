@@ -39,8 +39,8 @@ export function LandingNavbar({ workspaceUrl }: { workspaceUrl: string }) {
         </nav>
         <div className={styles.navActions}>
           <a href={workspaceUrl} className={styles.navGhostBtn}>Find Workspace / Sign In</a>
-          <Link href="/request-demo" className={styles.navPrimaryBtn}>
-            <span>Request Demo</span>
+          <Link href="/register" className={styles.navPrimaryBtn}>
+            <span>Create Workspace</span>
             <ArrowRight size={14} />
           </Link>
         </div>
@@ -52,7 +52,7 @@ export function LandingNavbar({ workspaceUrl }: { workspaceUrl: string }) {
             <Link href="#modules">Modules</Link>
             <Link href="#security">Security</Link>
             <a href={workspaceUrl}>Find Workspace / Sign In</a>
-            <Link href="/request-demo" className={styles.mobilePanelPrimary}>Request Demo</Link>
+            <Link href="/register" className={styles.mobilePanelPrimary}>Create Workspace</Link>
           </nav>
         </details>
       </div>

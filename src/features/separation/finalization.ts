@@ -40,11 +40,12 @@ export async function inspectSeparationBoundary(tx: Prisma.TransactionClient, fo
 export async function finalPayReadiness(tx: Prisma.TransactionClient, found: EmployeeSeparationCase) {
   const scope = { organizationId: found.organizationId, employeeId: found.employeeId };
   const effective = found.proposedEffectiveDate;
-  const [clearance, payroll, leaves, employment] = await Promise.all([
+  const [clearance, payroll, leaves, employment, finalPay] = await Promise.all([
     tx.employeeClearanceItem.findMany({ where: { organizationId: found.organizationId, caseId: found.id }, select: { id: true, category: true, title: true, status: true, isRequired: true, remarks: true } }),
     tx.payrollEntry.findMany({ where: { ...scope, OR: [{ status: { not: 'FINALIZED' } }, ...(effective ? [{ payrollPeriod: { periodEnd: { gte: effective } } }] : [])] }, select: { id: true, status: true, payrollPeriodId: true, payrollPeriod: { select: { periodStart: true, periodEnd: true } } } }),
     tx.leaveRequest.findMany({ where: { ...scope, OR: [{ status: 'PENDING' }, { attendanceSyncStatus: 'FAILED' }, ...(effective ? [{ status: 'APPROVED' as const, requestedEndDate: { gte: effective } }] : [])] }, select: { id: true, status: true, requestedStartDate: true, requestedEndDate: true, attendanceSyncStatus: true } }),
     tx.employmentRecord.findFirst({ where: { employeeId: found.employeeId, employee: { organizationId: found.organizationId } }, orderBy: { effectiveFrom: 'asc' }, select: { effectiveFrom: true } }),
+    tx.employeeFinalPay.findFirst({ where: { caseId: found.id, organizationId: found.organizationId }, select: { status: true, netAmount: true, payments: { select: { amount: true } } } }),
   ]);
   const periods = effective && employment ? await tx.payrollPeriod.findMany({ where: {
     organizationId: found.organizationId, periodStart: { lt: effective }, periodEnd: { gte: employment.effectiveFrom },
@@ -61,7 +62,8 @@ export async function finalPayReadiness(tx: Prisma.TransactionClient, found: Emp
     payrollPeriodsRequiringReview: periods.map(period => ({ id: period.id, status: period.status, periodStart: dateOnly(period.periodStart), periodEnd: dateOnly(period.periodEnd) })),
     leaveRecordsRequiringReview: leaves.map(leave => ({ id: leave.id, status: leave.status, from: dateOnly(leave.requestedStartDate), to: dateOnly(leave.requestedEndDate), attendanceSyncStatus: leave.attendanceSyncStatus })),
     status: !effective || unresolved.length || payroll.length || leaves.length || periods.length ? 'FOLLOW_UP_REQUIRED' : 'READY_FOR_FINANCE_REVIEW',
-    calculationStatus: 'NOT_CALCULATED', paymentStatus: 'NOT_RECORDED',
+    calculationStatus: finalPay?.status ?? 'NOT_CALCULATED',
+    paymentStatus: !finalPay || finalPay.status !== 'FINALIZED' ? 'NOT_RECORDED' : finalPay.netAmount!.isZero() ? 'NO_PAYMENT_DUE' : finalPay.payments.reduce((sum, payment) => sum.add(payment.amount), new Prisma.Decimal(0)).eq(finalPay.netAmount!) ? 'PAID' : finalPay.payments.length ? 'PARTIALLY_PAID' : 'UNPAID',
     // Financial follow-up does not create additional institutional exit blockers.
     financialFollowUpBlocksSeparation: false,
   };

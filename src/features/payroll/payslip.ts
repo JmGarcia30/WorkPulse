@@ -1,6 +1,7 @@
 import { EmployeeAccountStatus, PayrollEntryStatus, PayrollPeriodStatus, Prisma, Role } from '@prisma/client';
 import { prisma } from '@/lib/db/prisma';
 import { PayrollError } from './domain';
+import { payrollSnapshotBreakdown } from './snapshot-breakdown';
 
 type PayrollDb = Prisma.TransactionClient | typeof prisma;
 
@@ -66,6 +67,7 @@ function toPayslip(entry: FinalizedEntry) {
   const leaveTreatments = snapshot.leaveSummary?.requests ?? snapshot.policy?.leaveTreatmentsApplied ?? [];
   return {
     entryId: entry.id,
+    breakdown: payrollSnapshotBreakdown(entry.calculationSnapshot),
     employee: {
       name: snapshot.employee?.name ?? `${entry.employee.firstName} ${entry.employee.lastName}`.trim(),
       employeeNumber: snapshot.employee?.employeeNumber ?? entry.employee.employeeNumber,

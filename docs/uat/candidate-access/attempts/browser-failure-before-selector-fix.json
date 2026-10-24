@@ -1,0 +1,10 @@
+{
+  "code": "ERR_ASSERTION",
+  "stage": "Browser recruitment preview link uses authorized endpoint",
+  "locations": [
+    "    at test (G:\\CAPSTONE\\WorkPulse\\scripts\\test-candidate-document-http.cjs:199:5)",
+    "    at async db.$transaction.timeout (G:\\CAPSTONE\\WorkPulse\\scripts\\functional-rollback-browser.cjs:101:9)",
+    "    at async Proxy._transactionWithCallback (G:\\CAPSTONE\\WorkPulse\\node_modules\\@prisma\\client\\runtime\\library.js:130:8120)",
+    "    at async main (G:\\CAPSTONE\\WorkPulse\\scripts\\functional-rollback-browser.cjs:58:5)"
+  ]
+}

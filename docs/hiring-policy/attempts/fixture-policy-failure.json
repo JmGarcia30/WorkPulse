@@ -1,0 +1,6 @@
+{
+  "code": "PrismaClientValidationError",
+  "frames": [
+    "    at async module.exports (G:\\CAPSTONE\\WorkPulse\\scripts\\test-hiring-policy-integration.cjs:77:3)"
+  ]
+}

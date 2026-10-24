@@ -1,0 +1,6 @@
+{
+  "committedHiringMigrationRetained": true,
+  "existingDataUnchanged": true,
+  "tablesCompared": 50,
+  "fixturesRollbackOnly": true
+}

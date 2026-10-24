@@ -45,6 +45,7 @@ export interface ConvertApplicationInput {
   organizationId: string;
   actorUserId: string;
   teachingExpectedEndAt?: Date | null;
+  probationStandardsConfirmed?: boolean;
 }
 
 export interface EmployeeConversionResult {
@@ -234,10 +235,18 @@ async function convertInTransaction(
 
   let probation;
   try {
+    if (draft.probationPolicy.regime === 'PH_GENERAL') {
+      const agreedOffer = application.offers.find(offer => offer.id === draft.employment.acceptedOfferId)!;
+      if (input.probationStandardsConfirmed !== true || !agreedOffer.contractExecutedAt || !agreedOffer.contractSignedByEmployee || !agreedOffer.contractSignedByPresident || agreedOffer.contractExecutedAt.toISOString().slice(0, 10) > agreedOffer.startDate.toISOString().slice(0, 10)) {
+        throw new Error('Confirm that the agreed probation standards were communicated at engagement and the contract was executed by the start date. Late or missing agreement requires HR legal review.');
+      }
+    }
     probation = resolveInitialProbationTerms({
       category: draft.employment.employmentCategory,
       startDate: draft.employment.startDate,
       teachingExpectedEndAt: input.teachingExpectedEndAt,
+      organizationSlug: application.job.organization.slug,
+      policy: draft.probationPolicy,
     });
   } catch (error) {
     throw new EmployeeConversionError(

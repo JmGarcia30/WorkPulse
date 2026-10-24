@@ -156,21 +156,24 @@ export async function verifyRecruitmentDocumentAction(
   const orgSlug = doc.application.job.organization.slug;
   const portalUrl = `${baseUrl}/careers/${orgSlug}/portal/${doc.applicationId}`;
 
+  let warning: string | undefined;
   try {
-    await sendDocumentVerifiedEmail({
+    const delivery = await sendDocumentVerifiedEmail({
+      organizationId: doc.application.job.organizationId,
       to: doc.application.applicant.email,
       candidateName: `${doc.application.applicant.firstName} ${doc.application.applicant.lastName}`,
       documentTitle: doc.title,
       organizationName: doc.application.job.organization.name,
       portalUrl,
     });
-  } catch (err) {
-    console.warn('[Recruitment Document Action] Failed to send verification email notice:', err);
+    if (!delivery.success) warning = 'Document verified, but its notification email was not sent. Check Settings → Email Integration.';
+  } catch {
+    warning = 'Document verified, but notification delivery could not be confirmed. Check email settings and Sent before retrying.';
   }
 
   safeRevalidatePath(`/dashboard/hiring/applicants/${doc.applicationId}`);
   safeRevalidatePath(`/careers/${orgSlug}/portal/${doc.applicationId}`);
-  return { success: true };
+  return { success: true, warning };
 }
 
 /**
@@ -230,8 +233,10 @@ export async function rejectRecruitmentDocumentAction(
   const orgSlug = doc.application.job.organization.slug;
   const portalUrl = `${baseUrl}/careers/${orgSlug}/portal/${doc.applicationId}`;
 
+  let warning: string | undefined;
   try {
-    await sendDocumentRejectedEmail({
+    const delivery = await sendDocumentRejectedEmail({
+      organizationId: doc.application.job.organizationId,
       to: doc.application.applicant.email,
       candidateName: `${doc.application.applicant.firstName} ${doc.application.applicant.lastName}`,
       documentTitle: doc.title,
@@ -239,13 +244,14 @@ export async function rejectRecruitmentDocumentAction(
       portalUrl,
       organizationName: doc.application.job.organization.name,
     });
-  } catch (err) {
-    console.warn('[Recruitment Document Action] Failed to send rejection email notice:', err);
+    if (!delivery.success) warning = 'Document rejected, but its notification email was not sent. Check Settings → Email Integration.';
+  } catch {
+    warning = 'Document rejected, but notification delivery could not be confirmed. Check email settings and Sent before retrying.';
   }
 
   safeRevalidatePath(`/dashboard/hiring/applicants/${doc.applicationId}`);
   safeRevalidatePath(`/careers/${orgSlug}/portal/${doc.applicationId}`);
-  return { success: true };
+  return { success: true, warning };
 }
 
 /**

@@ -2,6 +2,8 @@ import { CompensationStatus, PayrollEntryStatus, PayrollPeriodStatus, Prisma, Ro
 import { prisma } from '@/lib/db/prisma';
 import { PayrollError } from './domain';
 import { resolvePayrollPolicy } from './policy';
+import { lockPayrollPeriod, payrollTransaction } from './transactions';
+import { statutoryEntryIssue } from './statutory-integration';
 
 type PayrollDb = Prisma.TransactionClient | typeof prisma;
 
@@ -15,6 +17,7 @@ async function requirePayrollReviewer(db: PayrollDb, organizationId: string, act
 }
 
 type SnapshotShape = {
+  leaveSummary?: { unpaidDays?: number };
   compensation?: { id?: string };
   policy?: { id?: string; version?: number };
   calculation?: { baseAmount?: string; grossAmount?: string; totalDeductions?: string; netAmount?: string };
@@ -110,6 +113,14 @@ async function assessPeriod(organizationId: string, payrollPeriodId: string, db:
       continue;
     }
     const snapshot = snapshotObject(entry.calculationSnapshot);
+    if (period.status !== PayrollPeriodStatus.FINALIZED && entry.employeeCompensation.compensationType === 'MONTHLY'
+      && (snapshot?.leaveSummary?.unpaidDays ?? 0) > 0) {
+      issues.push({ ...identity, kind: 'SETUP_REQUIRED', message: 'Monthly unpaid leave requires a reviewed salary-reduction method before finalization.' });
+    }
+    if (period.status !== PayrollPeriodStatus.FINALIZED) {
+      const statutoryIssue = await statutoryEntryIssue(db, entry);
+      if (statutoryIssue) issues.push({ ...identity, kind: 'SETUP_REQUIRED', message: statutoryIssue });
+    }
     if (!snapshot || !snapshot.compensation?.id || !snapshot.policy?.id || typeof snapshot.policy.version !== 'number' || !snapshot.calculation) {
       issues.push({ ...identity, kind: 'CALCULATION_ERROR', message: 'The payroll entry has an incomplete calculation snapshot and must be regenerated before finalization.' });
       continue;
@@ -165,6 +176,13 @@ async function assessPeriod(organizationId: string, payrollPeriodId: string, db:
 }
 
 export async function movePayrollPeriodToReview(input: { organizationId: string; actorUserId: string; payrollPeriodId: string }, db: PayrollDb = prisma) {
+  return payrollTransaction(db, async tx => {
+    await lockPayrollPeriod(tx, input.organizationId, input.payrollPeriodId);
+    return moveToReviewInTransaction(input, tx);
+  });
+}
+
+async function moveToReviewInTransaction(input: { organizationId: string; actorUserId: string; payrollPeriodId: string }, db: Prisma.TransactionClient) {
   await requirePayrollReviewer(db, input.organizationId, input.actorUserId);
   const period = await db.payrollPeriod.findFirst({ where: { id: input.payrollPeriodId, organizationId: input.organizationId } });
   if (!period) throw new PayrollError('NOT_FOUND', 'Payroll period not found.');
@@ -178,13 +196,14 @@ export async function movePayrollPeriodToReview(input: { organizationId: string;
 }
 
 async function finalizeInTransaction(input: { organizationId: string; actorUserId: string; payrollPeriodId: string }, db: Prisma.TransactionClient) {
+  await lockPayrollPeriod(db, input.organizationId, input.payrollPeriodId);
   const actor = await requirePayrollReviewer(db, input.organizationId, input.actorUserId);
   const review = await assessPayrollPeriod(input.organizationId, input.payrollPeriodId, db);
   if (review.period.status === PayrollPeriodStatus.FINALIZED) throw new PayrollError('FINALIZED', 'Payroll is already finalized.');
   if (review.period.status !== PayrollPeriodStatus.REVIEW) throw new PayrollError('NOT_IN_REVIEW', 'Move the payroll period to review before finalizing.');
   if (!review.canFinalize) {
     const details = review.issues.map(issue => `${issue.employeeNumber ? `${issue.employeeNumber}: ` : ''}${issue.message}`).join(' ');
-    throw new PayrollError('FINALIZATION_BLOCKED', details || 'Payroll finalization requirements are not complete.');
+    throw new PayrollError(review.issues.some(issue => issue.kind === 'SETUP_REQUIRED') ? 'SETUP_REQUIRED' : 'FINALIZATION_BLOCKED', details || 'Payroll finalization requirements are not complete.');
   }
   const finalizedAt = new Date();
   await db.payrollEntry.updateMany({
@@ -200,6 +219,5 @@ async function finalizeInTransaction(input: { organizationId: string; actorUserI
 
 export async function finalizePayrollPeriod(input: { organizationId: string; actorUserId: string; payrollPeriodId: string; confirmation: string }, db?: PayrollDb) {
   if (input.confirmation !== 'FINALIZE') throw new PayrollError('CONFIRMATION_REQUIRED', 'Explicit finalization confirmation is required.');
-  if (db && '$transaction' in db === false) return finalizeInTransaction(input, db as Prisma.TransactionClient);
-  return prisma.$transaction(tx => finalizeInTransaction(input, tx), { timeout: 120_000 });
+  return payrollTransaction(db ?? prisma, tx => finalizeInTransaction(input, tx));
 }

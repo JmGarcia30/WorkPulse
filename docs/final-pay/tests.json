@@ -1,0 +1,15 @@
+{
+  "passed": true,
+  "scenarios": [
+    "Decimal calculations, 4-decimal leave days, missing inputs, overpayments, negative totals and calendar deadlines are validated without zero assumptions",
+    "Favorable organization deadlines are tenant-scoped, validated and audited without changing SAGA policies",
+    "Single final-pay draft reuses evidence, detects stale inputs, requires HR review/approval and freezes amounts while separation and ESS revocation remain independent",
+    "Append-only partial/full payments are idempotent, prevent overpayment, track overdue/paid-late deadlines and preserve employee/payroll/leave/attendance history",
+    "Database triggers reject edits to finalized amounts, recorded payments and immutable audit history",
+    "Tenant boundaries, action authorization, revoked HR roles, termination-specific reviewed separation pay and explicit zero settlements are enforced",
+    "All fixture changes rolled back and every pre-existing table fingerprint and original environment file remained unchanged"
+  ],
+  "tablesPreserved": 67,
+  "realConcurrentCommits": false,
+  "fixtures": "single outer rollback transaction, nested serialized savepoints"
+}

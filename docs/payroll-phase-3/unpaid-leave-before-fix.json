@@ -1,0 +1,12 @@
+{
+  "verifiedDisposableProbe": true,
+  "monthlyBasic": "35000.00",
+  "approvedLeaveTreatment": "UNPAID",
+  "unpaidDays": 1,
+  "observedCreatedCount": 1,
+  "observedSetupErrors": [],
+  "observedGross": "35000.00",
+  "observedNet": "30473.70",
+  "defect": "Monthly unpaid leave was summarized but neither reduced pay nor blocked generation",
+  "fixtureRolledBack": true
+}

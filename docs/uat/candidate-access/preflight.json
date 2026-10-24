@@ -1,0 +1,23 @@
+{
+  "capturedAt": "2026-10-24T06:52:42.656Z",
+  "branchName": "workpulse-batch0-recovery",
+  "identityMatched": true,
+  "connectionsVerified": 2,
+  "appliedCount": 34,
+  "pending": [
+    "20261021000100_candidate_access"
+  ],
+  "migration": "20261021000100_candidate_access",
+  "parent": [
+    {
+      "data_type": "text",
+      "is_nullable": "NO"
+    }
+  ],
+  "parentKey": [
+    {
+      "definition": "PRIMARY KEY (id)"
+    }
+  ],
+  "additiveSqlSha256": "51c987efcad680b6e25053e795911098a42bded92d58e2b972e2bef5dd92771d"
+}

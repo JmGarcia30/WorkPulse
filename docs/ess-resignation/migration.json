@@ -1,0 +1,5 @@
+{
+  "migration": "20261024000500_ess_resignation_notice",
+  "exitCode": 0,
+  "output": "Prisma schema loaded from .next\\ess-resignation-release-gpj01G\\schema.prisma\nDatasource \"db\": PostgreSQL database \"neondb\", schema \"public\" at \"ep-bitter-queen-azfwx70v.c-3.ap-southeast-1.aws.neon.tech\"\n\n34 migrations found in prisma/migrations\n\nApplying migration `20261024000500_ess_resignation_notice`\n\nThe following migration(s) have been applied:\n\nmigrations/\n  └─ 20261024000500_ess_resignation_notice/\n    └─ migration.sql\n      \nAll migrations have been successfully applied.\nwarn The configuration property `package.json#prisma` is deprecated and will be removed in Prisma 7. Please migrate to a Prisma config file (e.g., `prisma.config.ts`).\nFor more information, see: https://pris.ly/prisma-config\n\nEnvironment variables loaded from .env\n"
+}

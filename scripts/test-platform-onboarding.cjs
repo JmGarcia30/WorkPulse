@@ -1,0 +1,158 @@
+/* eslint-disable @typescript-eslint/no-require-imports -- Synthetic recovery-only auth/onboarding integration tests. */
+const assert = require('node:assert/strict');
+const { randomBytes, randomUUID } = require('node:crypto');
+const { hash, compare } = require('bcryptjs');
+module.exports = async function testOnboarding(db, context) {
+  const onboarding = require('../src/features/platform-admin/onboarding.ts');
+  const actions = require('../src/features/platform-admin/onboarding-actions.ts');
+  const { workspaceSlug } = require('../src/features/platform-admin/onboarding-schema.ts');
+  const tenantSession = require('../src/lib/auth/session.ts');
+  const tenantActions = require('../src/lib/auth/actions.ts');
+  const platform = require('../src/features/platform-admin/service.ts');
+  const platformSession = require('../src/features/platform-admin/session.ts');
+  const emailer = require('../src/lib/email/index.ts');
+  const { hashActivationToken } = require('../src/features/employee-self-service/activation.ts');
+  const prefix = 'onboard-' + randomBytes(6).toString('hex');
+  const secret = randomBytes(24).toString('hex'), checks = [], messages = [];
+  const sender = async input => { messages.push(input); return { success: true }; };
+  const token = message => new URLSearchParams(new URL(message.activationUrl).hash.slice(1)).get('token');
+  const input = suffix => ({ name: 'Synthetic organization ' + suffix, slug: prefix + '-' + suffix, contactEmail: `${prefix}-contact@fixture.invalid`, timeZone: 'Asia/Manila', administratorEmail: `${prefix}-${suffix}@fixture.invalid`, requestKey: randomUUID() });
+  const activation = value => ({ token: value, name: 'Verified synthetic HR administrator', password: secret, passwordConfirmation: secret });
+  const check = (value, scenario) => { assert.ok(value, scenario); checks.push(scenario); console.log('PASS:', scenario); };
+  async function rejects(work, code, scenario) { await assert.rejects(work, error => error.code === code); checks.push(scenario); console.log('PASS:', scenario); }
+  let admin;
+  try {
+    admin = await db.platformAdministrator.create({ data: { email: prefix + '-platform@fixture.invalid', name: 'Synthetic platform operator', passwordHash: await hash(secret, 12) } });
+    for (const slug of ['saga', 'st-aloysius', 'www', 'app', 'api', 'admin', 'platform', 'foo.bar', '-wrong', 'wrong-', 'wrong/route']) check(!workspaceSlug.safeParse(slug).success, 'Workspace validation rejects ' + slug);
+    check(workspaceSlug.parse('  New-Workspace  ') === 'new-workspace', 'Workspace identifiers are normalized consistently');
+    await rejects(() => onboarding.createOrganization(db, admin.id, { ...input('invalid-zone'), timeZone: 'Not/AZone' }, sender), 'INVALID_INPUT', 'Invalid timezone cannot initialize a tenant');
+    const originalRoot = process.env.PLATFORM_ROOT_DOMAIN, originalOrigin = process.env.PLATFORM_PUBLIC_ORIGIN;
+    process.env.PLATFORM_ROOT_DOMAIN = 'sample.vercel.app'; process.env.PLATFORM_PUBLIC_ORIGIN = 'https://sample.vercel.app';
+    await rejects(() => onboarding.createOrganization(db, admin.id, input('unsupported-route'), sender), 'SETUP_REQUIRED', 'Unroutable temporary SAGA-only hosting cannot create tenants');
+    process.env.PLATFORM_ROOT_DOMAIN = originalRoot; process.env.PLATFORM_PUBLIC_ORIGIN = originalOrigin;
+    const first = input('first');
+    const created = await onboarding.createOrganization(db, admin.id, first, sender);
+    const org = await db.organization.findUniqueOrThrow({ where: { id: created.organizationId } });
+    const invite = await db.organizationAdministratorInvitation.findUniqueOrThrow({ where: { organizationId: org.id }, include: { user: true } });
+    check(org.name === first.name && org.contactEmail === first.contactEmail && org.timeZone === first.timeZone && !org.careersEnabled, 'Creation persists essential organization fields and disables careers initially');
+    check(invite.user.role === 'HR_ADMIN' && invite.user.organizationId === org.id && invite.user.passwordHash === null && !invite.activatedAt, 'Initial HR identity has correct tenant and role, with no password or presumed email verification');
+    check(invite.tokenHash === hashActivationToken(token(messages[0])) && invite.deliveryStatus === 'SENT', 'Invitation persists only the hash of its emailed one-time token');
+    check(new URL(messages[0].activationUrl).hostname === org.slug + '.localhost' && !new URL(messages[0].activationUrl).search, 'Activation URL targets the correct workspace and keeps token in fragment');
+    check(Object.keys(created).sort().join(',') === 'organizationId,warning', 'Organization creation exposes no bearer credential');
+    check(org.probationPolicy === null && org.hiringDocumentRequirements === null && org.employeeNumberPrefix === null, 'New organization inherits no SAGA-specific institution configuration');
+    const emptyRelations = await Promise.all(['employee', 'job', 'payrollPeriod', 'payrollEntry', 'organizationPayrollPolicy', 'leaveType', 'workScheduleGroup', 'organizationBranding'].map(table => db[table].count({ where: { organizationId: org.id } })));
+    check(emptyRelations.every(count => count === 0), 'New tenant has no copied employees, hiring, payroll, leave, branding or schedule records');
+    check(await db.platformOrganizationAudit.count({ where: { organizationId: org.id, action: { in: ['ORGANIZATION_CREATED', 'INVITATION_ISSUED', 'INVITATION_SENT'] } } }) === 3, 'Creation, invitation issuance and delivery are audited');
+    const replay = await onboarding.createOrganization(db, admin.id, first, sender);
+    check(replay.organizationId === org.id && messages.length === 1, 'Retry with the same request key returns the existing tenant without duplicate email');
+    await rejects(() => onboarding.createOrganization(db, admin.id, { ...first, name: 'Different details' }, sender), 'IDEMPOTENCY_CONFLICT', 'Idempotency keys cannot be reused with altered details');
+    await rejects(() => onboarding.createOrganization(db, admin.id, { ...input('duplicate'), slug: first.slug.toUpperCase() }, sender), 'DUPLICATE_WORKSPACE', 'Duplicate workspace identifiers are rejected case-insensitively');
+    await rejects(() => onboarding.createOrganization(db, admin.id, { ...input('used-email'), administratorEmail: first.administratorEmail }, sender), 'EMAIL_IN_USE', 'Existing tenant login emails cannot be reassigned');
+    check(await db.organization.count({ where: { slug: prefix + '-used-email' } }) === 0, 'Email conflicts do not leave partially initialized tenants');
+    context.headers = new Headers({ host: first.slug + '.localhost:3000' }); context.jar.clear();
+    const login = new FormData(); login.set('email', first.administratorEmail); login.set('password', secret);
+    check((await tenantActions.loginAction(login)).error, 'Pending HR account cannot sign in before email-link activation');
+    const second = input('second'); await onboarding.createOrganization(db, admin.id, second, sender);
+    const otherOrg = await db.organization.findUniqueOrThrow({ where: { slug: second.slug } });
+    await rejects(() => onboarding.activateOrganizationAdministrator(db, otherOrg.id, activation(token(messages[0]))), 'INVALID_ACTIVATION', 'Activation link cannot be used on another tenant');
+    const activated = await onboarding.activateOrganizationAdministrator(db, org.id, activation(token(messages[0])));
+    const activeInvite = await db.organizationAdministratorInvitation.findUniqueOrThrow({ where: { id: invite.id }, include: { user: true } });
+    check(activated.activated && activeInvite.status === 'ACTIVATED' && activeInvite.tokenHash === null && activeInvite.activatedAt && await compare(secret, activeInvite.user.passwordHash), 'Email-link activation sets a hashed password and consumes the token atomically');
+    await rejects(() => onboarding.activateOrganizationAdministrator(db, org.id, activation(token(messages[0]))), 'INVALID_ACTIVATION', 'Consumed activation tokens cannot be reused');
+    await assert.rejects(() => tenantActions.loginAction(login), error => error.message === 'REDIRECT:/dashboard'); check(true, 'Activated HR administrator signs in through existing tenant authentication');
+    check((await tenantSession.getSession()).role === 'HR_ADMIN', 'Activated account retains exactly the HR administrator role');
+    context.headers = new Headers({ host: 'localhost:3000' });
+    await assert.rejects(() => platformSession.requirePlatformAdministrator(), error => error.message === 'REDIRECT:/platform/login'); check(true, 'Activated HR tenant login grants no platform administrator access');
+    check(await platform.authenticatePlatformAdministrator(db, first.administratorEmail, secret) === null, 'HR credentials cannot authenticate against platform accounts');
+    context.headers = new Headers({ host: second.slug + '.localhost:3000' });
+    check((await tenantActions.loginAction(login)).error, 'HR credentials cannot authenticate into a different workspace');
+    const secondInvite = await db.organizationAdministratorInvitation.findUniqueOrThrow({ where: { organizationId: otherOrg.id } });
+    const oldSecondToken = token(messages[1]);
+    await db.organizationAdministratorInvitation.update({ where: { id: secondInvite.id }, data: { expiresAt: new Date(0), lastIssuedAt: new Date(0) } });
+    await rejects(() => onboarding.activateOrganizationAdministrator(db, otherOrg.id, activation(oldSecondToken)), 'INVALID_ACTIVATION', 'Expired invitation tokens cannot activate accounts');
+    const resendRequest = { organizationId: otherOrg.id, requestKey: randomUUID(), action: 'RESEND' };
+    await Promise.all([onboarding.manageAdministratorInvitation(db, admin.id, resendRequest, sender), onboarding.manageAdministratorInvitation(db, admin.id, resendRequest, sender)]);
+    const resent = await db.organizationAdministratorInvitation.findUniqueOrThrow({ where: { id: secondInvite.id } });
+    check(resent.version === 2 && messages.length === 3, 'Concurrent resend retries rotate once and send one new invitation');
+    await rejects(() => onboarding.activateOrganizationAdministrator(db, otherOrg.id, activation(oldSecondToken)), 'INVALID_ACTIVATION', 'Resend invalidates the previous token immediately');
+    await rejects(() => onboarding.manageAdministratorInvitation(db, admin.id, { ...resendRequest, requestKey: randomUUID() }, sender), 'INVITATION_COOLDOWN', 'Resend cooldown prevents invitation floods');
+    const revokeRequest = { organizationId: otherOrg.id, requestKey: randomUUID(), action: 'REVOKE' };
+    await Promise.all([onboarding.manageAdministratorInvitation(db, admin.id, revokeRequest, sender), onboarding.manageAdministratorInvitation(db, admin.id, revokeRequest, sender)]);
+    check((await db.organizationAdministratorInvitation.findUniqueOrThrow({ where: { id: secondInvite.id } })).status === 'REVOKED', 'Revocation is persistent and idempotent');
+    await rejects(() => onboarding.activateOrganizationAdministrator(db, otherOrg.id, activation(token(messages[2]))), 'INVALID_ACTIVATION', 'Revoked tokens cannot activate accounts');
+    await rejects(() => onboarding.manageAdministratorInvitation(db, admin.id, { organizationId: org.id, requestKey: randomUUID(), action: 'REVOKE' }, sender), 'NOT_PENDING', 'Invitation controls cannot modify activated HR accounts');
+    await rejects(() => onboarding.manageAdministratorInvitation(db, admin.id, { ...revokeRequest, action: 'RESEND' }, sender), 'IDEMPOTENCY_CONFLICT', 'Invitation request keys are bound to organization, actor and action');
+    const concurrent = input('concurrent');
+    const same = await Promise.all([onboarding.createOrganization(db, admin.id, concurrent, sender), onboarding.createOrganization(db, admin.id, concurrent, sender)]);
+    check(same[0].organizationId === same[1].organizationId && await db.organization.count({ where: { slug: concurrent.slug } }) === 1, 'Concurrent create retries produce one fully initialized tenant');
+    const competing = input('competing');
+    const raced = await Promise.allSettled([onboarding.createOrganization(db, admin.id, competing, sender), onboarding.createOrganization(db, admin.id, { ...competing, requestKey: randomUUID(), administratorEmail: prefix + '-race2@fixture.invalid' }, sender)]);
+    check(raced.filter(x => x.status === 'fulfilled').length === 1 && raced.some(x => x.status === 'rejected' && x.reason.code === 'DUPLICATE_WORKSPACE'), 'Competing requests cannot claim the same workspace slug');
+    const failedInput = input('smtp-failed');
+    const failedMail = await onboarding.createOrganization(db, admin.id, failedInput, async () => ({ success: false }));
+    const failedRecord = await db.organizationAdministratorInvitation.findUniqueOrThrow({ where: { organizationId: failedMail.organizationId } });
+    check(failedMail.warning && failedRecord.status === 'PENDING' && failedRecord.deliveryStatus === 'FAILED', 'Email failure leaves a complete pending tenant and an actionable delivery state');
+    const actualDelivery = await emailer.sendOrganizationAdministratorActivationEmail({ to: prefix + '@fixture.invalid', organizationName: 'Synthetic tenant', activationUrl: 'http://fixture.invalid/#token=discarded-synthetic-secret', expiresAt: new Date() });
+    check(!actualDelivery.success && !emailer.getEmailLogs().some(x => x.text.includes('discarded-synthetic-secret')), 'Unconfigured real transport discards secret-bearing mail without preview logging');
+    const atomicInput = input('rollback');
+    const faultDb = new Proxy(db, { get(target, property) {
+      if (property === '$transaction') return (operation, options) => db.$transaction(tx => operation(new Proxy(tx, { get(inner, field) { if (field === 'platformOrganizationAudit') return { createMany: async () => { throw Error('SYNTHETIC_AUDIT_FAILURE'); } }; const value = Reflect.get(inner, field); return typeof value === 'function' ? value.bind(inner) : value; } })), options);
+      const value = Reflect.get(target, property); return typeof value === 'function' ? value.bind(target) : value;
+    } });
+    await assert.rejects(() => onboarding.createOrganization(faultDb, admin.id, atomicInput, sender), /SYNTHETIC_AUDIT_FAILURE/);
+    check(await db.organization.count({ where: { slug: atomicInput.slug } }) === 0 && await db.user.count({ where: { email: atomicInput.administratorEmail } }) === 0, 'Failure inside initialization rolls back organization, user and invitation together');
+    const concurrentInvite = await db.organizationAdministratorInvitation.findUniqueOrThrow({ where: { organizationId: same[0].organizationId } });
+    const concurrentToken = token(messages.find(m => m.to === concurrent.administratorEmail));
+    const activationRace = await Promise.allSettled([onboarding.activateOrganizationAdministrator(db, same[0].organizationId, activation(concurrentToken)), onboarding.activateOrganizationAdministrator(db, same[0].organizationId, activation(concurrentToken))]);
+    check(activationRace.filter(x => x.status === 'fulfilled').length === 1 && await db.platformOrganizationAudit.count({ where: { organizationId: concurrentInvite.organizationId, action: 'INVITATION_ACTIVATED' } }) === 1, 'Concurrent activation is single-use under a database row lock');
+    let releaseOldMail, mailStarted;
+    const mailGate = new Promise(resolve => { releaseOldMail = resolve; });
+    const mailReady = new Promise(resolve => { mailStarted = resolve; });
+    const delayedInput = input('delayed-mail');
+    const delayedCreation = onboarding.createOrganization(db, admin.id, delayedInput, async message => { messages.push(message); mailStarted(); await mailGate; return { success: true }; });
+    await mailReady;
+    const delayedOrg = await db.organization.findUniqueOrThrow({ where: { slug: delayedInput.slug } });
+    const delayedInvite = await db.organizationAdministratorInvitation.findUniqueOrThrow({ where: { organizationId: delayedOrg.id } });
+    let replacementMail;
+    try {
+      await db.organizationAdministratorInvitation.update({ where: { id: delayedInvite.id }, data: { lastIssuedAt: new Date(0) } });
+      await onboarding.manageAdministratorInvitation(db, admin.id, { organizationId: delayedOrg.id, requestKey: randomUUID(), action: 'RESEND' }, async message => { replacementMail = message; messages.push(message); return { success: false }; });
+    } finally { releaseOldMail(); await delayedCreation; }
+    const currentDelivery = await db.organizationAdministratorInvitation.findUniqueOrThrow({ where: { id: delayedInvite.id } });
+    check(currentDelivery.version === 2 && currentDelivery.deliveryStatus === 'FAILED', 'Late acknowledgement of an older email cannot overwrite the latest delivery state');
+    const revokeRace = await Promise.allSettled([
+      onboarding.activateOrganizationAdministrator(db, delayedOrg.id, activation(token(replacementMail))),
+      onboarding.manageAdministratorInvitation(db, admin.id, { organizationId: delayedOrg.id, requestKey: randomUUID(), action: 'REVOKE' }, sender),
+    ]);
+    const racedInvite = await db.organizationAdministratorInvitation.findUniqueOrThrow({ where: { id: delayedInvite.id }, include: { user: true } });
+    check(revokeRace.filter(x => x.status === 'fulfilled').length === 1 && ['ACTIVATED', 'REVOKED'].includes(racedInvite.status) && Boolean(racedInvite.user.passwordHash) === (racedInvite.status === 'ACTIVATED'), 'Activation racing revocation produces one consistent terminal state');
+    // The composite foreign key also prevents linking an invitation to another tenant's user.
+    const unrelatedUser = await db.user.create({ data: { organizationId: org.id, email: prefix + '-unrelated@fixture.invalid', name: 'Synthetic unrelated HR', role: 'ORGANIZATION_ADMIN' } });
+    await assert.rejects(() => db.organizationAdministratorInvitation.update({ where: { id: secondInvite.id }, data: { userId: unrelatedUser.id } }), error => error.code === 'P2003');
+    check(true, 'Database constraints prevent cross-tenant invitation/user linkage');
+    context.jar.clear(); context.headers = new Headers({ host: 'localhost:3000' });
+    await assert.rejects(() => actions.createOrganizationAction({}, new FormData()), error => error.message === 'REDIRECT:/platform/login'); check(true, 'Anonymous callers cannot create organizations through the Server Action');
+    await tenantSession.createSession({ userId: invite.userId, organizationId: org.id, name: activeInvite.user.name, email: first.administratorEmail, role: 'HR_ADMIN' });
+    await assert.rejects(() => actions.manageOrganizationInvitationAction({}, new FormData()), error => error.message === 'REDIRECT:/platform/login'); check(true, 'Organization HR administrators cannot resend or revoke platform onboarding invitations');
+    await rejects(() => onboarding.createOrganization(db, invite.userId, input('unauthorized'), sender), 'FORBIDDEN', 'Service boundary independently rejects tenant identities as platform actors');
+    const platformLogin = await platform.authenticatePlatformAdministrator(db, admin.email, secret);
+    context.jar.set(platformSession.PLATFORM_COOKIE, { value: platformLogin.token });
+    context.headers = new Headers({ host: org.slug + '.localhost:3000' });
+    await assert.rejects(() => actions.createOrganizationAction({}, new FormData()), error => error.message === 'NOT_FOUND'); check(true, 'Platform actions reject tenant hosts even with a platform session');
+    await db.platformAdministrator.update({ where: { id: admin.id }, data: { disabledAt: new Date() } });
+    await rejects(() => onboarding.manageAdministratorInvitation(db, admin.id, { organizationId: failedMail.organizationId, requestKey: randomUUID(), action: 'REVOKE' }, sender), 'FORBIDDEN', 'Disabled platform administrators cannot mutate onboarding');
+    check(await db.organization.count({ where: { slug: { startsWith: prefix } } }) === await db.organizationAdministratorInvitation.count({ where: { organization: { slug: { startsWith: prefix } } } }), 'Every committed synthetic organization has exactly one initialized invitation');
+    const auditRows = await db.platformOrganizationAudit.findMany({ where: { organization: { slug: { startsWith: prefix } } } });
+    check(!JSON.stringify(auditRows).includes(secret) && messages.every(m => !JSON.stringify(auditRows).includes(token(m))), 'Audit records contain no passwords or bearer tokens');
+    return { passed: true, assertions: checks.length, checks, fixturesRemoved: true };
+  } finally {
+    const orgs = await db.organization.findMany({ where: { slug: { startsWith: prefix } }, select: { id: true } });
+    const ids = orgs.map(row => row.id);
+    await db.platformOrganizationAudit.deleteMany({ where: { organizationId: { in: ids } } });
+    await db.organizationAdministratorInvitation.deleteMany({ where: { organizationId: { in: ids } } });
+    await db.user.deleteMany({ where: { organizationId: { in: ids } } });
+    await db.organization.deleteMany({ where: { id: { in: ids } } });
+    if (admin) { await db.platformAdministrator.deleteMany({ where: { id: admin.id } }); await db.platformAuthenticationAttempt.deleteMany({ where: { key: { in: ['platform-login-global', 'login:' + admin.email, 'login:' + prefix + '-first@fixture.invalid'].map(platform.tokenHash) } } }); }
+    context.jar.clear(); context.headers = new Headers({ host: 'localhost:3000' });
+  }
+};

@@ -1,0 +1,4 @@
+{
+  "exitCode": 0,
+  "output": "Prisma schema loaded from .next\\email-integration-migration-mIUCqR\\schema.prisma\nDatasource \"db\": PostgreSQL database \"neondb\", schema \"public\" at \"ep-bitter-queen-azfwx70v.c-3.ap-southeast-1.aws.neon.tech\"\n\n31 migrations found in prisma/migrations\n\nApplying migration `20261024000200_hr_email_delivery`\n\nThe following migration(s) have been applied:\n\nmigrations/\n  └─ 20261024000200_hr_email_delivery/\n    └─ migration.sql\n      \nAll migrations have been successfully applied.\nwarn The configuration property `package.json#prisma` is deprecated and will be removed in Prisma 7. Please migrate to a Prisma config file (e.g., `prisma.config.ts`).\nFor more information, see: https://pris.ly/prisma-config\n\nEnvironment variables loaded from .env\n"
+}

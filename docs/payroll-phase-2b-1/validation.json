@@ -1,0 +1,18 @@
+{
+  "verifiedOn": "2026-10-22",
+  "integrationAssertions": 55,
+  "statutoryCalculatorTests": 93,
+  "birCalculatorTests": 56,
+  "fullProjectTypeScript": "PASS",
+  "targetedEslint": "PASS",
+  "prismaValidation": "PASS",
+  "migrationExistingTablesPreserved": 50,
+  "integrationExistingTablesPreserved": 55,
+  "buildEvidence": "build.json",
+  "productionBuild": "PASS",
+  "buildExistingTablesPreserved": 55,
+  "productionWrites": false,
+  "environmentFilesEdited": false,
+  "productionMigration": false,
+  "pushOrDeployment": false
+}

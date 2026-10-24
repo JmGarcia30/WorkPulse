@@ -1,0 +1,10 @@
+{
+  "exitCode": 0,
+  "mode": "production",
+  "output": [
+    "PASS anonymous portal and both upload actions deny before private reads",
+    "PASS hashed fifteen-minute links, rate limits, expiry and failed delivery deny access",
+    "PASS successful one-time exchange, secure twenty-four-hour cookie, application/tenant binding, invalid staff fallback, revoked/expired session denial",
+    "PASS unverified existing-email submissions and duplicates use neutral receipt without shared identity mutation"
+  ]
+}

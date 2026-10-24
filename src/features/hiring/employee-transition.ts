@@ -1,4 +1,5 @@
 import { prisma } from '@/lib/db/prisma';
+import { resolveAgreedProbationPolicy, type ProbationPolicySnapshot } from '@/features/employees/probation-policy';
 import {
   EmploymentCategory,
   OfferStatus,
@@ -9,6 +10,7 @@ import {
 export interface HiredEmployeeDraft {
   applicationId: string;
   organizationId: string;
+  probationPolicy: ProbationPolicySnapshot;
   applicant: {
     id: string;
     firstName: string;
@@ -71,6 +73,7 @@ export interface HiredEmployeeDraftSource {
     title: string;
     department: string;
     category: EmploymentCategory;
+    organization: { id: string; slug: string };
   };
   offers: Array<{
     id: string;
@@ -85,6 +88,7 @@ export interface HiredEmployeeDraftSource {
     contractExecutedAt: Date | null;
     probationPeriodMonths: number | null;
     probationaryTerms: string | null;
+    probationPolicySnapshot?: unknown;
     updatedAt: Date;
   }>;
   interviews: Array<{ status: string }>;
@@ -112,11 +116,13 @@ export function buildHiredEmployeeDraft(
   }
 
   const acceptedOffer = acceptedOffers[0];
+  const policy = resolveAgreedProbationPolicy({ organization: application.job.organization, category: application.job.category, offer: acceptedOffer });
   const tasks = application.onboarding?.tasks ?? [];
 
   return {
     applicationId: application.id,
     organizationId: application.job.organizationId,
+    probationPolicy: policy,
     applicant: {
       id: application.applicant.id,
       firstName: application.applicant.firstName,
@@ -132,15 +138,14 @@ export function buildHiredEmployeeDraft(
           ? 'TEACHING'
           : 'NON_TEACHING',
       probationPeriodLabel:
-        application.job.category === EmploymentCategory.TEACHING
+        policy.regime === 'SAGA_INSTITUTIONAL' && application.job.category === EmploymentCategory.TEACHING
           ? '1 School Year'
-          : '6 Months',
+          : `${policy.durationMonths} Months`,
       probationDurationMonths:
-        acceptedOffer.probationPeriodMonths ??
-        (application.job.category === EmploymentCategory.NON_TEACHING ? 6 : 0),
-      isRenewable: application.job.category === EmploymentCategory.TEACHING,
+        policy.durationMonths,
+      isRenewable: policy.maxRenewals > 0,
       maxRenewalDurationYears:
-        application.job.category === EmploymentCategory.TEACHING ? 3 : undefined,
+        policy.regime === 'SAGA_INSTITUTIONAL' && application.job.category === EmploymentCategory.TEACHING ? 3 : undefined,
       renewalCount: 0,
       regularizationDecision: 'PENDING',
     },
@@ -193,7 +198,7 @@ export async function prepareHiredEmployeeRecord(
     where: { id: applicationId, job: { organizationId } },
     include: {
       applicant: true,
-      job: true,
+      job: { include: { organization: true } },
       offers: true,
       interviews: { select: { status: true } },
       assessments: { select: { status: true } },

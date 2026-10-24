@@ -1,0 +1,17 @@
+{
+  "configurationKind": "MISSING_ROOT",
+  "rootDomainPresent": false,
+  "publicOriginPresent": false,
+  "originMatchesRoot": false,
+  "httpsPublicOrigin": false,
+  "sessionSecretConfigured": true,
+  "smtpCredentialInputsPresent": true,
+  "vercelProjectFilePresent": false,
+  "domainOwnershipVerified": false,
+  "productionDNSVerified": false,
+  "productionHTTPSVerified": false,
+  "vercelDomainBindingsVerified": false,
+  "realSMTPDeliverabilityVerified": false,
+  "productionOnboardingReady": false,
+  "note": "Local configuration presence is not evidence of domain ownership, DNS, HTTPS, Vercel bindings or mail delivery. No production endpoint or provider was contacted."
+}

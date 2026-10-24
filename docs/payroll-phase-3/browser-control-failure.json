@@ -1,0 +1,25 @@
+{
+  "action": "Generate Payroll",
+  "error": "Cannot read properties of null (reading 'elements')",
+  "buttons": [
+    "Hiring",
+    "Employees",
+    "Attendance",
+    "Leave",
+    "",
+    "",
+    "Create Period",
+    "Generate Payroll",
+    "Overview",
+    "Payroll Processing1",
+    "Configuration & Policies",
+    "P3-monthly · Synthetic monthlySETUP_REQUIRED: review period inputs · SETUP_REQUIRED: verify opening history",
+    "Add earning",
+    "Add net deduction",
+    "Save reviewed period inputs",
+    "Save verified opening history",
+    "Create Payroll Period",
+    "Generate Payroll",
+    "Move to Review"
+  ]
+}

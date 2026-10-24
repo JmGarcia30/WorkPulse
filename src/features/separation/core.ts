@@ -11,9 +11,11 @@ import {
   createSchema, dateOnly, detailsSchema, identifier, itemDetailsSchema,
   parseInput, text, toDate, validateDateOrder, versionSchema,
 } from './domain';
-import { assessNotice, DEFAULT_CLEARANCE, parsePolicySnapshot, resolveSeparationPolicy } from './policy';
+import { assessNotice, parsePolicySnapshot, resolveSeparationPolicy, organizationResignationPolicySchema, readOrganizationResignationPolicy } from './policy';
 import { ACTIVE_SEPARATION_STATUSES, finalPayReadiness, inspectSeparationBoundary } from './finalization';
 import { disableEmployeeAccountInTransaction } from '../employee-self-service/account-state';
+import { createFinalPayOperations } from './final-pay';
+import { createCaseInTransaction } from './case-creation';
 
 type Tx = Prisma.TransactionClient;
 export interface SeparationContext { userId: string; organizationId: string; role: Role }
@@ -52,6 +54,27 @@ export function createSeparationService(db: PrismaClient, resolveContext: () => 
       }
       throw new SeparationError('UNAVAILABLE', 'The separation operation could not be completed.');
     }
+  }
+
+  async function getResignationPolicySettings() {
+    return run(async (tx, context, slug) => {
+      const organization = await tx.organization.findUniqueOrThrow({ where: { id: context.organizationId }, select: { resignationPolicy: true } });
+      return { locked: slug === 'st-aloysius', canEdit: context.role === Role.HR_ADMIN && slug !== 'st-aloysius',
+        configured: readOrganizationResignationPolicy(organization.resignationPolicy),
+        policy: resolveSeparationPolicy(slug, organization.resignationPolicy) };
+    });
+  }
+
+  async function saveResignationPolicy(raw: unknown) {
+    const input = parseInput(organizationResignationPolicySchema, raw);
+    return run(async (tx, context, slug) => {
+      if (context.role !== Role.HR_ADMIN) throw new SeparationError('FORBIDDEN', 'Only the organization HR Administrator can configure resignation notice requirements.');
+      if (slug === 'st-aloysius') throw new SeparationError('INVALID_STATE', 'SAGA uses its existing approved institutional notice policy.');
+      await tx.organization.update({ where: { id: context.organizationId }, data: { resignationPolicy: {
+        version: 1, policy: input, configuredById: context.userId, configuredAt: clock().toISOString(),
+      } } });
+      return { success: true as const };
+    });
   }
 
   async function findCase(tx: Tx, context: SeparationContext, caseId: string) {
@@ -103,8 +126,10 @@ export function createSeparationService(db: PrismaClient, resolveContext: () => 
     if (found.separationType === 'RESIGNATION') {
       const calculated = assessNotice({ separationType: found.separationType, noticeDate: dateOnly(found.noticeDate), proposedEffectiveDate: dateOnly(found.proposedEffectiveDate) }, policy);
       const exceptionValid = calculated === 'EXCEPTION_REQUIRED' && found.noticeCompliance === 'EXCEPTION_RECORDED'
+        && policy.allowNoticeExceptions !== false
         && found.noticeExceptionReason?.trim() && found.noticeExceptionById && found.noticeExceptionAt;
-      if (!(calculated === 'COMPLIANT' && found.noticeCompliance === 'COMPLIANT') && !exceptionValid) blockers.push('NOTICE_NOT_VALIDATED');
+      if (calculated === 'POLICY_REQUIRED') blockers.push('RESIGNATION_POLICY_REQUIRED');
+      else if (!(calculated === 'COMPLIANT' && found.noticeCompliance === 'COMPLIANT') && !exceptionValid) blockers.push('NOTICE_NOT_VALIDATED');
       if (policy.requireNoticeReviews) {
         for (const kind of ['NOTICE_SUPERIOR', 'NOTICE_HRMO'] as const) {
           if (!found.reviews.some(review => review.kind === kind && review.caseVersion === found.versionOfDetails && review.evidence.trim())) blockers.push(`REVIEW_PENDING:${kind}`);
@@ -150,30 +175,7 @@ export function createSeparationService(db: PrismaClient, resolveContext: () => 
     validateDateOrder(input);
     const fingerprint = createHash('sha256').update(JSON.stringify(input)).digest('hex');
     const operation = () => run(async (tx, context, slug) => {
-      const replay = await tx.employeeSeparationCase.findUnique({ where: { organizationId_requestKey: { organizationId: context.organizationId, requestKey: input.requestKey } }, include: caseInclude });
-      if (replay) {
-        if (replay.requestFingerprint !== fingerprint || replay.initiatedById !== context.userId) throw new SeparationError('CONFLICT', 'This request key has already been used.');
-        return caseDTO(replay);
-      }
-      const employee = await tx.employee.findFirst({ where: { id: input.employeeId, organizationId: context.organizationId }, select: employeeSelect });
-      if (!employee) throw new SeparationError('NOT_FOUND', 'Employee is unavailable in this organization.');
-      if (employee.employeeStatus === 'SEPARATED') throw new SeparationError('INVALID_STATE', 'A separated employee cannot have a new active exit case.');
-      if (employee.employeeStatus === 'INACTIVE' && !input.inactiveEmployeeJustification) throw new SeparationError('INVALID_INPUT', 'An inactive employee requires an explicit administrative exit justification.');
-      const active = await tx.employeeSeparationCase.findFirst({ where: { organizationId: context.organizationId, employeeId: employee.id, status: { in: [...ACTIVE_SEPARATION_STATUSES] } }, select: { id: true } });
-      if (active) throw new SeparationError('DUPLICATE_CASE', 'This employee already has an active separation case.');
-      const policy = resolveSeparationPolicy(slug);
-      const created = await tx.employeeSeparationCase.create({ data: {
-        organizationId: context.organizationId, employeeId: employee.id, ...detailData(input),
-        initiatedById: context.userId, noticeCompliance: assessNotice(input, policy), policySnapshot: policy,
-        inactiveEmployeeJustification: input.inactiveEmployeeJustification,
-        requestKey: input.requestKey, requestFingerprint: fingerprint,
-      } });
-      await audit(tx, context, created.id, 'CASE_CREATED', undefined, created);
-      if (input.separationType === 'RESIGNATION') await audit(tx, context, created.id, 'NOTICE_RECORDED', undefined, { noticeDate: created.noticeDate, proposedEffectiveDate: created.proposedEffectiveDate, noticeCompliance: created.noticeCompliance });
-      for (const item of DEFAULT_CLEARANCE) {
-        const clearance = await tx.employeeClearanceItem.create({ data: { ...item, organizationId: context.organizationId, caseId: created.id, isRequired: true, requestKey: `default:${item.category}` } });
-        await audit(tx, context, created.id, 'CLEARANCE_ITEM_CREATED', undefined, clearance);
-      }
+      const created = await createCaseInTransaction(tx, context, slug, input, fingerprint);
       return caseDTO(await findCase(tx, context, created.id));
     });
     try { return await operation(); } catch (error) {
@@ -187,11 +189,22 @@ export function createSeparationService(db: PrismaClient, resolveContext: () => 
   async function updateSeparationCase(raw: VersionInput & { details: CaseDetails; status?: 'IN_PROGRESS' }) {
     const input = parseInput(versionSchema.extend({ details: detailsSchema, status: z.literal('IN_PROGRESS').optional() }).strict(), raw);
     validateDateOrder(input.details);
-    return run(async (tx, context) => {
+    return run(async (tx, context, slug) => {
       const before = await claim(tx, context, input);
+      if (before.submissionSource === 'ESS' && (input.details.separationType !== 'RESIGNATION' || input.details.reason !== before.reason || (input.details.noticeDate ?? null) !== dateOnly(before.noticeDate) || (input.details.proposedLastWorkingDay ?? null) !== dateOnly(before.proposedLastWorkingDay) || (input.details.proposedEffectiveDate ?? null) !== dateOnly(before.proposedEffectiveDate))) {
+        throw new SeparationError('INVALID_STATE', 'The employee-submitted notice is preserved. HR may record processing remarks and review notice compliance, but cannot rewrite or reject the original notice.');
+      }
+      let policy = parsePolicySnapshot(before.policySnapshot);
+      // Only an unconfigured editable case can adopt newly configured terms.
+      // Existing agreed snapshots, reviews and completed cases are never rewritten by settings.
+      if (policy.noticeCalendarMonths === null && policy.noticeCalendarDays == null) {
+        const organization = await tx.organization.findUniqueOrThrow({ where: { id: context.organizationId }, select: { resignationPolicy: true } });
+        policy = resolveSeparationPolicy(slug, organization.resignationPolicy);
+      }
       const updated = await tx.employeeSeparationCase.update({ where: { id: before.id }, data: {
         ...detailData(input.details), status: input.status ?? before.status,
-        noticeCompliance: assessNotice(input.details, parsePolicySnapshot(before.policySnapshot)),
+        policySnapshot: policy,
+        noticeCompliance: assessNotice(input.details, policy),
         // Any details revision invalidates previous notice exceptions and reviews.
         noticeExceptionReason: null, noticeExceptionById: null, noticeExceptionAt: null,
         versionOfDetails: { increment: 1 },
@@ -202,12 +215,27 @@ export function createSeparationService(db: PrismaClient, resolveContext: () => 
     });
   }
 
-  async function cancelSeparationCase(raw: VersionInput & { reason: string }) {
-    const input = parseInput(versionSchema.extend({ reason: text }).strict(), raw);
+  async function cancelSeparationCase(raw: VersionInput & { reason: string; employeeWithdrawalConfirmed?: boolean; employeeWithdrawalEvidence?: string }) {
+    const input = parseInput(versionSchema.extend({ reason: text, employeeWithdrawalConfirmed: z.boolean().optional(), employeeWithdrawalEvidence: text.optional() }).strict(), raw);
     return run(async (tx, context) => {
       const before = await claim(tx, context, input, true);
+      if (before.submissionSource === 'ESS' && (!input.employeeWithdrawalConfirmed || !input.employeeWithdrawalEvidence)) throw new SeparationError('INVALID_INPUT', 'An employee notice cannot be cancelled as an HR rejection. Record a verified employee withdrawal and its evidence.');
       const after = await tx.employeeSeparationCase.update({ where: { id: before.id }, data: { status: 'CANCELLED', cancellationReason: input.reason, cancelledById: context.userId, cancelledAt: new Date() } });
-      await audit(tx, context, before.id, 'CASE_CANCELLED', before, after, input.reason);
+      await audit(tx, context, before.id, 'CASE_CANCELLED', before, { ...after, ...(before.submissionSource === 'ESS' ? { event: 'EMPLOYEE_WITHDRAWAL_RECORDED', employeeWithdrawalEvidence: input.employeeWithdrawalEvidence } : {}) }, input.reason);
+      return caseDTO(await findCase(tx, context, before.id));
+    });
+  }
+
+  async function acknowledgeEmployeeResignation(raw: VersionInput & { remarks: string }) {
+    const input = parseInput(versionSchema.extend({ remarks: text }).strict(), raw);
+    return run(async (tx, context) => {
+      const before = await findCase(tx, context, input.caseId);
+      if (before.submissionSource !== 'ESS' || before.separationType !== 'RESIGNATION') throw new SeparationError('INVALID_STATE', 'This is not an employee-submitted resignation notice.');
+      if (before.acknowledgedAt) return caseDTO(before);
+      if (!['DRAFT', 'IN_PROGRESS', 'READY_FOR_FINAL_REVIEW'].includes(before.status)) throw new SeparationError('INVALID_STATE', 'Receipt acknowledgment is unavailable after administrative approval or case closure.');
+      await claim(tx, context, input, true);
+      const after = await tx.employeeSeparationCase.update({ where: { id: before.id }, data: { acknowledgedById: context.userId, acknowledgedAt: clock(), acknowledgmentRemarks: input.remarks } });
+      await audit(tx, context, before.id, 'CASE_UPDATED', { acknowledgedAt: before.acknowledgedAt }, { event: 'ESS_NOTICE_ACKNOWLEDGED', acknowledgedById: context.userId, acknowledgedAt: after.acknowledgedAt, acknowledgmentRemarks: input.remarks }, 'Acknowledgment records receipt only; it is not acceptance or rejection of resignation.');
       return caseDTO(await findCase(tx, context, before.id));
     });
   }
@@ -216,6 +244,7 @@ export function createSeparationService(db: PrismaClient, resolveContext: () => 
     const input = parseInput(versionSchema.extend({ reason: text }).strict(), raw);
     return run(async (tx, context) => {
       const before = await claim(tx, context, input);
+      if (parsePolicySnapshot(before.policySnapshot).allowNoticeExceptions === false) throw new SeparationError('INVALID_STATE', 'This case notice policy does not permit short-notice exceptions.');
       const calculated = assessNotice({ separationType: before.separationType, noticeDate: dateOnly(before.noticeDate), proposedEffectiveDate: dateOnly(before.proposedEffectiveDate) }, parsePolicySnapshot(before.policySnapshot));
       if (calculated !== 'EXCEPTION_REQUIRED') throw new SeparationError('INVALID_STATE', 'Only a validated short resignation notice can receive an exception.');
       const after = await tx.employeeSeparationCase.update({ where: { id: before.id }, data: { noticeCompliance: 'EXCEPTION_RECORDED', noticeExceptionReason: input.reason, noticeExceptionById: context.userId, noticeExceptionAt: new Date() } });
@@ -343,9 +372,10 @@ export function createSeparationService(db: PrismaClient, resolveContext: () => 
       ]);
       return { total, page: input.page, pageSize: input.pageSize, items: cases.map(found => ({
         id: found.id, employee: dto(found.employee), separationType: found.separationType, status: found.status,
+        submissionSource: found.submissionSource, acknowledgedAt: found.acknowledgedAt?.toISOString() ?? null,
         proposedEffectiveDate: dateOnly(found.proposedEffectiveDate), clearanceProgress: progress(found),
         noticeCompliance: found.noticeCompliance, readiness: readiness(found),
-        noticeReviewStatus: found.separationType !== 'RESIGNATION' ? 'NOT_APPLICABLE' : readiness(found).blockers.some(blocker => blocker.startsWith('NOTICE_') || blocker.startsWith('REVIEW_PENDING:NOTICE_')) ? 'PENDING' : 'RECORDED',
+        noticeReviewStatus: found.separationType !== 'RESIGNATION' ? 'NOT_APPLICABLE' : readiness(found).blockers.some(blocker => blocker === 'RESIGNATION_POLICY_REQUIRED' || blocker.startsWith('NOTICE_') || blocker.startsWith('REVIEW_PENDING:NOTICE_')) ? 'PENDING' : 'RECORDED',
         approvedAt: found.approvedAt?.toISOString() ?? null,
         completedAt: found.completedAt?.toISOString() ?? null,
         createdAt: found.createdAt.toISOString(),
@@ -465,6 +495,9 @@ export function createSeparationService(db: PrismaClient, resolveContext: () => 
   const getCompletedSeparations = (options: { page?: number; pageSize?: number } = {}) => getOrganizationSeparationCases({ ...parseInput(z.object({ page: z.number().int().min(1).max(100000).optional(), pageSize: z.number().int().min(1).max(100).optional() }).strict(), options), status: 'COMPLETED' });
 
   return {
+    ...createFinalPayOperations(run, clock),
+    acknowledgeEmployeeResignation,
+    getResignationPolicySettings, saveResignationPolicy,
     searchSeparationEmployees,
     createSeparationCase, updateSeparationCase, cancelSeparationCase,
     addClearanceItem, updateClearanceItem, recordClearanceDecision,

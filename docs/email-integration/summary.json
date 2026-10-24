@@ -1,0 +1,59 @@
+{
+  "passed": true,
+  "totalAssertions": 252,
+  "suites": {
+    "focused": {
+      "passed": true,
+      "assertions": 68
+    },
+    "browser": {
+      "passed": true,
+      "assertions": 16
+    },
+    "routing": {
+      "passed": true,
+      "assertions": 64
+    },
+    "manualOnboarding": {
+      "passed": true,
+      "assertions": 60
+    },
+    "publicRegistration": {
+      "passed": true,
+      "assertions": 44
+    }
+  },
+  "preservation": {
+    "migrate": {
+      "existingDataUnchanged": true,
+      "tablesCompared": 61
+    },
+    "test": {
+      "existingDataUnchanged": true,
+      "tablesCompared": 63
+    },
+    "build": {
+      "existingDataUnchanged": true,
+      "tablesCompared": 63
+    },
+    "browser": {
+      "existingDataUnchanged": true,
+      "tablesCompared": 63,
+      "syntheticCommittedFixturesRemoved": true,
+      "googleNetworkUsed": false
+    },
+    "regression": {
+      "existingDataUnchanged": true,
+      "tablesCompared": 63
+    }
+  },
+  "staticChecks": {
+    "applicationBuild": true,
+    "typescript": true,
+    "targetedESLint": true,
+    "prismaValidation": true
+  },
+  "googleCallsSynthetic": true,
+  "liveGoogleSetupRequired": true,
+  "productionChanged": false
+}

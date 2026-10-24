@@ -1,0 +1,6 @@
+{
+  "passed": true,
+  "assertions": 55,
+  "rollbackFixtures": true,
+  "concurrencyFixturesRemoved": true
+}

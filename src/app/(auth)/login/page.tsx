@@ -40,7 +40,7 @@ export default async function LoginPage() {
             <h2>Welcome back</h2>
             <p className={styles.formIntro}>Sign in to your organization workspace.</p>
             <TenantLoginForm />
-            <Link href="/" className={styles.backLink}>Back to SAGA workspace</Link>
+            <Link href="/" className={styles.backLink}>{tenant.slug === 'st-aloysius' ? 'Back to SAGA workspace' : `Back to ${tenant.displayName} workspace`}</Link>
           </div>
         </section>
       </main>

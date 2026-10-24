@@ -28,7 +28,8 @@ export async function separationAction(_previous: ExitActionState, form: FormDat
       case 'addItem': result = await service.addClearanceItem({ ...version, requestKey: value('requestKey'), item: { category: value('category'), title: value('title'), description: optional('description'), responsibleUnit: optional('responsibleUnit'), isRequired: value('isRequired') === 'on' } }); break;
       case 'review': result = await service.recordSeparationReview({ ...version, kind: value('kind') as SeparationReviewKind, evidence: value('evidence'), verified: value('verified') === 'on' }); break;
       case 'exception': result = await service.recordNoticeException({ ...version, reason: value('reason') }); break;
-      case 'cancel': result = await service.cancelSeparationCase({ ...version, reason: value('reason') }); break;
+      case 'acknowledge': result = await service.acknowledgeEmployeeResignation({ ...version, remarks: value('remarks') }); break;
+      case 'cancel': result = await service.cancelSeparationCase({ ...version, reason: value('reason'), employeeWithdrawalConfirmed: value('employeeWithdrawalConfirmed') === 'on', employeeWithdrawalEvidence: optional('employeeWithdrawalEvidence') }); break;
       case 'ready': result = await service.markReadyForFinalReview(version); break;
       case 'approve':
         if (value('confirmed') !== 'on') return { error: 'Confirm the approval decision before submitting.' };
@@ -39,6 +40,8 @@ export async function separationAction(_previous: ExitActionState, form: FormDat
       default: return { error: 'Unknown separation action.' };
     }
     revalidatePath('/dashboard/employees/exit', 'layout');
+    revalidatePath('/employee/resignation');
+    revalidatePath('/dashboard');
     return { success: 'Saved. The latest case information is shown below.', caseId: result.id };
   } catch (error) {
     if (error instanceof SeparationError) return { error: error.code === 'CONFLICT' ? 'This case changed. Reload the page and review the latest information before submitting again.' : error.message };

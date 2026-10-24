@@ -180,7 +180,7 @@ export function PayrollProcessingTab({
             <span>Step 2 · Calculation Engine</span>
           </div>
           <h2 className="text-base font-bold text-slate-900 mt-1">
-            Generate or Recalculate Payroll
+            Generate Payroll
           </h2>
           <p className="text-xs text-slate-500 mt-0.5">
             Resolve compensation records, summarize attendance logs, compute deduction policies, and generate entries.
@@ -189,7 +189,7 @@ export function PayrollProcessingTab({
 
         {selectedPeriod?.status !== 'FINALIZED' ? (
           <PayrollGenerationForm
-            periods={periods.map((p) => ({ id: p.id, name: p.name }))}
+            periods={periods.filter(p => p.status !== 'FINALIZED').map((p) => ({ id: p.id, name: p.name }))}
             selectedPeriodId={selectedPeriod?.id}
           />
         ) : (
@@ -241,6 +241,7 @@ export function PayrollProcessingTab({
           {/* Review Issues Alert */}
           {review.issues.length > 0 && (
             <div role="alert" className="rounded-xl border border-red-200 bg-red-50/60 p-4 text-xs text-red-900 space-y-2">
+              <a href="#statutory-setup" className="inline-block font-bold underline">Review statutory inputs and opening history</a>
               <div className="flex items-center gap-2 font-bold text-red-950">
                 <ShieldAlert className="h-4 w-4 text-red-600" />
                 <span>What needs to be resolved before finalization ({review.issues.length}):</span>

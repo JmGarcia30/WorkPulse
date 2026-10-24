@@ -1,0 +1,12 @@
+{
+  "integration": {
+    "passed": true,
+    "assertions": 55,
+    "rollbackFixtures": true,
+    "concurrencyFixturesRemoved": true
+  },
+  "presentation": {
+    "assertions": 28,
+    "passed": true
+  }
+}

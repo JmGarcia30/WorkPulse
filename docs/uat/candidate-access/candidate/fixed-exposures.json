@@ -1,0 +1,33 @@
+{
+  "candidateOwnershipProofMissing": false,
+  "secureAcrossAllPaths": true,
+  "findings": [
+    {
+      "path": "candidate recruitment upload",
+      "matchingIdsWithoutCandidateCredentialCanWrite": false
+    },
+    {
+      "path": "candidate onboarding upload",
+      "matchingIdsWithoutCandidateCredentialCanWrite": false
+    },
+    {
+      "path": "candidate portal data Server Action",
+      "matchingIdsExposeIdentityWithoutCandidateCredential": false
+    },
+    {
+      "path": "recruitment-documents",
+      "matchingIdsReturnFileWithoutCandidateCredential": false,
+      "status": 403
+    },
+    {
+      "path": "onboarding-documents",
+      "matchingIdsReturnFileWithoutCandidateCredential": false,
+      "status": 403
+    },
+    {
+      "path": "public initial application",
+      "suppliedEmailWithoutOwnershipProofChangesSharedApplicantIdentityAcrossOrganizations": false
+    }
+  ],
+  "liveBlobAndEmailTested": false
+}

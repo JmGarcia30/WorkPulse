@@ -1,6 +1,7 @@
 import { EmploymentStatus, LeaveCountingMode, LeaveOccurrenceScope, Prisma } from '@prisma/client';
 import { prisma } from '@/lib/db/prisma';
 import { LeaveError } from './domain';
+import { isSagaLeaveOrganization } from './organization-policy';
 
 const MANUAL = 'SAGA Administration Manual — Leave Benefits';
 
@@ -63,7 +64,8 @@ export async function configureSagaLeavePolicy(input: { organizationId: string; 
   const actor = await prisma.user.findFirst({ where: { id: input.actorUserId, organizationId: input.organizationId, role: { in: ['ORGANIZATION_ADMIN', 'HR_ADMIN'] } } });
   if (!actor) throw new LeaveError('FORBIDDEN', 'Unauthorized to configure SAGA leave policy.');
   const organization = await prisma.organization.findUnique({ where: { id: input.organizationId } });
-  if (!organization || organization.slug !== 'st-aloysius') throw new LeaveError('NOT_SAGA', 'The SAGA policy can only be applied to the SAGA organization.');
+  if (!isSagaLeaveOrganization(organization)) throw new LeaveError('NOT_SAGA', 'The SAGA policy can only be applied to the SAGA organization.');
+  if (!Number.isInteger(input.year) || input.year < 1900 || input.year > 9999) throw new LeaveError('INVALID_YEAR', 'Enter a valid policy year.');
   return prisma.$transaction(async (tx) => {
     const configured = [];
     for (const definition of SAGA_LEAVE_TYPES) {

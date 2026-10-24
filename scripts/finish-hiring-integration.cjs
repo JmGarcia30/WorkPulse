@@ -1,0 +1,25 @@
+/* eslint-disable @typescript-eslint/no-require-imports -- Reuse committed Hiring scenarios on migrated recovery schema. */
+const fs = require('node:fs'), path = require('node:path'), Module = require('node:module');
+const helper = require('./batch0-recovery-environment.cjs');
+const config = helper.configuration();
+const target = JSON.parse(fs.readFileSync('docs/hiring-policy/release/target.json'));
+if (target.identity.endpointSha256 !== config.identity.endpointSha256 || !target.connections[0].history.some(row => row.migration_name === '20261022000100_hiring_document_policy' && row.finished && !row.rolled_back)) throw Error('MIGRATED_RECOVERY_NOT_VERIFIED');
+let source = fs.readFileSync('scripts/functional-rollback-browser.cjs', 'utf8');
+source = source.replace(/^const directory = .*;$/m, "const directory = 'docs/hiring-policy/release/integration';");
+source = source.replace('      if (candidateOnly) {', `      const releaseSave = (name,value) => save(name,name === 'policy-result' ? {...value,migrationTestedInsideRollbackOnly:false,testedOnCommittedHiringMigration:true} : value);
+      await require('./test-hiring-policy-integration.cjs')({tx,org,foreign,users,primary,job,candidate,session,port,tenantHost,save:releaseSave,ok});
+      await session.close(); session=null;
+      await new Promise(resolve=>server.close(resolve)); server=null;
+      await app.close(); app=null;
+      throw rollback;
+      if (candidateOnly) {`);
+source = source.replace('    await db.$disconnect(); helper.assertOriginalUnchanged(config);', `    const before = JSON.parse(fs.readFileSync('docs/hiring-policy/release/data-before.json'));
+    const after = await helper.fingerprints(db, before.columns);
+    const unchanged = JSON.stringify(before.tables) === JSON.stringify(after.tables);
+    const columns = await db.$queryRawUnsafe("SELECT count(*)::int AS count FROM information_schema.columns WHERE table_schema='public' AND table_name='Organization' AND column_name='hiringDocumentRequirements'");
+    save('migrated-schema-result', {committedHiringMigrationRetained:columns[0].count===1,existingDataUnchanged:unchanged,tablesCompared:before.tables.length,fixturesRollbackOnly:true});
+    await db.$disconnect(); helper.assertOriginalUnchanged(config);
+    if(!unchanged || columns[0].count!==1)throw Error('POST_FIXTURE_DATA_OR_SCHEMA_CHANGED');`);
+for (const name of ['FR_IDENTITY_REVIEW', 'FR_CANDIDATE_DOCUMENTS', 'FR_PROFILE_SECURITY', 'FR_SECURITY_BASELINE', 'FR_ROLE_ONLY']) delete process.env[name];
+const filename = path.resolve('scripts/functional-rollback-browser.cjs');
+const mod = new Module(filename, module); mod.filename = filename; mod.paths = module.paths; mod._compile(source, filename);

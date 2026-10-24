@@ -2,13 +2,14 @@ import { LeaveRequestStatus, Prisma } from '@prisma/client';
 import { decimalNumber } from './domain';
 import { parseLeavePolicy } from './policy';
 import { attendanceDateToDb } from '@/features/attendance/domain';
+import { isSagaLeaveOrganization } from './organization-policy';
 
 type LeaveReadDb = Pick<Prisma.TransactionClient, 'leaveType' | 'leaveRequest' | 'leaveLedgerEntry' | 'employmentRecord'>;
 
 export async function getEmployeeLeaveOverviewData(db: LeaveReadDb, organizationId: string, employeeId: string, options: { recentRequests?: number } = {}) {
   const today = attendanceDateToDb(new Date().toISOString().slice(0, 10));
   const [types, requests, currentEmployment] = await Promise.all([
-    db.leaveType.findMany({ where: { organizationId, isActive: true }, include: { cycles: { where: { isClosed: false }, orderBy: { startDate: 'desc' } } }, orderBy: { name: 'asc' } }),
+    db.leaveType.findMany({ where: { organizationId, isActive: true }, include: { organization: { select: { slug: true } }, cycles: { where: { isClosed: false }, orderBy: { startDate: 'desc' } } }, orderBy: { name: 'asc' } }),
     db.leaveRequest.findMany({ where: { organizationId, employeeId }, orderBy: [{ submittedAt: 'desc' }, { id: 'desc' }], ...(options.recentRequests === undefined ? {} : { take: options.recentRequests }), select: { id: true, leaveTypeNameSnapshot: true, requestCategoryCode: true, requestedStartDate: true, requestedEndDate: true, requestedUnits: true, status: true, submittedAt: true, reviewerRemarks: true, attendanceSyncStatus: true, _count: { select: { documents: true } } } }),
     db.employmentRecord.findFirst({ where: { employeeId, effectiveFrom: { lte: today }, OR: [{ effectiveTo: null }, { effectiveTo: { gt: today } }] }, orderBy: { effectiveFrom: 'desc' }, select: { employmentStatus: true } }),
   ]);
@@ -28,7 +29,7 @@ export async function getEmployeeLeaveOverviewData(db: LeaveReadDb, organization
     const cycleKey = key(type.id, cycle.id);
     const ledger = ledgerByCycle.get(cycleKey), pending = pendingByCycle.get(cycleKey), defaultGrant = grantByCycle.get(cycleKey);
     const uncalculatedPending = pending ? pending._count._all - pending._count.requestedUnits : 0;
-    const eligibleProjection = type.code === 'SICK_PERSONAL' && currentEmployment?.employmentStatus === 'REGULAR' && !defaultGrant && type.defaultGrantUnits;
+    const eligibleProjection = isSagaLeaveOrganization(type.organization) && type.code === 'SICK_PERSONAL' && currentEmployment?.employmentStatus === 'REGULAR' && !defaultGrant && type.defaultGrantUnits;
     const entitlement = defaultGrant ? decimalNumber(defaultGrant.amountUnits) : eligibleProjection ? decimalNumber(type.defaultGrantUnits) : 0;
     const current = decimalNumber(ledger?._sum.amountUnits ?? null) + (eligibleProjection ? decimalNumber(type.defaultGrantUnits) : 0);
     const pendingUnits = decimalNumber(pending?._sum.requestedUnits ?? null);

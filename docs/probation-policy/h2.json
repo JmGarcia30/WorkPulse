@@ -1,0 +1,10 @@
+{
+  "passed": true,
+  "branchId": "br-broad-forest-az55xwfe",
+  "scenarios": [
+    "H2 existing regression assertions pass with explicit SAGA identity",
+    "Rollback confirmed; all pre-existing database records and policy snapshots are unchanged"
+  ],
+  "tablesPreserved": 50,
+  "concurrency": "transaction fixtures serialized; no independent-commit concurrency claim"
+}

@@ -13,9 +13,7 @@ import {
   FileText,
   Plus,
   Calendar,
-  DollarSign,
   User,
-  CheckCircle2,
   Clock,
   ArrowRightLeft,
   ShieldCheck,
@@ -31,6 +29,7 @@ export interface CandidateOfferItem {
   benefits: string | null;
   allowances: string | null;
   additionalTerms: string | null;
+  probationaryTerms?: string | null;
   notes: string | null;
   status: OfferStatus;
   createdAt: Date | string;
@@ -61,7 +60,6 @@ export function CandidateOffersSection({
   jobTitle,
   offers,
   canManage,
-  canApprove,
 }: CandidateOffersSectionProps) {
   const [isCreateOpen, setIsCreateOpen] = useState(false);
   const [selectedOfferForStatus, setSelectedOfferForStatus] =
@@ -199,6 +197,7 @@ export function CandidateOffersSection({
                   </div>
                 )}
 
+                {offer.probationaryTerms && <p className="rounded-lg border bg-white p-3 text-sm whitespace-pre-wrap"><strong>Agreed probation terms:</strong> {offer.probationaryTerms}</p>}
                 {/* Benefits / Terms */}
                 {(offer.benefits || offer.allowances || offer.additionalTerms) && (
                   <div className="rounded-lg bg-white p-3 border border-slate-100 space-y-1.5 text-sm">

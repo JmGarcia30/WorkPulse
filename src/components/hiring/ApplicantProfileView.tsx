@@ -426,7 +426,7 @@ export function ApplicantProfileView({
 
         {/* Right Column: Information Panel (approx 28% on desktop) */}
         <div className="min-w-0 lg:col-span-4 space-y-6">
-          <ApplicantRightSidebar
+          <ApplicantRightSidebar isSagaOrganization={isSaga} probationTerms={application.offers.find(offer => offer.status === 'ACCEPTED')?.probationaryTerms}
             applicationId={application.id}
             candidateName={candidateFullName}
             jobTitle={application.job.title}

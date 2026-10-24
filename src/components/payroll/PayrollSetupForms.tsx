@@ -5,7 +5,7 @@ import { createCompensationAction, createPayrollPeriodAction, createPayrollPolic
 
 const initialState: PayrollActionState = {};
 
-function StatusMessage({ state }: { state: PayrollActionState }) {
+export function StatusMessage({ state }: { state: PayrollActionState }) {
   if (!state.error && !state.success) return null;
   return <p role={state.error ? 'alert' : 'status'} className={`rounded-xl px-3 py-2 text-xs ${state.error ? 'bg-red-50 text-red-800' : 'bg-emerald-50 text-emerald-800'}`}>{state.error ?? state.success}</p>;
 }
@@ -16,8 +16,8 @@ export function CompensationForm({ employees }: { employees: Array<{ id: string;
     <div className="md:col-span-2 xl:col-span-3"><StatusMessage state={state} /></div>
     <label className="grid gap-1 text-xs font-semibold">Employee<select name="employeeId" required className="rounded-xl border bg-white px-3 py-2.5 font-normal"><option value="">Select an employee</option>{employees.map(employee => <option key={employee.id} value={employee.id}>{employee.employeeNumber} — {employee.firstName} {employee.lastName}</option>)}</select></label>
     <label className="grid gap-1 text-xs font-semibold">Compensation type<select name="compensationType" className="rounded-xl border bg-white px-3 py-2.5 font-normal"><option value="MONTHLY">Monthly</option><option value="DAILY">Daily</option></select></label>
-    <label className="grid gap-1 text-xs font-semibold">Base rate<input name="baseRate" type="number" min="0.01" step="0.01" required className="rounded-xl border bg-white px-3 py-2.5 font-normal" /></label>
-    <label className="grid gap-1 text-xs font-semibold">Pay frequency<select name="payFrequency" className="rounded-xl border bg-white px-3 py-2.5 font-normal"><option value="MONTHLY">Monthly</option><option value="BIWEEKLY">Biweekly</option><option value="WEEKLY">Weekly</option><option value="ANNUAL">Annual</option></select></label>
+    <label className="grid gap-1 text-xs font-semibold">Base rate (full monthly salary for semi-monthly)<input name="baseRate" type="number" min="0.01" step="0.01" required className="rounded-xl border bg-white px-3 py-2.5 font-normal" /></label>
+    <label className="grid gap-1 text-xs font-semibold">Pay frequency<select name="payFrequency" className="rounded-xl border bg-white px-3 py-2.5 font-normal"><option value="MONTHLY">Monthly</option><option value="SEMI_MONTHLY">Semi-monthly (monthly rate)</option><option value="BIWEEKLY">Biweekly</option><option value="WEEKLY">Weekly</option><option value="ANNUAL">Annual</option></select></label>
     <label className="grid gap-1 text-xs font-semibold">Currency<input name="currency" defaultValue="PHP" maxLength={3} required className="rounded-xl border bg-white px-3 py-2.5 font-normal uppercase" /></label>
     <label className="grid gap-1 text-xs font-semibold">Effective date<input name="effectiveFrom" type="date" required className="rounded-xl border bg-white px-3 py-2.5 font-normal" /></label>
     <button disabled={pending || employees.length === 0} className="self-end rounded-xl bg-slate-900 px-4 py-2.5 text-xs font-bold text-white disabled:opacity-50">{pending ? 'Saving…' : 'Add Compensation'}</button>
@@ -38,14 +38,14 @@ export function PayrollPeriodForm() {
 
 export function PayrollGenerationForm({ periods, selectedPeriodId, disabled = false }: { periods: Array<{ id: string; name: string }>; selectedPeriodId?: string; disabled?: boolean }) {
   const [state, action, pending] = useActionState(generatePayrollAction, initialState);
-  return <form action={action} aria-busy={pending} className="mt-5 grid gap-3 rounded-2xl bg-slate-50 p-4 md:grid-cols-[minmax(0,1fr)_auto]">
+  return <form action={action} aria-busy={pending} onSubmit={event => { if (!window.confirm('Generate payroll and reserve statutory contributions for the selected period? Existing entries remain unchanged.')) event.preventDefault(); }} className="mt-5 grid gap-3 rounded-2xl bg-slate-50 p-4 md:grid-cols-[minmax(0,1fr)_auto]">
     <div className="md:col-span-2">{pending ? <p role="status" className="text-xs text-slate-600">Payroll generation is in progress. Keep this page open until the result appears.</p> : <StatusMessage state={state} />}</div>
     {!pending && state.setupErrors?.length ? <div role="alert" className="md:col-span-2 rounded-xl border border-amber-200 bg-amber-50 p-3 text-xs text-amber-950">
       <p className="font-bold">Setup required for {state.setupErrors.length} {state.setupErrors.length === 1 ? 'employee' : 'employees'}</p>
       <ul className="mt-2 list-disc space-y-1 pl-5">{state.setupErrors.map(item => <li key={`${item.employeeNumber}-${item.message}`}><span className="font-semibold">{item.employeeNumber} · {item.employeeName}:</span> {item.message}</li>)}</ul>
     </div> : null}
     <label className="grid gap-1 text-xs font-semibold">Payroll period<select name="payrollPeriodId" disabled={pending} required defaultValue={selectedPeriodId} className="rounded-xl border bg-white px-3 py-2.5 font-normal"><option value="">Select a period</option>{periods.map(period => <option key={period.id} value={period.id}>{period.name}</option>)}</select></label>
-    <button disabled={pending || periods.length === 0 || disabled} className="self-end rounded-xl bg-emerald-700 px-5 py-2.5 text-xs font-bold text-white disabled:opacity-50">{pending ? 'Generating…' : 'Generate / Recalculate Payroll'}</button>
+    <button disabled={pending || periods.length === 0 || disabled} className="self-end rounded-xl bg-emerald-700 px-5 py-2.5 text-xs font-bold text-white disabled:opacity-50">{pending ? 'Generating…' : 'Generate Payroll'}</button>
   </form>;
 }
 
@@ -54,8 +54,8 @@ export function PayrollReviewControls({ periodId, periodLabel, status, canFinali
   const [finalizeState, finalizeAction, finalizePending] = useActionState(finalizePayrollAction, initialState);
   if (status === 'FINALIZED') return null;
   return <div className="mt-4 grid gap-3 lg:grid-cols-2">
-    {status === 'DRAFT' ? <form action={reviewAction} className="rounded-2xl border bg-slate-50 p-4"><StatusMessage state={reviewState} /><input type="hidden" name="payrollPeriodId" value={periodId} /><p className="mb-3 text-xs text-slate-600">Move generated entries into controlled HR review.</p><button disabled={reviewPending} className="rounded-xl bg-slate-900 px-4 py-2.5 text-xs font-bold text-white disabled:opacity-50">{reviewPending ? 'Moving…' : 'Move to Review'}</button></form> : null}
-    {status === 'REVIEW' ? <form action={finalizeAction} className="rounded-2xl border border-amber-200 bg-amber-50 p-4"><StatusMessage state={finalizeState} /><input type="hidden" name="payrollPeriodId" value={periodId} /><p className="text-sm font-bold">Finalize {periodLabel} payroll?</p><p className="mt-1 text-xs text-amber-900">Entries will be locked. Future policy or compensation changes will not alter this official payroll record.</p><label className="mt-3 flex items-start gap-2 text-xs font-semibold"><input type="checkbox" name="confirmation" value="FINALIZE" required className="mt-0.5" /> I understand and explicitly confirm finalization.</label><button disabled={finalizePending || !canFinalize} className="mt-3 rounded-xl bg-amber-900 px-4 py-2.5 text-xs font-bold text-white disabled:opacity-40">{finalizePending ? 'Finalizing…' : 'Finalize Payroll'}</button>{!canFinalize ? <p className="mt-2 text-xs font-semibold text-red-700">Resolve every setup and calculation issue before finalization.</p> : null}</form> : null}
+    {status === 'DRAFT' ? <form action={reviewAction} aria-busy={reviewPending} onSubmit={event => { if (!window.confirm('Move generated payroll entries into HR review?')) event.preventDefault(); }} className="rounded-2xl border bg-slate-50 p-4"><StatusMessage state={reviewState} /><input type="hidden" name="payrollPeriodId" value={periodId} /><p className="mb-3 text-xs text-slate-600">Move generated entries into controlled HR review.</p><button disabled={reviewPending} className="rounded-xl bg-slate-900 px-4 py-2.5 text-xs font-bold text-white disabled:opacity-50">{reviewPending ? 'Moving…' : 'Move to Review'}</button></form> : null}
+    {status === 'REVIEW' ? <form action={finalizeAction} aria-busy={finalizePending} onSubmit={event => { if (!window.confirm('Finalize payroll and permanently lock official employee payslips?')) event.preventDefault(); }} className="rounded-2xl border border-amber-200 bg-amber-50 p-4"><StatusMessage state={finalizeState} /><input type="hidden" name="payrollPeriodId" value={periodId} /><p className="text-sm font-bold">Finalize {periodLabel} payroll?</p><p className="mt-1 text-xs text-amber-900">Entries will be locked. Future policy or compensation changes will not alter this official payroll record.</p><label className="mt-3 flex items-start gap-2 text-xs font-semibold"><input type="checkbox" name="confirmation" value="FINALIZE" required className="mt-0.5" /> I understand and explicitly confirm finalization.</label><button disabled={finalizePending || !canFinalize} className="mt-3 rounded-xl bg-amber-900 px-4 py-2.5 text-xs font-bold text-white disabled:opacity-40">{finalizePending ? 'Finalizing…' : 'Finalize Payroll'}</button>{!canFinalize ? <p className="mt-2 text-xs font-semibold text-red-700">Resolve every setup and calculation issue before finalization.</p> : null}</form> : null}
   </div>;
 }
 

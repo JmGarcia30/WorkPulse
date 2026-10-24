@@ -142,6 +142,8 @@ export function CandidateDocumentsSection({
       const res = await verifyRecruitmentDocumentAction(documentId);
       if (res.error) {
         setFeedbackMessage({ type: 'error', text: res.error });
+      } else if (res.warning) {
+        setFeedbackMessage({ type: 'error', text: res.warning });
       } else {
         setFeedbackMessage({ type: 'success', text: 'Document verified and notification sent to applicant.' });
       }
@@ -167,6 +169,8 @@ export function CandidateDocumentsSection({
       setRejectingDoc(null);
       if (res.error) {
         setFeedbackMessage({ type: 'error', text: res.error });
+      } else if (res.warning) {
+        setFeedbackMessage({ type: 'error', text: res.warning });
       } else {
         setFeedbackMessage({
           type: 'success',

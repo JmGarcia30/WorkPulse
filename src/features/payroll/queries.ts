@@ -2,6 +2,7 @@ import { Prisma, PayrollEntryStatus, PayrollPeriodStatus } from '@prisma/client'
 import { prisma } from '@/lib/db/prisma';
 import { assessPayrollPeriodFromReadInputs, payrollReviewEntryInclude } from './review';
 import { formatCurrency, formatPayrollDate, formatPayrollPeriodRange } from './formatters';
+import { payrollSnapshotBreakdown, type PayrollSnapshotBreakdown } from './snapshot-breakdown';
 
 type PayrollDb = Prisma.TransactionClient | typeof prisma;
 
@@ -67,6 +68,7 @@ export interface PayrollDashboardEntryItem {
     approvedUnits?: string;
   } | null;
   canViewPayslip: boolean;
+  breakdown?: PayrollSnapshotBreakdown;
 }
 
 export interface PayrollDashboardSummaryKPIs {
@@ -248,6 +250,7 @@ export async function getPayrollDashboardData(
 
     return {
       id: entry.id,
+      breakdown: payrollSnapshotBreakdown(entry.calculationSnapshot),
       employeeId: entry.employeeId,
       employeeNumber: entry.employee.employeeNumber,
       firstName: entry.employee.firstName,
@@ -292,7 +295,7 @@ export async function getPayrollDashboardData(
         id: 'generate-period',
         kind: 'RECOMMENDATION',
         title: `Generate Payroll for ${selectedPeriod.name}`,
-        description: 'Compute base compensation, attendance deductions, and approved leaves.',
+        description: 'Review statutory setup, then compute compensation, employee deductions, tax and attendance policies.',
         badge: 'Draft Period',
         actionText: 'Generate Payroll',
         actionTab: 'processing',
@@ -310,7 +313,7 @@ export async function getPayrollDashboardData(
           description: issue.message,
           badge: issue.kind === 'SETUP_REQUIRED' ? 'Setup Needed' : 'Error',
           actionText: 'Resolve',
-          actionTab: issue.kind === 'SETUP_REQUIRED' ? 'configuration' : 'processing',
+          actionTab: issue.kind === 'SETUP_REQUIRED' && /compensation|policy/i.test(issue.message) ? 'configuration' : 'processing',
         });
       });
     }

@@ -1,0 +1,35 @@
+{
+  "passed": true,
+  "totalAssertions": 145,
+  "evidence": {
+    "tests": {
+      "passed": true,
+      "assertions": 125
+    },
+    "browser-tests": {
+      "passed": true,
+      "assertions": 20
+    },
+    "test-preservation": {
+      "existingDataUnchanged": true,
+      "tablesCompared": 63
+    },
+    "build-preservation": {
+      "existingDataUnchanged": true,
+      "tablesCompared": 63
+    },
+    "browser-preservation": {
+      "existingDataUnchanged": true,
+      "tablesCompared": 63,
+      "syntheticCommittedFixturesRemoved": true,
+      "googleNetworkUsed": false
+    }
+  },
+  "staticChecks": {
+    "typescript": true,
+    "targetedESLint": true,
+    "build": true
+  },
+  "googleCallsSynthetic": true,
+  "productionChanged": false
+}

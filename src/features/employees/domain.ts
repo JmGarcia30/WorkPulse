@@ -1,4 +1,5 @@
 import { EmploymentCategory, ProbationStatus } from '@prisma/client';
+import type { ProbationPolicySnapshot } from './probation-policy';
 
 export const PROBATION_ENDING_SOON_DAYS = 30;
 
@@ -117,7 +118,13 @@ export function resolveInitialProbationTerms(input: {
   category: EmploymentCategory;
   startDate: Date;
   teachingExpectedEndAt?: Date | null;
+  organizationSlug?: string;
+  policy?: ProbationPolicySnapshot;
 }): InitialProbationTerms {
+  if (input.policy?.regime === 'PH_GENERAL') {
+    return { expectedEndAt: addCalendarMonthsClamped(input.startDate, input.policy.durationMonths), renewalCount: 0, maxRenewals: input.policy.maxRenewals, policySnapshot: JSON.stringify(input.policy) };
+  }
+  if (input.organizationSlug !== 'st-aloysius') throw new Error('An explicit organization probation policy is required.');
   if (input.category === EmploymentCategory.TEACHING) {
     const expectedEndAt = input.teachingExpectedEndAt;
     if (!expectedEndAt || Number.isNaN(expectedEndAt.getTime())) {

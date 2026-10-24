@@ -1,0 +1,42 @@
+{
+  "passed": true,
+  "totalAssertions": 128,
+  "prismaCacheChecks": 7,
+  "staticChecks": {
+    "build": true,
+    "typescript": true,
+    "targetedESLint": true,
+    "prismaValidation": true
+  },
+  "evidence": {
+    "tests": {
+      "passed": true,
+      "assertions": 98
+    },
+    "browser-tests": {
+      "passed": true,
+      "assertions": 23
+    },
+    "migrate-preservation": {
+      "existingDataUnchanged": true,
+      "tablesCompared": 63
+    },
+    "test-preservation": {
+      "existingDataUnchanged": true,
+      "tablesCompared": 63
+    },
+    "build-preservation": {
+      "existingDataUnchanged": true,
+      "tablesCompared": 63
+    },
+    "browser-preservation": {
+      "existingDataUnchanged": true,
+      "tablesCompared": 63,
+      "syntheticCommittedFixturesRemoved": true,
+      "googleNetworkUsed": false
+    }
+  },
+  "googleCallsSynthetic": true,
+  "existingRecordsPreserved": true,
+  "productionChanged": false
+}

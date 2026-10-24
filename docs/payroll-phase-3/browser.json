@@ -1,0 +1,152 @@
+{
+  "passed": true,
+  "assertions": 35,
+  "layouts": [
+    {
+      "mode": "monthly",
+      "width": 320,
+      "scrollWidth": 320,
+      "errors": 0
+    },
+    {
+      "mode": "first",
+      "width": 320,
+      "scrollWidth": 320,
+      "errors": 0
+    },
+    {
+      "mode": "second",
+      "width": 320,
+      "scrollWidth": 320,
+      "errors": 0
+    },
+    {
+      "mode": "legacy",
+      "width": 320,
+      "scrollWidth": 320,
+      "errors": 0
+    },
+    {
+      "mode": "setup",
+      "width": 320,
+      "scrollWidth": 320,
+      "errors": 0
+    },
+    {
+      "mode": "processing-blocked",
+      "width": 320,
+      "scrollWidth": 320,
+      "errors": 0
+    },
+    {
+      "mode": "monthly",
+      "width": 375,
+      "scrollWidth": 375,
+      "errors": 0
+    },
+    {
+      "mode": "first",
+      "width": 375,
+      "scrollWidth": 375,
+      "errors": 0
+    },
+    {
+      "mode": "second",
+      "width": 375,
+      "scrollWidth": 375,
+      "errors": 0
+    },
+    {
+      "mode": "legacy",
+      "width": 375,
+      "scrollWidth": 375,
+      "errors": 0
+    },
+    {
+      "mode": "setup",
+      "width": 375,
+      "scrollWidth": 375,
+      "errors": 0
+    },
+    {
+      "mode": "processing-blocked",
+      "width": 375,
+      "scrollWidth": 375,
+      "errors": 0
+    },
+    {
+      "mode": "monthly",
+      "width": 768,
+      "scrollWidth": 760,
+      "errors": 0
+    },
+    {
+      "mode": "first",
+      "width": 768,
+      "scrollWidth": 760,
+      "errors": 0
+    },
+    {
+      "mode": "second",
+      "width": 768,
+      "scrollWidth": 760,
+      "errors": 0
+    },
+    {
+      "mode": "legacy",
+      "width": 768,
+      "scrollWidth": 760,
+      "errors": 0
+    },
+    {
+      "mode": "setup",
+      "width": 768,
+      "scrollWidth": 760,
+      "errors": 0
+    },
+    {
+      "mode": "processing-blocked",
+      "width": 768,
+      "scrollWidth": 760,
+      "errors": 0
+    },
+    {
+      "mode": "monthly",
+      "width": 1280,
+      "scrollWidth": 1272,
+      "errors": 0
+    },
+    {
+      "mode": "first",
+      "width": 1280,
+      "scrollWidth": 1272,
+      "errors": 0
+    },
+    {
+      "mode": "second",
+      "width": 1280,
+      "scrollWidth": 1272,
+      "errors": 0
+    },
+    {
+      "mode": "legacy",
+      "width": 1280,
+      "scrollWidth": 1272,
+      "errors": 0
+    },
+    {
+      "mode": "setup",
+      "width": 1280,
+      "scrollWidth": 1272,
+      "errors": 0
+    },
+    {
+      "mode": "processing-blocked",
+      "width": 1280,
+      "scrollWidth": 1272,
+      "errors": 0
+    }
+  ],
+  "actualComponents": true,
+  "serverActions": "test doubles; real authorization/contracts tested separately against recovery DB"
+}

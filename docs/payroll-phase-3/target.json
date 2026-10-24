@@ -1,0 +1,17 @@
+{
+  "identity": {
+    "branchName": "workpulse-batch0-recovery",
+    "branchId": "br-broad-forest-az55xwfe",
+    "endpointId": "ep-bitter-queen-azfwx70v",
+    "checkpointBranchId": null,
+    "pooledAndDirectSameEndpoint": true,
+    "distinctFromProtectedOriginal": true,
+    "database": "neondb",
+    "schema": "public",
+    "originalEnvSha256": "eefb1ccb8aad1895fef4d6a154efce261d3c26b00692265aba855e0be0c1d523",
+    "endpointSha256": "54e42c8d8591f1c8ee24b89396a4c92e661e1c12df3d826102d7614f50568931",
+    "consoleMappingComplete": true
+  },
+  "verified": true,
+  "mode": "phase3-build"
+}

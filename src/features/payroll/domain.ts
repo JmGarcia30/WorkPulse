@@ -56,6 +56,17 @@ export function calculateMonthlyCompensationBase(input: {
   periodStart: Date;
   periodEnd: Date;
 }): Prisma.Decimal {
+  if (input.payFrequency === PayFrequency.SEMI_MONTHLY) {
+    const { periodStart: start, periodEnd: end } = input;
+    const monthEnd = new Date(Date.UTC(start.getUTCFullYear(), start.getUTCMonth() + 1, 0)).getUTCDate();
+    if (start.getUTCFullYear() !== end.getUTCFullYear() || start.getUTCMonth() !== end.getUTCMonth()
+      || !((start.getUTCDate() === 1 && end.getUTCDate() === 15) || (start.getUTCDate() === 16 && end.getUTCDate() === monthEnd))) {
+      throw new PayrollError('SETUP_REQUIRED', 'Semi-monthly requires a 1–15 or 16–month-end cutoff.');
+    }
+    // For this frequency baseRate is the full monthly basic salary.
+    const first = input.baseRate.div(2).toDecimalPlaces(2, Prisma.Decimal.ROUND_DOWN);
+    return start.getUTCDate() === 1 ? first : input.baseRate.sub(first);
+  }
   const days = inclusiveCalendarDays(input.periodStart, input.periodEnd);
   const matches = input.payFrequency === PayFrequency.MONTHLY
     ? isFullCalendarMonth(input.periodStart, input.periodEnd)

@@ -125,6 +125,10 @@ export const PAY_FREQUENCY_CONFIG: Record<
     label: 'Monthly',
     suffix: '/month',
   },
+  [PayFrequency.SEMI_MONTHLY]: {
+    label: 'Semi-monthly',
+    suffix: '/month (paid twice monthly)',
+  },
   [PayFrequency.BIWEEKLY]: {
     label: 'Bi-Weekly',
     suffix: '/bi-week',

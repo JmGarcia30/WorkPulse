@@ -1,0 +1,23 @@
+{
+  "verifiedOn": "2026-10-22",
+  "statutoryCalculatorTests": 93,
+  "birCalculatorTests": 56,
+  "existingIntegrationAssertions": 55,
+  "presentationAndAccessAssertions": 28,
+  "browserAssertions": 35,
+  "combinedChecks": 267,
+  "fullProjectTypeScript": "PASS",
+  "targetedEslint": "PASS",
+  "prismaValidation": "PASS",
+  "productionBuild": "PASS",
+  "staticPagesGenerated": 42,
+  "recoveryTablesPreservedAfterTestsAndBuild": 55,
+  "browserViewports": [320, 375, 768, 1280],
+  "browserScope": "Actual components with test action bindings; real service access and persistence tested separately on recovery DB",
+  "newMigrations": false,
+  "newStatutoryFormulas": false,
+  "finalizedRecordsModified": false,
+  "productionWrites": false,
+  "environmentFilesEdited": false,
+  "pushOrDeployment": false
+}

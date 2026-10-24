@@ -1,0 +1,89 @@
+{
+  "passed": true,
+  "exactSqlRolledBack": true,
+  "orphanForeignKeyRejected": true,
+  "schema": {
+    "columns": [
+      {
+        "column_name": "applicationId",
+        "data_type": "text",
+        "is_nullable": "NO",
+        "column_default": null
+      },
+      {
+        "column_name": "linkHash",
+        "data_type": "text",
+        "is_nullable": "YES",
+        "column_default": null
+      },
+      {
+        "column_name": "linkExpiresAt",
+        "data_type": "timestamp without time zone",
+        "is_nullable": "YES",
+        "column_default": null
+      },
+      {
+        "column_name": "delivered",
+        "data_type": "boolean",
+        "is_nullable": "NO",
+        "column_default": "false"
+      },
+      {
+        "column_name": "sessionHash",
+        "data_type": "text",
+        "is_nullable": "YES",
+        "column_default": null
+      },
+      {
+        "column_name": "sessionExpiresAt",
+        "data_type": "timestamp without time zone",
+        "is_nullable": "YES",
+        "column_default": null
+      },
+      {
+        "column_name": "revoked",
+        "data_type": "boolean",
+        "is_nullable": "NO",
+        "column_default": "false"
+      },
+      {
+        "column_name": "lastSentAt",
+        "data_type": "timestamp without time zone",
+        "is_nullable": "YES",
+        "column_default": null
+      },
+      {
+        "column_name": "windowStartedAt",
+        "data_type": "timestamp without time zone",
+        "is_nullable": "NO",
+        "column_default": "CURRENT_TIMESTAMP"
+      },
+      {
+        "column_name": "sendCount",
+        "data_type": "integer",
+        "is_nullable": "NO",
+        "column_default": "0"
+      }
+    ],
+    "indexes": [
+      {
+        "indexname": "CandidateAccess_linkHash_key",
+        "indexdef": "CREATE UNIQUE INDEX \"CandidateAccess_linkHash_key\" ON public.\"CandidateAccess\" USING btree (\"linkHash\")"
+      },
+      {
+        "indexname": "CandidateAccess_pkey",
+        "indexdef": "CREATE UNIQUE INDEX \"CandidateAccess_pkey\" ON public.\"CandidateAccess\" USING btree (\"applicationId\")"
+      },
+      {
+        "indexname": "CandidateAccess_sessionHash_key",
+        "indexdef": "CREATE UNIQUE INDEX \"CandidateAccess_sessionHash_key\" ON public.\"CandidateAccess\" USING btree (\"sessionHash\")"
+      }
+    ],
+    "foreignKeys": [
+      {
+        "conname": "CandidateAccess_applicationId_fkey",
+        "definition": "FOREIGN KEY (\"applicationId\") REFERENCES \"Application\"(id) ON UPDATE CASCADE ON DELETE CASCADE"
+      }
+    ]
+  }
+}

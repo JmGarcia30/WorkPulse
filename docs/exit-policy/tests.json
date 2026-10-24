@@ -1,0 +1,19 @@
+{
+  "passed": true,
+  "branchId": "br-broad-forest-az55xwfe",
+  "scenarios": [
+    "SAGA remains fixed at one calendar month with superior/HRMO reviews, even with generic stored settings",
+    "SAGA preserves leap-year clamping and does not replace calendar months with 30 days",
+    "Unconfigured organization fails closed at readiness and cannot bypass policy through an exception",
+    "Actual settings action saves only authenticated organization terms and recorder metadata; injected tenant fields are rejected",
+    "Previously blocked case explicitly captures settings with audit; approval/execution use retained day policy, revoke ESS, and remain idempotent",
+    "New cases capture month policy; disabled exceptions remain forbidden after organization settings change",
+    "Authorized exception carries its HR recorder/reason through readiness, approval and final execution",
+    "Termination retains all three documentary review gates and completes through unchanged finalization",
+    "SAGA settings cannot be overwritten and both institutional notice reviews remain mandatory",
+    "Cross-tenant reads/writes and forged contexts are denied; settings require persisted HR_ADMIN, including direct actions and revoked roles",
+    "All fixture changes rolled back; every pre-existing table fingerprint and original environment file are unchanged"
+  ],
+  "tablesPreserved": 67,
+  "concurrency": "Serialized savepoints in rollback transaction; no independent commit/concurrency claim."
+}

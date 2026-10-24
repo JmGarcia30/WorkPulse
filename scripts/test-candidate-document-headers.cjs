@@ -34,7 +34,7 @@ async function main() {
     const access = require('../src/features/hiring/document-access.ts');
     tenant = null; host = 'unknown.localhost';
     assert.equal(await access.candidatePortalMatchesRequestTenant('fixture'), false); assert.equal(await access.candidateDocumentMatchesRequestTenant(user.organizationId), false);
-    host = 'localhost'; assert.equal(await access.candidatePortalMatchesRequestTenant('fixture'), true); assert.equal(await access.candidateDocumentMatchesRequestTenant(user.organizationId), true);
+    host = process.env.PLATFORM_ROOT_DOMAIN || 'localhost'; assert.equal(await access.candidatePortalMatchesRequestTenant('fixture'), true); assert.equal(await access.candidateDocumentMatchesRequestTenant(user.organizationId), true);
     console.log('PASS all three actual handlers: HTML/SVG attachment, PDF preview, no-store/nosniff, safe errors; unknown tenant rejection and public careers compatibility');
   } finally { Module._load = original; }
   const calls = [];

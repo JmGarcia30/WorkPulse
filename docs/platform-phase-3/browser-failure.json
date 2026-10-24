@@ -1,0 +1,15 @@
+{
+  "stage": {
+    "action": "submit",
+    "path": "/saga/login",
+    "button": "primary"
+  },
+  "page": {
+    "path": "/dashboard",
+    "title": "WorkPulse — Workforce Operations & HR Platform",
+    "hasAside": true,
+    "hasPassword": false,
+    "heading": "Welcome Back, Synthetic"
+  },
+  "failure": "BROWSER_WAIT"
+}

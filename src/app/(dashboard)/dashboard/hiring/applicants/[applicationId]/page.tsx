@@ -1,5 +1,7 @@
 import { resolveHiringDocumentPolicy, applyDocumentPolicy } from '@/features/hiring/document-policy';
 import { notFound } from 'next/navigation';
+import Link from 'next/link';
+import { requestWorkspacePath } from '@/lib/tenant/server';
 import { setCandidateAccessRevoked } from '@/features/careers/verification-actions';
 import { requireBackOfficeContext } from '@/lib/auth/guards';
 import { prisma } from '@/lib/db/prisma';
@@ -196,6 +198,7 @@ export default async function CandidateProfilePage({
   return (
     <>
     {['ORGANIZATION_ADMIN', 'HR_ADMIN'].includes(user.role) && <div className="flex gap-4 mb-4">
+      <Link href={await requestWorkspacePath(`/dashboard/hiring/applicants/${applicationId}/email`)} className="text-sm underline">Preview and send HR email</Link>
       <form action={setCandidateAccessRevoked.bind(null, applicationId, true)}><button className="text-sm text-red-700 underline">Revoke candidate access</button></form>
       <form action={setCandidateAccessRevoked.bind(null, applicationId, false)}><button className="text-sm underline">Allow fresh email verification</button></form>
     </div>}

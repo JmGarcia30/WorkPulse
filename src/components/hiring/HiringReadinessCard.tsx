@@ -18,7 +18,7 @@ import {
   Sparkles,
 } from 'lucide-react';
 
-interface HiringReadinessCardProps {
+interface HiringReadinessCardProps { isSagaOrganization?: boolean; probationTerms?: string | null;
   applicationId: string;
   candidateName: string;
   jobTitle: string;
@@ -29,7 +29,7 @@ interface HiringReadinessCardProps {
   employeeId?: string | null;
 }
 
-export function HiringReadinessCard({
+export function HiringReadinessCard({ isSagaOrganization = false, probationTerms,
   applicationId,
   candidateName,
   jobTitle,
@@ -44,6 +44,7 @@ export function HiringReadinessCard({
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [actionError, setActionError] = useState<string | null>(null);
   const [teachingExpectedEndAt, setTeachingExpectedEndAt] = useState('');
+  const [probationStandardsConfirmed, setProbationStandardsConfirmed] = useState(false);
 
   const isHired = currentStatus === ApplicationStatus.HIRED;
   const isTerminal =
@@ -55,9 +56,9 @@ export function HiringReadinessCard({
     startTransition(async () => {
       const result = await convertApplicationToEmployeeAction(
         applicationId,
-        employmentCategory === EmploymentCategory.TEACHING
+        isSagaOrganization && employmentCategory === EmploymentCategory.TEACHING
           ? { teachingExpectedEndAt }
-          : undefined
+          : { probationStandardsConfirmed }
       );
 
       if (!('employeeId' in result)) {
@@ -297,7 +298,11 @@ export function HiringReadinessCard({
               <strong>Hired</strong> for the role of <strong>{jobTitle}</strong>?
             </p>
 
-            {employmentCategory === EmploymentCategory.TEACHING && (
+            {!isSagaOrganization && <div className="space-y-2 text-sm text-slate-700">
+              {probationTerms && <p className="rounded-lg bg-slate-50 p-3 whitespace-pre-wrap">{probationTerms}</p>}
+              <label className="flex gap-2"><input type="checkbox" checked={probationStandardsConfirmed} onChange={event => setProbationStandardsConfirmed(event.target.checked)} />I verified that the agreed probation standards were communicated at engagement and the contract was executed by the employment start date.</label>
+            </div>}
+            {isSagaOrganization && employmentCategory === EmploymentCategory.TEACHING && (
               <label className="block space-y-1.5 text-sm font-semibold text-slate-700">
                 <span>Exact school-year probation end date</span>
                 <input
@@ -334,8 +339,8 @@ export function HiringReadinessCard({
               <button
                 type="button"
                 disabled={
-                  isPending ||
-                  (employmentCategory === EmploymentCategory.TEACHING &&
+                  isPending || (!isSagaOrganization && !probationStandardsConfirmed) ||
+                  (isSagaOrganization && employmentCategory === EmploymentCategory.TEACHING &&
                     !teachingExpectedEndAt)
                 }
                 onClick={handleConfirmHire}

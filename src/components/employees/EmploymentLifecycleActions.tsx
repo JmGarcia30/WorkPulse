@@ -14,7 +14,7 @@ import { AlertCircle, CalendarClock, Loader2, ShieldCheck, X } from 'lucide-reac
 
 type ActionMode = 'REGULARIZE' | 'RENEW' | 'NOT_RENEWED';
 
-interface EmploymentLifecycleActionsProps {
+interface EmploymentLifecycleActionsProps { isSagaOrganization?: boolean;
   employeeId: string;
   employeeName: string;
   category: EmploymentCategory;
@@ -25,7 +25,7 @@ interface EmploymentLifecycleActionsProps {
   defaultEffectiveDate: string;
 }
 
-export function EmploymentLifecycleActions({
+export function EmploymentLifecycleActions({ isSagaOrganization = false,
   employeeId,
   employeeName,
   category,
@@ -43,6 +43,9 @@ export function EmploymentLifecycleActions({
   const [nextStart, setNextStart] = useState('');
   const [nextEnd, setNextEnd] = useState('');
   const [remarks, setRemarks] = useState('');
+  const [evaluationConfirmed, setEvaluationConfirmed] = useState(false);
+  const [legalReviewConfirmed, setLegalReviewConfirmed] = useState(false);
+  const [renewalConsentConfirmed, setRenewalConsentConfirmed] = useState(false);
 
   const close = () => {
     if (isPending) return;
@@ -59,19 +62,19 @@ export function EmploymentLifecycleActions({
           ? await regularizeEmployeeAction(employeeId, {
               confirmed: true,
               regularizationEffectiveAt: effectiveDate,
-              remarks,
+              remarks, evaluationConfirmed,
             })
           : mode === 'RENEW'
             ? await renewTeachingProbationAction(employeeId, {
                 confirmed: true,
                 nextSchoolYearStartDate: nextStart,
                 nextSchoolYearEndDate: nextEnd,
-                remarks,
+                remarks, evaluationConfirmed, legalReviewConfirmed, renewalConsentConfirmed,
               })
             : await doNotRenewEmployeeAction(employeeId, {
                 confirmed: true,
                 nonRenewalEffectiveAt: effectiveDate,
-                remarks,
+                remarks, evaluationConfirmed, legalReviewConfirmed,
               });
 
       if (!result.success) {
@@ -96,7 +99,7 @@ export function EmploymentLifecycleActions({
           <ShieldCheck className="h-4 w-4" /> HR Actions
         </h2>
         <div className="flex flex-wrap gap-2">
-          {category === EmploymentCategory.NON_TEACHING && regularizationAllowed && (
+          {(!isSagaOrganization || category === EmploymentCategory.NON_TEACHING) && regularizationAllowed && (
             <button
               type="button"
               onClick={() => setMode('REGULARIZE')}
@@ -105,13 +108,13 @@ export function EmploymentLifecycleActions({
               Regularize Employee
             </button>
           )}
-          {category === EmploymentCategory.TEACHING && renewalAllowed && (
+          {(!isSagaOrganization || category === EmploymentCategory.TEACHING) && renewalAllowed && (
             <button
               type="button"
               onClick={() => setMode('RENEW')}
               className="rounded-md bg-[var(--tenant-primary)] px-4 py-2.5 text-sm font-bold text-[var(--tenant-primary-foreground)] hover:brightness-95"
             >
-              Renew Teaching Probation
+              {isSagaOrganization ? 'Renew Teaching Probation' : 'Renew Probation'}
             </button>
           )}
           {notRenewalAllowed && (
@@ -141,7 +144,7 @@ export function EmploymentLifecycleActions({
                   {mode === 'REGULARIZE'
                     ? 'Confirm Employee Regularization'
                     : mode === 'RENEW'
-                      ? 'Confirm Teaching Probation Renewal'
+                      ? 'Confirm Probation Renewal'
                       : 'Confirm Non-Renewal'}
                 </h3>
                 <p className="mt-1 text-sm text-slate-500">{employeeName}</p>
@@ -158,7 +161,7 @@ export function EmploymentLifecycleActions({
             {mode === 'RENEW' ? (
               <div className="grid gap-3 sm:grid-cols-2">
                 <label className="space-y-1 text-sm font-semibold">
-                  <span>Next school-year start</span>
+                  <span>Next probation period start</span>
                   <input
                     type="date"
                     required
@@ -168,7 +171,7 @@ export function EmploymentLifecycleActions({
                   />
                 </label>
                 <label className="space-y-1 text-sm font-semibold">
-                  <span>Next school-year end</span>
+                  <span>Next probation period end</span>
                   <input
                     type="date"
                     required
@@ -207,6 +210,11 @@ export function EmploymentLifecycleActions({
               />
             </label>
 
+            {!isSagaOrganization && <div className="space-y-2 text-xs text-slate-700">
+              <label className="flex gap-2"><input type="checkbox" checked={evaluationConfirmed} onChange={event => setEvaluationConfirmed(event.target.checked)} />I recorded an evaluation against the agreed standards in remarks.</label>
+              {mode !== 'REGULARIZE' && <label className="flex gap-2"><input type="checkbox" checked={legalReviewConfirmed} onChange={event => setLegalReviewConfirmed(event.target.checked)} />HR legal review confirmed the lawful basis, timing and required procedure.</label>}
+              {mode === 'RENEW' && <label className="flex gap-2"><input type="checkbox" checked={renewalConsentConfirmed} onChange={event => setRenewalConsentConfirmed(event.target.checked)} />Written employee consent was obtained before expiry.</label>}
+            </div>}
             {error && (
               <div className="flex items-start gap-2 rounded-md bg-rose-50 p-3 text-sm text-rose-700">
                 <AlertCircle className="mt-0.5 h-4 w-4 shrink-0" /> {error}

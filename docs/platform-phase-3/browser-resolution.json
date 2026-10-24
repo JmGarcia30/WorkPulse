@@ -1,0 +1,8 @@
+{
+  "resolved": true,
+  "finalBrowserSuitePassed": true,
+  "assertions": 33,
+  "earlierFailureDiagnosticsSupersededBy": "browser-tests.json",
+  "syntheticFixturesRemoved": true,
+  "existingDataUnchanged": true
+}

@@ -41,7 +41,7 @@ Module._load = function (name, parent, main) {
   if (name === '@/features/hiring/document-access') return { candidatePortalMatchesRequestTenant: async () => tenant, candidateDocumentMatchesRequestTenant: async () => tenant, safeCandidateDocumentContentType: x => x };
   if (name === '@/features/hiring/saga-requirements') return { ensureRecruitmentDocumentsExist: async () => {}, areRecruitmentDocumentsSatisfied: () => ({ isSatisfied: false }) };
   if (name === '@/lib/storage') return { localStorageProvider: { upload: async () => { throw Error('NO_FILE_WRITES'); } } };
-  if (name === '@/lib/email') return { sendEmail: async input => { sends++; assert(input.sensitive); token = input.text.match(/#token=([a-f0-9]{64})/)[1]; return { success: delivery, mode: delivery ? 'smtp' : 'preview_log' }; } };
+  if (name === '@/lib/email') return { sendApplicantVerificationEmail: async input => { sends++; assert.equal(input.organizationId, 'org-one'); token = input.url.match(/#token=([a-f0-9]{64})/)[1]; return { success: delivery, mode: delivery ? 'smtp' : 'preview_log' }; } };
   if (name === 'next/headers') return { cookies: async () => ({ has: n => jar.has(n), get: n => jar.has(n) ? { value: jar.get(n) } : undefined, set: (n, v, o) => { jar.set(n, v); options = o; } }) };
   if (name === 'next/cache') return { revalidatePath: () => {} };
   if (name === 'next/navigation') return { redirect: path => { const error = Error('REDIRECT'); error.path = path; throw error; } };

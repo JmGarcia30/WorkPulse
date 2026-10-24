@@ -1,0 +1,13 @@
+{
+  "passed": true,
+  "scenarios": [
+    "Eligible ESS notice uses the existing draft/checklist/audit lifecycle; missing policy does not veto lodging; duplicate submissions and spoofed inputs are rejected without workforce/payroll/access/final-pay changes",
+    "Tenant-scoped Requires Attention notifications clear on receipt acknowledgment without changing case state/reviews; original notice and private HR evidence boundaries are preserved",
+    "Cross-employee/tenant reads, spoofed identities, HR/manager sessions, disabled/inactive accounts and stale roles cannot submit or view ESS notices",
+    "Short notices are recorded without fabricated exceptions; only documented employee withdrawal cancels an ESS case; resubmission uses a new case and original data is database-protected",
+    "SAGA retains notice month-end semantics and both reviews; acknowledgment is not an approval gate; only normal execution revokes ESS and existing final-pay services remain available afterward",
+    "All fixture changes rolled back; existing employee, payroll, leave, attendance, policy and financial records and the original environment file are unchanged"
+  ],
+  "tablesPreserved": 67,
+  "fixtures": "rollback transaction with savepoints; no independently committed concurrency claim"
+}

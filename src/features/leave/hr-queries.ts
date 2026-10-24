@@ -3,6 +3,7 @@ import 'server-only';
 import { Prisma } from '@prisma/client';
 import { prisma } from '@/lib/db/prisma';
 import { decimalNumber } from './domain';
+import { isSagaLeaveOrganization } from './organization-policy';
 import { parseLeavePolicy } from './policy';
 import { previewLeaveCalculation } from './service';
 import { attendanceDateForInstant, parseAttendanceDate } from '@/features/attendance/domain';
@@ -175,15 +176,16 @@ export async function getLeaveAdminSettings(organizationId: string) {
 }
 
 export async function getLeaveBalanceAdminData(organizationId: string) {
-  const [types, employees] = await Promise.all([
+  const [types, employees, organization] = await Promise.all([
     getLeaveAdminSettings(organizationId),
     prisma.employee.findMany({ where: { organizationId }, select: { id: true, employeeNumber: true, firstName: true, lastName: true, employeeStatus: true }, orderBy: [{ lastName: 'asc' }, { firstName: 'asc' }] }),
+    prisma.organization.findUnique({ where: { id: organizationId }, select: { slug: true } }),
   ]);
-  return { types, employees };
+  return { types, employees, isSagaOrganization: isSagaLeaveOrganization(organization) };
 }
 
 export async function getLeaveAdminRequest(organizationId: string, requestId: string) {
-  const request = await prisma.leaveRequest.findFirst({ where: { id: requestId, organizationId }, include: { ...requestInclude, leaveType: true, days: { orderBy: { attendanceDate: 'asc' } }, employee: { select: { id: true, employeeNumber: true, firstName: true, lastName: true, employeeStatus: true, employmentRecords: { orderBy: { effectiveFrom: 'desc' }, take: 1, select: { employmentStatus: true, employmentCategory: true, effectiveFrom: true } } } } } });
+  const request = await prisma.leaveRequest.findFirst({ where: { id: requestId, organizationId }, include: { ...requestInclude, leaveType: { include: { organization: { select: { slug: true } } } }, days: { orderBy: { attendanceDate: 'asc' } }, employee: { select: { id: true, employeeNumber: true, firstName: true, lastName: true, employeeStatus: true, employmentRecords: { orderBy: { effectiveFrom: 'desc' }, take: 1, select: { employmentStatus: true, employmentCategory: true, effectiveFrom: true } } } } } });
   if (!request) return null;
   const calculation = request.status === 'PENDING' ? await previewLeaveCalculation({
     organizationId,
@@ -199,5 +201,5 @@ export async function getLeaveAdminRequest(organizationId: string, requestId: st
     scheduleNames: [...new Set(request.days.map((day) => (day.scheduleSnapshot as { displayName?: string } | null)?.displayName).filter((name): name is string => Boolean(name)))],
     expectedReturnDate: request.expectedReturnDateSnapshot?.toISOString().slice(0, 10) ?? null,
   };
-  return { ...serializeRequest(request), employment: request.employee.employmentRecords[0] ?? null, employeeStatus: request.employee.employeeStatus, calculation, policy: parseLeavePolicy(request.leaveType) };
+  return { ...serializeRequest(request), isSagaOrganization: isSagaLeaveOrganization(request.leaveType.organization), employment: request.employee.employmentRecords[0] ?? null, employeeStatus: request.employee.employeeStatus, calculation, policy: parseLeavePolicy(request.leaveType) };
 }

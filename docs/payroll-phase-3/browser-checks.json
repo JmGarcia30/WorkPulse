@@ -1,0 +1,94 @@
+[
+  {
+    "scenario": "MONTHLY: compensation saved through real Server Action",
+    "passed": true
+  },
+  {
+    "scenario": "Monthly synthetic September: missing setup produces visible SETUP_REQUIRED without an entry",
+    "passed": true
+  },
+  {
+    "scenario": "Monthly synthetic September: duplicate generation keeps one entry and three allocations",
+    "passed": true
+  },
+  {
+    "scenario": "Monthly synthetic September: exact stored gross, employee contributions, withholding and net",
+    "passed": true
+  },
+  {
+    "scenario": "Monthly synthetic September: HR finalized payslip shows deductions, employer EC and correct net",
+    "passed": true
+  },
+  {
+    "scenario": "Monthly synthetic September: finalized snapshot unchanged after payslip read",
+    "passed": true
+  },
+  {
+    "scenario": "Monthly ESS payslip matches HR finalized amounts",
+    "passed": true
+  },
+  {
+    "scenario": "Employee cannot open HR Payroll workspace",
+    "passed": true
+  },
+  {
+    "scenario": "SEMI_MONTHLY: compensation saved through real Server Action",
+    "passed": true
+  },
+  {
+    "scenario": "First synthetic September: missing setup produces visible SETUP_REQUIRED without an entry",
+    "passed": true
+  },
+  {
+    "scenario": "First synthetic September: duplicate generation keeps one entry and three allocations",
+    "passed": true
+  },
+  {
+    "scenario": "First synthetic September: exact stored gross, employee contributions, withholding and net",
+    "passed": true
+  },
+  {
+    "scenario": "First synthetic September: HR finalized payslip shows deductions, employer EC and correct net",
+    "passed": true
+  },
+  {
+    "scenario": "First synthetic September: finalized snapshot unchanged after payslip read",
+    "passed": true
+  },
+  {
+    "scenario": "Second synthetic September: missing setup produces visible SETUP_REQUIRED without an entry",
+    "passed": true
+  },
+  {
+    "scenario": "Second synthetic September: duplicate generation keeps one entry and three allocations",
+    "passed": true
+  },
+  {
+    "scenario": "Second synthetic September: exact stored gross, employee contributions, withholding and net",
+    "passed": true
+  },
+  {
+    "scenario": "Second synthetic September: HR finalized payslip shows deductions, employer EC and correct net",
+    "passed": true
+  },
+  {
+    "scenario": "Second synthetic September: finalized snapshot unchanged after payslip read",
+    "passed": true
+  },
+  {
+    "scenario": "Cutoff ledger reconciles FIRST then SECOND without duplicate monthly contributions",
+    "passed": true
+  },
+  {
+    "scenario": "Semi-monthly ESS shows second allocation and correct net",
+    "passed": true
+  },
+  {
+    "scenario": "Wrong-tenant payslip URL exposes no foreign pay",
+    "passed": true
+  },
+  {
+    "scenario": "Hiring Manager cannot access Payroll workspace",
+    "passed": true
+  }
+]

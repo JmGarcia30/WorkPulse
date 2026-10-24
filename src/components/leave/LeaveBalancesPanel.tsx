@@ -31,6 +31,7 @@ interface BalanceEmployee {
 interface LeaveBalancesPanelProps {
   types: BalanceType[];
   employees: BalanceEmployee[];
+  isSagaOrganization?: boolean;
 }
 
 const friendlyOutcome = (status?: string) =>
@@ -40,7 +41,7 @@ const friendlyOutcome = (status?: string) =>
     ? 'This employee already has this entitlement for the selected leave cycle.'
     : 'The entitlement could not be granted.';
 
-export function LeaveBalancesPanel({ types, employees }: LeaveBalancesPanelProps) {
+export function LeaveBalancesPanel({ types, employees, isSagaOrganization = false }: LeaveBalancesPanelProps) {
   const trackedTypes = types.filter((item) => item.balanceTracked);
   const [typeId, setTypeId] = useState(trackedTypes[0]?.id ?? '');
   const [selectedCycleId, setSelectedCycleId] = useState('');
@@ -117,7 +118,7 @@ export function LeaveBalancesPanel({ types, employees }: LeaveBalancesPanelProps
         </Link>
         <h1 className="mt-2 text-2xl font-bold tracking-tight text-slate-900">Leave Balances</h1>
         <p className="mt-0.5 text-xs text-slate-500">
-          Manage exceptional employee leave entitlement grants. Use this option for exceptional or administrative balance setup.
+          Manage employee entitlement grants for your organization and leave cycles.
         </p>
       </div>
 
@@ -131,9 +132,9 @@ export function LeaveBalancesPanel({ types, employees }: LeaveBalancesPanelProps
               <FileText className="h-5 w-5" />
             </div>
             <div>
-              <h2 className="text-base font-bold text-slate-900">Advanced Entitlement Grant</h2>
+              <h2 className="text-base font-bold text-slate-900">Employee Entitlement Grant</h2>
               <p className="mt-0.5 text-xs text-slate-500 leading-relaxed">
-                Use for exceptional or administrative balance setup. Normal Sick/Personal and verified Solo Parent workflows initialize defaults automatically.
+                {isSagaOrganization ? 'Use for exceptional or administrative balance setup. Normal Sick/Personal and verified Solo Parent workflows initialize defaults automatically.' : 'Grant the configured default entitlement to an employee for an open leave cycle. Existing grants are never replaced.'}
               </p>
             </div>
           </div>
@@ -294,7 +295,7 @@ export function LeaveBalancesPanel({ types, employees }: LeaveBalancesPanelProps
             <ul className="space-y-3 pt-2">
               <li className="flex items-start gap-2.5">
                 <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-slate-400" />
-                <span>Normal Sick/Personal leave and verified Solo Parent workflows initialize defaults automatically.</span>
+                <span>{isSagaOrganization ? 'Normal Sick/Personal leave and verified Solo Parent workflows initialize defaults automatically.' : 'Configure a tracked leave type, its default entitlement and a cycle in Leave Settings before granting balances.'}</span>
               </li>
               <li className="flex items-start gap-2.5">
                 <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-slate-400" />

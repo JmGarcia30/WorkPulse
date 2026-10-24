@@ -1,0 +1,15 @@
+{
+  "passed": true,
+  "assertions": 9,
+  "checks": [
+    "Protected platform dashboard redirects anonymous browsers to platform login",
+    "Real login action rejects incorrect credentials without issuing a session",
+    "Real browser login opens the protected organization-count dashboard",
+    "Production cookie is host-only, Secure, HttpOnly and SameSite Strict",
+    "Organization details render persisted status and metadata",
+    "Platform pages provide no confidential tenant record navigation",
+    "Platform organization details fit a mobile viewport",
+    "Real settings action updates only the signed-in administrator",
+    "Real logout action removes the persistent platform session"
+  ]
+}

@@ -4,12 +4,13 @@ import { revalidatePath } from 'next/cache';
 import { prisma } from '@/lib/db/prisma';
 import { getSession } from '@/lib/auth/session';
 import { canManageOffers, canApproveOffer } from '@/lib/permissions/rbac';
-import { OfferStatus, PayFrequency, OnboardingStatus, OnboardingTaskStatus } from '@prisma/client';
+import { OfferStatus, PayFrequency } from '@prisma/client';
 import {
   ACTIVE_OFFER_STATUSES,
   isValidOfferTransition,
 } from './offer-pipeline';
 import { createSagaOnboardingProcessInTx } from './onboarding-actions';
+import { resolveOfferProbationPolicy } from '@/features/employees/probation-policy';
 
 export interface CreateOfferInput {
   applicationId: string;
@@ -103,7 +104,7 @@ export async function createOfferAction(input: CreateOfferInput) {
       },
     },
     include: {
-      job: true,
+      job: { include: { organization: true } },
       interviews: {
         include: { evaluation: true },
       },
@@ -149,11 +150,9 @@ export async function createOfferAction(input: CreateOfferInput) {
       ? OfferStatus.PENDING_APPROVAL
       : OfferStatus.DRAFT;
 
-  const isTeaching = application.job.category === 'TEACHING';
-  const defaultProbationMonths = isTeaching ? 12 : 6;
-  const defaultProbationTerms = isTeaching
-    ? 'Probationary appointment for one (1) school year, renewable annually for a maximum of three (3) school years.'
-    : 'Probationary appointment for six (6) months; satisfactory completion may result in regular appointment.';
+  let probationPolicy;
+  try { probationPolicy = resolveOfferProbationPolicy(application.job.organization, application.job.category); }
+  catch (error) { return { error: error instanceof Error ? error.message : 'Invalid probation policy.' }; }
 
   const offer = await prisma.offer.create({
     data: {
@@ -168,8 +167,9 @@ export async function createOfferAction(input: CreateOfferInput) {
       additionalTerms: additionalTerms?.trim() || null,
       notes: notes?.trim() || null,
       status: initialStatus,
-      probationPeriodMonths: defaultProbationMonths,
-      probationaryTerms: defaultProbationTerms,
+      probationPeriodMonths: probationPolicy.durationMonths,
+      probationaryTerms: probationPolicy.terms,
+      probationPolicySnapshot: probationPolicy,
       createdById: user.userId,
     },
   });

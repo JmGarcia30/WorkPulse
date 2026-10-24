@@ -1,3 +1,4 @@
+import { isSagaProbationOrganization, readStoredProbationPolicy } from '@/features/employees/probation-policy';
 import { notFound, redirect } from 'next/navigation';
 import { EmploymentCategory, EmployeeStatus, ProbationStatus } from '@prisma/client';
 import { getBackOfficeReadContext } from '@/lib/auth/guards';
@@ -91,14 +92,17 @@ export default async function EmployeeProfilePage({
     probation?.probationStatus === ProbationStatus.ACTIVE &&
     review?.decisionAllowed === true;
 
+  const isSaga = isSagaProbationOrganization(employee.organization);
+  const agreedPolicy = (() => { try { return probation ? readStoredProbationPolicy(probation.policySnapshot) : null; } catch { return null; } })();
+  const generalDecisionSupported = agreedPolicy?.regime === 'PH_GENERAL' && agreedPolicy.organizationId === user.organizationId;
   const regularizationAllowed =
-    decisionAllowed && shown.employmentCategory === EmploymentCategory.NON_TEACHING;
+    decisionAllowed && (!isSaga || shown.employmentCategory === EmploymentCategory.NON_TEACHING);
   const renewalAllowed =
     decisionAllowed &&
-    shown.employmentCategory === EmploymentCategory.TEACHING &&
+    (!isSaga || shown.employmentCategory === EmploymentCategory.TEACHING) &&
     probation !== null &&
-    probation.renewalCount < probation.maxRenewals;
-  const notRenewalAllowed = decisionAllowed;
+    probation.renewalCount < probation.maxRenewals && (isSaga || (generalDecisionSupported && review?.state === 'REVIEW_DUE'));
+  const notRenewalAllowed = decisionAllowed && (isSaga || (generalDecisionSupported && review?.state === 'REVIEW_DUE'));
 
   let blockedReason: string | null = null;
   if (!canManageEmploymentLifecycle(user)) {
@@ -110,13 +114,14 @@ export default async function EmployeeProfilePage({
   } else if (!review?.decisionAllowed) {
     blockedReason = `Final actions become available on ${date(probation.expectedEndAt)}. Current state: ${label(review?.state ?? 'ACTIVE')}.`;
   } else if (
-    shown.employmentCategory === EmploymentCategory.TEACHING &&
+    isSaga && shown.employmentCategory === EmploymentCategory.TEACHING &&
     probation.renewalCount >= probation.maxRenewals
   ) {
     blockedReason =
       'The maximum Teaching renewals have been reached. H2 defines no Faculty regularization action.';
   }
 
+  if (!isSaga && review?.state === 'OVERDUE_FOR_REVIEW') blockedReason = 'The agreed period has ended. Continued service may confer statutory regular status. HR legal review is required before any adverse action; current settings cannot extend this historical period.';
   return (
     <div className="space-y-6">
       {/* 1. Header with Identity & Back Action */}
@@ -153,7 +158,7 @@ export default async function EmployeeProfilePage({
         )}
 
         {activeTab === 'probation' && (
-          <ProbationTab
+          <ProbationTab isSagaOrganization={isSaga}
             employeeId={employee.id}
             employeeName={`${employee.firstName} ${employee.lastName}`}
             category={shown.employmentCategory}

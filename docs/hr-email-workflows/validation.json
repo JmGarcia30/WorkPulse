@@ -1,0 +1,20 @@
+{
+    "passed":  true,
+    "workflowAssertions":  168,
+    "existingEmailAssertions":  125,
+    "templateAssertions":  117,
+    "browserAssertions":  48,
+    "prismaCacheChecks":  9,
+    "typescript":  "passed",
+    "targetedEslint":  "passed",
+    "readOnlyRecoveryBuild":  "passed",
+    "existingDataUnchanged":  true,
+    "tablesCompared":  64,
+    "syntheticFixturesRemoved":  true,
+    "realDeliveries":  0,
+    "migration":  "20261024000200_hr_email_delivery",
+    "migrationTarget":  "Verified recovery only",
+    "productionContacted":  false,
+    "pushed":  false,
+    "deployed":  false
+}

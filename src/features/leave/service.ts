@@ -14,6 +14,7 @@ import { materializeAttendanceDay } from '@/features/attendance/service';
 import { applicableDocumentRules, parseLeavePolicy } from './policy';
 import { chargedUnits, datesInclusive, decimalNumber, LeaveError, validateLeaveRange } from './domain';
 import { notifyLeaveEmployee } from './notifications';
+import { isSagaLeaveOrganization } from './organization-policy';
 
 type Tx = Prisma.TransactionClient;
 
@@ -275,7 +276,7 @@ export async function submitLeaveRequest(input: {
     const [employee, type, organization] = await Promise.all([
       tx.employee.findFirst({ where: { id: input.employeeId, organizationId: input.organizationId, employeeStatus: EmployeeStatus.ACTIVE }, select: { id: true, firstName: true, lastName: true } }),
       tx.leaveType.findFirst({ where: { id: input.leaveTypeId, organizationId: input.organizationId, isActive: true } }),
-      tx.organization.findUnique({ where: { id: input.organizationId }, select: { name: true, timeZone: true } }),
+      tx.organization.findUnique({ where: { id: input.organizationId }, select: { name: true, timeZone: true, slug: true } }),
     ]);
     if (!employee || !type || !organization) throw new LeaveError('NOT_FOUND', 'Leave type or employee is unavailable.');
     const policy = parseLeavePolicy(type);
@@ -298,7 +299,7 @@ export async function submitLeaveRequest(input: {
       requiredEmploymentStatus: type.requiredEmploymentStatus,
     }) : null;
     let serviceReference = range.startDb;
-    if (type.code === 'MATERNITY') {
+    if (isSagaLeaveOrganization(organization) && type.code === 'MATERNITY') {
       const expected = String(input.attestations?.EXPECTED_DELIVERY_DATE ?? '');
       serviceReference = validateLeaveRange(expected, expected).startDb;
     }
@@ -312,7 +313,7 @@ export async function submitLeaveRequest(input: {
     let cycle = null;
     if (type.balanceTracked) {
       cycle = await resolveLeaveCycle(tx, { organizationId: input.organizationId, leaveTypeId: type.id, startDate: range.startDb, endDate: range.endDb });
-      if (type.code === SICK_PERSONAL_CODE && !type.defaultGrantUnits) throw new LeaveError('ENTITLEMENT_UNAVAILABLE', 'The default Sick/Personal entitlement is not configured.');
+      if (isSagaLeaveOrganization(organization) && type.code === SICK_PERSONAL_CODE && !type.defaultGrantUnits) throw new LeaveError('ENTITLEMENT_UNAVAILABLE', 'The default Sick/Personal entitlement is not configured.');
     }
     const overlap = await tx.leaveRequest.findFirst({ where: {
       organizationId: input.organizationId, employeeId: employee.id,
@@ -413,7 +414,7 @@ export async function reviewLeaveRequest(input: { organizationId: string; actorU
   if (!remarks) throw new LeaveError('REMARKS_REQUIRED', 'Reviewer remarks are required.');
   const operation = async (tx: Tx) => {
     const reviewer = await requireHr(tx, input.organizationId, input.actorUserId);
-    const request = await tx.leaveRequest.findFirst({ where: { id: input.requestId, organizationId: input.organizationId, status: LeaveRequestStatus.PENDING }, include: { leaveType: true, documents: { where: { removedAt: null } } } });
+    const request = await tx.leaveRequest.findFirst({ where: { id: input.requestId, organizationId: input.organizationId, status: LeaveRequestStatus.PENDING }, include: { leaveType: { include: { organization: { select: { slug: true } } } }, documents: { where: { removedAt: null } } } });
     if (!request) throw new LeaveError('ALREADY_REVIEWED', 'The pending leave request was not found.');
     if (input.decision === 'REJECT') {
       await tx.leaveRequest.update({ where: { id: request.id }, data: { status: LeaveRequestStatus.REJECTED, reviewedAt: new Date(), reviewedById: input.actorUserId, reviewerNameSnapshot: reviewer.name, reviewerRemarks: remarks } });
@@ -423,7 +424,8 @@ export async function reviewLeaveRequest(input: { organizationId: string; actorU
     const policy = parseLeavePolicy(request.leaveType);
     const checks = input.eligibilityChecks ?? {};
     if (request.leaveType.requiresEligibilityVerification && !checks.ELIGIBILITY_CONFIRMED) throw new LeaveError('ELIGIBILITY_REQUIRED', 'Explicit policy eligibility verification is required.');
-    if (request.leaveType.code === 'MATERNITY' && !checks.SSS_SUPPORT_CONFIRMED) throw new LeaveError('SSS_REQUIRED', 'SSS approval/support must be explicitly verified for maternity leave.');
+    const isSaga = isSagaLeaveOrganization(request.leaveType.organization);
+    if (isSaga && request.leaveType.code === 'MATERNITY' && !checks.SSS_SUPPORT_CONFIRMED) throw new LeaveError('SSS_REQUIRED', 'SSS approval/support must be explicitly verified for maternity leave.');
     const built = await buildRequestDays(tx, {
       organizationId: input.organizationId,
       employeeId: request.employeeId,
@@ -442,7 +444,7 @@ export async function reviewLeaveRequest(input: { organizationId: string; actorU
       if (!hasDocument && !verifiedAlternative) throw new LeaveError('DOCUMENT_REQUIRED', `${rule.label} is required.`);
     }
     let serviceReference = request.requestedStartDate;
-    if (request.leaveType.code === 'MATERNITY') {
+    if (isSaga && request.leaveType.code === 'MATERNITY') {
       const expected = String((request.eligibilityAttestation as Record<string, unknown> | null)?.EXPECTED_DELIVERY_DATE ?? '');
       serviceReference = validateLeaveRange(expected, expected).startDb;
     }
@@ -452,21 +454,21 @@ export async function reviewLeaveRequest(input: { organizationId: string; actorU
       // Administrative-error occurrence restoration requires an explicit future SAGA HR policy decision.
       const priorApprovals = await tx.leaveRequest.findMany({ where: { employeeId: request.employeeId, leaveTypeId: request.leaveTypeId, id: { not: request.id }, audits: { some: { action: LeaveRequestAuditAction.APPROVED } } }, select: { eligibilityAttestation: true } });
       if (priorApprovals.length >= request.leaveType.maximumApprovedOccurrences) throw new LeaveError('OCCURRENCE_LIMIT', 'The approved occurrence limit has been reached.');
-      if (request.leaveType.code === 'PATERNITY') {
+      if (isSaga && request.leaveType.code === 'PATERNITY') {
         const currentSequence = (request.eligibilityAttestation as Record<string, unknown> | null)?.DELIVERY_SEQUENCE;
         if (priorApprovals.some((prior) => (prior.eligibilityAttestation as Record<string, unknown> | null)?.DELIVERY_SEQUENCE === currentSequence)) throw new LeaveError('DUPLICATE_OCCURRENCE', 'This delivery occurrence has already been used for an approved paternity request.');
       }
     }
     if (request.leaveType.balanceTracked) {
       if (!request.leaveCycleId) throw new LeaveError('INVALID_CYCLE', 'The request has no applicable leave cycle.');
-      if (request.leaveType.code === SOLO_PARENT_CODE) {
+      if (isSaga && request.leaveType.code === SOLO_PARENT_CODE) {
         if (!request.leaveType.defaultGrantUnits) throw new LeaveError('ENTITLEMENT_UNAVAILABLE', 'The Solo Parent entitlement is not configured.');
         await ensureDefaultCycleEntitlement(tx, {
           organizationId: input.organizationId, employeeId: request.employeeId, leaveTypeId: request.leaveTypeId,
           leaveCycleId: request.leaveCycleId, units: request.leaveType.defaultGrantUnits,
           actorUserId: input.actorUserId, reason: 'Automatic verified Solo Parent cycle entitlement',
         });
-      } else if (request.leaveType.code === SICK_PERSONAL_CODE && request.leaveType.defaultGrantUnits) {
+      } else if (isSaga && request.leaveType.code === SICK_PERSONAL_CODE && request.leaveType.defaultGrantUnits) {
         await ensureDefaultCycleEntitlement(tx, {
           organizationId: input.organizationId, employeeId: request.employeeId, leaveTypeId: request.leaveTypeId,
           leaveCycleId: request.leaveCycleId, units: request.leaveType.defaultGrantUnits,

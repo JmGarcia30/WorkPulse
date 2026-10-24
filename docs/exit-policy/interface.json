@@ -1,0 +1,17 @@
+{
+  "passed": true,
+  "scenarios": [
+    "HR settings render missing-policy guidance and editable notice form",
+    "Exit creation renders missing-policy guidance with organization settings link",
+    "Rendered Server Action saves authenticated organization policy and recorder",
+    "Reloaded settings show saved notice requirements",
+    "Exit guidance clears after configuration",
+    "Organization Admin sees read-only policy guidance",
+    "Foreign tenant HR cannot view organization policy form",
+    "SAGA settings display fixed institutional policy",
+    "Forged tenant fields, foreign sessions, Organization Admin and stale HR sessions cannot change policy through HTTP actions"
+  ],
+  "existingTablesPreserved": 64,
+  "fixtureRollback": true,
+  "coverage": "Rendered HTML and real HTTP Server Actions; no visual browser claim."
+}

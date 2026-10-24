@@ -1,0 +1,25 @@
+{
+  "passed": true,
+  "assertions": 19,
+  "checks": [
+    "Protected platform dashboard redirects anonymous browsers to platform login",
+    "Real login action rejects incorrect credentials without issuing a session",
+    "Real browser login opens the protected organization-count dashboard",
+    "Production cookie is host-only, Secure, HttpOnly and SameSite Strict",
+    "Platform dashboard exposes the protected Create Organization action",
+    "Real create action atomically initializes organization and HR invitation and delivers through loopback SMTP",
+    "Details distinguish pending email ownership from successful invitation delivery",
+    "New HR invitation email uses neutral WorkPulse sender and content",
+    "Organization onboarding details and controls fit a mobile viewport",
+    "Confirmed resend action rotates the token and emails one new invitation",
+    "Resent old link fails through the actual activation Server Action",
+    "Activation page removes the bearer fragment from browser history",
+    "Real activation consumes the emailed token and directs HR to normal tenant login",
+    "Activated initial HR administrator signs in through the existing tenant login UI",
+    "New workspace resolves its own authenticated HR tenant",
+    "Activated invitation is shown verified and cannot be revoked as pending",
+    "Confirmed revoke action persists revocation and removes pending controls",
+    "An actual HR session alone cannot enter the platform dashboard",
+    "Anonymous new-tenant landing page and metadata do not inherit SAGA institution content"
+  ]
+}

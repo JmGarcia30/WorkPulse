@@ -1,0 +1,15 @@
+{
+  "passed": true,
+  "scenarios": [
+    "ESS navigation, responsive notice form and current organization policy render",
+    "Real ESS Server Action rejects identity/role/tenant spoofing, submits one durable notice on retries and preserves access with no final-pay record",
+    "Employee tracks only the submitted notice and cannot create a duplicate active notice",
+    "Existing HR Requires Attention queue contains the resignation notification and case link",
+    "Existing Exit case provides receipt acknowledgment without an acceptance/rejection workflow",
+    "Acknowledgment updates employee tracking and clears the HR notification without approving, clearing, executing or changing access",
+    "HR processing status is visible without leaking private HR data; other employees, anonymous and newly disabled sessions cannot read or resubmit the notice"
+  ],
+  "tablesPreserved": 67,
+  "fixtureRollback": true,
+  "coverage": "Rendered production HTML and real HTTP Server Actions; no visual browser or independent concurrency claim"
+}

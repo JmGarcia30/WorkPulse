@@ -24,7 +24,7 @@ async function serviceRejected(tx: Prisma.TransactionClient, savepoint: string, 
 const date = (value: string) => new Date(`${value}T00:00:00Z`);
 const json = (value: unknown) => value as Prisma.InputJsonValue;
 
-async function main() {
+export async function runH5LeaveManagement() {
   const sickDefinition = SAGA_LEAVE_TYPES.find((item) => item.code === 'SICK_PERSONAL')!;
   const sickPolicy = parseLeavePolicy(sickDefinition);
   ok(sickDefinition.defaultGrantUnits.equals(5), 'one combined Sick/Personal pool is five units');
@@ -50,7 +50,11 @@ async function main() {
   const marker = `h5-${Date.now()}-${Math.random().toString(36).slice(2)}`;
   try {
     await prisma.$transaction(async (tx) => {
-      const org = await tx.organization.create({ data: { name: 'H5 Integration', slug: marker, timeZone: 'Asia/Manila' } });
+      // Give the isolated SAGA fixture the real unique slug. The existing organization
+      // is only renamed inside this rollback-only transaction and is restored on exit.
+      const existingSaga = await tx.organization.findUnique({ where: { slug: 'st-aloysius' } });
+      if (existingSaga) await tx.organization.update({ where: { id: existingSaga.id }, data: { slug: `${marker}-existing-saga` } });
+      const org = await tx.organization.create({ data: { name: 'H5 Integration', slug: 'st-aloysius', timeZone: 'Asia/Manila' } });
       const otherOrg = await tx.organization.create({ data: { name: 'H5 Other', slug: `${marker}-other`, timeZone: 'Asia/Manila' } });
       const hr = await tx.user.create({ data: { organizationId: org.id, name: 'H5 HR', email: `${marker}-hr@test.invalid`, passwordHash: 'test', role: Role.HR_ADMIN } });
       const otherHr = await tx.user.create({ data: { organizationId: otherOrg.id, name: 'Other HR', email: `${marker}-otherhr@test.invalid`, passwordHash: 'test', role: Role.HR_ADMIN } });
@@ -281,4 +285,4 @@ async function main() {
   console.log(`H5 Leave Management integration tests passed: ${assertions} assertions.`);
 }
 
-main().catch((error) => { console.error(error); process.exitCode = 1; }).finally(() => prisma.$disconnect());
+if (require.main === module) runH5LeaveManagement().catch((error) => { console.error(error); process.exitCode = 1; }).finally(() => prisma.$disconnect());

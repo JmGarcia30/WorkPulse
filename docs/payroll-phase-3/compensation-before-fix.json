@@ -1,0 +1,7 @@
+{
+  "verifiedAuthenticatedBrowserProbe": true,
+  "step": "Save compensation through real Server Action, then render Payroll Configuration",
+  "clientError": "TypeError: e.baseRate.toFixed is not a function",
+  "defect": "Client expected a Prisma Decimal method after server-to-client serialization",
+  "preservation": { "existingTablesUnchanged": 55, "fixtureOrganizationsRemaining": 0 }
+}

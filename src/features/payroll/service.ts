@@ -3,6 +3,8 @@ import { prisma } from '@/lib/db/prisma';
 import { PayrollError, calculateMonthlyCompensationBase, inclusiveCalendarDays, parseCompensationType, parsePayFrequency, parsePayrollDate, validateCurrency } from './domain';
 import { readPayrollGenerationInputs } from './generation-inputs';
 import { resolvePayrollPolicy, validateResolvedPolicyParameters } from './policy';
+import { lockPayrollEmployee, lockPayrollPeriod, payrollTransaction } from './transactions';
+import { calculateIntegratedPayroll, persistIntegratedPayroll, STATUTORY_SNAPSHOT_VERSION } from './statutory-integration';
 
 type PayrollDb = Prisma.TransactionClient | typeof prisma;
 
@@ -126,6 +128,13 @@ export type PayrollSetupError = {
 const dateKey = (date: Date) => date.toISOString().slice(0, 10);
 
 export async function generatePayroll(input: GeneratePayrollInput, db: PayrollDb = prisma) {
+  return payrollTransaction(db, async tx => {
+    await lockPayrollPeriod(tx, input.organizationId, input.payrollPeriodId);
+    return generateInTransaction(input, tx);
+  });
+}
+
+async function generateInTransaction(input: GeneratePayrollInput, db: Prisma.TransactionClient) {
   await requirePayrollAdmin(db, input.organizationId, input.actorUserId);
   const period = await db.payrollPeriod.findFirst({
     where: { id: input.payrollPeriodId, organizationId: input.organizationId },
@@ -140,7 +149,7 @@ export async function generatePayroll(input: GeneratePayrollInput, db: PayrollDb
   const employees = await db.employee.findMany({
     where: { organizationId: input.organizationId, employeeStatus: 'ACTIVE' },
     select: { id: true, employeeNumber: true, firstName: true, lastName: true },
-    orderBy: [{ lastName: 'asc' }, { firstName: 'asc' }],
+    orderBy: { id: 'asc' },
   });
   const existing = await db.payrollEntry.findMany({
     where: { organizationId: input.organizationId, payrollPeriodId: period.id },
@@ -152,6 +161,7 @@ export async function generatePayroll(input: GeneratePayrollInput, db: PayrollDb
 
   for (const employee of employees) {
     if (existingEmployeeIds.has(employee.id)) continue;
+    await lockPayrollEmployee(db, input.organizationId, employee.id);
     const employeeName = `${employee.firstName} ${employee.lastName}`.trim();
     const setupError = (message: string) => errors.push({
       employeeId: employee.id, employeeNumber: employee.employeeNumber, employeeName,
@@ -183,6 +193,11 @@ export async function generatePayroll(input: GeneratePayrollInput, db: PayrollDb
       payrollTreatment: treatmentByLeaveType.get(day.leaveRequest.leaveTypeId)
         ?? (day.leaveRequest.leavePaidSnapshot ? LeavePayrollTreatment.PAID : LeavePayrollTreatment.UNPAID),
     }));
+    if (compensation.compensationType === CompensationType.MONTHLY
+      && resolvedLeaveDays.some(day => day.payrollTreatment === LeavePayrollTreatment.UNPAID && day.chargeUnits.gt(0))) {
+      setupError('Monthly unpaid leave requires a reviewed salary-reduction method. Resolve unpaid leave before generation; full monthly pay cannot be assumed.');
+      continue;
+    }
     const scheduledWorkdays = attendance.filter(day => day.attendanceStatus !== AttendanceStatus.REST_DAY && day.attendanceStatus !== AttendanceStatus.NO_SCHEDULE).length;
     const presentDates = new Set(attendance.filter(day => day.attendanceStatus === AttendanceStatus.PRESENT).map(day => dateKey(day.attendanceDate)));
     const paidLeaveDates = new Set(resolvedLeaveDays.filter(day => day.payrollTreatment === LeavePayrollTreatment.PAID).map(day => dateKey(day.attendanceDate)));
@@ -257,12 +272,28 @@ export async function generatePayroll(input: GeneratePayrollInput, db: PayrollDb
       : policy.undertimeDeductionRule === UndertimeDeductionRule.PER_MINUTE
         ? new Prisma.Decimal(undertimeSeconds).div(60).mul(policy.undertimeDeductionParameter!)
         : new Prisma.Decimal(undertimeOccurrences).mul(policy.undertimeDeductionParameter!);
-    const totalDeductions = lateDeduction.add(absenceDeduction).add(undertimeDeduction).toDecimalPlaces(2);
-    if (totalDeductions.gt(baseAmount)) {
+    // Round cumulative components so centavo amounts reconcile to the existing rounded total.
+    const companyTotal = lateDeduction.add(absenceDeduction).add(undertimeDeduction).toDecimalPlaces(2);
+    const companyDeductions = {
+      late: lateDeduction.toDecimalPlaces(2),
+      absence: lateDeduction.add(absenceDeduction).toDecimalPlaces(2).sub(lateDeduction.toDecimalPlaces(2)),
+      undertime: companyTotal.sub(lateDeduction.add(absenceDeduction).toDecimalPlaces(2)),
+    };
+    if (companyTotal.gt(baseAmount)) {
       setupError('Configured deductions exceed gross pay for this employee.');
       continue;
     }
-    const netAmount = baseAmount.sub(totalDeductions).toDecimalPlaces(2);
+    let integrated: Awaited<ReturnType<typeof calculateIntegratedPayroll>>;
+    try {
+      integrated = await calculateIntegratedPayroll(db, {
+        organizationId: input.organizationId, employeeId: employee.id, period, compensation, baseAmount,
+        companyDeductions,
+      });
+    } catch (error) {
+      if (error instanceof PayrollError && error.code === 'SETUP_REQUIRED') { setupError(error.message); continue; }
+      throw error;
+    }
+    const { totalDeductions, netAmount, grossAmount } = integrated;
     const amount = baseAmount.toFixed(2);
     const policySnapshot = {
       id: policy.id, version: policy.version,
@@ -272,36 +303,34 @@ export async function generatePayroll(input: GeneratePayrollInput, db: PayrollDb
       dailyPayBasis: policy.dailyPayBasis,
       roundingRule: policy.roundingRule,
       deductionRules: {
-        late: { rule: policy.lateDeductionRule, parameter: policy.lateDeductionParameter?.toFixed(4) ?? null, amount: lateDeduction.toDecimalPlaces(2).toFixed(2) },
-        absence: { rule: policy.absenceDeductionRule, parameter: policy.absenceDeductionParameter?.toFixed(4) ?? null, amount: absenceDeduction.toDecimalPlaces(2).toFixed(2) },
-        undertime: { rule: policy.undertimeDeductionRule, parameter: policy.undertimeDeductionParameter?.toFixed(4) ?? null, amount: undertimeDeduction.toDecimalPlaces(2).toFixed(2) },
+        late: { rule: policy.lateDeductionRule, parameter: policy.lateDeductionParameter?.toFixed(4) ?? null, amount: companyDeductions.late.toFixed(2) },
+        absence: { rule: policy.absenceDeductionRule, parameter: policy.absenceDeductionParameter?.toFixed(4) ?? null, amount: companyDeductions.absence.toFixed(2) },
+        undertime: { rule: policy.undertimeDeductionRule, parameter: policy.undertimeDeductionParameter?.toFixed(4) ?? null, amount: companyDeductions.undertime.toFixed(2) },
       },
       leaveTreatmentsApplied: leaveSummary.requests,
     };
     const snapshot = {
-      version: 'H6.2.5', calculatedAt: new Date().toISOString(),
+      version: STATUTORY_SNAPSHOT_VERSION, calculatedAt: new Date().toISOString(),
       organizationId: input.organizationId,
       payrollPeriod: { id: period.id, name: period.name, start: dateKey(period.periodStart), end: dateKey(period.periodEnd), payDate: dateKey(period.payDate) },
       employee: { id: employee.id, employeeNumber: employee.employeeNumber, name: employeeName },
       compensation: { id: compensation.id, type: compensation.compensationType, rate: compensation.baseRate.toFixed(2), payFrequency: compensation.payFrequency, currency: compensation.currency },
       policy: policySnapshot,
-      calculation: { baseAmount: amount, payableWorkdays, grossAmount: amount, totalDeductions: totalDeductions.toFixed(2), netAmount: netAmount.toFixed(2), attendanceAffectsPay: attendanceRequired && !policy.isDefault, leaveAffectsPay: policy.dailyPayBasis === DailyPayBasis.PRESENT_PLUS_PAID_LEAVE },
+      calculation: { baseAmount: amount, payableWorkdays, grossAmount: grossAmount.toFixed(2), totalDeductions: totalDeductions.toFixed(2), netAmount: netAmount.toFixed(2), attendanceAffectsPay: attendanceRequired && !policy.isDefault, leaveAffectsPay: policy.dailyPayBasis === DailyPayBasis.PRESENT_PLUS_PAID_LEAVE },
+      statutory: integrated.snapshot,
       attendanceSummary,
       leaveSummary,
     } satisfies Prisma.InputJsonObject;
-    try {
-      await db.payrollEntry.create({
-        data: {
-          organizationId: input.organizationId, payrollPeriodId: period.id, employeeId: employee.id,
-          employeeCompensationId: compensation.id, baseAmount, grossAmount: baseAmount,
-          totalDeductions, netAmount, calculationSnapshot: snapshot,
-          status: period.status === PayrollPeriodStatus.REVIEW ? 'REVIEW' : 'DRAFT',
-        },
-      });
-      createdCount++;
-    } catch (error) {
-      if (!(error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2002')) throw error;
-    }
+    const entry = await db.payrollEntry.create({
+      data: {
+        organizationId: input.organizationId, payrollPeriodId: period.id, employeeId: employee.id,
+        employeeCompensationId: compensation.id, baseAmount, grossAmount,
+        totalDeductions, netAmount, calculationSnapshot: snapshot,
+        status: period.status === PayrollPeriodStatus.REVIEW ? 'REVIEW' : 'DRAFT',
+      },
+    });
+    await persistIntegratedPayroll(db, entry, period, integrated);
+    createdCount++;
   }
 
   return { createdCount, existingCount: existing.length, setupErrors: errors };

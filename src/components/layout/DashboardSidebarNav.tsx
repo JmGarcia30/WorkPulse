@@ -100,7 +100,11 @@ export function DashboardSidebarNav({
             { href: '/dashboard/analytics', label: 'Analytics', icon: ChartNoAxesCombined },
           ]
         : []),
-      { href: '/dashboard/organization', label: 'Organization Settings', icon: Settings },
+      ...(hrAccess ? [{ href: '/dashboard/organization', label: 'Settings', icon: Settings, sectionPrefix: '/dashboard/settings', children: [
+        { href: '/dashboard/organization', label: 'Organization Settings' },
+        { href: '/dashboard/settings/email-integration', label: 'Email Integration' },
+        { href: '/dashboard/settings/exit', label: 'Resignation Notice Policy' },
+      ] }] : [{ href: '/dashboard/organization', label: 'Organization Settings', icon: Settings }]),
     ],
     [hrAccess]
   );

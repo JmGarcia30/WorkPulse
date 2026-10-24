@@ -1,3 +1,5 @@
+import Link from 'next/link';
+import { canManageEmploymentLifecycle } from '@/lib/permissions/rbac';
 import { redirect } from 'next/navigation';
 import { EmployeeStatus, EmploymentCategory } from '@prisma/client';
 import { getSession } from '@/lib/auth/session';
@@ -60,7 +62,7 @@ export default async function EmployeesPage({ searchParams }: EmployeesPageProps
   return (
     <div className="space-y-5">
       {/* Page Header */}
-      <EmployeeDirectoryHeader totalEmployees={totalOrganizationEmployees} />
+      <EmployeeDirectoryHeader totalEmployees={totalOrganizationEmployees} />{canManageEmploymentLifecycle(user) && <Link href="/dashboard/employees/probation-settings" className="inline-block text-sm font-semibold underline">Probation policy settings</Link>}
 
       {/* Search & Filter Toolbar */}
       <EmployeeDirectoryFilters

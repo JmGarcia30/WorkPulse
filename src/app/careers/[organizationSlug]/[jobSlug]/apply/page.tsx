@@ -7,7 +7,8 @@ import { submitApplicationAction } from '@/features/careers/actions';
 import { JobStatus } from '@prisma/client';
 import { ArrowLeft, CheckCircle2, ArrowRight } from 'lucide-react';
 import { ApplicationForm } from '@/components/careers/ApplicationForm';
-import { databaseSlugForTenant, parsePlatformHost } from '@/lib/tenant/host';
+import { databaseSlugForTenant, classifyRequestHost } from '@/lib/tenant/host';
+import { candidatePortalMatchesRequestTenant } from '@/features/hiring/document-access';
 
 interface ApplyPageProps {
   params: Promise<{ organizationSlug: string; jobSlug: string }>;
@@ -18,6 +19,7 @@ export async function generateMetadata({
   params,
 }: ApplyPageProps): Promise<Metadata> {
   const { organizationSlug, jobSlug } = await params;
+  if (!await candidatePortalMatchesRequestTenant(organizationSlug)) notFound();
 
   const job = await prisma.job.findFirst({
     where: {
@@ -45,6 +47,7 @@ export async function generateMetadata({
 
 export default async function ApplyPage({ params, searchParams }: ApplyPageProps) {
   const { organizationSlug, jobSlug } = await params;
+  if (!await candidatePortalMatchesRequestTenant(organizationSlug)) notFound();
   const { success, error, appId } = await searchParams;
 
   // Strict Multi-Tenant Security Check
@@ -71,8 +74,7 @@ export default async function ApplyPage({ params, searchParams }: ApplyPageProps
 
   const isSaga = organizationSlug === 'saga' || organizationSlug === 'st-aloysius';
   const requestHeaders = await headers();
-  const host = requestHeaders.get('x-forwarded-host') || requestHeaders.get('host') || '';
-  const parsed = parsePlatformHost(host);
+  const parsed = classifyRequestHost(requestHeaders);
   const openingsHref = isSaga
     ? (parsed.kind === 'tenant' ? '/#careers' : '/saga#careers')
     : `/careers/${organizationSlug}`;

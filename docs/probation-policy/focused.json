@@ -1,0 +1,19 @@
+{
+  "passed": true,
+  "branchId": "br-broad-forest-az55xwfe",
+  "scenarios": [
+    "Unconfigured companies cannot issue guessed terms; durations, renewal totals and evaluation standards are validated",
+    "Company B saves its own policy; forged tenant ID and SAGA display name cannot select SAGA",
+    "SAGA settings reject generic edits and retain school-year/two-renewal and six-month/no-renewal policies",
+    "Offer creation captures Company B terms and standards; foreign offer access is denied",
+    "Teaching conversion uses the agreed three-month snapshot despite later settings changes; engagement confirmation is required",
+    "Conversion remains idempotent and tenant isolated",
+    "Evaluation, written consent, agreed renewal length and statutory timing guards reject unsafe decisions",
+    "Permitted renewal carries the original snapshot and preserves the historical period",
+    "Renewal limits and wrong-tenant decisions are enforced; Company B Teaching regularization succeeds",
+    "Historical offer terms remain unchanged; evaluation audit and current-role revocation are enforced",
+    "Rollback confirmed; all pre-existing database records and policy snapshots are unchanged"
+  ],
+  "tablesPreserved": 50,
+  "concurrency": "not independently committed"
+}

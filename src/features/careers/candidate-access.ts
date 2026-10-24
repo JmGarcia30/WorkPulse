@@ -5,7 +5,7 @@ import { prisma } from '@/lib/db/prisma';
 import { COOKIE_NAME } from '@/lib/auth/session';
 import { candidateDocumentMatchesRequestTenant, candidatePortalMatchesRequestTenant } from '@/features/hiring/document-access';
 import { databaseSlugForTenant, publicOrigin } from '@/lib/tenant/host';
-import { sendEmail } from '@/lib/email';
+import { sendApplicantVerificationEmail } from '@/lib/email';
 
 export const candidateCookie = process.env.NODE_ENV === 'production' ? '__Host-workpulse_candidate' : 'workpulse_candidate';
 export const hashCredential = (secret: string) => createHash('sha256').update(secret).digest('hex');
@@ -45,7 +45,7 @@ export async function candidateHasAccess(applicationId: string, organizationSlug
 export async function issueCandidateLink(slug: string, applicationId: string, email?: string) {
   if (!validSlug(slug) || !validCandidateId(applicationId) || (email !== undefined && typeof email !== 'string')) return;
   if (!await candidatePortalMatchesRequestTenant(slug)) return;
-  const application = await prisma.application.findFirst({ where: { id: applicationId, ...candidateLifecycle, job: { organization: { slug: databaseSlugForTenant(slug) } } }, select: { applicant: { select: { email: true } } } });
+  const application = await prisma.application.findFirst({ where: { id: applicationId, ...candidateLifecycle, job: { organization: { slug: databaseSlugForTenant(slug) } } }, select: { applicant: { select: { email: true } }, job: { select: { organizationId: true } } } });
   if (!application || (email !== undefined && application.applicant.email.toLowerCase() !== email.trim().toLowerCase())) return;
   const token = secret(), linkHash = hashCredential(token), now = new Date();
   const reserved = await prisma.$transaction(async tx => {
@@ -62,8 +62,8 @@ export async function issueCandidateLink(slug: string, applicationId: string, em
   const url = `${publicOrigin()}/careers/${encodeURIComponent(slug)}/portal/${encodeURIComponent(applicationId)}/verify#token=${token}`;
   let delivered = false;
   try {
-    const result = await sendEmail({ to: application.applicant.email, subject: 'Verify your WorkPulse application', sensitive: true, text: `Verify email ownership to access your application. This one-time link expires in 15 minutes: ${url}`, html: `<p>Verify email ownership to access your application.</p><p><a href="${url}">Verify application</a></p><p>This one-time link expires in 15 minutes.</p>` });
-    delivered = result.success && result.mode === 'smtp';
+    const result = await sendApplicantVerificationEmail({ organizationId: application.job.organizationId, to: application.applicant.email, url });
+    delivered = result.success && (result.mode === 'smtp' || result.mode === 'gmail_api');
   } finally {
     await prisma.candidateAccess.updateMany({ where: { applicationId, linkHash, revoked: false }, data: delivered ? { delivered: true } : { linkHash: null, linkExpiresAt: null, delivered: false } });
   }

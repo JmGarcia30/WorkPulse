@@ -8,7 +8,8 @@ import {
   Role,
 } from '@prisma/client';
 import { prisma } from '@/lib/db/prisma';
-import { addCalendarYearsClamped, utcStartOfDay } from './domain';
+import { addCalendarMonthsClamped, addCalendarYearsClamped, utcStartOfDay } from './domain';
+import { isSagaProbationOrganization, parseProbationPolicySnapshot, readStoredProbationPolicy, type ProbationPolicySnapshot } from './probation-policy';
 
 export type EmploymentLifecycleErrorCode =
   | 'EMPLOYEE_NOT_FOUND'
@@ -19,7 +20,9 @@ export type EmploymentLifecycleErrorCode =
   | 'MAX_RENEWALS_REACHED'
   | 'CONFIRMATION_REQUIRED'
   | 'REMARKS_REQUIRED'
-  | 'ALREADY_DECIDED';
+  | 'ALREADY_DECIDED'
+  | 'EVALUATION_REQUIRED'
+  | 'LEGAL_REVIEW_REQUIRED';
 
 export class EmploymentLifecycleError extends Error {
   constructor(
@@ -38,6 +41,9 @@ interface BaseLifecycleInput {
   confirmed: boolean;
   remarks?: string | null;
   decisionAt?: Date;
+  evaluationConfirmed?: boolean;
+  renewalConsentConfirmed?: boolean;
+  legalReviewConfirmed?: boolean;
 }
 
 export interface RegularizeEmployeeInput extends BaseLifecycleInput {
@@ -72,6 +78,7 @@ type LifecycleEmployee = Prisma.EmployeeGetPayload<{
   include: {
     employmentRecords: { include: typeof currentEmploymentInclude };
     probationRecords: true;
+    organization: { select: { slug: true } };
   };
 }>;
 
@@ -99,7 +106,7 @@ async function getLifecycleContext(
   tx: Prisma.TransactionClient,
   input: BaseLifecycleInput,
   asOf: Date
-): Promise<{ employee: LifecycleEmployee; employment: CurrentEmployment }> {
+): Promise<{ employee: LifecycleEmployee; employment: CurrentEmployment; isSaga: boolean; policy: ProbationPolicySnapshot | null }> {
   const actor = await tx.user.findFirst({
     where: {
       id: input.actorUserId,
@@ -118,6 +125,7 @@ async function getLifecycleContext(
   const employee = await tx.employee.findFirst({
     where: { id: input.employeeId, organizationId: input.organizationId },
     include: {
+      organization: { select: { slug: true } },
       employmentRecords: {
         where: {
           effectiveFrom: { lte: asOf },
@@ -168,7 +176,26 @@ async function getLifecycleContext(
       'Employment and probation categories are inconsistent.'
     );
   }
-  return { employee, employment };
+  const isSaga = isSagaProbationOrganization(employee.organization);
+  let policy: ProbationPolicySnapshot | null = null;
+  try {
+    const stored = readStoredProbationPolicy(probation.policySnapshot);
+    if (stored) policy = parseProbationPolicySnapshot(stored, input.organizationId, employment.employmentCategory);
+    if (policy?.regime === 'SAGA_INSTITUTIONAL' && !isSaga) throw new Error('Foreign institutional policy.');
+  } catch { throw new EmploymentLifecycleError('INVALID_STATE', 'Stored probation policy requires HR review.'); }
+  return { employee, employment, isSaga, policy };
+}
+
+function assertEvaluation(input: BaseLifecycleInput, policy: ProbationPolicySnapshot | null, remarks: string | null, adverse = false) {
+  if ((policy?.evaluationRequired || (policy?.regime === 'PH_GENERAL' && adverse)) && (input.evaluationConfirmed !== true || !remarks)) {
+    throw new EmploymentLifecycleError('EVALUATION_REQUIRED', 'Confirm evaluation against the agreed standards and record the evaluation in remarks.');
+  }
+}
+
+function assertGeneralAdverseDecision(input: BaseLifecycleInput, policy: ProbationPolicySnapshot | null, expectedEndAt: Date, decisionAt: Date) {
+  if (!policy || policy.regime !== 'PH_GENERAL' || input.legalReviewConfirmed !== true || utcStartOfDay(decisionAt).getTime() !== utcStartOfDay(expectedEndAt).getTime()) {
+    throw new EmploymentLifecycleError('LEGAL_REVIEW_REQUIRED', 'A non-SAGA renewal or adverse decision needs the agreed policy, HR legal review and action at the agreed period end. Overdue or exceptional arrangements require separate legal review; configuration does not override statutory regularization.');
+  }
 }
 
 function assertPeriodReached(expectedEndAt: Date, decisionAt: Date) {
@@ -312,14 +339,15 @@ export async function regularizeEmployee(
   return withSerializableRetry(() =>
     prisma.$transaction(async (tx) => {
       const decisionAt = input.decisionAt ?? new Date();
-      const { employee, employment } = await getLifecycleContext(tx, input, decisionAt);
+      const { employee, employment, isSaga, policy } = await getLifecycleContext(tx, input, decisionAt);
       const probation = employment.probation!;
-      if (employment.employmentCategory !== EmploymentCategory.NON_TEACHING) {
+      if (isSaga && employment.employmentCategory !== EmploymentCategory.NON_TEACHING) {
         throw new EmploymentLifecycleError(
           'INVALID_STATE',
           'Regularization is available only for eligible Non-Teaching employees in H2.'
         );
       }
+      assertEvaluation(input, policy, remarks);
       assertPeriodReached(probation.expectedEndAt, decisionAt);
       assertEffectiveDate({
         effectiveAt: input.regularizationEffectiveAt,
@@ -369,7 +397,7 @@ export async function regularizeEmployee(
           changedById: input.actorUserId,
           remarks,
           previousState: before,
-          newState: after,
+          newState: isSaga ? after : { ...after, evaluationConfirmed: input.evaluationConfirmed === true, legalReviewConfirmed: input.legalReviewConfirmed === true, renewalConsentConfirmed: input.renewalConsentConfirmed === true },
         },
       });
       return {
@@ -390,13 +418,19 @@ export async function renewTeachingProbation(
   return withSerializableRetry(() =>
     prisma.$transaction(async (tx) => {
       const decisionAt = input.decisionAt ?? new Date();
-      const { employee, employment } = await getLifecycleContext(tx, input, decisionAt);
+      const { employee, employment, isSaga, policy } = await getLifecycleContext(tx, input, decisionAt);
       const probation = employment.probation!;
-      if (employment.employmentCategory !== EmploymentCategory.TEACHING) {
+      if (isSaga && employment.employmentCategory !== EmploymentCategory.TEACHING) {
         throw new EmploymentLifecycleError(
           'INVALID_STATE',
           'Teaching probation renewal is available only to Teaching employees.'
         );
+      }
+      if (!isSaga) {
+        assertGeneralAdverseDecision(input, policy, probation.expectedEndAt, decisionAt);
+        assertEvaluation(input, policy, remarks, true);
+        if (input.renewalConsentConfirmed !== true) throw new EmploymentLifecycleError('CONFIRMATION_REQUIRED', 'Written employee consent before expiry is required for a general probation renewal.');
+        if (probation.maxRenewals !== policy!.maxRenewals) throw new EmploymentLifecycleError('INVALID_STATE', 'Renewal limits do not match the agreed snapshot.');
       }
       assertPeriodReached(probation.expectedEndAt, decisionAt);
       if (probation.renewalCount >= probation.maxRenewals) {
@@ -420,7 +454,7 @@ export async function renewTeachingProbation(
       }
       const initialTeachingPeriod = employee.probationRecords.find(
         (record) =>
-          record.category === EmploymentCategory.TEACHING &&
+          record.category === employment.employmentCategory &&
           record.previousProbationRecordId === null
       );
       if (!initialTeachingPeriod) {
@@ -429,10 +463,12 @@ export async function renewTeachingProbation(
           'The initial Teaching probation period could not be identified.'
         );
       }
-      if (nextEnd > addCalendarYearsClamped(initialTeachingPeriod.startedAt, 3)) {
+      const maximumEnd = isSaga ? addCalendarYearsClamped(initialTeachingPeriod.startedAt, 3) : addCalendarMonthsClamped(initialTeachingPeriod.startedAt, policy!.durationMonths + policy!.maxRenewals * policy!.renewalMonths);
+      if (!isSaga && (nextEnd > addCalendarMonthsClamped(probation.expectedEndAt, policy!.renewalMonths) || nextStart.getTime() !== utcStartOfDay(probation.expectedEndAt).getTime() + 86_400_000)) throw new EmploymentLifecycleError('INVALID_PERIOD', 'Renewals must immediately follow the current period and remain within its agreed extension length.');
+      if (nextEnd > maximumEnd) {
         throw new EmploymentLifecycleError(
           'MAX_RENEWALS_REACHED',
-          'The supplied period exceeds the defensive three-year Teaching probation limit.'
+          'The supplied period exceeds the agreed or statutory total probation limit.'
         );
       }
       const overlappingProbation = await tx.probationRecord.count({
@@ -481,7 +517,7 @@ export async function renewTeachingProbation(
         data: {
           employeeId: employee.id,
           employmentRecordId: resulting.id,
-          category: EmploymentCategory.TEACHING,
+          category: employment.employmentCategory,
           startedAt: nextStart,
           expectedEndAt: nextEnd,
           renewalCount: probation.renewalCount + 1,
@@ -517,7 +553,7 @@ export async function renewTeachingProbation(
           changedById: input.actorUserId,
           remarks,
           previousState: before,
-          newState: after,
+          newState: isSaga ? after : { ...after, evaluationConfirmed: input.evaluationConfirmed === true, legalReviewConfirmed: input.legalReviewConfirmed === true, renewalConsentConfirmed: input.renewalConsentConfirmed === true },
         },
       });
       return {
@@ -544,8 +580,9 @@ export async function doNotRenewEmployee(
   return withSerializableRetry(() =>
     prisma.$transaction(async (tx) => {
       const decisionAt = input.decisionAt ?? new Date();
-      const { employee, employment } = await getLifecycleContext(tx, input, decisionAt);
+      const { employee, employment, isSaga, policy } = await getLifecycleContext(tx, input, decisionAt);
       const probation = employment.probation!;
+      if (!isSaga) { assertGeneralAdverseDecision(input, policy, probation.expectedEndAt, decisionAt); assertEvaluation(input, policy, remarks, true); }
       assertPeriodReached(probation.expectedEndAt, decisionAt);
       assertEffectiveDate({
         effectiveAt: input.nonRenewalEffectiveAt,
@@ -609,7 +646,7 @@ export async function doNotRenewEmployee(
           changedById: input.actorUserId,
           remarks,
           previousState: before,
-          newState: after,
+          newState: isSaga ? after : { ...after, evaluationConfirmed: input.evaluationConfirmed === true, legalReviewConfirmed: input.legalReviewConfirmed === true, renewalConsentConfirmed: input.renewalConsentConfirmed === true },
         },
       });
       return {

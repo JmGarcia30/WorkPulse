@@ -14,6 +14,10 @@ const service = createSeparationService(prisma, async () => {
 });
 
 export const {
+  acknowledgeEmployeeResignation,
+  getFinalPayManagement, createFinalPay, saveFinalPayDraft, reviewFinalPay, approveFinalPay, recordFinalPayPayment,
+  getFinalPayPolicySettings, saveFinalPayDeadlinePolicy,
+  getResignationPolicySettings, saveResignationPolicy,
   searchSeparationEmployees,
   createSeparationCase, updateSeparationCase, cancelSeparationCase,
   addClearanceItem, updateClearanceItem, recordClearanceDecision,

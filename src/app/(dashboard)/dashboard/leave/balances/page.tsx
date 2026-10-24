@@ -9,5 +9,5 @@ export default async function LeaveBalancesPage() {
   if (!canManageLeaveBalances(user)) redirect('/dashboard/leave');
   const data = await getLeaveBalanceAdminData(user.organizationId);
 
-  return <LeaveBalancesPanel types={data.types} employees={data.employees} />;
+  return <LeaveBalancesPanel types={data.types} employees={data.employees} isSagaOrganization={data.isSagaOrganization} />;
 }

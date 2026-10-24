@@ -11,6 +11,7 @@ const links = [
   { href: '/employee/leave', label: 'Leave', icon: FileText },
   { href: '/employee/payroll', label: 'Payroll', icon: ReceiptText },
   { href: '/employee/employment', label: 'Employment', icon: BriefcaseBusiness },
+  { href: '/employee/resignation', label: 'Resignation', icon: FileText },
   { href: '/employee/profile', label: 'Profile', icon: UserRound },
 ];
 

@@ -19,7 +19,7 @@ interface TimelineActivity {
   type?: string;
 }
 
-interface ApplicantRightSidebarProps {
+interface ApplicantRightSidebarProps { isSagaOrganization?: boolean; probationTerms?: string | null;
   applicationId: string;
   candidateName: string;
   jobTitle: string;
@@ -37,7 +37,7 @@ interface ApplicantRightSidebarProps {
   onSelectTab: (tab: ApplicantTabKey) => void;
 }
 
-export function ApplicantRightSidebar({
+export function ApplicantRightSidebar({ isSagaOrganization = false, probationTerms,
   applicationId,
   candidateName,
   jobTitle,
@@ -62,7 +62,7 @@ export function ApplicantRightSidebar({
   return (
     <aside aria-label="Candidate Readiness and Activity" className="space-y-5">
       {/* 1. Hiring Readiness Gate Card */}
-      <HiringReadinessCard
+      <HiringReadinessCard isSagaOrganization={isSagaOrganization} probationTerms={probationTerms}
         applicationId={applicationId}
         candidateName={candidateName}
         jobTitle={jobTitle}

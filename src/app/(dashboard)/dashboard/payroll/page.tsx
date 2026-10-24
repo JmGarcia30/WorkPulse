@@ -16,6 +16,8 @@ import { RecentPayrollPeriodsWidget } from '@/components/payroll/RecentPayrollPe
 import { PayrollActionQueueWidget } from '@/components/payroll/PayrollActionQueueWidget';
 import { PayrollProcessingTab } from '@/components/payroll/PayrollProcessingTab';
 import { PayrollConfigurationTab } from '@/components/payroll/PayrollConfigurationTab';
+import { PayrollStatutorySetupPanel } from '@/components/payroll/PayrollStatutorySetupPanel';
+import { getPayrollStatutorySetup } from '@/features/payroll/setup-queries';
 
 export default async function PayrollPage({
   searchParams,
@@ -48,6 +50,8 @@ export default async function PayrollPage({
     user.role === Role.ORGANIZATION_ADMIN || user.role === Role.HR_ADMIN;
   const canGeneratePayroll =
     canManagePayroll && selectedPeriod !== null && selectedPeriod.status !== 'FINALIZED';
+  const statutorySetup = activeTab === 'processing' && canManagePayroll && selectedPeriod && selectedPeriod.status !== 'FINALIZED'
+    ? await getPayrollStatutorySetup({ organizationId: user.organizationId, actorUserId: user.userId, payrollPeriodId: selectedPeriod.id }) : null;
 
   const periodOptions = periods.map((p) => ({
     id: p.id,
@@ -58,6 +62,16 @@ export default async function PayrollPage({
   const selectedPeriodDateRange = selectedPeriod
     ? formatPayrollPeriodRange(selectedPeriod.periodStart, selectedPeriod.periodEnd)
     : undefined;
+  // Client props contain display values, never Prisma Decimal instances or unused ledger payloads.
+  const configurationCompensations = compensations.map(record => ({
+    id: record.id, compensationType: record.compensationType, baseRate: record.baseRate.toFixed(2), currency: record.currency,
+    payFrequency: record.payFrequency, effectiveFrom: record.effectiveFrom, effectiveTo: record.effectiveTo, status: record.status, employee: record.employee,
+  }));
+  const configurationPolicies = policies.map(policy => ({
+    id: policy.id, version: policy.version, effectiveFrom: policy.effectiveFrom, effectiveTo: policy.effectiveTo, status: policy.status,
+    dailyPayBasis: policy.dailyPayBasis, lateDeductionRule: policy.lateDeductionRule, absenceDeductionRule: policy.absenceDeductionRule,
+    undertimeDeductionRule: policy.undertimeDeductionRule, roundingRule: policy.roundingRule, createdBy: policy.createdBy,
+  }));
 
   return (
     <div className="space-y-6">
@@ -122,20 +136,24 @@ export default async function PayrollPage({
 
       {/* 3. Tab Content: Payroll Processing (Create Period, Generate, Review, Finalize) */}
       {activeTab === 'processing' && (
+        <>
+        {statutorySetup && selectedPeriod && <PayrollStatutorySetupPanel key={selectedPeriod.id} rows={statutorySetup} periodId={selectedPeriod.id} periodName={selectedPeriod.name} payDate={selectedPeriod.payDate.toISOString().slice(0, 10)} />}
         <PayrollProcessingTab
           periods={periods}
           selectedPeriod={selectedPeriod}
-          review={review}
+          review={review ? { period: review.period, summary: review.summary, totals: review.totals, issues: review.issues, canFinalize: review.canFinalize } : null}
         />
+        <EmployeePayrollEntriesTable entries={entries} selectedPeriodName={selectedPeriod?.name} isPeriodFinalized={selectedPeriod?.status === 'FINALIZED'} />
+        </>
       )}
 
       {/* 4. Tab Content: Payroll Configuration (Compensations & Policy Versions) */}
       {activeTab === 'configuration' && (
         <PayrollConfigurationTab
           employees={employees}
-          compensations={compensations}
-          policies={policies}
-          currentPolicy={currentPolicy}
+          compensations={configurationCompensations}
+          policies={configurationPolicies}
+          currentPolicy={configurationPolicies.find(policy => policy.id === currentPolicy?.id) ?? null}
           leaveTypes={leaveTypes}
         />
       )}

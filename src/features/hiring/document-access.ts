@@ -3,7 +3,7 @@ import 'server-only';
 import { headers } from 'next/headers';
 import { requireBackOfficeContext } from '@/lib/auth/guards';
 import { resolveRequestTenant } from '@/lib/tenant/server';
-import { databaseSlugForTenant, parsePlatformHost } from '@/lib/tenant/host';
+import { databaseSlugForTenant, classifyRequestHost } from '@/lib/tenant/host';
 
 // Preserve action validation results while enforcing the same current-user and
 // request-tenant boundary as the recruitment workspace and download handlers.
@@ -32,7 +32,7 @@ export async function candidateDocumentMatchesRequestTenant(organizationId: stri
 
 async function isPublicCareersHost() {
   const requestHeaders = await headers();
-  return parsePlatformHost(requestHeaders.get('x-forwarded-host') || requestHeaders.get('host') || '').kind === 'public';
+  return classifyRequestHost(requestHeaders).kind === 'public' && !requestHeaders.has('x-workpulse-tenant-slug') && !requestHeaders.has('x-workpulse-routing-context');
 }
 
 // Older records may contain client-supplied active MIME types. Never serve

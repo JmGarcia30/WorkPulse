@@ -1,0 +1,13 @@
+{
+  "stage": {
+    "action": "button",
+    "label": "Connect Google account"
+  },
+  "page": {
+    "host": "app.localhost:3137",
+    "path": "/",
+    "title": "Find your WorkPulse workspace.",
+    "body": "W\nWorkPulse\n\nSECURE WORKSPACE ACCESS\n\nFind your WorkPulse workspace.\n\nEach organization has its own secure WorkPulse sign-in. Enter the workspace name supplied by your organization to continue.\n\n01\nFind your organization\n02\nContinue to secure sign in\n\nEnter your workspace\n\nProvided by your organization\nWorkspace name\n.localhost\n\nUse the name before the first dot in your organization's WorkPulse URL.\n\nContinue to workspace\nBack to WorkPulse"
+  },
+  "failure": "BROWSER_WAIT"
+}

@@ -1,0 +1,5 @@
+{
+  "migration": "20261022000100_hiring_document_policy",
+  "exitCode": 0,
+  "output": "Prisma schema loaded from .next\\hiring-release-UqGQkL\\schema.prisma\nDatasource \"db\": PostgreSQL database \"neondb\", schema \"public\" at \"ep-bitter-queen-azfwx70v.c-3.ap-southeast-1.aws.neon.tech\"\n\n23 migrations found in prisma/migrations\n\nApplying migration `20261022000100_hiring_document_policy`\n\nThe following migration(s) have been applied:\n\nmigrations/\n  └─ 20261022000100_hiring_document_policy/\n    └─ migration.sql\n      \nAll migrations have been successfully applied.\nwarn The configuration property `package.json#prisma` is deprecated and will be removed in Prisma 7. Please migrate to a Prisma config file (e.g., `prisma.config.ts`).\nFor more information, see: https://pris.ly/prisma-config\n\nEnvironment variables loaded from .env\n"
+}

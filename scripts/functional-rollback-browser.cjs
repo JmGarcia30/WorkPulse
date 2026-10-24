@@ -11,7 +11,7 @@ const verification = JSON.parse(fs.readFileSync(helper.directory + '/schema-and-
 if (!verification.h10Applied || !verification.h10ChecksumMatch || verification.identity.endpointSha256 !== config.identity.endpointSha256) helper.fail('UNVERIFIED_TARGET');
 const securityOnly = process.env.FR_PROFILE_SECURITY === '1';
 const candidateOnly = process.env.FR_CANDIDATE_DOCUMENTS === '1';
-const evidenceRoot = process.env.FR_IDENTITY_REVIEW === '1' ? 'docs/functional-regression/candidate-identity' : process.env.FR_CANDIDATE_REVIEW === '1' ? 'docs/functional-regression/candidate-documents' : 'docs/functional-regression/profile-security';
+const evidenceRoot = process.env.FR_CANDIDATE_EVIDENCE_DIRECTORY || (process.env.FR_IDENTITY_REVIEW === '1' ? 'docs/functional-regression/candidate-identity' : process.env.FR_CANDIDATE_REVIEW === '1' ? 'docs/functional-regression/candidate-documents' : 'docs/functional-regression/profile-security');
 const directory = candidateOnly ? evidenceRoot + (process.env.FR_DELETED_DOCUMENTS === '1' ? '/deleted' : '/candidate') : process.env.FR_SECURITY_BASELINE === '1' ? 'docs/functional-regression/profile-security/baseline' : securityOnly ? evidenceRoot + '/http' : process.env.FR_SECURITY_FUNCTIONAL === '1' ? evidenceRoot + '/browser' : 'docs/functional-regression';
 fs.mkdirSync(directory, { recursive: true });
 const save = (name, data) => fs.writeFileSync(`${directory}/${name}.json`, JSON.stringify(data, null, 2));
@@ -56,7 +56,10 @@ async function main() {
   let app, server, session;
   try {
     await db.$transaction(async tx => {
-      if (process.env.FR_IDENTITY_REVIEW === '1') for (const sql of fs.readFileSync('prisma/migrations/20261021000100_candidate_access/migration.sql', 'utf8').split(';').filter(x => x.trim())) await tx.$executeRawUnsafe(sql);
+      if (process.env.FR_IDENTITY_REVIEW === '1') {
+        const [state] = await tx.$queryRaw`SELECT to_regclass('public."CandidateAccess"') IS NOT NULL AS exists`;
+        if (!state.exists) for (const sql of fs.readFileSync('prisma/migrations/20261021000100_candidate_access/migration.sql', 'utf8').split(';').filter(x => x.trim())) await tx.$executeRawUnsafe(sql);
+      }
       globalThis.prisma = fixtureClient(tx);
       const password = randomBytes(24).toString('hex'), passwordHash = await hash(password, 10);
       const org = await tx.organization.create({ data: { name: 'Functional Regression Fixture', slug, timeZone: 'Asia/Manila' } });
@@ -236,7 +239,7 @@ async function main() {
       throw rollback;
     }, { timeout: 600000, maxWait: 10000 });
   } catch (error) {
-    if (error !== rollback) { save('browser-failure', { code: error.code || error.name, stage: checks.at(-1)?.scenario, message: /^[A-Z_]+$/.test(error.message) ? error.message : undefined }); throw error; }
+    if (error !== rollback) { save('browser-failure', { code: error.code || error.name, stage: checks.at(-1)?.scenario, message: /^[A-Z_]+$/.test(error.message) ? error.message : undefined, locations: error.stack?.split(/\r?\n/).filter(line => /^\s+at /.test(line)) }); throw error; }
   } finally {
     await session?.close();
     if (server) await new Promise(resolve => server.close(resolve));

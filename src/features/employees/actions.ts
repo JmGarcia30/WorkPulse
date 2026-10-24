@@ -20,7 +20,7 @@ import {
 
 export async function convertApplicationToEmployeeAction(
   applicationId: string,
-  input?: { teachingExpectedEndAt?: string }
+  input?: { teachingExpectedEndAt?: string; probationStandardsConfirmed?: boolean }
 ) {
   const user = await getSession();
   if (!user || !canManageEmployees(user)) {
@@ -39,6 +39,7 @@ export async function convertApplicationToEmployeeAction(
       organizationId: user.organizationId,
       actorUserId: user.userId,
       teachingExpectedEndAt,
+      probationStandardsConfirmed: input?.probationStandardsConfirmed,
     });
 
     revalidatePath('/dashboard');
@@ -80,7 +81,7 @@ function revalidateEmployeeLifecycle(employeeId: string) {
 
 export async function regularizeEmployeeAction(
   employeeId: string,
-  input: { confirmed: boolean; regularizationEffectiveAt: string; remarks?: string }
+  input: { confirmed: boolean; regularizationEffectiveAt: string; remarks?: string; evaluationConfirmed?: boolean }
 ): Promise<LifecycleActionResult> {
   const user = await getSession();
   if (!user || !canManageEmploymentLifecycle(user)) {
@@ -97,6 +98,7 @@ export async function regularizeEmployeeAction(
         'Regularization effective date'
       ),
       remarks: input.remarks,
+      evaluationConfirmed: input.evaluationConfirmed,
     });
     revalidateEmployeeLifecycle(employeeId);
     return { success: true, employeeId, decision: result.decision };
@@ -112,6 +114,9 @@ export async function renewTeachingProbationAction(
     nextSchoolYearStartDate: string;
     nextSchoolYearEndDate: string;
     remarks?: string;
+    evaluationConfirmed?: boolean;
+    renewalConsentConfirmed?: boolean;
+    legalReviewConfirmed?: boolean;
   }
 ): Promise<LifecycleActionResult> {
   const user = await getSession();
@@ -133,6 +138,9 @@ export async function renewTeachingProbationAction(
         'Next school-year end date'
       ),
       remarks: input.remarks,
+      evaluationConfirmed: input.evaluationConfirmed,
+      renewalConsentConfirmed: input.renewalConsentConfirmed,
+      legalReviewConfirmed: input.legalReviewConfirmed,
     });
     revalidateEmployeeLifecycle(employeeId);
     return { success: true, employeeId, decision: result.decision };
@@ -143,7 +151,7 @@ export async function renewTeachingProbationAction(
 
 export async function doNotRenewEmployeeAction(
   employeeId: string,
-  input: { confirmed: boolean; nonRenewalEffectiveAt: string; remarks: string }
+  input: { confirmed: boolean; nonRenewalEffectiveAt: string; remarks: string; evaluationConfirmed?: boolean; legalReviewConfirmed?: boolean }
 ): Promise<LifecycleActionResult> {
   const user = await getSession();
   if (!user || !canManageEmploymentLifecycle(user)) {
@@ -160,6 +168,8 @@ export async function doNotRenewEmployeeAction(
         'Non-renewal effective date'
       ),
       remarks: input.remarks,
+      evaluationConfirmed: input.evaluationConfirmed,
+      legalReviewConfirmed: input.legalReviewConfirmed,
     });
     revalidateEmployeeLifecycle(employeeId);
     return { success: true, employeeId, decision: result.decision };

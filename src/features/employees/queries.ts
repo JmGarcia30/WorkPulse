@@ -186,7 +186,7 @@ export async function getOrganizationEmployeeById(
     db.employee.findFirst({
       where: { id: employeeId, organizationId },
       include: {
-        _count: { select: { employmentDecisions: true, statusHistory: true } },
+        _count: { select: { employmentDecisions: true, statusHistory: true } }, organization: { select: { slug: true } },
         sourceApplication: {
           include: {
             onboarding: { include: { tasks: true } },

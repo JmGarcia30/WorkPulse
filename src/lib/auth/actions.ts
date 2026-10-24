@@ -6,7 +6,7 @@ import { prisma } from '@/lib/db/prisma';
 import { createSession, destroySession, getSession } from './session';
 import { EmployeeAccountStatus, EmployeeStatus, Role } from '@prisma/client';
 import { landingPathForRole } from './routing';
-import { requireRequestTenant } from '@/lib/tenant/server';
+import { requireRequestTenant, requestWorkspacePath } from '@/lib/tenant/server';
 
 export async function loginAction(formData: FormData) {
   const tenant = await requireRequestTenant();
@@ -49,12 +49,13 @@ export async function loginAction(formData: FormData) {
     organizationId: user.organizationId,
   });
 
-  redirect(landingPathForRole(user.role));
+  redirect(await requestWorkspacePath(landingPathForRole(user.role)));
 }
 
 export async function logoutAction() {
+  const destination = await requestWorkspacePath('/login');
   await destroySession();
-  redirect('/login');
+  redirect(destination);
 }
 
 export async function getCurrentUser() {

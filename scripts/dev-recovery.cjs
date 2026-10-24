@@ -12,10 +12,16 @@ function start() {
   }
   // Process variables outrank Next's dotenv files. Override both database URLs explicitly.
   // Keep the existing session/auth environment; never inject the audit helper's ephemeral secret.
+  const argumentsList = process.argv.slice(2);
+  const portIndex = argumentsList.findIndex(value => value === '--port' || value === '-p');
+  const selectedPort = portIndex >= 0 ? argumentsList[portIndex + 1] : argumentsList.find(value => value.startsWith('--port='))?.slice('--port='.length) || process.env.PORT || '3000';
+  if (!/^\d{1,5}$/.test(selectedPort || '') || Number(selectedPort) < 1 || Number(selectedPort) > 65535) helper.fail('INVALID_LOCAL_PORT');
   const env = {
     ...process.env,
     DATABASE_URL: config.pooled.href,
     H10_TEST_DATABASE_URL: config.direct.href,
+    PLATFORM_ROOT_DOMAIN: 'localhost:' + Number(selectedPort),
+    PLATFORM_PUBLIC_ORIGIN: 'http://localhost:' + Number(selectedPort),
   };
   helper.assertOriginalUnchanged(config);
   console.log('[WorkPulse dev] Using verified disposable workpulse-batch0-recovery. Original .env unchanged.');

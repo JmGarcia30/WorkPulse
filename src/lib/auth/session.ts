@@ -4,6 +4,7 @@ import { Role } from '@prisma/client';
 import { cache } from 'react';
 import { prisma } from '@/lib/db/prisma';
 import { measureDevelopment } from '@/lib/performance/diagnostics';
+import { resolveRequestTenant } from '@/lib/tenant/server';
 
 // Memoized only within a Server Component render, never across requests.
 // Server Actions and Route Handlers execute a fresh lookup.
@@ -63,6 +64,10 @@ export async function getSession(): Promise<UserSessionPayload | null> {
     return null;
   }
   if (typeof payload.userId !== 'string' || typeof payload.organizationId !== 'string' || typeof payload.role !== 'string') return null;
+  // A valid JWT is still unusable outside its persisted request workspace. This
+  // applies to every session consumer, including legacy document/API handlers.
+  const tenant = await resolveRequestTenant();
+  if (!tenant || tenant.organizationId !== payload.organizationId) return null;
   // A signed JWT authenticates its issuance, not today's permissions. Preserve
   // the existing guard policy: role/membership changes require a fresh login.
   // Database failures propagate rather than silently becoming anonymous access.

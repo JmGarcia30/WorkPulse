@@ -1,0 +1,21 @@
+{
+  "fixtureOnly": true,
+  "changedTables": [
+    "Applicant",
+    "Application",
+    "Employee",
+    "EmployeeCompensation",
+    "EmploymentRecord",
+    "Job",
+    "Organization",
+    "PayrollContributionAllocation",
+    "PayrollContributionMonth",
+    "PayrollEntry",
+    "PayrollPeriod",
+    "PayrollStatutoryInput",
+    "PayrollStatutoryPosting",
+    "PayrollTaxOpening",
+    "User"
+  ],
+  "immutableGuardsRestored": true
+}

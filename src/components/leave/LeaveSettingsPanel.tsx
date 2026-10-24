@@ -25,8 +25,9 @@ import {
   createLeaveTypeAction,
   deactivateLeaveTypeAction,
   activateLeaveTypeAction,
+  updateLeaveDefaultEntitlementAction,
 } from '@/features/leave/hr-actions';
-import { LeaveCountingMode } from '@prisma/client';
+import { EmploymentStatus, LeaveCountingMode } from '@prisma/client';
 
 export interface SettingsType {
   id: string;
@@ -52,6 +53,7 @@ export interface SettingsType {
 interface LeaveSettingsPanelProps {
   types: SettingsType[];
   organizationName?: string;
+  isSagaOrganization?: boolean;
 }
 
 function getLeaveTypeIcon(code: string, name: string) {
@@ -81,7 +83,7 @@ function formatDate(dateStr: string): string {
   }).format(d);
 }
 
-export function LeaveSettingsPanel({ types, organizationName }: LeaveSettingsPanelProps) {
+export function LeaveSettingsPanel({ types, organizationName, isSagaOrganization = false }: LeaveSettingsPanelProps) {
   const [feedback, setFeedback] = useState<{ type: 'success' | 'error'; message: string } | null>(null);
   const [pending, startTransition] = useTransition();
 
@@ -104,6 +106,7 @@ export function LeaveSettingsPanel({ types, organizationName }: LeaveSettingsPan
   };
 
   const handleConfigurePolicy = () => {
+    if (!isSagaOrganization) return;
     if (
       !window.confirm(
         'Configure policy definitions and default cycles for the current year? Existing balances and records will not be altered.'
@@ -146,6 +149,11 @@ export function LeaveSettingsPanel({ types, organizationName }: LeaveSettingsPan
         balanceTracked,
         defaultGrantUnits: grant,
         policyReference: reference,
+        requiredEmploymentStatus: (String(form.get('employmentStatus') || '') || null) as EmploymentStatus | null,
+        minimumServiceMonths: form.get('serviceMonths') ? Number(form.get('serviceMonths')) : null,
+        maximumRequestUnits: form.get('maximumUnits') ? Number(form.get('maximumUnits')) : null,
+        allowsRetrospectiveFiling: form.get('retrospective') === 'on',
+        requiresEligibilityVerification: form.get('eligibility') === 'on',
       });
 
       if ('error' in result) {
@@ -277,14 +285,14 @@ export function LeaveSettingsPanel({ types, organizationName }: LeaveSettingsPan
             </p>
           </div>
         </div>
-        <button
+        {isSagaOrganization && <button
           type="button"
           disabled={pending}
           onClick={handleConfigurePolicy}
           className="shrink-0 rounded-xl bg-slate-900 px-5 py-2.5 text-xs font-semibold text-white shadow-sm transition hover:bg-slate-800 disabled:opacity-50"
         >
           {pending ? 'Configuring...' : 'Configure Current Year'}
-        </button>
+        </button>}
       </section>
 
       {/* Section B — Add Leave Type */}
@@ -382,6 +390,23 @@ export function LeaveSettingsPanel({ types, organizationName }: LeaveSettingsPan
               />
             </div>
           </div>
+
+          <fieldset className="grid gap-4 sm:grid-cols-3">
+            <legend className="mb-2 text-xs font-semibold text-slate-700">Eligibility and request limits (optional)</legend>
+            <label className="text-xs text-slate-700">Employment classification
+              <select name="employmentStatus" className="mt-1 block h-10 w-full rounded-xl border border-slate-200 px-3">
+                <option value="">Any classification</option><option value="PROBATIONARY">Probationary</option><option value="REGULAR">Regular</option>
+              </select>
+            </label>
+            <label className="text-xs text-slate-700">Minimum continuous service (months)
+              <input name="serviceMonths" type="number" min="0" max="1200" step="1" className="mt-1 block h-10 w-full rounded-xl border border-slate-200 px-3" />
+            </label>
+            <label className="text-xs text-slate-700">Maximum units per request
+              <input name="maximumUnits" type="number" min="0.0001" max="999999.9999" step="0.0001" className="mt-1 block h-10 w-full rounded-xl border border-slate-200 px-3" />
+            </label>
+            <label className="flex items-center gap-2 text-xs text-slate-700"><input name="retrospective" type="checkbox" />Allow retrospective filing</label>
+            <label className="flex items-center gap-2 text-xs text-slate-700"><input name="eligibility" type="checkbox" />Require explicit HR eligibility verification</label>
+          </fieldset>
 
           {/* Row 3: Checkboxes & Submit Button */}
           <div className="flex flex-col gap-4 pt-3 sm:flex-row sm:items-center sm:justify-between border-t border-slate-100">
@@ -589,6 +614,17 @@ export function LeaveSettingsPanel({ types, organizationName }: LeaveSettingsPan
                   {/* Expandable Cycle Management Drawer */}
                   {isExpanded && (
                     <div className="border-t border-slate-100 bg-slate-50/50 p-4 rounded-b-xl space-y-4">
+                      {!isSagaOrganization && type.balanceTracked && <form onSubmit={event => {
+                        event.preventDefault();
+                        const amount = Number(new FormData(event.currentTarget).get('entitlement'));
+                        run(() => updateLeaveDefaultEntitlementAction({ leaveTypeId: type.id, defaultGrantUnits: amount }), 'Default updated for future grants. Existing ledger grants and balances are unchanged.');
+                      }} className="space-y-2">
+                        <label className="block text-xs font-semibold text-slate-700">Default entitlement for future grants (units)
+                          <input name="entitlement" required type="number" min="0" max="999999.9999" step="0.0001" defaultValue={type.defaultGrantUnits ?? ''} className="ml-2 h-9 rounded-lg border border-slate-200 px-2" />
+                        </label>
+                        <button disabled={pending} className="rounded-lg bg-slate-900 px-3 py-2 text-xs font-semibold text-white disabled:opacity-50">Save default entitlement</button>
+                        <p className="text-xs text-slate-500">Apply entitlements through <Link href="/dashboard/leave/balances" className="underline">Leave Balances</Link> after configuring a cycle. Each employee receives one default grant per cycle; changing the default does not replace an existing grant.</p>
+                      </form>}
                       {/* Existing Cycles */}
                       <div>
                         <h4 className="text-xs font-bold text-slate-700">

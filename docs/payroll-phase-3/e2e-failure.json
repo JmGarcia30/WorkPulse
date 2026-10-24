@@ -1,0 +1,8 @@
+{
+  "code": "Error",
+  "message": "ACTION_RESULT_NOT_READY",
+  "last": {
+    "scenario": "Monthly synthetic September: duplicate generation keeps one entry and three allocations",
+    "passed": true
+  }
+}

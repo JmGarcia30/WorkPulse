@@ -1,0 +1,331 @@
+{
+  "capturedAt": "2026-10-21T18:13:11.602Z",
+  "identity": {
+    "branchName": "workpulse-batch0-recovery",
+    "branchId": "br-broad-forest-az55xwfe",
+    "endpointId": "ep-bitter-queen-azfwx70v",
+    "checkpointBranchId": null,
+    "pooledAndDirectSameEndpoint": true,
+    "distinctFromProtectedOriginal": true,
+    "database": "neondb",
+    "schema": "public",
+    "originalEnvSha256": "eefb1ccb8aad1895fef4d6a154efce261d3c26b00692265aba855e0be0c1d523",
+    "endpointSha256": "54e42c8d8591f1c8ee24b89396a4c92e661e1c12df3d826102d7614f50568931",
+    "consoleMappingComplete": true
+  },
+  "connections": [
+    {
+      "state": [
+        {
+          "database": "neondb",
+          "schema": "public",
+          "read_only": "on"
+        }
+      ],
+      "history": [
+        {
+          "migration_name": "20260810182207_sprint1_initial",
+          "checksum": "2a1391c7342b5e2af4987954458fe85fb5e6a94de3b8a36dedf04e1041e580e2",
+          "finished": true,
+          "rolled_back": false
+        },
+        {
+          "migration_name": "20260810191746_sprint1_5_tenant_portals",
+          "checksum": "a7a9f6f0af34f19220797cdfb4aa91e6647e0fac7d0da18e900bb09c37fc6d25",
+          "finished": true,
+          "rolled_back": false
+        },
+        {
+          "migration_name": "20260811133650_expand_application_status_enum",
+          "checksum": "0bddb0cfef0b78bd3eab1651d83dbfbf09292fd86f86c35a814dc17e70a4caf8",
+          "finished": true,
+          "rolled_back": false
+        },
+        {
+          "migration_name": "20260821112801_sprint2_2_interview_management",
+          "checksum": "8acf4fe6dfc7a6ba774d646db9aae20b1747c61c61f58615f73e8e013bb3c6d0",
+          "finished": true,
+          "rolled_back": false
+        },
+        {
+          "migration_name": "20260822133153_sprint2_3_assessments_offers",
+          "checksum": "dffee0cecbae782bcd8e820c7bd38d8c6d3faffeeb688b8c0d48222ef9cf2c15",
+          "finished": true,
+          "rolled_back": false
+        },
+        {
+          "migration_name": "20260825052913_sprint2_4_onboarding",
+          "checksum": "b609e1818c27d5e1944d43f7dc07d9c1471317d7744849edbf7826ea2de76701",
+          "finished": true,
+          "rolled_back": false
+        },
+        {
+          "migration_name": "20260831112506_add_parsed_resume",
+          "checksum": "b2d55da85bb98309bca10af9901de594b28955cc6e25097598bc838ca2d9e305",
+          "finished": true,
+          "rolled_back": false
+        },
+        {
+          "migration_name": "20260906180000_h1_employee_core",
+          "checksum": "9bb28a335297e939b8a6f88eae7157667a717f24c1e4ab6b3ef17dab5399e9f4",
+          "finished": true,
+          "rolled_back": false
+        },
+        {
+          "migration_name": "20260907120000_h2_employment_probation",
+          "checksum": "86a376ac88c79cbb3cf2d83228c6da789573b480182afb86696f084ed2786cf9",
+          "finished": true,
+          "rolled_back": false
+        },
+        {
+          "migration_name": "20260908180503_h3_attendance_foundation",
+          "checksum": "513d362d61e72e7c79172b416d1eed6267e443498c5b51b0202c078f29e1dfa4",
+          "finished": true,
+          "rolled_back": false
+        },
+        {
+          "migration_name": "20260911120000_h4_employee_self_service",
+          "checksum": "c8a304ccd975fe8b9f30de1be451ee2aee69484e777efdcc4b475a39d9d0ed73",
+          "finished": true,
+          "rolled_back": false
+        },
+        {
+          "migration_name": "20260914160000_h5_leave_management",
+          "checksum": "fe04d4e297e4a2e452f8c2c3b457e4285f5f750e2be88ff318daf931f3283aaf",
+          "finished": true,
+          "rolled_back": false
+        },
+        {
+          "migration_name": "20260914173000_h5_leave_integrity_followup",
+          "checksum": "3325017fba8425e0c7ce709dc1e7c1a0d38b4e7de1b0f7521a458f5c273632a1",
+          "finished": true,
+          "rolled_back": false
+        },
+        {
+          "migration_name": "20260915120000_h5_leave_workflow_simplification",
+          "checksum": "5c5277f49e163cc55eb8c3deeebb60a4aec42217fc65cc69919f5b2c8a5851d0",
+          "finished": false,
+          "rolled_back": true
+        },
+        {
+          "migration_name": "20260915120000_h5_leave_workflow_simplification",
+          "checksum": "c6562cfbd06d7c56b56304d821c30a514bd4d959f94821bbd3aa055a93eeae54",
+          "finished": true,
+          "rolled_back": false
+        },
+        {
+          "migration_name": "20260917120000_h5_final_leave_simplification",
+          "checksum": "5e7ecb553b4f5bb793018fca9d0e09a70a3934a73d689cd7405360ca8b9fe3c6",
+          "finished": true,
+          "rolled_back": false
+        },
+        {
+          "migration_name": "20260918120000_s1_tenant_branding",
+          "checksum": "5028a2d95b17f4c643e8e7ffd6c73615f850bf2395604eda5552be261a9d4aeb",
+          "finished": true,
+          "rolled_back": false
+        },
+        {
+          "migration_name": "20260924190000_h6_1_payroll_foundation",
+          "checksum": "a79538204f6ae391107532f432219415648bbfe96193f9313782ba25206bb3dd",
+          "finished": true,
+          "rolled_back": false
+        },
+        {
+          "migration_name": "20260928120000_h6_2_simple_payroll_calculation",
+          "checksum": "7810038d537709df6c327be4380b65cf2858b7ca907175f6fbae4f3a430dae35",
+          "finished": true,
+          "rolled_back": false
+        },
+        {
+          "migration_name": "20260928180000_h6_2_5_payroll_policy",
+          "checksum": "9ef846c9dbe7b8f2823b406685371efb75054d2b2e69d4a51c4d353abceec979",
+          "finished": true,
+          "rolled_back": false
+        },
+        {
+          "migration_name": "20260928210000_h6_3_payroll_finalization",
+          "checksum": "e884e60fac32b854a67e9ab20207c397e0c6ef5a5ceb95824a6eb93e4d107d48",
+          "finished": true,
+          "rolled_back": false
+        },
+        {
+          "migration_name": "20261017090000_h10_1_exit_clearance",
+          "checksum": "ff13d527ce230b08eaa54d99a6d2c75e493a5235e34903f300f3752cb46c974a",
+          "finished": true,
+          "rolled_back": false
+        },
+        {
+          "migration_name": "20261017120000_h10_2_final_separation",
+          "checksum": "8b2cad450524f1eef19fa32c1a8756fb60eb49dec28dfafe469d294b3e041bce",
+          "finished": true,
+          "rolled_back": false
+        },
+        {
+          "migration_name": "20261022000100_hiring_document_policy",
+          "checksum": "65980bcc8ddec87eaeedd73a43af66c81756bf871f571ddfcd97de84adaff05f",
+          "finished": true,
+          "rolled_back": false
+        }
+      ]
+    },
+    {
+      "state": [
+        {
+          "database": "neondb",
+          "schema": "public",
+          "read_only": "on"
+        }
+      ],
+      "history": [
+        {
+          "migration_name": "20260810182207_sprint1_initial",
+          "checksum": "2a1391c7342b5e2af4987954458fe85fb5e6a94de3b8a36dedf04e1041e580e2",
+          "finished": true,
+          "rolled_back": false
+        },
+        {
+          "migration_name": "20260810191746_sprint1_5_tenant_portals",
+          "checksum": "a7a9f6f0af34f19220797cdfb4aa91e6647e0fac7d0da18e900bb09c37fc6d25",
+          "finished": true,
+          "rolled_back": false
+        },
+        {
+          "migration_name": "20260811133650_expand_application_status_enum",
+          "checksum": "0bddb0cfef0b78bd3eab1651d83dbfbf09292fd86f86c35a814dc17e70a4caf8",
+          "finished": true,
+          "rolled_back": false
+        },
+        {
+          "migration_name": "20260821112801_sprint2_2_interview_management",
+          "checksum": "8acf4fe6dfc7a6ba774d646db9aae20b1747c61c61f58615f73e8e013bb3c6d0",
+          "finished": true,
+          "rolled_back": false
+        },
+        {
+          "migration_name": "20260822133153_sprint2_3_assessments_offers",
+          "checksum": "dffee0cecbae782bcd8e820c7bd38d8c6d3faffeeb688b8c0d48222ef9cf2c15",
+          "finished": true,
+          "rolled_back": false
+        },
+        {
+          "migration_name": "20260825052913_sprint2_4_onboarding",
+          "checksum": "b609e1818c27d5e1944d43f7dc07d9c1471317d7744849edbf7826ea2de76701",
+          "finished": true,
+          "rolled_back": false
+        },
+        {
+          "migration_name": "20260831112506_add_parsed_resume",
+          "checksum": "b2d55da85bb98309bca10af9901de594b28955cc6e25097598bc838ca2d9e305",
+          "finished": true,
+          "rolled_back": false
+        },
+        {
+          "migration_name": "20260906180000_h1_employee_core",
+          "checksum": "9bb28a335297e939b8a6f88eae7157667a717f24c1e4ab6b3ef17dab5399e9f4",
+          "finished": true,
+          "rolled_back": false
+        },
+        {
+          "migration_name": "20260907120000_h2_employment_probation",
+          "checksum": "86a376ac88c79cbb3cf2d83228c6da789573b480182afb86696f084ed2786cf9",
+          "finished": true,
+          "rolled_back": false
+        },
+        {
+          "migration_name": "20260908180503_h3_attendance_foundation",
+          "checksum": "513d362d61e72e7c79172b416d1eed6267e443498c5b51b0202c078f29e1dfa4",
+          "finished": true,
+          "rolled_back": false
+        },
+        {
+          "migration_name": "20260911120000_h4_employee_self_service",
+          "checksum": "c8a304ccd975fe8b9f30de1be451ee2aee69484e777efdcc4b475a39d9d0ed73",
+          "finished": true,
+          "rolled_back": false
+        },
+        {
+          "migration_name": "20260914160000_h5_leave_management",
+          "checksum": "fe04d4e297e4a2e452f8c2c3b457e4285f5f750e2be88ff318daf931f3283aaf",
+          "finished": true,
+          "rolled_back": false
+        },
+        {
+          "migration_name": "20260914173000_h5_leave_integrity_followup",
+          "checksum": "3325017fba8425e0c7ce709dc1e7c1a0d38b4e7de1b0f7521a458f5c273632a1",
+          "finished": true,
+          "rolled_back": false
+        },
+        {
+          "migration_name": "20260915120000_h5_leave_workflow_simplification",
+          "checksum": "5c5277f49e163cc55eb8c3deeebb60a4aec42217fc65cc69919f5b2c8a5851d0",
+          "finished": false,
+          "rolled_back": true
+        },
+        {
+          "migration_name": "20260915120000_h5_leave_workflow_simplification",
+          "checksum": "c6562cfbd06d7c56b56304d821c30a514bd4d959f94821bbd3aa055a93eeae54",
+          "finished": true,
+          "rolled_back": false
+        },
+        {
+          "migration_name": "20260917120000_h5_final_leave_simplification",
+          "checksum": "5e7ecb553b4f5bb793018fca9d0e09a70a3934a73d689cd7405360ca8b9fe3c6",
+          "finished": true,
+          "rolled_back": false
+        },
+        {
+          "migration_name": "20260918120000_s1_tenant_branding",
+          "checksum": "5028a2d95b17f4c643e8e7ffd6c73615f850bf2395604eda5552be261a9d4aeb",
+          "finished": true,
+          "rolled_back": false
+        },
+        {
+          "migration_name": "20260924190000_h6_1_payroll_foundation",
+          "checksum": "a79538204f6ae391107532f432219415648bbfe96193f9313782ba25206bb3dd",
+          "finished": true,
+          "rolled_back": false
+        },
+        {
+          "migration_name": "20260928120000_h6_2_simple_payroll_calculation",
+          "checksum": "7810038d537709df6c327be4380b65cf2858b7ca907175f6fbae4f3a430dae35",
+          "finished": true,
+          "rolled_back": false
+        },
+        {
+          "migration_name": "20260928180000_h6_2_5_payroll_policy",
+          "checksum": "9ef846c9dbe7b8f2823b406685371efb75054d2b2e69d4a51c4d353abceec979",
+          "finished": true,
+          "rolled_back": false
+        },
+        {
+          "migration_name": "20260928210000_h6_3_payroll_finalization",
+          "checksum": "e884e60fac32b854a67e9ab20207c397e0c6ef5a5ceb95824a6eb93e4d107d48",
+          "finished": true,
+          "rolled_back": false
+        },
+        {
+          "migration_name": "20261017090000_h10_1_exit_clearance",
+          "checksum": "ff13d527ce230b08eaa54d99a6d2c75e493a5235e34903f300f3752cb46c974a",
+          "finished": true,
+          "rolled_back": false
+        },
+        {
+          "migration_name": "20261017120000_h10_2_final_separation",
+          "checksum": "8b2cad450524f1eef19fa32c1a8756fb60eb49dec28dfafe469d294b3e041bce",
+          "finished": true,
+          "rolled_back": false
+        },
+        {
+          "migration_name": "20261022000100_hiring_document_policy",
+          "checksum": "65980bcc8ddec87eaeedd73a43af66c81756bf871f571ddfcd97de84adaff05f",
+          "finished": true,
+          "rolled_back": false
+        }
+      ]
+    }
+  ],
+  "pending": [
+    "20261021000100_candidate_access"
+  ]
+}

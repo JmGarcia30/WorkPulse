@@ -1,19 +1,15 @@
+import { probationPolicyText } from '@/features/employees/probation-policy';
 import React from 'react';
 import {
   ShieldCheck,
-  Calendar,
-  Clock,
   History,
-  AlertCircle,
-  CheckCircle2,
-  AlertTriangle,
 } from 'lucide-react';
 import { EmploymentLifecycleActions } from '@/components/employees/EmploymentLifecycleActions';
 import { formatStatusLabel } from '@/lib/ui/format-status';
 import type { EmploymentCategory, ProbationDecision, ProbationStatus } from '@prisma/client';
 import type { ProbationReviewSummary } from '@/features/employees/domain';
 
-interface ProbationTabProps {
+interface ProbationTabProps { isSagaOrganization?: boolean;
   employeeId: string;
   employeeName: string;
   category: EmploymentCategory;
@@ -56,7 +52,7 @@ function formatDate(date: Date | string | null | undefined): string {
   }).format(d);
 }
 
-export function ProbationTab({
+export function ProbationTab({ isSagaOrganization = false,
   employeeId,
   employeeName,
   category,
@@ -162,7 +158,7 @@ export function ProbationTab({
                 <span className="font-semibold text-slate-700 block mb-1">
                   Policy Snapshot:
                 </span>
-                <p className="leading-relaxed">{probation.policySnapshot}</p>
+                <p className="leading-relaxed">{probationPolicyText(probation.policySnapshot)}</p>
               </div>
             )}
           </div>
@@ -175,6 +171,7 @@ export function ProbationTab({
 
       {/* 2. Lifecycle Decision Actions (Regularize / Renew / Do Not Renew) */}
       <EmploymentLifecycleActions
+        isSagaOrganization={isSagaOrganization}
         employeeId={employeeId}
         employeeName={employeeName}
         category={category}

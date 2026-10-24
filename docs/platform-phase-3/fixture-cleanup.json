@@ -1,0 +1,8 @@
+{
+  "verifiedRecovery": true,
+  "onlyKnownSyntheticFixturesRemoved": true,
+  "historicalDataUnchanged": true,
+  "tablesCompared": 60,
+  "immutableTriggerEnabled": true,
+  "existingAuditRowsUnchanged": true
+}

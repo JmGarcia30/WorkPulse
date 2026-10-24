@@ -15,6 +15,7 @@ import {
 import { PayrollDashboardEntryItem } from '@/features/payroll/queries';
 import { formatStatusLabel } from '@/lib/ui/format-status';
 import { TenantLink } from '@/components/ui/TenantLink';
+import { PayrollDeductionBreakdown } from './PayrollDeductionBreakdown';
 
 interface EmployeePayrollEntriesTableProps {
   entries: PayrollDashboardEntryItem[];
@@ -278,8 +279,9 @@ export function EmployeePayrollEntriesTable({
                     </td>
 
                     {/* Deductions */}
-                    <td className="px-3 py-3 text-right font-medium text-amber-700 whitespace-nowrap">
+                    <td className="px-3 py-3 text-right font-medium text-amber-700">
                       {entry.totalDeductionsFormatted}
+                      {entry.breakdown && <details className="mt-2 text-left font-normal text-slate-700"><summary className="cursor-pointer whitespace-nowrap text-xs font-semibold text-teal-800">Deduction breakdown</summary><div className="mt-3 w-72 max-w-[75vw]"><PayrollDeductionBreakdown breakdown={entry.breakdown} currency={entry.currency} status={entry.status} /></div></details>}
                     </td>
 
                     {/* Net Pay */}

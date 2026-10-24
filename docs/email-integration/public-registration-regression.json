@@ -1,0 +1,9 @@
+{
+  "passed": true,
+  "assertions": 44,
+  "preservation": {
+    "existingDataUnchanged": true,
+    "tablesCompared": 63
+  },
+  "source": "docs/public-company-onboarding/tests.json"
+}

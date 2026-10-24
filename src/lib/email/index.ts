@@ -1,5 +1,8 @@
 import nodemailer from 'nodemailer';
 import { publicOrigin } from '@/lib/tenant/host';
+import { recruitmentOrganization, sendCompanyRecruitmentEmail, sendCompanyApplicantAccessEmail, sendSagaRecruitment } from './recruitment';
+import { deliverHrEmail, type HrNotificationInput } from './hr';
+import type { EmailInlineLogo } from '@/features/email-integration/google';
 
 export interface EmailLogEntry {
   id: string;
@@ -59,22 +62,27 @@ interface SendEmailParams {
   html: string;
   text?: string;
   sensitive?: boolean;
+  senderName?: string;
+  requireConfiguredSender?: boolean;
+  inlineLogo?: EmailInlineLogo;
 }
 
-export async function sendEmail({ to, subject, html, text, sensitive = false }: SendEmailParams): Promise<{ success: boolean; mode: 'smtp' | 'preview_log'; id: string }> {
+export async function sendEmail({ to, subject, html, text, sensitive = false, senderName, requireConfiguredSender = false, inlineLogo }: SendEmailParams): Promise<{ success: boolean; mode: 'smtp' | 'preview_log'; id: string }> {
   const plainText = text || html.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim();
   const id = `email_${Date.now()}_${Math.random().toString(36).substring(2, 8)}`;
   const transporter = getTransporter();
 
   if (transporter) {
     try {
-      const fromAddress = process.env.EMAIL_FROM || process.env.GMAIL_USER || 'no-reply@workpulse.saga.edu';
+      const fromAddress = process.env.EMAIL_FROM || process.env.GMAIL_USER || (requireConfiguredSender ? process.env.SMTP_USER : undefined) || (requireConfiguredSender ? '' : 'no-reply@workpulse.saga.edu');
+      if (requireConfiguredSender && !/^[^\s@<>]+@[^\s@<>]+\.[^\s@<>]+$/.test(fromAddress)) throw new Error('CONFIGURED_SENDER_REQUIRED');
       await transporter.sendMail({
-        from: `"WorkPulse — St. Aloysius Gonzaga Academy" <${fromAddress}>`,
+        from: `"${senderName || 'WorkPulse — St. Aloysius Gonzaga Academy'}" <${fromAddress}>`,
         to,
         subject,
         text: plainText,
         html,
+        attachments: inlineLogo ? [{ filename: 'organization-logo', content: inlineLogo.content, contentType: inlineLogo.contentType, cid: inlineLogo.cid, contentDisposition: 'inline' }] : undefined,
       });
 
       if (!sensitive) {
@@ -114,6 +122,36 @@ export async function sendEmail({ to, subject, html, text, sensitive = false }: 
   return { success: true, mode: 'preview_log', id };
 }
 
+export async function sendApplicantVerificationEmail(input: { organizationId: string; to: string; url: string }) {
+  const org = await recruitmentOrganization(input.organizationId);
+  if (org.slug !== 'st-aloysius') return sendCompanyApplicantAccessEmail(org.id, input);
+  const message = { to: input.to, subject: 'Verify your WorkPulse application', sensitive: true,
+    text: `Verify email ownership to access your application. This one-time link expires in 15 minutes: ${input.url}`,
+    html: `<p>Verify email ownership to access your application.</p><p><a href="${input.url}">Verify application</a></p><p>This one-time link expires in 15 minutes.</p>`,
+  };
+  return sendSagaRecruitment(org.id, message, () => sendEmail(message));
+}
+
+export function sendCompanyRegistrationVerificationEmail(input: { to: string; organizationName: string; activationUrl: string; expiresAt: Date }) {
+  const escape = (value: string) => value.replace(/[&<>"']/g, char => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[char] ?? char);
+  return sendEmail({
+    to: input.to, subject: 'Verify your company email — WorkPulse',
+    sensitive: true, senderName: 'WorkPulse', requireConfiguredSender: true,
+    text: `Verify your email to create ${input.organizationName} on WorkPulse: ${input.activationUrl}\nOpen this link in the browser where you registered. It expires at ${input.expiresAt.toISOString()} and can only be used once. If you did not register, ignore this email. No workspace has been created.`,
+    html: `<p>Verify your email to create <strong>${escape(input.organizationName)}</strong> on WorkPulse.</p><p><a href="${escape(input.activationUrl)}">Verify email and create workspace</a></p><p>Open this link in the browser where you registered. It expires at ${input.expiresAt.toISOString()} and can only be used once. If you did not register, ignore this email. No workspace has been created.</p>`,
+  });
+}
+
+export function sendOrganizationAdministratorActivationEmail(input: { to: string; organizationName: string; activationUrl: string; expiresAt: Date }) {
+  const escape = (value: string) => value.replace(/[&<>"']/g, char => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[char] ?? char);
+  return sendEmail({
+    to: input.to, subject: `Activate your WorkPulse HR administrator account — ${input.organizationName}`,
+    sensitive: true, senderName: 'WorkPulse', requireConfiguredSender: true,
+    text: `You were invited to administer ${input.organizationName} on WorkPulse. Set your own password using this single-use link: ${input.activationUrl}\nExpires: ${input.expiresAt.toISOString()}. If this invitation was unexpected, ignore it.`,
+    html: `<p>You were invited to administer ${escape(input.organizationName)} on WorkPulse.</p><p><a href="${escape(input.activationUrl)}">Activate your HR administrator account</a> and set your own password.</p><p>Expires: ${input.expiresAt.toISOString()}. If this invitation was unexpected, ignore it.</p>`,
+  });
+}
+
 export function sendEmployeeActivationEmail(input: {
   to: string;
   employeeName: string;
@@ -138,14 +176,14 @@ export function sendEmployeeActivationEmail(input: {
 // ==========================================
 
 export async function sendApplicationConfirmationEmail({
+  organizationId,
   to,
   candidateName,
   jobTitle,
-  organizationName,
-  organizationSlug,
   applicationId,
   baseUrl = publicOrigin(),
 }: {
+  organizationId: string;
   to: string;
   candidateName: string;
   jobTitle: string;
@@ -154,54 +192,32 @@ export async function sendApplicationConfirmationEmail({
   applicationId: string;
   baseUrl?: string;
 }) {
-  const portalUrl = `${baseUrl}/careers/${organizationSlug}/portal/${applicationId}`;
-  const subject = `Application Received: ${jobTitle} — ${organizationName}`;
+  const org = await recruitmentOrganization(organizationId);
+  const portalUrl = `${baseUrl}/careers/${org.slug}/portal/${applicationId}`;
+  return deliverHrEmail(org.id, 'acknowledgment', to, {
+    recipientName: candidateName, jobTitle, portalUrl,
+    instructions: org.slug === 'st-aloysius' ? [
+      'In accordance with the SAGA Institutional Hiring Policy, submit verified credential copies (Transcript of Records, Diploma, Board LET license, 3 Moral Recommendation Letters, and NBI Clearance) to the Head of the Department.',
+      'You can upload your scanned credentials through your Candidate Document Portal.',
+    ] : undefined,
+  }, message => sendEmail(message));
+}
 
-  const html = `
-    <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; max-width: 600px; margin: 0 auto; padding: 24px; color: #1e293b; background-color: #ffffff; border: 1px solid #e2e8f0; border-radius: 12px;">
-      <div style="padding-bottom: 16px; border-bottom: 2px solid #2563eb;">
-        <h2 style="margin: 0; color: #1e293b; font-size: 20px;">${organizationName}</h2>
-        <p style="margin: 4px 0 0; color: #64748b; font-size: 13px;">Faculty & Staff Recruitment Division</p>
-      </div>
-
-      <div style="padding: 24px 0;">
-        <h3 style="margin: 0 0 12px; font-size: 18px; color: #0f172a;">Dear ${candidateName},</h3>
-        <p style="font-size: 14px; line-height: 1.6; color: #334155; margin: 0 0 16px;">
-          Thank you for applying for the position of <strong>${jobTitle}</strong> at ${organizationName}. Your application and initial credentials have been registered in our institutional hiring database.
-        </p>
-
-        <div style="background-color: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 16px; margin: 20px 0;">
-          <h4 style="margin: 0 0 8px; font-size: 14px; color: #1e293b;">Next Step: Submit Required SAGA Credentials</h4>
-          <p style="font-size: 13px; line-height: 1.5; color: #475569; margin: 0 0 12px;">
-            In accordance with the <strong>SAGA Institutional Hiring Policy</strong>, all applicants must submit verified credential copies (Transcript of Records, Diploma, Board LET license, 3 Moral Recommendation Letters, and NBI Clearance) to the Head of the Department.
-          </p>
-          <p style="font-size: 13px; line-height: 1.5; color: #475569; margin: 0;">
-            You can upload your scanned credentials directly through your dedicated Candidate Document Portal.
-          </p>
-        </div>
-
-        <div style="text-align: center; margin: 28px 0;">
-          <a href="${portalUrl}" style="background-color: #2563eb; color: #ffffff; font-weight: 600; font-size: 14px; padding: 12px 28px; text-decoration: none; border-radius: 8px; display: inline-block;">
-            Access Your Candidate Document Portal &rarr;
-          </a>
-        </div>
-
-        <p style="font-size: 12px; color: #94a3b8; text-align: center; margin: 0;">
-          Or copy and paste this secure link into your browser:<br/>
-          <span style="color: #2563eb; word-break: break-all;">${portalUrl}</span>
-        </p>
-      </div>
-
-      <div style="padding-top: 20px; border-top: 1px solid #e2e8f0; font-size: 12px; color: #94a3b8;">
-        <p style="margin: 0;">This is an automated operational notification from St. Aloysius Gonzaga Academy, Inc. Hiring System.</p>
-      </div>
-    </div>
-  `;
-
-  return sendEmail({ to, subject, html });
+export function sendInterviewInvitationEmail(input: HrNotificationInput) {
+  return deliverHrEmail(input.organizationId, 'interview', input.to, input, message => sendEmail(message));
+}
+export function sendSuccessfulApplicantEmail(input: HrNotificationInput) {
+  return deliverHrEmail(input.organizationId, 'acceptance', input.to, input, message => sendEmail(message));
+}
+export function sendApplicantRejectionEmail(input: HrNotificationInput) {
+  return deliverHrEmail(input.organizationId, 'rejection', input.to, input, message => sendEmail(message));
+}
+export function sendEmployeeOnboardingEmail(input: HrNotificationInput) {
+  return deliverHrEmail(input.organizationId, 'onboarding', input.to, input, message => sendEmail(message));
 }
 
 export async function sendDocumentRejectedEmail({
+  organizationId,
   to,
   candidateName,
   documentTitle,
@@ -209,6 +225,7 @@ export async function sendDocumentRejectedEmail({
   portalUrl,
   organizationName,
 }: {
+  organizationId: string;
   to: string;
   candidateName: string;
   documentTitle: string;
@@ -216,6 +233,8 @@ export async function sendDocumentRejectedEmail({
   portalUrl: string;
   organizationName: string;
 }) {
+  const org = await recruitmentOrganization(organizationId);
+  if (org.slug !== 'st-aloysius') return sendCompanyRecruitmentEmail(org, { to, candidateName, title: 'Document resubmission requested: ' + documentTitle, message: `Please resubmit ${documentTitle}. Reviewer feedback: ${rejectionReason}`, portalUrl });
   const subject = `Action Required: Document Resubmission Requested (${documentTitle}) — ${organizationName}`;
 
   const html = `
@@ -255,22 +274,26 @@ export async function sendDocumentRejectedEmail({
     </div>
   `;
 
-  return sendEmail({ to, subject, html });
+  return sendSagaRecruitment(org.id, { to, subject, html }, () => sendEmail({ to, subject, html }));
 }
 
 export async function sendDocumentVerifiedEmail({
+  organizationId,
   to,
   candidateName,
   documentTitle,
   organizationName,
   portalUrl,
 }: {
+  organizationId: string;
   to: string;
   candidateName: string;
   documentTitle: string;
   organizationName: string;
   portalUrl: string;
 }) {
+  const org = await recruitmentOrganization(organizationId);
+  if (org.slug !== 'st-aloysius') return sendCompanyRecruitmentEmail(org, { to, candidateName, title: 'Document verified: ' + documentTitle, message: `Your document ${documentTitle} has been reviewed and verified.`, portalUrl });
   const subject = `Document Verified: ${documentTitle} — ${organizationName}`;
 
   const html = `
@@ -299,5 +322,5 @@ export async function sendDocumentVerifiedEmail({
     </div>
   `;
 
-  return sendEmail({ to, subject, html });
+  return sendSagaRecruitment(org.id, { to, subject, html }, () => sendEmail({ to, subject, html }));
 }

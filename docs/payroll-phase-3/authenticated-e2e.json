@@ -1,0 +1,1455 @@
+{
+  "passed": true,
+  "checks": 23,
+  "realProductionBuild": true,
+  "realServerActions": true,
+  "normalPasswordLogin": true,
+  "fixtureTransactions": "outer rollback; application transactions serialized savepoints",
+  "independentConnectionConcurrency": "covered by phase3-test existing integration suite",
+  "monthly": {
+    "bir": {
+      "inputs": {
+        "payDate": "2026-09-30",
+        "profile": {
+          "residency": "RESIDENT_CITIZEN_OR_RESIDENT_ALIEN",
+          "employment": "PRIVATE_RANK_AND_FILE_SINGLE_EMPLOYER",
+          "finalPayment": false,
+          "minimumWageStatus": "NOT_MWE",
+          "annualizationRequired": false,
+          "previousEmployerInTaxYear": false,
+          "cumulativeMethodAlreadyRequired": false
+        },
+        "currency": "PHP",
+        "earnings": [
+          {
+            "id": "BASIC_SALARY",
+            "kind": "BASIC_SALARY",
+            "amount": "35000.00"
+          }
+        ],
+        "periodId": "cmvjqsza10017uj3cu3afm1i1",
+        "frequency": "MONTHLY",
+        "periodEnd": "2026-09-30",
+        "unionDues": {
+          "amount": "0",
+          "reference": "Verified none"
+        },
+        "employeeId": "cmvjqsp2m000fuj3c1m2jqak7",
+        "periodStart": "2026-09-01",
+        "benefitHistory": {
+          "taxYear": "2026",
+          "reference": "cmvjqta70001buj3cwzl8d8xb",
+          "employeeId": "cmvjqsp2m000fuj3c1m2jqak7",
+          "paymentMonth": "2026-09",
+          "organizationId": "cmvjqsoa40000uj3cqx7qttx2",
+          "riceExemptUsedThisMonth": "0",
+          "otherBenefitsGrossPaidYtd": "0",
+          "clothingExemptUsedThisYear": "0",
+          "laundryExemptUsedThisMonth": "0",
+          "completeBeforeCurrentPayment": true
+        },
+        "organizationId": "cmvjqsoa40000uj3cqx7qttx2",
+        "earningsComplete": true,
+        "grossCompensation": "35000",
+        "otherNetDeductions": [
+          {
+            "id": "COMPANY_POLICY_NET",
+            "amount": "0.00",
+            "reference": "cmvjqt7v50019uj3ci7xbr0pe"
+          }
+        ],
+        "statutoryDeductions": [
+          {
+            "agency": "SSS",
+            "periodId": "cmvjqsza10017uj3cu3afm1i1",
+            "reference": "[\"cmvjqsoa40000uj3cqx7qttx2\",\"cmvjqsp2m000fuj3c1m2jqak7\",\"2026-09\",\"SSS\",\"MONTH\"]",
+            "treatment": "MANDATORY_EMPLOYEE_SHARE",
+            "employeeId": "cmvjqsp2m000fuj3c1m2jqak7",
+            "employeeShare": "1750",
+            "organizationId": "cmvjqsoa40000uj3cqx7qttx2",
+            "contributionMonth": "2026-09"
+          },
+          {
+            "agency": "PHILHEALTH",
+            "periodId": "cmvjqsza10017uj3cu3afm1i1",
+            "reference": "[\"cmvjqsoa40000uj3cqx7qttx2\",\"cmvjqsp2m000fuj3c1m2jqak7\",\"2026-09\",\"PHILHEALTH\",\"MONTH\"]",
+            "treatment": "MANDATORY_EMPLOYEE_SHARE",
+            "employeeId": "cmvjqsp2m000fuj3c1m2jqak7",
+            "employeeShare": "875",
+            "organizationId": "cmvjqsoa40000uj3cqx7qttx2",
+            "contributionMonth": "2026-09"
+          },
+          {
+            "agency": "PAGIBIG",
+            "periodId": "cmvjqsza10017uj3cu3afm1i1",
+            "reference": "[\"cmvjqsoa40000uj3cqx7qttx2\",\"cmvjqsp2m000fuj3c1m2jqak7\",\"2026-09\",\"PAGIBIG\",\"MONTH\"]",
+            "treatment": "MANDATORY_EMPLOYEE_SHARE",
+            "employeeId": "cmvjqsp2m000fuj3c1m2jqak7",
+            "employeeShare": "200",
+            "organizationId": "cmvjqsoa40000uj3cqx7qttx2",
+            "contributionMonth": "2026-09"
+          }
+        ]
+      },
+      "method": "ORDINARY_PERIOD_TABLE",
+      "netPay": "30473.7",
+      "sources": {
+        "rr4": "https://bir-cdn.bir.gov.ph/BIR/pdf/RR%20No.%204-2025.pdf",
+        "rr29": "https://bir-cdn.bir.gov.ph/BIR/pdf/RR%20No.%2029-2025.pdf",
+        "annexE": "https://bir-cdn.bir.gov.ph/local/pdf/Annex%20E%20RR%2011-2018.pdf",
+        "calculator": "https://web-services.bir.gov.ph/tax_calculator/wt_calculator.html",
+        "regulation": "https://bir-cdn.bir.gov.ph/local/pdf/RR%20No.%2011-2018.pdf",
+        "rr29Digest": "https://bir-cdn.bir.gov.ph/BIR/pdf/RR%20No.%2029-2025%20digest%20FINAL.pdf",
+        "publicationIndex": "https://www.bir.gov.ph/2025-Revenue-Regulations"
+      },
+      "version": "WORKPULSE-BIR-PHASE-2A-1",
+      "earnings": {
+        "lines": [
+          {
+            "id": "BASIC_SALARY",
+            "kind": "BASIC_SALARY",
+            "amount": "35000",
+            "nonTaxable": "0",
+            "regularTaxable": "35000",
+            "deMinimisExempt": "0",
+            "benefitPoolAmount": "0",
+            "otherBenefitsExempt": "0",
+            "supplementaryTaxable": "0",
+            "qualificationReference": null
+          }
+        ],
+        "ruleVersion": "RR29-2025",
+        "effectiveFrom": "2026-01-06",
+        "closingBalances": {
+          "riceExemptUsedThisMonth": "0",
+          "otherBenefitsGrossPaidYtd": "0",
+          "clothingExemptUsedThisYear": "0",
+          "laundryExemptUsedThisMonth": "0"
+        },
+        "historyReference": "cmvjqta70001buj3cwzl8d8xb",
+        "grossCompensation": "35000",
+        "nonTaxableBenefits": "0",
+        "supplementaryTaxableCompensation": "0",
+        "regularTaxableBeforeContributions": "35000"
+      },
+      "unionDues": "0",
+      "assessment": {
+        "excess": "11342",
+        "bracket": {
+          "rate": "0.15",
+          "number": 2,
+          "fixedTax": "0",
+          "threshold": "20833"
+        },
+        "payDate": "2026-09-30",
+        "rounding": "FINAL_TAX_HALF_UP_CENTAVO",
+        "frequency": "MONTHLY",
+        "sourceUrl": "https://bir-cdn.bir.gov.ph/local/pdf/Annex%20E%20RR%2011-2018.pdf",
+        "verifiedOn": "2026-10-22",
+        "tableVersion": "BIR-RR11-2018-ANNEX-E-2023",
+        "unroundedTax": "1701.3",
+        "effectiveFrom": "2023-01-01",
+        "withholdingTax": "1701.3",
+        "taxableCompensation": "32175",
+        "regularTaxableCompensation": "32175",
+        "supplementaryTaxableCompensation": "0"
+      },
+      "withholdingTax": "1701.3",
+      "grossCompensation": "35000",
+      "nonTaxableBenefits": "0",
+      "otherNetDeductions": "0",
+      "statutoryDeductions": [
+        {
+          "agency": "SSS",
+          "periodId": "cmvjqsza10017uj3cu3afm1i1",
+          "reference": "[\"cmvjqsoa40000uj3cqx7qttx2\",\"cmvjqsp2m000fuj3c1m2jqak7\",\"2026-09\",\"SSS\",\"MONTH\"]",
+          "treatment": "MANDATORY_EMPLOYEE_SHARE",
+          "employeeId": "cmvjqsp2m000fuj3c1m2jqak7",
+          "employeeShare": "1750",
+          "organizationId": "cmvjqsoa40000uj3cqx7qttx2",
+          "contributionMonth": "2026-09"
+        },
+        {
+          "agency": "PHILHEALTH",
+          "periodId": "cmvjqsza10017uj3cu3afm1i1",
+          "reference": "[\"cmvjqsoa40000uj3cqx7qttx2\",\"cmvjqsp2m000fuj3c1m2jqak7\",\"2026-09\",\"PHILHEALTH\",\"MONTH\"]",
+          "treatment": "MANDATORY_EMPLOYEE_SHARE",
+          "employeeId": "cmvjqsp2m000fuj3c1m2jqak7",
+          "employeeShare": "875",
+          "organizationId": "cmvjqsoa40000uj3cqx7qttx2",
+          "contributionMonth": "2026-09"
+        },
+        {
+          "agency": "PAGIBIG",
+          "periodId": "cmvjqsza10017uj3cu3afm1i1",
+          "reference": "[\"cmvjqsoa40000uj3cqx7qttx2\",\"cmvjqsp2m000fuj3c1m2jqak7\",\"2026-09\",\"PAGIBIG\",\"MONTH\"]",
+          "treatment": "MANDATORY_EMPLOYEE_SHARE",
+          "employeeId": "cmvjqsp2m000fuj3c1m2jqak7",
+          "employeeShare": "200",
+          "organizationId": "cmvjqsoa40000uj3cqx7qttx2",
+          "contributionMonth": "2026-09"
+        }
+      ],
+      "taxableCompensation": "32175",
+      "nonTaxableCompensation": "2825",
+      "totalEmployeeDeductions": "4526.3",
+      "regularTaxableCompensation": "32175",
+      "employeeStatutoryContributions": "2825",
+      "supplementaryTaxableCompensation": "0",
+      "taxableCompensationBeforeContributions": "35000"
+    },
+    "slot": "MONTH",
+    "netPay": "30473.70",
+    "version": "WORKPULSE-PAYROLL-2B-1",
+    "frequency": "MONTHLY",
+    "openingId": "cmvjqta70001buj3cwzl8d8xb",
+    "allocations": [
+      {
+        "slot": "MONTH",
+        "agency": "SSS",
+        "policy": "MONTHLY_ONCE_OR_HALF_THEN_RECONCILE_V1",
+        "employee": "1750",
+        "employer": "3500",
+        "frequency": "MONTHLY",
+        "components": [
+          {
+            "code": "SSS_REGULAR",
+            "employee": "1000",
+            "employer": "2000",
+            "employerOnly": "0"
+          },
+          {
+            "code": "SSS_MPF",
+            "employee": "750",
+            "employer": "1500",
+            "employerOnly": "0"
+          },
+          {
+            "code": "SSS_EC",
+            "employee": "0",
+            "employer": "0",
+            "employerOnly": "30"
+          }
+        ],
+        "employeeId": "cmvjqsp2m000fuj3c1m2jqak7",
+        "employerOnly": "30",
+        "allocationKey": "[\"cmvjqsoa40000uj3cqx7qttx2\",\"cmvjqsp2m000fuj3c1m2jqak7\",\"2026-09\",\"SSS\",\"MONTH\"]",
+        "employerTotal": "3530",
+        "organizationId": "cmvjqsoa40000uj3cqx7qttx2",
+        "totalRemittance": "5280",
+        "contributionMonth": "2026-09"
+      },
+      {
+        "slot": "MONTH",
+        "agency": "PHILHEALTH",
+        "policy": "MONTHLY_ONCE_OR_HALF_THEN_RECONCILE_V1",
+        "employee": "875",
+        "employer": "875",
+        "frequency": "MONTHLY",
+        "components": [
+          {
+            "code": "PHILHEALTH_PREMIUM",
+            "employee": "875",
+            "employer": "875",
+            "employerOnly": "0"
+          }
+        ],
+        "employeeId": "cmvjqsp2m000fuj3c1m2jqak7",
+        "employerOnly": "0",
+        "allocationKey": "[\"cmvjqsoa40000uj3cqx7qttx2\",\"cmvjqsp2m000fuj3c1m2jqak7\",\"2026-09\",\"PHILHEALTH\",\"MONTH\"]",
+        "employerTotal": "875",
+        "organizationId": "cmvjqsoa40000uj3cqx7qttx2",
+        "totalRemittance": "1750",
+        "contributionMonth": "2026-09"
+      },
+      {
+        "slot": "MONTH",
+        "agency": "PAGIBIG",
+        "policy": "MONTHLY_ONCE_OR_HALF_THEN_RECONCILE_V1",
+        "employee": "200",
+        "employer": "200",
+        "frequency": "MONTHLY",
+        "components": [
+          {
+            "code": "PAGIBIG_REGULAR",
+            "employee": "200",
+            "employer": "200",
+            "employerOnly": "0"
+          }
+        ],
+        "employeeId": "cmvjqsp2m000fuj3c1m2jqak7",
+        "employerOnly": "0",
+        "allocationKey": "[\"cmvjqsoa40000uj3cqx7qttx2\",\"cmvjqsp2m000fuj3c1m2jqak7\",\"2026-09\",\"PAGIBIG\",\"MONTH\"]",
+        "employerTotal": "200",
+        "organizationId": "cmvjqsoa40000uj3cqx7qttx2",
+        "totalRemittance": "400",
+        "contributionMonth": "2026-09"
+      }
+    ],
+    "reviewedById": "cmvjqsoiv0004uj3c6jhvpg0m",
+    "inputEvidence": "Synthetic full-month review",
+    "reviewedInput": {
+      "profile": {
+        "residency": "RESIDENT_CITIZEN_OR_RESIDENT_ALIEN",
+        "employment": "PRIVATE_RANK_AND_FILE_SINGLE_EMPLOYER",
+        "finalPayment": false,
+        "minimumWageStatus": "NOT_MWE",
+        "annualizationRequired": false,
+        "previousEmployerInTaxYear": false,
+        "cumulativeMethodAlreadyRequired": false
+      },
+      "coverage": {
+        "SSS": {
+          "status": "MANDATORY"
+        },
+        "PAGIBIG": {
+          "status": "MANDATORY"
+        },
+        "PHILHEALTH": {
+          "status": "MANDATORY"
+        }
+      },
+      "unionDues": {
+        "amount": "0",
+        "reference": "Verified none"
+      },
+      "arrangement": "PRIVATE_EMPLOYEE_SINGLE_EMPLOYER_FULL_MONTH",
+      "earningsComplete": true,
+      "additionalEarnings": [],
+      "otherNetDeductions": [],
+      "contributionHistory": "NO_UNTRACKED_CONTRIBUTIONS_FOR_MONTH",
+      "agencyBasisReference": "Verified synthetic agency bases",
+      "monthlyPhilHealthBasic": "35000",
+      "monthlySssRemuneration": "35000",
+      "monthlyPagIbigFundSalary": "35000",
+      "companyDeductionTreatment": {
+        "late": "NET_DEDUCTION",
+        "absence": "NET_DEDUCTION",
+        "undertime": "NET_DEDUCTION"
+      }
+    },
+    "birWithholding": "1701.30",
+    "reviewedInputId": "cmvjqt7v50019uj3ci7xbr0pe",
+    "salaryReduction": "0.00",
+    "totalDeductions": "4526.30",
+    "yearToDateAfter": {
+      "withholdingTax": "1701.30",
+      "taxableCompensation": "32175.00"
+    },
+    "yearToDateBefore": {
+      "withholdingTax": "0.00",
+      "taxableCompensation": "0.00"
+    },
+    "contributionMonth": "2026-09",
+    "grossCompensation": "35000.00",
+    "companyPolicyTotal": "0.00",
+    "monthlyLiabilities": [
+      {
+        "agency": "SSS",
+        "status": "CALCULATED",
+        "currency": "PHP",
+        "employee": "1750",
+        "employer": "3500",
+        "schedule": {
+          "id": "SSS-BUSINESS-2025-01",
+          "rounding": "EXACT_PUBLISHED_TABLE",
+          "sourceUrls": [
+            "https://www.sss.gov.ph/wp-content/uploads/2024/12/CI-2024-006-Publication.pdf",
+            "https://www.sss.gov.ph/wp-content/uploads/2024/12/Cir-2024-006-Employers-scaled.jpg",
+            "https://www.sss.gov.ph/pay-contribution/"
+          ],
+          "effectiveFrom": "2025-01",
+          "verifiedThrough": "2026-10"
+        },
+        "exemption": null,
+        "components": [
+          {
+            "code": "SSS_REGULAR",
+            "employee": "1000",
+            "employer": "2000",
+            "employerOnly": "0"
+          },
+          {
+            "code": "SSS_MPF",
+            "employee": "750",
+            "employer": "1500",
+            "employerOnly": "0"
+          },
+          {
+            "code": "SSS_EC",
+            "employee": "0",
+            "employer": "0",
+            "employerOnly": "30"
+          }
+        ],
+        "inputBasis": "35000",
+        "verifiedOn": "2026-10-22",
+        "employerOnly": "30",
+        "assessedBasis": "35000",
+        "employerTotal": "3530",
+        "totalRemittance": "5280",
+        "contributionMonth": "2026-09"
+      },
+      {
+        "agency": "PHILHEALTH",
+        "status": "CALCULATED",
+        "currency": "PHP",
+        "employee": "875",
+        "employer": "875",
+        "schedule": {
+          "id": "PHILHEALTH-2025-01",
+          "rounding": "TOTAL_HALF_UP_CENTAVO_EMPLOYER_BEARS_ODD_CENTAVO",
+          "sourceUrls": [
+            "https://www.philhealth.gov.ph/advisories/2025/PA2025-0002.pdf",
+            "https://www.philhealth.gov.ph/circulars/2020/circ2020-0005.pdf",
+            "https://www.philhealth.gov.ph/news/2018/sample_compu.html",
+            "https://pia.gov.ph/news/philhealth-sets-5-premium-contribution-rate-for-2026/"
+          ],
+          "effectiveFrom": "2025-01",
+          "verifiedThrough": "2026-10"
+        },
+        "exemption": null,
+        "components": [
+          {
+            "code": "PHILHEALTH_PREMIUM",
+            "employee": "875",
+            "employer": "875",
+            "employerOnly": "0"
+          }
+        ],
+        "inputBasis": "35000",
+        "verifiedOn": "2026-10-22",
+        "employerOnly": "0",
+        "assessedBasis": "35000",
+        "employerTotal": "875",
+        "totalRemittance": "1750",
+        "contributionMonth": "2026-09"
+      },
+      {
+        "agency": "PAGIBIG",
+        "status": "CALCULATED",
+        "currency": "PHP",
+        "employee": "200",
+        "employer": "200",
+        "schedule": {
+          "id": "PAGIBIG-460-2024-02",
+          "rounding": "EXACT_CENTAVOS_ONLY_PENDING_AGENCY_ROUNDING_CONFIRMATION",
+          "sourceUrls": [
+            "https://naro.law.upd.edu.ph/issuances/3217",
+            "https://naro.law.upd.edu.ph/storage/01JQWKTTA92H57M9EWV31W8F1D.pdf"
+          ],
+          "effectiveFrom": "2024-02",
+          "verifiedThrough": "2026-10"
+        },
+        "exemption": null,
+        "components": [
+          {
+            "code": "PAGIBIG_REGULAR",
+            "employee": "200",
+            "employer": "200",
+            "employerOnly": "0"
+          }
+        ],
+        "inputBasis": "35000",
+        "verifiedOn": "2026-10-22",
+        "employerOnly": "0",
+        "assessedBasis": "10000",
+        "employerTotal": "200",
+        "totalRemittance": "400",
+        "contributionMonth": "2026-09"
+      }
+    ],
+    "taxableCompensation": "32175.00",
+    "employerContributions": {
+      "SSS": {
+        "total": "3530.00",
+        "counterpart": "3500.00",
+        "employerOnly": "30.00"
+      },
+      "PAGIBIG": {
+        "total": "200.00",
+        "counterpart": "200.00",
+        "employerOnly": "0.00"
+      },
+      "PHILHEALTH": {
+        "total": "875.00",
+        "counterpart": "875.00",
+        "employerOnly": "0.00"
+      }
+    },
+    "companyPolicyDeductions": {
+      "late": "0",
+      "absence": "0",
+      "undertime": "0"
+    },
+    "employeeStatutoryDeductions": {
+      "SSS": "1750.00",
+      "PAGIBIG": "200.00",
+      "PHILHEALTH": "875.00"
+    }
+  },
+  "first": {
+    "bir": {
+      "inputs": {
+        "payDate": "2026-09-15",
+        "profile": {
+          "residency": "RESIDENT_CITIZEN_OR_RESIDENT_ALIEN",
+          "employment": "PRIVATE_RANK_AND_FILE_SINGLE_EMPLOYER",
+          "finalPayment": false,
+          "minimumWageStatus": "NOT_MWE",
+          "annualizationRequired": false,
+          "previousEmployerInTaxYear": false,
+          "cumulativeMethodAlreadyRequired": false
+        },
+        "currency": "PHP",
+        "earnings": [
+          {
+            "id": "BASIC_SALARY",
+            "kind": "BASIC_SALARY",
+            "amount": "17500.00"
+          }
+        ],
+        "periodId": "cmvjqu7xt001ruj3cbl34c2b0",
+        "frequency": "SEMI_MONTHLY",
+        "periodEnd": "2026-09-15",
+        "unionDues": {
+          "amount": "0",
+          "reference": "Verified none"
+        },
+        "employeeId": "cmvjqspxi000zuj3cw6irlpl3",
+        "periodStart": "2026-09-01",
+        "benefitHistory": {
+          "taxYear": "2026",
+          "reference": "cmvjquhb8001vuj3c5nws4j13",
+          "employeeId": "cmvjqspxi000zuj3cw6irlpl3",
+          "paymentMonth": "2026-09",
+          "organizationId": "cmvjqspfu000kuj3chh5tj7d0",
+          "riceExemptUsedThisMonth": "0",
+          "otherBenefitsGrossPaidYtd": "0",
+          "clothingExemptUsedThisYear": "0",
+          "laundryExemptUsedThisMonth": "0",
+          "completeBeforeCurrentPayment": true
+        },
+        "organizationId": "cmvjqspfu000kuj3chh5tj7d0",
+        "earningsComplete": true,
+        "grossCompensation": "17500",
+        "otherNetDeductions": [
+          {
+            "id": "COMPANY_POLICY_NET",
+            "amount": "0.00",
+            "reference": "cmvjquexe001tuj3c9t3zy271"
+          }
+        ],
+        "statutoryDeductions": [
+          {
+            "agency": "SSS",
+            "periodId": "cmvjqu7xt001ruj3cbl34c2b0",
+            "reference": "[\"cmvjqspfu000kuj3chh5tj7d0\",\"cmvjqspxi000zuj3cw6irlpl3\",\"2026-09\",\"SSS\",\"FIRST\"]",
+            "treatment": "MANDATORY_EMPLOYEE_SHARE",
+            "employeeId": "cmvjqspxi000zuj3cw6irlpl3",
+            "employeeShare": "875",
+            "organizationId": "cmvjqspfu000kuj3chh5tj7d0",
+            "contributionMonth": "2026-09"
+          },
+          {
+            "agency": "PHILHEALTH",
+            "periodId": "cmvjqu7xt001ruj3cbl34c2b0",
+            "reference": "[\"cmvjqspfu000kuj3chh5tj7d0\",\"cmvjqspxi000zuj3cw6irlpl3\",\"2026-09\",\"PHILHEALTH\",\"FIRST\"]",
+            "treatment": "MANDATORY_EMPLOYEE_SHARE",
+            "employeeId": "cmvjqspxi000zuj3cw6irlpl3",
+            "employeeShare": "437.5",
+            "organizationId": "cmvjqspfu000kuj3chh5tj7d0",
+            "contributionMonth": "2026-09"
+          },
+          {
+            "agency": "PAGIBIG",
+            "periodId": "cmvjqu7xt001ruj3cbl34c2b0",
+            "reference": "[\"cmvjqspfu000kuj3chh5tj7d0\",\"cmvjqspxi000zuj3cw6irlpl3\",\"2026-09\",\"PAGIBIG\",\"FIRST\"]",
+            "treatment": "MANDATORY_EMPLOYEE_SHARE",
+            "employeeId": "cmvjqspxi000zuj3cw6irlpl3",
+            "employeeShare": "100",
+            "organizationId": "cmvjqspfu000kuj3chh5tj7d0",
+            "contributionMonth": "2026-09"
+          }
+        ]
+      },
+      "method": "ORDINARY_PERIOD_TABLE",
+      "netPay": "15236.92",
+      "sources": {
+        "rr4": "https://bir-cdn.bir.gov.ph/BIR/pdf/RR%20No.%204-2025.pdf",
+        "rr29": "https://bir-cdn.bir.gov.ph/BIR/pdf/RR%20No.%2029-2025.pdf",
+        "annexE": "https://bir-cdn.bir.gov.ph/local/pdf/Annex%20E%20RR%2011-2018.pdf",
+        "calculator": "https://web-services.bir.gov.ph/tax_calculator/wt_calculator.html",
+        "regulation": "https://bir-cdn.bir.gov.ph/local/pdf/RR%20No.%2011-2018.pdf",
+        "rr29Digest": "https://bir-cdn.bir.gov.ph/BIR/pdf/RR%20No.%2029-2025%20digest%20FINAL.pdf",
+        "publicationIndex": "https://www.bir.gov.ph/2025-Revenue-Regulations"
+      },
+      "version": "WORKPULSE-BIR-PHASE-2A-1",
+      "earnings": {
+        "lines": [
+          {
+            "id": "BASIC_SALARY",
+            "kind": "BASIC_SALARY",
+            "amount": "17500",
+            "nonTaxable": "0",
+            "regularTaxable": "17500",
+            "deMinimisExempt": "0",
+            "benefitPoolAmount": "0",
+            "otherBenefitsExempt": "0",
+            "supplementaryTaxable": "0",
+            "qualificationReference": null
+          }
+        ],
+        "ruleVersion": "RR29-2025",
+        "effectiveFrom": "2026-01-06",
+        "closingBalances": {
+          "riceExemptUsedThisMonth": "0",
+          "otherBenefitsGrossPaidYtd": "0",
+          "clothingExemptUsedThisYear": "0",
+          "laundryExemptUsedThisMonth": "0"
+        },
+        "historyReference": "cmvjquhb8001vuj3c5nws4j13",
+        "grossCompensation": "17500",
+        "nonTaxableBenefits": "0",
+        "supplementaryTaxableCompensation": "0",
+        "regularTaxableBeforeContributions": "17500"
+      },
+      "unionDues": "0",
+      "assessment": {
+        "excess": "5670.5",
+        "bracket": {
+          "rate": "0.15",
+          "number": 2,
+          "fixedTax": "0",
+          "threshold": "10417"
+        },
+        "payDate": "2026-09-15",
+        "rounding": "FINAL_TAX_HALF_UP_CENTAVO",
+        "frequency": "SEMI_MONTHLY",
+        "sourceUrl": "https://bir-cdn.bir.gov.ph/local/pdf/Annex%20E%20RR%2011-2018.pdf",
+        "verifiedOn": "2026-10-22",
+        "tableVersion": "BIR-RR11-2018-ANNEX-E-2023",
+        "unroundedTax": "850.575",
+        "effectiveFrom": "2023-01-01",
+        "withholdingTax": "850.58",
+        "taxableCompensation": "16087.5",
+        "regularTaxableCompensation": "16087.5",
+        "supplementaryTaxableCompensation": "0"
+      },
+      "withholdingTax": "850.58",
+      "grossCompensation": "17500",
+      "nonTaxableBenefits": "0",
+      "otherNetDeductions": "0",
+      "statutoryDeductions": [
+        {
+          "agency": "SSS",
+          "periodId": "cmvjqu7xt001ruj3cbl34c2b0",
+          "reference": "[\"cmvjqspfu000kuj3chh5tj7d0\",\"cmvjqspxi000zuj3cw6irlpl3\",\"2026-09\",\"SSS\",\"FIRST\"]",
+          "treatment": "MANDATORY_EMPLOYEE_SHARE",
+          "employeeId": "cmvjqspxi000zuj3cw6irlpl3",
+          "employeeShare": "875",
+          "organizationId": "cmvjqspfu000kuj3chh5tj7d0",
+          "contributionMonth": "2026-09"
+        },
+        {
+          "agency": "PHILHEALTH",
+          "periodId": "cmvjqu7xt001ruj3cbl34c2b0",
+          "reference": "[\"cmvjqspfu000kuj3chh5tj7d0\",\"cmvjqspxi000zuj3cw6irlpl3\",\"2026-09\",\"PHILHEALTH\",\"FIRST\"]",
+          "treatment": "MANDATORY_EMPLOYEE_SHARE",
+          "employeeId": "cmvjqspxi000zuj3cw6irlpl3",
+          "employeeShare": "437.5",
+          "organizationId": "cmvjqspfu000kuj3chh5tj7d0",
+          "contributionMonth": "2026-09"
+        },
+        {
+          "agency": "PAGIBIG",
+          "periodId": "cmvjqu7xt001ruj3cbl34c2b0",
+          "reference": "[\"cmvjqspfu000kuj3chh5tj7d0\",\"cmvjqspxi000zuj3cw6irlpl3\",\"2026-09\",\"PAGIBIG\",\"FIRST\"]",
+          "treatment": "MANDATORY_EMPLOYEE_SHARE",
+          "employeeId": "cmvjqspxi000zuj3cw6irlpl3",
+          "employeeShare": "100",
+          "organizationId": "cmvjqspfu000kuj3chh5tj7d0",
+          "contributionMonth": "2026-09"
+        }
+      ],
+      "taxableCompensation": "16087.5",
+      "nonTaxableCompensation": "1412.5",
+      "totalEmployeeDeductions": "2263.08",
+      "regularTaxableCompensation": "16087.5",
+      "employeeStatutoryContributions": "1412.5",
+      "supplementaryTaxableCompensation": "0",
+      "taxableCompensationBeforeContributions": "17500"
+    },
+    "slot": "FIRST",
+    "netPay": "15236.92",
+    "version": "WORKPULSE-PAYROLL-2B-1",
+    "frequency": "SEMI_MONTHLY",
+    "openingId": "cmvjquhb8001vuj3c5nws4j13",
+    "allocations": [
+      {
+        "slot": "FIRST",
+        "agency": "SSS",
+        "policy": "MONTHLY_ONCE_OR_HALF_THEN_RECONCILE_V1",
+        "employee": "875",
+        "employer": "1750",
+        "frequency": "SEMI_MONTHLY",
+        "components": [
+          {
+            "code": "SSS_REGULAR",
+            "employee": "500",
+            "employer": "1000",
+            "employerOnly": "0"
+          },
+          {
+            "code": "SSS_MPF",
+            "employee": "375",
+            "employer": "750",
+            "employerOnly": "0"
+          },
+          {
+            "code": "SSS_EC",
+            "employee": "0",
+            "employer": "0",
+            "employerOnly": "15"
+          }
+        ],
+        "employeeId": "cmvjqspxi000zuj3cw6irlpl3",
+        "employerOnly": "15",
+        "allocationKey": "[\"cmvjqspfu000kuj3chh5tj7d0\",\"cmvjqspxi000zuj3cw6irlpl3\",\"2026-09\",\"SSS\",\"FIRST\"]",
+        "employerTotal": "1765",
+        "organizationId": "cmvjqspfu000kuj3chh5tj7d0",
+        "totalRemittance": "2640",
+        "contributionMonth": "2026-09"
+      },
+      {
+        "slot": "FIRST",
+        "agency": "PHILHEALTH",
+        "policy": "MONTHLY_ONCE_OR_HALF_THEN_RECONCILE_V1",
+        "employee": "437.5",
+        "employer": "437.5",
+        "frequency": "SEMI_MONTHLY",
+        "components": [
+          {
+            "code": "PHILHEALTH_PREMIUM",
+            "employee": "437.5",
+            "employer": "437.5",
+            "employerOnly": "0"
+          }
+        ],
+        "employeeId": "cmvjqspxi000zuj3cw6irlpl3",
+        "employerOnly": "0",
+        "allocationKey": "[\"cmvjqspfu000kuj3chh5tj7d0\",\"cmvjqspxi000zuj3cw6irlpl3\",\"2026-09\",\"PHILHEALTH\",\"FIRST\"]",
+        "employerTotal": "437.5",
+        "organizationId": "cmvjqspfu000kuj3chh5tj7d0",
+        "totalRemittance": "875",
+        "contributionMonth": "2026-09"
+      },
+      {
+        "slot": "FIRST",
+        "agency": "PAGIBIG",
+        "policy": "MONTHLY_ONCE_OR_HALF_THEN_RECONCILE_V1",
+        "employee": "100",
+        "employer": "100",
+        "frequency": "SEMI_MONTHLY",
+        "components": [
+          {
+            "code": "PAGIBIG_REGULAR",
+            "employee": "100",
+            "employer": "100",
+            "employerOnly": "0"
+          }
+        ],
+        "employeeId": "cmvjqspxi000zuj3cw6irlpl3",
+        "employerOnly": "0",
+        "allocationKey": "[\"cmvjqspfu000kuj3chh5tj7d0\",\"cmvjqspxi000zuj3cw6irlpl3\",\"2026-09\",\"PAGIBIG\",\"FIRST\"]",
+        "employerTotal": "100",
+        "organizationId": "cmvjqspfu000kuj3chh5tj7d0",
+        "totalRemittance": "200",
+        "contributionMonth": "2026-09"
+      }
+    ],
+    "reviewedById": "cmvjqspk7000ouj3ch5acdkg2",
+    "inputEvidence": "Synthetic full-month review",
+    "reviewedInput": {
+      "profile": {
+        "residency": "RESIDENT_CITIZEN_OR_RESIDENT_ALIEN",
+        "employment": "PRIVATE_RANK_AND_FILE_SINGLE_EMPLOYER",
+        "finalPayment": false,
+        "minimumWageStatus": "NOT_MWE",
+        "annualizationRequired": false,
+        "previousEmployerInTaxYear": false,
+        "cumulativeMethodAlreadyRequired": false
+      },
+      "coverage": {
+        "SSS": {
+          "status": "MANDATORY"
+        },
+        "PAGIBIG": {
+          "status": "MANDATORY"
+        },
+        "PHILHEALTH": {
+          "status": "MANDATORY"
+        }
+      },
+      "unionDues": {
+        "amount": "0",
+        "reference": "Verified none"
+      },
+      "arrangement": "PRIVATE_EMPLOYEE_SINGLE_EMPLOYER_FULL_MONTH",
+      "earningsComplete": true,
+      "additionalEarnings": [],
+      "otherNetDeductions": [],
+      "contributionHistory": "NO_UNTRACKED_CONTRIBUTIONS_FOR_MONTH",
+      "agencyBasisReference": "Verified synthetic agency bases",
+      "monthlyPhilHealthBasic": "35000",
+      "monthlySssRemuneration": "35000",
+      "monthlyPagIbigFundSalary": "35000",
+      "companyDeductionTreatment": {
+        "late": "NET_DEDUCTION",
+        "absence": "NET_DEDUCTION",
+        "undertime": "NET_DEDUCTION"
+      }
+    },
+    "birWithholding": "850.58",
+    "reviewedInputId": "cmvjquexe001tuj3c9t3zy271",
+    "salaryReduction": "0.00",
+    "totalDeductions": "2263.08",
+    "yearToDateAfter": {
+      "withholdingTax": "850.58",
+      "taxableCompensation": "16087.50"
+    },
+    "yearToDateBefore": {
+      "withholdingTax": "0.00",
+      "taxableCompensation": "0.00"
+    },
+    "contributionMonth": "2026-09",
+    "grossCompensation": "17500.00",
+    "companyPolicyTotal": "0.00",
+    "monthlyLiabilities": [
+      {
+        "agency": "SSS",
+        "status": "CALCULATED",
+        "currency": "PHP",
+        "employee": "1750",
+        "employer": "3500",
+        "schedule": {
+          "id": "SSS-BUSINESS-2025-01",
+          "rounding": "EXACT_PUBLISHED_TABLE",
+          "sourceUrls": [
+            "https://www.sss.gov.ph/wp-content/uploads/2024/12/CI-2024-006-Publication.pdf",
+            "https://www.sss.gov.ph/wp-content/uploads/2024/12/Cir-2024-006-Employers-scaled.jpg",
+            "https://www.sss.gov.ph/pay-contribution/"
+          ],
+          "effectiveFrom": "2025-01",
+          "verifiedThrough": "2026-10"
+        },
+        "exemption": null,
+        "components": [
+          {
+            "code": "SSS_REGULAR",
+            "employee": "1000",
+            "employer": "2000",
+            "employerOnly": "0"
+          },
+          {
+            "code": "SSS_MPF",
+            "employee": "750",
+            "employer": "1500",
+            "employerOnly": "0"
+          },
+          {
+            "code": "SSS_EC",
+            "employee": "0",
+            "employer": "0",
+            "employerOnly": "30"
+          }
+        ],
+        "inputBasis": "35000",
+        "verifiedOn": "2026-10-22",
+        "employerOnly": "30",
+        "assessedBasis": "35000",
+        "employerTotal": "3530",
+        "totalRemittance": "5280",
+        "contributionMonth": "2026-09"
+      },
+      {
+        "agency": "PHILHEALTH",
+        "status": "CALCULATED",
+        "currency": "PHP",
+        "employee": "875",
+        "employer": "875",
+        "schedule": {
+          "id": "PHILHEALTH-2025-01",
+          "rounding": "TOTAL_HALF_UP_CENTAVO_EMPLOYER_BEARS_ODD_CENTAVO",
+          "sourceUrls": [
+            "https://www.philhealth.gov.ph/advisories/2025/PA2025-0002.pdf",
+            "https://www.philhealth.gov.ph/circulars/2020/circ2020-0005.pdf",
+            "https://www.philhealth.gov.ph/news/2018/sample_compu.html",
+            "https://pia.gov.ph/news/philhealth-sets-5-premium-contribution-rate-for-2026/"
+          ],
+          "effectiveFrom": "2025-01",
+          "verifiedThrough": "2026-10"
+        },
+        "exemption": null,
+        "components": [
+          {
+            "code": "PHILHEALTH_PREMIUM",
+            "employee": "875",
+            "employer": "875",
+            "employerOnly": "0"
+          }
+        ],
+        "inputBasis": "35000",
+        "verifiedOn": "2026-10-22",
+        "employerOnly": "0",
+        "assessedBasis": "35000",
+        "employerTotal": "875",
+        "totalRemittance": "1750",
+        "contributionMonth": "2026-09"
+      },
+      {
+        "agency": "PAGIBIG",
+        "status": "CALCULATED",
+        "currency": "PHP",
+        "employee": "200",
+        "employer": "200",
+        "schedule": {
+          "id": "PAGIBIG-460-2024-02",
+          "rounding": "EXACT_CENTAVOS_ONLY_PENDING_AGENCY_ROUNDING_CONFIRMATION",
+          "sourceUrls": [
+            "https://naro.law.upd.edu.ph/issuances/3217",
+            "https://naro.law.upd.edu.ph/storage/01JQWKTTA92H57M9EWV31W8F1D.pdf"
+          ],
+          "effectiveFrom": "2024-02",
+          "verifiedThrough": "2026-10"
+        },
+        "exemption": null,
+        "components": [
+          {
+            "code": "PAGIBIG_REGULAR",
+            "employee": "200",
+            "employer": "200",
+            "employerOnly": "0"
+          }
+        ],
+        "inputBasis": "35000",
+        "verifiedOn": "2026-10-22",
+        "employerOnly": "0",
+        "assessedBasis": "10000",
+        "employerTotal": "200",
+        "totalRemittance": "400",
+        "contributionMonth": "2026-09"
+      }
+    ],
+    "taxableCompensation": "16087.50",
+    "employerContributions": {
+      "SSS": {
+        "total": "1765.00",
+        "counterpart": "1750.00",
+        "employerOnly": "15.00"
+      },
+      "PAGIBIG": {
+        "total": "100.00",
+        "counterpart": "100.00",
+        "employerOnly": "0.00"
+      },
+      "PHILHEALTH": {
+        "total": "437.50",
+        "counterpart": "437.50",
+        "employerOnly": "0.00"
+      }
+    },
+    "companyPolicyDeductions": {
+      "late": "0",
+      "absence": "0",
+      "undertime": "0"
+    },
+    "employeeStatutoryDeductions": {
+      "SSS": "875.00",
+      "PAGIBIG": "100.00",
+      "PHILHEALTH": "437.50"
+    }
+  },
+  "second": {
+    "bir": {
+      "inputs": {
+        "payDate": "2026-09-30",
+        "profile": {
+          "residency": "RESIDENT_CITIZEN_OR_RESIDENT_ALIEN",
+          "employment": "PRIVATE_RANK_AND_FILE_SINGLE_EMPLOYER",
+          "finalPayment": false,
+          "minimumWageStatus": "NOT_MWE",
+          "annualizationRequired": false,
+          "previousEmployerInTaxYear": false,
+          "cumulativeMethodAlreadyRequired": false
+        },
+        "currency": "PHP",
+        "earnings": [
+          {
+            "id": "BASIC_SALARY",
+            "kind": "BASIC_SALARY",
+            "amount": "17500.00"
+          }
+        ],
+        "periodId": "cmvjqv09f0029uj3cme54i27f",
+        "frequency": "SEMI_MONTHLY",
+        "periodEnd": "2026-09-30",
+        "unionDues": {
+          "amount": "0",
+          "reference": "Verified none"
+        },
+        "employeeId": "cmvjqspxi000zuj3cw6irlpl3",
+        "periodStart": "2026-09-16",
+        "benefitHistory": {
+          "taxYear": "2026",
+          "reference": "cmvjquhb8001vuj3c5nws4j13",
+          "employeeId": "cmvjqspxi000zuj3cw6irlpl3",
+          "paymentMonth": "2026-09",
+          "organizationId": "cmvjqspfu000kuj3chh5tj7d0",
+          "riceExemptUsedThisMonth": "0.00",
+          "otherBenefitsGrossPaidYtd": "0.00",
+          "clothingExemptUsedThisYear": "0.00",
+          "laundryExemptUsedThisMonth": "0.00",
+          "completeBeforeCurrentPayment": true
+        },
+        "organizationId": "cmvjqspfu000kuj3chh5tj7d0",
+        "earningsComplete": true,
+        "grossCompensation": "17500",
+        "otherNetDeductions": [
+          {
+            "id": "COMPANY_POLICY_NET",
+            "amount": "0.00",
+            "reference": "cmvjqv6nn002buj3cjkv1mqb6"
+          }
+        ],
+        "statutoryDeductions": [
+          {
+            "agency": "SSS",
+            "periodId": "cmvjqv09f0029uj3cme54i27f",
+            "reference": "[\"cmvjqspfu000kuj3chh5tj7d0\",\"cmvjqspxi000zuj3cw6irlpl3\",\"2026-09\",\"SSS\",\"SECOND\"]",
+            "treatment": "MANDATORY_EMPLOYEE_SHARE",
+            "employeeId": "cmvjqspxi000zuj3cw6irlpl3",
+            "employeeShare": "875",
+            "organizationId": "cmvjqspfu000kuj3chh5tj7d0",
+            "contributionMonth": "2026-09"
+          },
+          {
+            "agency": "PHILHEALTH",
+            "periodId": "cmvjqv09f0029uj3cme54i27f",
+            "reference": "[\"cmvjqspfu000kuj3chh5tj7d0\",\"cmvjqspxi000zuj3cw6irlpl3\",\"2026-09\",\"PHILHEALTH\",\"SECOND\"]",
+            "treatment": "MANDATORY_EMPLOYEE_SHARE",
+            "employeeId": "cmvjqspxi000zuj3cw6irlpl3",
+            "employeeShare": "437.5",
+            "organizationId": "cmvjqspfu000kuj3chh5tj7d0",
+            "contributionMonth": "2026-09"
+          },
+          {
+            "agency": "PAGIBIG",
+            "periodId": "cmvjqv09f0029uj3cme54i27f",
+            "reference": "[\"cmvjqspfu000kuj3chh5tj7d0\",\"cmvjqspxi000zuj3cw6irlpl3\",\"2026-09\",\"PAGIBIG\",\"SECOND\"]",
+            "treatment": "MANDATORY_EMPLOYEE_SHARE",
+            "employeeId": "cmvjqspxi000zuj3cw6irlpl3",
+            "employeeShare": "100",
+            "organizationId": "cmvjqspfu000kuj3chh5tj7d0",
+            "contributionMonth": "2026-09"
+          }
+        ]
+      },
+      "method": "ORDINARY_PERIOD_TABLE",
+      "netPay": "15236.92",
+      "sources": {
+        "rr4": "https://bir-cdn.bir.gov.ph/BIR/pdf/RR%20No.%204-2025.pdf",
+        "rr29": "https://bir-cdn.bir.gov.ph/BIR/pdf/RR%20No.%2029-2025.pdf",
+        "annexE": "https://bir-cdn.bir.gov.ph/local/pdf/Annex%20E%20RR%2011-2018.pdf",
+        "calculator": "https://web-services.bir.gov.ph/tax_calculator/wt_calculator.html",
+        "regulation": "https://bir-cdn.bir.gov.ph/local/pdf/RR%20No.%2011-2018.pdf",
+        "rr29Digest": "https://bir-cdn.bir.gov.ph/BIR/pdf/RR%20No.%2029-2025%20digest%20FINAL.pdf",
+        "publicationIndex": "https://www.bir.gov.ph/2025-Revenue-Regulations"
+      },
+      "version": "WORKPULSE-BIR-PHASE-2A-1",
+      "earnings": {
+        "lines": [
+          {
+            "id": "BASIC_SALARY",
+            "kind": "BASIC_SALARY",
+            "amount": "17500",
+            "nonTaxable": "0",
+            "regularTaxable": "17500",
+            "deMinimisExempt": "0",
+            "benefitPoolAmount": "0",
+            "otherBenefitsExempt": "0",
+            "supplementaryTaxable": "0",
+            "qualificationReference": null
+          }
+        ],
+        "ruleVersion": "RR29-2025",
+        "effectiveFrom": "2026-01-06",
+        "closingBalances": {
+          "riceExemptUsedThisMonth": "0",
+          "otherBenefitsGrossPaidYtd": "0",
+          "clothingExemptUsedThisYear": "0",
+          "laundryExemptUsedThisMonth": "0"
+        },
+        "historyReference": "cmvjquhb8001vuj3c5nws4j13",
+        "grossCompensation": "17500",
+        "nonTaxableBenefits": "0",
+        "supplementaryTaxableCompensation": "0",
+        "regularTaxableBeforeContributions": "17500"
+      },
+      "unionDues": "0",
+      "assessment": {
+        "excess": "5670.5",
+        "bracket": {
+          "rate": "0.15",
+          "number": 2,
+          "fixedTax": "0",
+          "threshold": "10417"
+        },
+        "payDate": "2026-09-30",
+        "rounding": "FINAL_TAX_HALF_UP_CENTAVO",
+        "frequency": "SEMI_MONTHLY",
+        "sourceUrl": "https://bir-cdn.bir.gov.ph/local/pdf/Annex%20E%20RR%2011-2018.pdf",
+        "verifiedOn": "2026-10-22",
+        "tableVersion": "BIR-RR11-2018-ANNEX-E-2023",
+        "unroundedTax": "850.575",
+        "effectiveFrom": "2023-01-01",
+        "withholdingTax": "850.58",
+        "taxableCompensation": "16087.5",
+        "regularTaxableCompensation": "16087.5",
+        "supplementaryTaxableCompensation": "0"
+      },
+      "withholdingTax": "850.58",
+      "grossCompensation": "17500",
+      "nonTaxableBenefits": "0",
+      "otherNetDeductions": "0",
+      "statutoryDeductions": [
+        {
+          "agency": "SSS",
+          "periodId": "cmvjqv09f0029uj3cme54i27f",
+          "reference": "[\"cmvjqspfu000kuj3chh5tj7d0\",\"cmvjqspxi000zuj3cw6irlpl3\",\"2026-09\",\"SSS\",\"SECOND\"]",
+          "treatment": "MANDATORY_EMPLOYEE_SHARE",
+          "employeeId": "cmvjqspxi000zuj3cw6irlpl3",
+          "employeeShare": "875",
+          "organizationId": "cmvjqspfu000kuj3chh5tj7d0",
+          "contributionMonth": "2026-09"
+        },
+        {
+          "agency": "PHILHEALTH",
+          "periodId": "cmvjqv09f0029uj3cme54i27f",
+          "reference": "[\"cmvjqspfu000kuj3chh5tj7d0\",\"cmvjqspxi000zuj3cw6irlpl3\",\"2026-09\",\"PHILHEALTH\",\"SECOND\"]",
+          "treatment": "MANDATORY_EMPLOYEE_SHARE",
+          "employeeId": "cmvjqspxi000zuj3cw6irlpl3",
+          "employeeShare": "437.5",
+          "organizationId": "cmvjqspfu000kuj3chh5tj7d0",
+          "contributionMonth": "2026-09"
+        },
+        {
+          "agency": "PAGIBIG",
+          "periodId": "cmvjqv09f0029uj3cme54i27f",
+          "reference": "[\"cmvjqspfu000kuj3chh5tj7d0\",\"cmvjqspxi000zuj3cw6irlpl3\",\"2026-09\",\"PAGIBIG\",\"SECOND\"]",
+          "treatment": "MANDATORY_EMPLOYEE_SHARE",
+          "employeeId": "cmvjqspxi000zuj3cw6irlpl3",
+          "employeeShare": "100",
+          "organizationId": "cmvjqspfu000kuj3chh5tj7d0",
+          "contributionMonth": "2026-09"
+        }
+      ],
+      "taxableCompensation": "16087.5",
+      "nonTaxableCompensation": "1412.5",
+      "totalEmployeeDeductions": "2263.08",
+      "regularTaxableCompensation": "16087.5",
+      "employeeStatutoryContributions": "1412.5",
+      "supplementaryTaxableCompensation": "0",
+      "taxableCompensationBeforeContributions": "17500"
+    },
+    "slot": "SECOND",
+    "netPay": "15236.92",
+    "version": "WORKPULSE-PAYROLL-2B-1",
+    "frequency": "SEMI_MONTHLY",
+    "openingId": "cmvjquhb8001vuj3c5nws4j13",
+    "allocations": [
+      {
+        "slot": "SECOND",
+        "agency": "SSS",
+        "policy": "MONTHLY_ONCE_OR_HALF_THEN_RECONCILE_V1",
+        "employee": "875",
+        "employer": "1750",
+        "frequency": "SEMI_MONTHLY",
+        "components": [
+          {
+            "code": "SSS_REGULAR",
+            "employee": "500",
+            "employer": "1000",
+            "employerOnly": "0"
+          },
+          {
+            "code": "SSS_MPF",
+            "employee": "375",
+            "employer": "750",
+            "employerOnly": "0"
+          },
+          {
+            "code": "SSS_EC",
+            "employee": "0",
+            "employer": "0",
+            "employerOnly": "15"
+          }
+        ],
+        "employeeId": "cmvjqspxi000zuj3cw6irlpl3",
+        "employerOnly": "15",
+        "allocationKey": "[\"cmvjqspfu000kuj3chh5tj7d0\",\"cmvjqspxi000zuj3cw6irlpl3\",\"2026-09\",\"SSS\",\"SECOND\"]",
+        "employerTotal": "1765",
+        "organizationId": "cmvjqspfu000kuj3chh5tj7d0",
+        "totalRemittance": "2640",
+        "contributionMonth": "2026-09"
+      },
+      {
+        "slot": "SECOND",
+        "agency": "PHILHEALTH",
+        "policy": "MONTHLY_ONCE_OR_HALF_THEN_RECONCILE_V1",
+        "employee": "437.5",
+        "employer": "437.5",
+        "frequency": "SEMI_MONTHLY",
+        "components": [
+          {
+            "code": "PHILHEALTH_PREMIUM",
+            "employee": "437.5",
+            "employer": "437.5",
+            "employerOnly": "0"
+          }
+        ],
+        "employeeId": "cmvjqspxi000zuj3cw6irlpl3",
+        "employerOnly": "0",
+        "allocationKey": "[\"cmvjqspfu000kuj3chh5tj7d0\",\"cmvjqspxi000zuj3cw6irlpl3\",\"2026-09\",\"PHILHEALTH\",\"SECOND\"]",
+        "employerTotal": "437.5",
+        "organizationId": "cmvjqspfu000kuj3chh5tj7d0",
+        "totalRemittance": "875",
+        "contributionMonth": "2026-09"
+      },
+      {
+        "slot": "SECOND",
+        "agency": "PAGIBIG",
+        "policy": "MONTHLY_ONCE_OR_HALF_THEN_RECONCILE_V1",
+        "employee": "100",
+        "employer": "100",
+        "frequency": "SEMI_MONTHLY",
+        "components": [
+          {
+            "code": "PAGIBIG_REGULAR",
+            "employee": "100",
+            "employer": "100",
+            "employerOnly": "0"
+          }
+        ],
+        "employeeId": "cmvjqspxi000zuj3cw6irlpl3",
+        "employerOnly": "0",
+        "allocationKey": "[\"cmvjqspfu000kuj3chh5tj7d0\",\"cmvjqspxi000zuj3cw6irlpl3\",\"2026-09\",\"PAGIBIG\",\"SECOND\"]",
+        "employerTotal": "100",
+        "organizationId": "cmvjqspfu000kuj3chh5tj7d0",
+        "totalRemittance": "200",
+        "contributionMonth": "2026-09"
+      }
+    ],
+    "reviewedById": "cmvjqspk7000ouj3ch5acdkg2",
+    "inputEvidence": "Synthetic full-month review",
+    "reviewedInput": {
+      "profile": {
+        "residency": "RESIDENT_CITIZEN_OR_RESIDENT_ALIEN",
+        "employment": "PRIVATE_RANK_AND_FILE_SINGLE_EMPLOYER",
+        "finalPayment": false,
+        "minimumWageStatus": "NOT_MWE",
+        "annualizationRequired": false,
+        "previousEmployerInTaxYear": false,
+        "cumulativeMethodAlreadyRequired": false
+      },
+      "coverage": {
+        "SSS": {
+          "status": "MANDATORY"
+        },
+        "PAGIBIG": {
+          "status": "MANDATORY"
+        },
+        "PHILHEALTH": {
+          "status": "MANDATORY"
+        }
+      },
+      "unionDues": {
+        "amount": "0",
+        "reference": "Verified none"
+      },
+      "arrangement": "PRIVATE_EMPLOYEE_SINGLE_EMPLOYER_FULL_MONTH",
+      "earningsComplete": true,
+      "additionalEarnings": [],
+      "otherNetDeductions": [],
+      "contributionHistory": "NO_UNTRACKED_CONTRIBUTIONS_FOR_MONTH",
+      "agencyBasisReference": "Verified synthetic agency bases",
+      "monthlyPhilHealthBasic": "35000",
+      "monthlySssRemuneration": "35000",
+      "monthlyPagIbigFundSalary": "35000",
+      "companyDeductionTreatment": {
+        "late": "NET_DEDUCTION",
+        "absence": "NET_DEDUCTION",
+        "undertime": "NET_DEDUCTION"
+      }
+    },
+    "birWithholding": "850.58",
+    "reviewedInputId": "cmvjqv6nn002buj3cjkv1mqb6",
+    "salaryReduction": "0.00",
+    "totalDeductions": "2263.08",
+    "yearToDateAfter": {
+      "withholdingTax": "1701.16",
+      "taxableCompensation": "32175.00"
+    },
+    "yearToDateBefore": {
+      "withholdingTax": "850.58",
+      "taxableCompensation": "16087.50"
+    },
+    "contributionMonth": "2026-09",
+    "grossCompensation": "17500.00",
+    "companyPolicyTotal": "0.00",
+    "monthlyLiabilities": [
+      {
+        "agency": "SSS",
+        "status": "CALCULATED",
+        "currency": "PHP",
+        "employee": "1750",
+        "employer": "3500",
+        "schedule": {
+          "id": "SSS-BUSINESS-2025-01",
+          "rounding": "EXACT_PUBLISHED_TABLE",
+          "sourceUrls": [
+            "https://www.sss.gov.ph/wp-content/uploads/2024/12/CI-2024-006-Publication.pdf",
+            "https://www.sss.gov.ph/wp-content/uploads/2024/12/Cir-2024-006-Employers-scaled.jpg",
+            "https://www.sss.gov.ph/pay-contribution/"
+          ],
+          "effectiveFrom": "2025-01",
+          "verifiedThrough": "2026-10"
+        },
+        "exemption": null,
+        "components": [
+          {
+            "code": "SSS_REGULAR",
+            "employee": "1000",
+            "employer": "2000",
+            "employerOnly": "0"
+          },
+          {
+            "code": "SSS_MPF",
+            "employee": "750",
+            "employer": "1500",
+            "employerOnly": "0"
+          },
+          {
+            "code": "SSS_EC",
+            "employee": "0",
+            "employer": "0",
+            "employerOnly": "30"
+          }
+        ],
+        "inputBasis": "35000",
+        "verifiedOn": "2026-10-22",
+        "employerOnly": "30",
+        "assessedBasis": "35000",
+        "employerTotal": "3530",
+        "totalRemittance": "5280",
+        "contributionMonth": "2026-09"
+      },
+      {
+        "agency": "PHILHEALTH",
+        "status": "CALCULATED",
+        "currency": "PHP",
+        "employee": "875",
+        "employer": "875",
+        "schedule": {
+          "id": "PHILHEALTH-2025-01",
+          "rounding": "TOTAL_HALF_UP_CENTAVO_EMPLOYER_BEARS_ODD_CENTAVO",
+          "sourceUrls": [
+            "https://www.philhealth.gov.ph/advisories/2025/PA2025-0002.pdf",
+            "https://www.philhealth.gov.ph/circulars/2020/circ2020-0005.pdf",
+            "https://www.philhealth.gov.ph/news/2018/sample_compu.html",
+            "https://pia.gov.ph/news/philhealth-sets-5-premium-contribution-rate-for-2026/"
+          ],
+          "effectiveFrom": "2025-01",
+          "verifiedThrough": "2026-10"
+        },
+        "exemption": null,
+        "components": [
+          {
+            "code": "PHILHEALTH_PREMIUM",
+            "employee": "875",
+            "employer": "875",
+            "employerOnly": "0"
+          }
+        ],
+        "inputBasis": "35000",
+        "verifiedOn": "2026-10-22",
+        "employerOnly": "0",
+        "assessedBasis": "35000",
+        "employerTotal": "875",
+        "totalRemittance": "1750",
+        "contributionMonth": "2026-09"
+      },
+      {
+        "agency": "PAGIBIG",
+        "status": "CALCULATED",
+        "currency": "PHP",
+        "employee": "200",
+        "employer": "200",
+        "schedule": {
+          "id": "PAGIBIG-460-2024-02",
+          "rounding": "EXACT_CENTAVOS_ONLY_PENDING_AGENCY_ROUNDING_CONFIRMATION",
+          "sourceUrls": [
+            "https://naro.law.upd.edu.ph/issuances/3217",
+            "https://naro.law.upd.edu.ph/storage/01JQWKTTA92H57M9EWV31W8F1D.pdf"
+          ],
+          "effectiveFrom": "2024-02",
+          "verifiedThrough": "2026-10"
+        },
+        "exemption": null,
+        "components": [
+          {
+            "code": "PAGIBIG_REGULAR",
+            "employee": "200",
+            "employer": "200",
+            "employerOnly": "0"
+          }
+        ],
+        "inputBasis": "35000",
+        "verifiedOn": "2026-10-22",
+        "employerOnly": "0",
+        "assessedBasis": "10000",
+        "employerTotal": "200",
+        "totalRemittance": "400",
+        "contributionMonth": "2026-09"
+      }
+    ],
+    "taxableCompensation": "16087.50",
+    "employerContributions": {
+      "SSS": {
+        "total": "1765.00",
+        "counterpart": "1750.00",
+        "employerOnly": "15.00"
+      },
+      "PAGIBIG": {
+        "total": "100.00",
+        "counterpart": "100.00",
+        "employerOnly": "0.00"
+      },
+      "PHILHEALTH": {
+        "total": "437.50",
+        "counterpart": "437.50",
+        "employerOnly": "0.00"
+      }
+    },
+    "companyPolicyDeductions": {
+      "late": "0",
+      "absence": "0",
+      "undertime": "0"
+    },
+    "employeeStatutoryDeductions": {
+      "SSS": "875.00",
+      "PAGIBIG": "100.00",
+      "PHILHEALTH": "437.50"
+    }
+  }
+}

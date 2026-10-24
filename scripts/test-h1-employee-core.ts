@@ -217,6 +217,7 @@ async function main() {
       'six-month calculation clamps calendar month ends'
     );
     const teachingTerms = resolveInitialProbationTerms({
+      organizationSlug: 'st-aloysius',
       category: EmploymentCategory.TEACHING,
       startDate: new Date('2024-06-01T00:00:00.000Z'),
       teachingExpectedEndAt: new Date('2025-03-31T00:00:00.000Z'),
@@ -229,6 +230,7 @@ async function main() {
     let missingTeachingDateRejected = false;
     try {
       resolveInitialProbationTerms({
+        organizationSlug: 'st-aloysius',
         category: EmploymentCategory.TEACHING,
         startDate: new Date('2026-06-01T00:00:00.000Z'),
       });

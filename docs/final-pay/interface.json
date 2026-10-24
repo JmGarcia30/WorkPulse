@@ -1,0 +1,13 @@
+{
+  "passed": true,
+  "scenarios": [
+    "Existing case details render Final Pay Management after independent separation",
+    "Rendered create action initializes unreviewed amounts without assumed zeros",
+    "Actual HR forms save reviewed inputs and calculate itemized PHP net",
+    "Explicit approval through rendered Server Action freezes the reviewed settlement",
+    "Payment form records one receipt on retries; foreign sessions and stale finalized edits are denied"
+  ],
+  "tablesPreserved": 67,
+  "fixtureRollback": true,
+  "coverage": "Rendered production HTML and actual Server Actions; no visual browser or concurrent commit claim"
+}

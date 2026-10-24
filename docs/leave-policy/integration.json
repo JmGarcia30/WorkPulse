@@ -1,0 +1,29 @@
+{
+  "passed": true,
+  "branchId": "br-broad-forest-az55xwfe",
+  "scenarios": [
+    "All six SAGA definitions, entitlements and eligibility rules match the committed baseline",
+    "Company B cannot invoke the SAGA preset even with a SAGA display name",
+    "Preset service rejects a foreign-tenant actor",
+    "Company B type uses its own twelve-unit policy and neutral eligibility; forged tenant is ignored",
+    "Invalid amounts, precision, required fields, eligibility and counting mode are rejected",
+    "Company B creates its own cycle; invalid dates and reversed ranges are rejected",
+    "Foreign tenant cannot create cycles, edit defaults or deactivate Company B types",
+    "Actual SAGA preset retains five-day entitlement and generic editor cannot overwrite it",
+    "Actual SAGA settings render its preset",
+    "Company B settings hide the preset despite matching SAGA display name",
+    "Company B SICK_PERSONAL code does not project a SAGA entitlement",
+    "Company B approval cannot silently initialize SAGA code-based grants",
+    "Grant action uses authenticated Company B scope despite forged actor/tenant fields",
+    "Default changes preserve existing grants; repeated grant does not replace or duplicate them",
+    "Probationary Company B employee approval charges two calendar days against its own twelve-unit grant",
+    "Editing the default never rewrites approved requests or their policy snapshots",
+    "Company B MATERNITY code does not impose SAGA delivery-date or SSS conditions",
+    "Cross-tenant approval is denied; rejection creates no debit",
+    "Non-HR actors cannot configure types or entitlements",
+    "All fixtures rolled back; existing Leave tables, balances and history remain byte-for-byte equivalent"
+  ],
+  "leaveTablesPreserved": 7,
+  "productionWrites": false,
+  "migrationRequired": false
+}

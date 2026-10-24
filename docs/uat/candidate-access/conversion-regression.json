@@ -1,0 +1,15 @@
+{
+  "passed": true,
+  "checks": [
+    "Missing probation attestation fails without partial employee creation",
+    "Late contract execution remains blocked by current conversion rules",
+    "Missing required onboarding evidence cannot convert",
+    "Foreign organization cannot convert the application",
+    "Reviewed conversion creates linked employee/employment/probation with agreed salary and dates",
+    "Conversion retry preserves one employee and existing employment"
+  ],
+  "fixtureFactory": "existing H1 factory with synthetic contract signed at engagement",
+  "originalFixtureEdited": false,
+  "rollbackOnly": true,
+  "realConcurrentCommits": false
+}

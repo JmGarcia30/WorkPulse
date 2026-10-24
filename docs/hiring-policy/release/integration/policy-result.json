@@ -1,0 +1,12 @@
+{
+  "passed": true,
+  "settingsRealHttpPost": true,
+  "organizationIdsServerDerived": true,
+  "sagaCategoryListsPreserved": true,
+  "companyBConfigured": true,
+  "foreignSettingsAndDocumentsDenied": true,
+  "historicalIdsPreserved": true,
+  "ownOnboardingAndConversion": true,
+  "migrationTestedInsideRollbackOnly": false,
+  "testedOnCommittedHiringMigration": true
+}

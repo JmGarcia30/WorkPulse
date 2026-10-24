@@ -147,6 +147,7 @@ enum OfferStatus {
 enum PayFrequency {
   ANNUAL
   MONTHLY
+  SEMI_MONTHLY
   BIWEEKLY
   WEEKLY
   HOURLY
@@ -246,6 +247,11 @@ model EmployeeSeparationCase {
   organizationId             String
   employeeId                 String
   separationType             SeparationType
+  submissionSource           String                     @default("HR")
+  employeeNoticeSnapshot     Json?
+  acknowledgedById           String?
+  acknowledgedAt             DateTime?
+  acknowledgmentRemarks      String?
   reason                     String                     @db.Text
   noticeDate                 DateTime?                  @db.Date
   proposedLastWorkingDay     DateTime?                  @db.Date
@@ -288,16 +294,19 @@ model EmployeeSeparationCase {
   noticeExceptionBy User? @relation("SeparationNoticeException", fields: [noticeExceptionById, organizationId], references: [id, organizationId], onDelete: Restrict)
   approvedBy User? @relation("SeparationApprover", fields: [approvedById, organizationId], references: [id, organizationId], onDelete: Restrict)
   completedBy User? @relation("SeparationExecutor", fields: [completedById, organizationId], references: [id, organizationId], onDelete: Restrict)
+  acknowledgedBy User? @relation("SeparationAcknowledger", fields: [acknowledgedById, organizationId], references: [id, organizationId], onDelete: Restrict)
   probationClosures ProbationRecord[] @relation("ProbationSeparationClosure")
   clearanceItems EmployeeClearanceItem[]
   audits EmployeeSeparationAudit[]
   reviews EmployeeSeparationReview[]
+  finalPay EmployeeFinalPay?
 
   @@unique([id, organizationId])
   @@unique([organizationId, requestKey])
   @@index([organizationId, status, createdAt, id])
   @@index([organizationId, employeeId, createdAt])
   @@index([organizationId, proposedEffectiveDate])
+  @@index([organizationId, submissionSource, acknowledgedAt, status], map: "EmployeeSeparationCase_org_source_ack_status_idx")
 }
 
 model EmployeeClearanceItem {
@@ -521,20 +530,170 @@ enum LeavePayrollTreatment {
   NO_PAYROLL_EFFECT
 }
 
+// Platform identities deliberately have no User role or Organization relation.
+model PlatformAdministrator {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  name         String
+  passwordHash String
+  disabledAt   DateTime?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  sessions     PlatformAdministratorSession[]
+  organizationInvitations OrganizationAdministratorInvitation[]
+  organizationAudits PlatformOrganizationAudit[]
+}
+
+model PlatformAdministratorSession {
+  tokenHash       String   @id
+  administratorId String
+  expiresAt       DateTime
+  createdAt       DateTime @default(now())
+  administrator   PlatformAdministrator @relation(fields: [administratorId], references: [id], onDelete: Cascade)
+
+  @@index([administratorId])
+  @@index([expiresAt])
+}
+
+model PlatformAuthenticationAttempt {
+  key         String   @id
+  attempts    Int
+  windowStart DateTime
+}
+
+model OrganizationEmailIntegration {
+  organizationId String @id
+  email String?
+  googleSubject String? @unique
+  credentials String? @db.Text
+  accessExpiresAt DateTime?
+  status String @default("DISCONNECTED")
+  generation Int @default(0)
+  lastError String?
+  retryAt DateTime?
+  lastSentAt DateTime?
+  testedAt DateTime?
+  recruitmentGmailActive Boolean @default(false)
+  updatedAt DateTime @updatedAt
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Restrict)
+}
+
+model OrganizationEmailOAuthAttempt {
+  stateHash String @id
+  organizationId String
+  actorId String
+  tenantProofHash String
+  publicProofHash String?
+  verifierCipher String @db.Text
+  pendingCipher String? @db.Text
+  generation Int
+  stage String @default("CREATED")
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Restrict)
+  actor User @relation(fields: [actorId, organizationId], references: [id, organizationId], onDelete: Restrict)
+
+  @@index([organizationId])
+  @@index([expiresAt])
+}
+
+// No tenant or login-capable User exists until this email proof is consumed.
+model CompanyRegistration {
+  id             String @id @default(cuid())
+  email          String @unique
+  companyName    String
+  administratorName String
+  passwordHash   String?
+  browserHash    String
+  tokenHash      String? @unique
+  expiresAt      DateTime
+  lastIssuedAt   DateTime @default(now())
+  deliveryStatus OrganizationInvitationDelivery @default(PENDING)
+  verifiedAt     DateTime?
+  organizationId String? @unique
+  organization   Organization? @relation(fields: [organizationId], references: [id], onDelete: Restrict)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  @@index([expiresAt])
+}
+
+enum OrganizationInvitationStatus {
+  PENDING
+  ACTIVATED
+  REVOKED
+}
+
+enum OrganizationInvitationDelivery {
+  PENDING
+  SENT
+  FAILED
+}
+
+model OrganizationAdministratorInvitation {
+  id              String @id @default(cuid())
+  organizationId  String @unique
+  userId          String @unique
+  email           String
+  createdById     String
+  creationKey     String @unique
+  requestHash     String
+  status          OrganizationInvitationStatus @default(PENDING)
+  deliveryStatus  OrganizationInvitationDelivery @default(PENDING)
+  tokenHash       String? @unique
+  expiresAt       DateTime
+  lastIssuedAt    DateTime @default(now())
+  version         Int @default(1)
+  activatedAt     DateTime?
+  revokedAt       DateTime?
+  createdAt       DateTime @default(now())
+  organization    Organization @relation(fields: [organizationId], references: [id], onDelete: Restrict)
+  user            User @relation(fields: [userId, organizationId], references: [id, organizationId], onDelete: Restrict)
+  createdBy       PlatformAdministrator @relation(fields: [createdById], references: [id], onDelete: Restrict)
+
+  @@unique([userId, organizationId])
+}
+
+model PlatformOrganizationAudit {
+  id                   String @id @default(cuid())
+  organizationId       String
+  actorAdministratorId String?
+  action               String
+  operationKey         String? @unique
+  invitationVersion    Int?
+  createdAt            DateTime @default(now())
+  organization         Organization @relation(fields: [organizationId], references: [id], onDelete: Restrict)
+  actorAdministrator   PlatformAdministrator? @relation(fields: [actorAdministratorId], references: [id], onDelete: Restrict)
+
+  @@index([organizationId, createdAt])
+}
+
 model Organization {
+  hrEmailDeliveries HrEmailDelivery[]
   id                   String   @id @default(cuid())
   name                 String
   slug                 String   @unique
   description          String?  @db.Text
   logoUrl              String?
   careersEnabled       Boolean  @default(true)
+  contactEmail         String?
   hiringDocumentRequirements Json?
+  probationPolicy      Json?
+  resignationPolicy    Json?
+  finalPayPolicy       Json?
+  finalPays            EmployeeFinalPay[]
+  finalPayAudits       EmployeeFinalPayAudit[]
   employeeNumberPrefix String?
   timeZone             String   @default("UTC")
   createdAt            DateTime @default(now())
   updatedAt            DateTime @updatedAt
 
   users                   User[]
+  administratorInvitation OrganizationAdministratorInvitation?
+  companyRegistration     CompanyRegistration?
+  emailIntegration        OrganizationEmailIntegration?
+  emailOAuthAttempts      OrganizationEmailOAuthAttempt[]
+  platformAudits          PlatformOrganizationAudit[]
   jobs                    Job[]
   employees               Employee[]
   employeeNumberSequences EmployeeNumberSequence[]
@@ -566,6 +725,12 @@ model Organization {
 }
 
 model User {
+  separationsAcknowledged EmployeeSeparationCase[] @relation("SeparationAcknowledger")
+  finalPayAudits EmployeeFinalPayAudit[]
+  finalPaysReviewed EmployeeFinalPay[] @relation("FinalPayReviewer")
+  finalPaysApproved EmployeeFinalPay[] @relation("FinalPayApprover")
+  finalPayPayments EmployeeFinalPayPayment[]
+  hrEmailDeliveries HrEmailDelivery[]
   id             String   @id @default(cuid())
   organizationId String
   name           String
@@ -576,6 +741,8 @@ model User {
   updatedAt      DateTime @updatedAt
 
   organization                 Organization                 @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  organizationInvitation       OrganizationAdministratorInvitation?
+  emailOAuthAttempts           OrganizationEmailOAuthAttempt[]
   statusChanges                ApplicationStatusHistory[]
   interviews                   Interview[]
   evaluations                  CandidateEvaluation[]
@@ -616,6 +783,74 @@ model User {
 
   @@unique([id, organizationId])
   @@index([organizationId])
+}
+
+model EmployeeFinalPay {
+  id String @id @default(cuid())
+  organizationId String
+  caseId String @unique
+  status String @default("DRAFT")
+  version Int @default(0)
+  payload Json
+  caseSnapshot Json
+  sourceSnapshot Json?
+  sourceHash String?
+  breakdown Json?
+  grossAmount Decimal? @db.Decimal(12, 2)
+  deductionAmount Decimal? @db.Decimal(12, 2)
+  netAmount Decimal? @db.Decimal(12, 2)
+  deadlineDays Int
+  deadlineBasis String
+  separationDate DateTime @db.Date
+  reviewedById String?
+  reviewedAt DateTime?
+  finalizedById String?
+  finalizedAt DateTime?
+  approvalRemarks String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Restrict)
+  separationCase EmployeeSeparationCase @relation(fields: [caseId, organizationId], references: [id, organizationId], onDelete: Restrict)
+  audits EmployeeFinalPayAudit[]
+  payments EmployeeFinalPayPayment[]
+  reviewedBy User? @relation("FinalPayReviewer", fields: [reviewedById, organizationId], references: [id, organizationId], onDelete: Restrict)
+  finalizedBy User? @relation("FinalPayApprover", fields: [finalizedById, organizationId], references: [id, organizationId], onDelete: Restrict)
+  @@unique([caseId, organizationId])
+  @@unique([id, organizationId])
+  @@index([organizationId, status])
+}
+
+model EmployeeFinalPayAudit {
+  id String @id @default(cuid())
+  organizationId String
+  finalPayId String?
+  actorUserId String
+  action String
+  details Json
+  createdAt DateTime @default(now())
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Restrict)
+  finalPay EmployeeFinalPay? @relation(fields: [finalPayId, organizationId], references: [id, organizationId], onDelete: Restrict)
+  actor User @relation(fields: [actorUserId, organizationId], references: [id, organizationId], onDelete: Restrict)
+  @@index([organizationId, finalPayId, createdAt])
+}
+
+model EmployeeFinalPayPayment {
+  id String @id @default(cuid())
+  organizationId String
+  finalPayId String
+  amount Decimal @db.Decimal(12, 2)
+  paidOn DateTime @db.Date
+  reference String
+  remarks String
+  recordedById String
+  requestKey String
+  requestFingerprint String
+  createdAt DateTime @default(now())
+  finalPay EmployeeFinalPay @relation(fields: [finalPayId, organizationId], references: [id, organizationId], onDelete: Restrict)
+  recordedBy User @relation(fields: [recordedById, organizationId], references: [id, organizationId], onDelete: Restrict)
+  @@unique([organizationId, requestKey])
+  @@unique([finalPayId, reference])
+  @@index([organizationId, finalPayId])
 }
 
 model OrganizationBranding {
@@ -713,6 +948,7 @@ model Applicant {
 }
 
 model Application {
+  hrEmailDeliveries HrEmailDelivery[]
   id          String            @id @default(cuid())
   jobId       String
   applicantId String
@@ -738,6 +974,30 @@ model Application {
   @@index([applicantId])
   @@index([status])
   @@index([appliedAt])
+}
+
+// One durable delivery slot per HR workflow event; never stores OAuth secrets or message bodies.
+model HrEmailDelivery {
+  id String @id @default(cuid())
+  organizationId String
+  applicationId String
+  actorId String
+  eventKey String
+  type String
+  recipient String
+  contentHash String
+  status String @default("DRAFT")
+  attemptCount Int @default(0)
+  lastAttemptAt DateTime?
+  submittedAt DateTime?
+  errorCode String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Restrict)
+  application Application @relation(fields: [applicationId], references: [id], onDelete: Restrict)
+  actor User @relation(fields: [actorId], references: [id], onDelete: Restrict)
+  @@unique([organizationId, eventKey])
+  @@index([organizationId, applicationId, createdAt])
 }
 
 model CandidateAccess {
@@ -876,6 +1136,7 @@ model Offer {
   contractExecutedAt        DateTime?
   probationPeriodMonths     Int?
   probationaryTerms         String?      @db.Text
+  probationPolicySnapshot   Json?
   createdById               String
   approvedById              String?
   createdAt                 DateTime     @default(now())
@@ -904,6 +1165,9 @@ model EmployeeNumberSequence {
 }
 
 model Employee {
+  payrollStatutoryInputs PayrollStatutoryInput[]
+  payrollTaxOpenings PayrollTaxOpening[]
+  payrollContributionMonths PayrollContributionMonth[]
   id                  String         @id @default(cuid())
   organizationId      String
   sourceApplicationId String         @unique
@@ -1048,6 +1312,7 @@ model EmployeeCompensation {
 }
 
 model PayrollPeriod {
+  statutoryInputs PayrollStatutoryInput[]
   id             String              @id @default(cuid())
   organizationId String
   name           String
@@ -1065,12 +1330,14 @@ model PayrollPeriod {
   payrollEntries PayrollEntry[]
 
   @@unique([organizationId, name])
+  @@unique([id, organizationId])
   @@index([organizationId, periodStart, periodEnd])
   @@index([organizationId, status])
   @@index([finalizedById])
 }
 
 model PayrollEntry {
+  statutoryPosting PayrollStatutoryPosting?
   id                     String             @id @default(cuid())
   organizationId         String
   payrollPeriodId        String
@@ -1091,9 +1358,83 @@ model PayrollEntry {
   employeeCompensation EmployeeCompensation @relation(fields: [employeeCompensationId], references: [id], onDelete: Restrict)
 
   @@unique([organizationId, payrollPeriodId, employeeId])
+  @@unique([id, organizationId, employeeId])
   @@index([organizationId, payrollPeriodId, status])
   @@index([organizationId, employeeId])
   @@index([employeeCompensationId])
+}
+
+// Reviewed inputs are explicit; historical earnings/coverage are never guessed.
+model PayrollStatutoryInput {
+  id String @id @default(cuid())
+  organizationId String
+  employeeId String
+  payrollPeriodId String
+  payload Json
+  evidenceReference String
+  reviewedById String
+  createdAt DateTime @default(now())
+  employee Employee @relation(fields: [employeeId, organizationId], references: [id, organizationId], onDelete: Restrict)
+  period PayrollPeriod @relation(fields: [payrollPeriodId, organizationId], references: [id, organizationId], onDelete: Restrict)
+  @@unique([organizationId, employeeId, payrollPeriodId])
+}
+
+model PayrollTaxOpening {
+  id String @id @default(cuid())
+  organizationId String
+  employeeId String
+  taxYear String
+  // Complete verified history before this payment date, including external records.
+  openingPayDate DateTime @db.Date
+  balances Json
+  evidenceReference String
+  reviewedById String
+  createdAt DateTime @default(now())
+  employee Employee @relation(fields: [employeeId, organizationId], references: [id, organizationId], onDelete: Restrict)
+  @@unique([organizationId, employeeId, taxYear])
+}
+
+model PayrollContributionMonth {
+  id String @id @default(cuid())
+  organizationId String
+  employeeId String
+  contributionMonth String
+  frequency String
+  employee Employee @relation(fields: [employeeId, organizationId], references: [id, organizationId], onDelete: Restrict)
+  allocations PayrollContributionAllocation[]
+  @@unique([organizationId, employeeId, contributionMonth])
+  @@unique([id, frequency])
+}
+
+model PayrollStatutoryPosting {
+  id String @id @default(cuid())
+  organizationId String
+  employeeId String
+  payrollEntryId String @unique
+  payDate DateTime @db.Date
+  taxYear String
+  benefitUsage Json
+  calculation Json
+  createdAt DateTime @default(now())
+  entry PayrollEntry @relation(fields: [payrollEntryId, organizationId, employeeId], references: [id, organizationId, employeeId], onDelete: Restrict)
+  allocations PayrollContributionAllocation[]
+  @@unique([payrollEntryId, organizationId, employeeId])
+  @@index([organizationId, employeeId, taxYear, payDate])
+}
+
+model PayrollContributionAllocation {
+  id String @id @default(cuid())
+  monthId String
+  postingId String
+  frequency String
+  agency String
+  slot String
+  allocation Json
+  monthlyLiability Json
+  month PayrollContributionMonth @relation(fields: [monthId, frequency], references: [id, frequency], onDelete: Restrict)
+  posting PayrollStatutoryPosting @relation(fields: [postingId], references: [id], onDelete: Restrict)
+  @@unique([monthId, agency, slot])
+  @@unique([postingId, agency])
 }
 
 model OrganizationPayrollPolicy {

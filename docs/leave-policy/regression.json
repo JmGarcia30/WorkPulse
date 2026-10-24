@@ -1,0 +1,8 @@
+{
+  "passed": true,
+  "assertions": 103,
+  "branchId": "br-broad-forest-az55xwfe",
+  "leaveDataUnchanged": true,
+  "sagaIdentityRestored": true,
+  "fixturesRollbackOnly": true
+}

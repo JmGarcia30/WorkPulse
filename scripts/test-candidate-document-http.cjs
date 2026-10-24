@@ -2,6 +2,7 @@
 const fs = require('node:fs'), path = require('node:path'), assert = require('node:assert/strict');
 const { encodeReply } = require('next/dist/compiled/react-server-dom-webpack/client.edge');
 const { ApplicationStatus } = require('@prisma/client');
+const fetch = require('./candidate-test-http.cjs');
 module.exports = async function test({ tx, org, foreign, users, primary, otherJob, candidate, tenantHost, port, session, save, ok, identityReview = false }) {
   const { SignJWT } = await import('jose');
   const manifest = JSON.parse(fs.readFileSync('.next/server/server-reference-manifest.json'));
@@ -35,7 +36,7 @@ module.exports = async function test({ tx, org, foreign, users, primary, otherJo
   async function download(label, route, options = {}) {
     const response = await fetch(base + route, { headers: headers(options.cookie ?? session.cookie, options.host || tenantHost), redirect: 'manual' });
     const text = await response.text();
-    const row = { label, status: response.status, cacheControl: response.headers.get('cache-control'), nosniff: response.headers.get('x-content-type-options'), containsPrivateBytes: text.includes(marker), containsIdentity: text.includes(primary.employee.email) };
+    const row = { label, status: response.status, safeError: ['File unavailable', 'Document not found', 'Forbidden', 'Unauthorized'].find(message => text === message), cacheControl: response.headers.get('cache-control'), nosniff: response.headers.get('x-content-type-options'), containsPrivateBytes: text.includes(marker), containsIdentity: text.includes(primary.employee.email) };
     record(row);
     if (options.allow) { assert.equal(response.status, 200); assert(row.containsPrivateBytes); assert(row.cacheControl.includes('no-store')); assert.equal(row.nosniff, 'nosniff'); }
     else { assert([401, 403, 404].includes(response.status)); assert(!row.containsPrivateBytes && !row.containsIdentity); assert(!response.headers.get('location')); }
@@ -188,10 +189,11 @@ module.exports = async function test({ tx, org, foreign, users, primary, otherJo
     for (let i = 0; i < 150; i++) { if (await session.evaluate(`!!document.querySelector('button[aria-label="More options"]')`)) break; await new Promise(resolve => setTimeout(resolve, 100)); }
     assert(await session.evaluate(`!!document.querySelector('a[href="${routes[1]}"]')`)); ok(true, 'Browser recruitment preview link uses authorized endpoint');
     await new Promise(resolve => setTimeout(resolve, 500));
-    await session.evaluate(`document.querySelector('button[aria-label="More options"]').click();true`);
-    for (let i = 0; i < 100; i++) { if (await session.evaluate(`!!document.querySelector('input[type=file]')`)) break; await new Promise(resolve => setTimeout(resolve, 100)); }
+    await session.evaluate(`document.querySelector('a[href="${routes[1]}"]').closest('.group').querySelector('button[aria-label="More options"]').click();true`);
+    for (let i = 0; i < 100; i++) { if (await session.evaluate(`!!document.querySelector('a[href="${routes[1]}"]').closest('.group').querySelector('input[type=file]')`)) break; await new Promise(resolve => setTimeout(resolve, 100)); }
+    await session.evaluate(`document.querySelector('a[href="${routes[1]}"]').closest('.group').querySelector('input[type=file]').setAttribute('data-candidate-upload-test', '1');true`);
     const { root } = await session.send('DOM.getDocument');
-    const { nodeId } = await session.send('DOM.querySelector', { nodeId: root.nodeId, selector: 'input[type=file]' });
+    const { nodeId } = await session.send('DOM.querySelector', { nodeId: root.nodeId, selector: 'input[data-candidate-upload-test]' });
     assert(nodeId); await session.send('DOM.setFileInputFiles', { nodeId, files: [ownPath] });
     let browserSaved = false;
     for (let i = 0; i < 150; i++) { if ((await tx.recruitmentDocument.findUniqueOrThrow({ where: { id: recruitment.id } })).fileName === path.basename(ownPath)) { browserSaved = true; break; } await new Promise(resolve => setTimeout(resolve, 100)); }

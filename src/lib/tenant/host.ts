@@ -12,13 +12,38 @@ export function rootDomain() {
 }
 
 export function normalizeHostname(value: string) {
-  return value.trim().toLowerCase().split(',')[0].trim().replace(/:\d+$/, '').replace(/\.$/, '');
+  return normalizeAuthority(value)?.split(':')[0] ?? '';
+}
+
+// A single DNS authority, never a URL, forwarded list, userinfo or encoded host.
+export function normalizeAuthority(value: string): string | null {
+  if (!value || value !== value.trim() || /[\s,/@\\?#%]/.test(value)) return null;
+  const match = /^([a-z0-9.-]+)(?::([0-9]{1,5}))?$/i.exec(value);
+  if (!match || match[1].length > 253 || match[1].toLowerCase().split('.').some(label => !LABEL.test(label))) return null;
+  if (match[2] && (Number(match[2]) < 1 || Number(match[2]) > 65535 || String(Number(match[2])) !== match[2])) return null;
+  return match[1].toLowerCase() + (match[2] ? ':' + match[2] : '');
+}
+
+export function requestAuthority(requestHeaders: Pick<Headers, 'get'>): string | null {
+  const host = normalizeAuthority(requestHeaders.get('host') ?? '');
+  const forwarded = requestHeaders.get('x-forwarded-host');
+  // Infrastructure must preserve Host. A forwarded header can agree, never
+  // select a different tenant or rescue a missing/unrecognized actual Host.
+  if (!host || (forwarded !== null && normalizeAuthority(forwarded) !== host)) return null;
+  return host;
+}
+
+export function classifyRequestHost(requestHeaders: Pick<Headers, 'get'>): PlatformHost {
+  const authority = requestAuthority(requestHeaders);
+  const configured = process.env.PLATFORM_ROOT_DOMAIN || (process.env.NODE_ENV === 'production' ? '' : rootDomain());
+  return authority ? parsePlatformHost(authority, configured) : { kind: 'invalid', hostname: '' };
 }
 
 export function parsePlatformHost(value: string, configuredRoot = rootDomain()): PlatformHost {
   const hostname = normalizeHostname(value);
   const root = normalizeHostname(configuredRoot);
-  if (!hostname || !root) return { kind: 'invalid', hostname };
+  const authority = normalizeAuthority(value), rootAuthority = normalizeAuthority(configuredRoot);
+  if (!hostname || !root || !authority || !rootAuthority || authority.split(':')[1] !== rootAuthority.split(':')[1]) return { kind: 'invalid', hostname };
   if (hostname === root || hostname === `www.${root}`) return { kind: 'public', hostname };
   if (hostname === `app.${root}`) return { kind: 'discovery', hostname };
   if (!hostname.endsWith(`.${root}`)) return { kind: 'invalid', hostname };

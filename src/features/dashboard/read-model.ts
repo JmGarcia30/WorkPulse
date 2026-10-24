@@ -28,6 +28,7 @@ import {
 } from '@/features/attendance/domain';
 import { resolveAnalyticsRange } from '@/features/analytics/date-range';
 import { readDashboardEmployeeAlerts } from './employee-alerts';
+import { readResignationNotifications } from '@/features/separation/resignation-notifications';
 
 export interface ScheduleItem {
   id: string;
@@ -46,7 +47,7 @@ export interface AttentionItemDetail {
   employeeOrCandidate: string;
   departmentOrRole?: string;
   actionRequired: string;
-  category: 'Leave' | 'Probation' | 'Assessment' | 'Offer' | 'Onboarding' | 'Payroll' | 'Setup';
+  category: 'Leave' | 'Probation' | 'Assessment' | 'Offer' | 'Onboarding' | 'Payroll' | 'Setup' | 'Exit';
   dueDate: string;
   status: string;
   statusVariant: 'warning' | 'pending' | 'info' | 'danger' | 'neutral';
@@ -204,6 +205,7 @@ export async function readDashboardData(session: UserSessionPayload, asOf = new 
     pendingOnboardingTasks,
     missingCompensationEmployees,
     incompleteSetupEmployees,
+    resignationNotices,
   ] = await Promise.all([
     workforcePromise.then(rows => Number(rows[0]?.active ?? 0)),
     attendancePromise.then(rows => rows.filter(row => row.attendanceDate.toISOString().slice(0, 10) === todayStr && row.attendanceStatus === 'PRESENT').reduce((sum, row) => sum + Number(row.count), 0)),
@@ -421,6 +423,7 @@ export async function readDashboardData(session: UserSessionPayload, asOf = new 
 
     // 19. Incomplete employee records
     employeeAlertsPromise.then(rows => rows.filter(row => row.kind === 'setup')),
+    readResignationNotifications(db, organizationId, hasHrAccess),
   ]);
 
   // Attendance Rate calculation (Reliable H8 definition)
@@ -758,6 +761,11 @@ export async function readDashboardData(session: UserSessionPayload, asOf = new 
   }
 
   // Total Pending Actions count across all categories
+  for (const item of resignationNotices) {
+    attentionQueue.unshift({ id: `resignation-${item.id}`, employeeOrCandidate: `${item.employee.firstName} ${item.employee.lastName}`, departmentOrRole: item.employee.employeeNumber,
+      actionRequired: 'Acknowledge receipt and process employee resignation notice', category: 'Exit',
+      dueDate: item.initiatedAt.toISOString().slice(0, 10), status: 'Notice submitted', statusVariant: 'info', href: `/dashboard/employees/exit/${item.id}` });
+  }
   const pendingActionsCount = attentionQueue.length;
 
   return {

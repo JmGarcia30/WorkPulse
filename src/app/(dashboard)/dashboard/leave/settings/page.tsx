@@ -4,6 +4,7 @@ import { canManageLeaveTypes } from '@/lib/permissions/rbac';
 import { getLeaveAdminSettings } from '@/features/leave/hr-queries';
 import { LeaveSettingsPanel } from '@/components/leave/LeaveSettingsPanel';
 import { prisma } from '@/lib/db/prisma';
+import { isSagaLeaveOrganization } from '@/features/leave/organization-policy';
 
 export default async function LeaveSettingsPage() {
   const user = await requireBackOfficeContext();
@@ -13,9 +14,9 @@ export default async function LeaveSettingsPage() {
     getLeaveAdminSettings(user.organizationId),
     prisma.organization.findUnique({
       where: { id: user.organizationId },
-      select: { name: true },
+      select: { name: true, slug: true },
     }),
   ]);
 
-  return <LeaveSettingsPanel types={types} organizationName={organization?.name} />;
+  return <LeaveSettingsPanel types={types} organizationName={organization?.name} isSagaOrganization={isSagaLeaveOrganization(organization)} />;
 }

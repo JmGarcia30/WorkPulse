@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-require-imports -- Real services against rollback PostgreSQL; controlled mail and request context. */
 const assert = require('node:assert/strict'), Module = require('node:module');
+const fetch = require('./candidate-test-http.cjs');
 module.exports = async function ({ tx, org, foreign, primary, candidate, recruitment, task, routes, portalRoute, action, download, headers, base, form, ok, save }) {
   require('tsx/cjs');
   const original = Module._load;
@@ -14,7 +15,7 @@ module.exports = async function ({ tx, org, foreign, primary, candidate, recruit
     if (request === '@/lib/auth/session') return { COOKIE_NAME: '__Host-workpulse_session' };
     if (request === '@/features/hiring/document-access') return { candidatePortalMatchesRequestTenant: async () => tenantMatches, candidateDocumentMatchesRequestTenant: async () => tenantMatches };
     if (request === 'next/headers') return { cookies: async () => ({ has: name => jar.has(name), get: name => jar.has(name) ? { value: jar.get(name) } : undefined, set: (name, value, options) => { jar.set(name, value); cookieOptions = options; } }) };
-    if (request === '@/lib/email') return { sendEmail: async input => { sent++; assert(input.sensitive); link = input.text.match(/#token=([a-f0-9]{64})/)[1]; return { success: delivery, mode: delivery ? 'smtp' : 'preview_log' }; } };
+    if (request === '@/lib/email') return { sendApplicantVerificationEmail: async input => { sent++; assert.equal(input.organizationId, org.id); link = input.url.match(/#token=([a-f0-9]{64})/)[1]; return { success: delivery, mode: delivery ? 'smtp' : 'preview_log' }; } };
     return original.call(this, request, parent, isMain);
   };
   let cookie;
