@@ -59,7 +59,10 @@ export async function issueCandidateLink(slug: string, applicationId: string, em
   });
   if (!reserved) return;
   // Configured canonical origin, never a caller-controlled Host header.
-  const url = `${publicOrigin()}/careers/${encodeURIComponent(slug)}/portal/${encodeURIComponent(applicationId)}/verify#token=${token}`;
+  const verificationPath = slug === 'saga' || slug === 'st-aloysius'
+    ? `/saga/careers/portal/${encodeURIComponent(applicationId)}/verify`
+    : `/careers/${encodeURIComponent(slug)}/portal/${encodeURIComponent(applicationId)}/verify`;
+  const url = `${publicOrigin()}${verificationPath}#token=${token}`;
   let delivered = false;
   try {
     const result = await sendApplicantVerificationEmail({ organizationId: application.job.organizationId, to: application.applicant.email, url });
