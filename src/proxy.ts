@@ -109,6 +109,10 @@ export async function proxy(request: NextRequest) {
       const suffix = pathname.slice('/saga'.length) || '/';
       if (suffix === '/') return pathTenantResponse(request, '/tenant-entry', 'saga', organization);
       if (suffix === '/login') return pathTenantResponse(request, '/login', 'saga', organization);
+      // Kiosk authentication is independent of the HR session cookie.
+      if (suffix === '/attendance-kiosk' || suffix.startsWith('/api/attendance/rfid/')) {
+        return pathTenantResponse(request, suffix, 'saga', organization);
+      }
       if (suffix === '/careers' || suffix === '/careers/') {
         return NextResponse.redirect(new URL('/saga#careers', requestUrl(request)));
       }
@@ -128,6 +132,7 @@ export async function proxy(request: NextRequest) {
 
     const rememberedTenant = request.cookies.get(pathTenantCookie)?.value === 'saga' ? 'saga' : null;
     if (rememberedTenant) {
+      if (pathname === '/attendance-kiosk') return pathTenantResponse(request, pathname, rememberedTenant, organization);
       if (pathname === '/login') {
         const url = requestUrl(request); url.pathname = '/saga/login';
         return NextResponse.redirect(url);

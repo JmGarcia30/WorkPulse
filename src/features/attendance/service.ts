@@ -40,7 +40,7 @@ type DbClient = Prisma.TransactionClient;
 async function serializableAttendance<T>(operation: (tx: DbClient) => Promise<T>): Promise<T> {
   for (let attempt = 0; ; attempt++) {
     try {
-      return await prisma.$transaction(operation, { isolationLevel: Prisma.TransactionIsolationLevel.Serializable });
+      return await prisma.$transaction(operation, { isolationLevel: Prisma.TransactionIsolationLevel.Serializable, maxWait: 10_000, timeout: 30_000 });
     } catch (error) {
       // PostgreSQL has rolled back the entire attempt. Never retry timeouts or arbitrary failures.
       if (attempt >= 2 || !(error instanceof Prisma.PrismaClientKnownRequestError) || error.code !== 'P2034') throw error;
@@ -387,11 +387,13 @@ export function createManualSubmissionToken(): string {
   return randomUUID();
 }
 
-export async function recordAttendanceEvent(input: {
+export type AttendanceEventInput = {
   organizationId: string; actorUserId?: string; employeeId: string; occurredAt: Date;
   direction?: AttendanceDirection | null; source: AttendanceSource; sourceReference: string; metadata?: Prisma.InputJsonValue;
-}) {
-  if (input.source === AttendanceSource.RFID) throw new AttendanceError('UNAUTHORIZED', 'RFID ingestion is reserved for a future authenticated adapter.');
+};
+
+export async function recordAttendanceEvent(input: AttendanceEventInput) {
+  if (input.source === AttendanceSource.RFID) throw new AttendanceError('UNAUTHORIZED', 'RFID ingestion requires an authorized kiosk adapter.');
   if (!input.actorUserId) throw new AttendanceError('UNAUTHORIZED', 'An authenticated attendance actor is required.');
   if (!input.direction) throw new AttendanceError('INVALID_INPUT', 'Manual and import events require a direction.');
   if (input.metadata && (typeof input.metadata !== 'object' || Array.isArray(input.metadata) || Buffer.byteLength(JSON.stringify(input.metadata), 'utf8') > 4096)) {
@@ -399,6 +401,14 @@ export async function recordAttendanceEvent(input: {
   }
   return serializableAttendance(async (tx) => {
     await assertActor(tx, input.organizationId, input.actorUserId!);
+    return writeAttendanceEvent(tx, input);
+  });
+}
+
+// Internal transaction primitive shared by manual/import and the authenticated RFID adapter.
+// Callers authorize before entering; events and the existing schedule projection commit together.
+export async function writeAttendanceEvent(tx: DbClient, input: AttendanceEventInput) {
+    await lockAttendanceEmployee(tx, input.organizationId, input.employeeId);
     const employee = await tx.employee.findFirst({ where: { id: input.employeeId, organizationId: input.organizationId }, select: { id: true } });
     if (!employee) throw new AttendanceError('NOT_FOUND', 'Employee not found or access denied.');
     const inserted = await tx.attendanceEvent.createMany({
@@ -429,9 +439,13 @@ export async function recordAttendanceEvent(input: {
     await materializeDayInOrganization(tx, {
       organizationId: input.organizationId, employeeId: input.employeeId,
       attendanceDate: attendanceDateForInstant(input.occurredAt, organization.timeZone),
+      asOf: input.source === AttendanceSource.RFID ? input.occurredAt : undefined,
     }, organization);
     return { eventId: event.id, idempotent: inserted.count === 0 };
-  });
+}
+
+export async function lockAttendanceEmployee(tx: DbClient, organizationId: string, employeeId: string) {
+  await tx.$queryRaw`SELECT pg_advisory_xact_lock(hashtextextended(${`attendance:${organizationId}:${employeeId}`}, 0))::text`;
 }
 
 export async function correctAttendance(input: {
@@ -451,6 +465,7 @@ export async function correctAttendance(input: {
     await assertActor(tx, input.organizationId, input.actorUserId);
     const record = await tx.dailyAttendanceRecord.findFirst({ where: { id: input.dailyAttendanceRecordId, organizationId: input.organizationId } });
     if (!record) throw new AttendanceError('NOT_FOUND', 'Attendance record not found or access denied.');
+    await lockAttendanceEmployee(tx, input.organizationId, record.employeeId);
     if (record.correctionVersion !== input.expectedRevision) throw new AttendanceError('CONCURRENT_UPDATE', 'Attendance was changed; refresh before correcting it.');
     const revision = record.correctionVersion + 1;
     const previousState = { firstTimeIn: record.firstTimeIn?.toISOString() ?? null, lastTimeOut: record.lastTimeOut?.toISOString() ?? null, attendanceStatus: record.attendanceStatus, correctionVersion: record.correctionVersion };

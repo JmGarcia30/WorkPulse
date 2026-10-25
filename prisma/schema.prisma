@@ -669,6 +669,10 @@ model PlatformOrganizationAudit {
 }
 
 model Organization {
+  rfidCards RfidCard[]
+  rfidKiosks RfidKioskSession[]
+  rfidAudits RfidAudit[]
+  rfidBudgets RfidRequestBudget[]
   hrEmailDeliveries HrEmailDelivery[]
   id                   String   @id @default(cuid())
   name                 String
@@ -725,6 +729,8 @@ model Organization {
 }
 
 model User {
+  rfidKiosks RfidKioskSession[]
+  rfidAudits RfidAudit[]
   separationsAcknowledged EmployeeSeparationCase[] @relation("SeparationAcknowledger")
   finalPayAudits EmployeeFinalPayAudit[]
   finalPaysReviewed EmployeeFinalPay[] @relation("FinalPayReviewer")
@@ -1165,6 +1171,8 @@ model EmployeeNumberSequence {
 }
 
 model Employee {
+  rfidCards RfidCard[]
+  rfidAudits RfidAudit[]
   payrollStatutoryInputs PayrollStatutoryInput[]
   payrollTaxOpenings PayrollTaxOpening[]
   payrollContributionMonths PayrollContributionMonth[]
@@ -1643,6 +1651,60 @@ model EmployeeScheduleAssignment {
   @@index([organizationId, employeeId, effectiveFrom])
   @@index([scheduleVersionId])
   @@index([createdById])
+}
+
+// Active-card uniqueness is enforced by partial indexes in the RFID migration.
+model RfidCard {
+  id String @id @default(cuid())
+  organizationId String
+  employeeId String
+  cardDigest String @db.Char(64)
+  createdAt DateTime @default(now())
+  deactivatedAt DateTime?
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Restrict)
+  employee Employee @relation(fields: [employeeId, organizationId], references: [id, organizationId], onDelete: Restrict)
+  @@index([organizationId, cardDigest])
+  @@index([organizationId, employeeId])
+}
+
+model RfidKioskSession {
+  id String @id @default(cuid())
+  organizationId String
+  authorizedById String
+  tokenHash String @unique @db.Char(64)
+  createdAt DateTime @default(now())
+  expiresAt DateTime
+  revokedAt DateTime?
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Restrict)
+  authorizedBy User @relation(fields: [authorizedById, organizationId], references: [id, organizationId], onDelete: Restrict)
+  @@index([organizationId, authorizedById])
+}
+
+// Append-only operational audit and durable scan-idempotency receipt. No raw card IDs.
+model RfidAudit {
+  id String @id @default(cuid())
+  organizationId String
+  actorUserId String
+  employeeId String?
+  action String
+  requestKey String?
+  requestFingerprint String? @db.Char(64)
+  details Json
+  createdAt DateTime @default(now())
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Restrict)
+  actor User @relation(fields: [actorUserId, organizationId], references: [id, organizationId], onDelete: Restrict)
+  employee Employee? @relation(fields: [employeeId, organizationId], references: [id, organizationId], onDelete: Restrict)
+  @@unique([organizationId, requestKey])
+  @@index([organizationId, createdAt])
+}
+
+// Fixed keys per authorized actor/kiosk/organization; shared across Vercel instances.
+model RfidRequestBudget {
+  key String @id
+  organizationId String
+  windowStart DateTime @default(now())
+  attempts Int @default(1)
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Restrict)
 }
 
 model AttendanceEvent {

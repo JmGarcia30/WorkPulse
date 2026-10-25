@@ -19,6 +19,7 @@ import { getSession } from '@/lib/auth/session';
 import { prisma } from '@/lib/db/prisma';
 import { canCorrectAttendance, canViewAttendance } from '@/lib/permissions/rbac';
 import { formatStatusLabel } from '@/lib/ui/format-status';
+import { requestWorkspacePath } from '@/lib/tenant/server';
 
 type Params = { employeeId?: string; month?: string; status?: string; department?: string; category?: string; day?: string; evaluationError?: string };
 
@@ -82,6 +83,7 @@ export default async function AttendancePage({ searchParams }: { searchParams: P
       <div className="flex items-center rounded-xl border border-[var(--tenant-border)] bg-white p-1 shadow-sm" aria-label="Calendar month navigation"><Link className="grid size-10 place-items-center rounded-lg text-[var(--tenant-primary)] hover:bg-[var(--tenant-tint-strong)]" href={`?${previousQuery}`} aria-label="Previous month"><ArrowLeft className="size-4" /></Link><div className="min-w-44 px-4 text-center"><span className="block text-[10px] font-bold uppercase tracking-widest text-[var(--wp-text-muted)]">Attendance period</span><strong className="text-sm">{monthLabel}</strong></div><Link className="grid size-10 place-items-center rounded-lg text-[var(--tenant-primary)] hover:bg-[var(--tenant-tint-strong)]" href={`?${nextQuery}`} aria-label="Next month"><ArrowRight className="size-4" /></Link></div>
     </header>
 
+    {canCorrectAttendance(user) && <Link href={await requestWorkspacePath('/dashboard/attendance/rfid')} className="wp-button-secondary">RFID Cards &amp; Kiosk</Link>}
     {params.evaluationError === 'failed' && <p role="alert" className="rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800">Attendance records could not be refreshed. Please try again.</p>}
 
     <form className="wp-filter-bar md:grid-cols-2 xl:grid-cols-6" aria-label="Attendance filters">
