@@ -5,7 +5,7 @@ import { redirect } from 'next/navigation';
 import { revalidatePath } from 'next/cache';
 import { prisma } from '@/lib/db/prisma';
 import { requireEmailAdministrator } from './authorization';
-import { beginConnection, disconnectConnection, testConnection, setSagaRecruitmentSender } from './service';
+import { beginConnection, bridgeConnection, authorizeConnection, disconnectConnection, testConnection, setSagaRecruitmentSender } from './service';
 import { EmailIntegrationError } from './google';
 import { emailMessage } from './messages';
 import { requestAuthority, publicOrigin } from '@/lib/tenant/host';
@@ -21,6 +21,16 @@ export async function connectEmailAction(): Promise<EmailFormState> {
     const workspacePath = await requestWorkspacePath(settings);
     const origin = new URL(publicOrigin()).protocol + '//' + requestAuthority(await headers()) + (workspacePath.startsWith('/saga/') ? '/saga' : '');
     ({ url } = await beginConnection(prisma, actor, proof, origin));
+    // SAGA uses a path workspace on the same public origin. Advance its
+    // state in the initiating POST to avoid replaying the one-time /start URL.
+    if (workspacePath.startsWith('/saga/')) {
+      const state = new URL(url).searchParams.get('state');
+      if (!state) throw new EmailIntegrationError('INVALID_OAUTH_STATE');
+      const publicProof = randomBytes(32).toString('base64url');
+      await bridgeConnection(prisma, state, publicProof);
+      url = await authorizeConnection(prisma, actor, state, proof);
+      (await cookies()).set(process.env.NODE_ENV === 'production' ? '__Host-workpulse_email_public' : 'workpulse_email_public', publicProof, { httpOnly: true, secure: process.env.NODE_ENV === 'production', sameSite: 'lax', path: '/', maxAge: 600 });
+    }
     (await cookies()).set(process.env.NODE_ENV === 'production' ? '__Host-workpulse_email_tenant' : 'workpulse_email_tenant', proof, { httpOnly: true, secure: process.env.NODE_ENV === 'production', sameSite: 'lax', path: '/', maxAge: 600 });
   } catch (error) { return failure(error); }
   redirect(url);
