@@ -3,7 +3,7 @@ import { notFound, redirect } from 'next/navigation';
 import { TenantLoginForm } from '@/components/auth/TenantLoginForm';
 import { TenantLogo } from '@/components/layout/TenantLogo';
 import { TenantTheme } from '@/components/layout/TenantTheme';
-import { resolveRequestTenant } from '@/lib/tenant/server';
+import { resolveRequestTenant, requestWorkspacePath } from '@/lib/tenant/server';
 import { getSession } from '@/lib/auth/session';
 import { landingPathForRole } from '@/lib/auth/routing';
 import styles from './login.module.css';
@@ -12,6 +12,7 @@ export default async function LoginPage() {
   const tenant = await resolveRequestTenant();
   if (!tenant) notFound();
   const session = await getSession();
+  const backToWorkspaceHref = await requestWorkspacePath('/');
   if (session?.organizationId === tenant.organizationId) redirect(landingPathForRole(session.role));
 
   return (
@@ -40,7 +41,7 @@ export default async function LoginPage() {
             <h2>Welcome back</h2>
             <p className={styles.formIntro}>Sign in to your organization workspace.</p>
             <TenantLoginForm />
-            <Link href="/" className={styles.backLink}>{tenant.slug === 'st-aloysius' ? 'Back to SAGA workspace' : `Back to ${tenant.displayName} workspace`}</Link>
+            <Link href={backToWorkspaceHref} className={styles.backLink}>{tenant.slug === 'st-aloysius' ? 'Back to SAGA workspace' : `Back to ${tenant.displayName} workspace`}</Link>
           </div>
         </section>
       </main>
