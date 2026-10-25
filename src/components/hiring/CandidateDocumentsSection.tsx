@@ -26,6 +26,7 @@ import {
   updateRecruitmentDocumentStatusAction,
   uploadRecruitmentDocumentAction,
   initializeRecruitmentDocumentsAction,
+  requestRecruitmentDocumentAction,
 } from '@/features/hiring/recruitment-document-actions';
 import { areRecruitmentDocumentsSatisfied } from '@/features/hiring/saga-requirements';
 
@@ -41,6 +42,7 @@ interface RecruitmentDocItem {
   fileSize?: number | null;
   storageKey?: string | null;
   verifiedAt?: Date | string | null;
+  requestedAt?: Date | string | null;
   verifiedBy?: { name: string } | null;
 }
 
@@ -135,6 +137,18 @@ export function CandidateDocumentsSection({
   }, []);
 
   const evaluation = areRecruitmentDocumentsSatisfied(documents, documents);
+
+  const handleRequest = (documentId: string) => {
+    if (isPending) return;
+    startTransition(async () => {
+      try {
+        const result = await requestRecruitmentDocumentAction(documentId);
+        setFeedbackMessage(result.error ? { type: 'error', text: result.error } : { type: 'success', text: 'Document requested; the applicant can now upload it.' });
+      } catch {
+        setFeedbackMessage({ type: 'error', text: 'Unable to request the document.' });
+      }
+    });
+  };
 
   const handleVerify = (documentId: string) => {
     setActiveMenuDocId(null);
@@ -360,6 +374,11 @@ export function CandidateDocumentsSection({
                     <span>{badgeLabel}</span>
                   </span>
 
+                  {canManage && !doc.requestedAt && !hasFile && doc.status === RecruitmentDocumentStatus.PENDING && (
+                    <button type="button" disabled={isPending} onClick={() => handleRequest(doc.id)} className="rounded-lg border border-indigo-300 px-3 py-1.5 text-xs font-semibold text-indigo-700 disabled:opacity-50">
+                      Request from applicant
+                    </button>
+                  )}
                   {/* Primary Action Button (View or Upload) */}
                   {hasFile ? (
                     <a
