@@ -102,7 +102,11 @@ export async function getCandidatePortalData(organizationSlug: string, applicati
 
   const category = application.job.category as EmploymentCategory;
   const hiringPolicy = resolveHiringDocumentPolicy(application.job.organization, category);
-  application.recruitmentDocuments = applyDocumentPolicy(await ensureRecruitmentDocumentsExist(application.id, application.job.organizationId), hiringPolicy);
+  application.recruitmentDocuments = applyDocumentPolicy(
+    (await ensureRecruitmentDocumentsExist(application.id, application.job.organizationId))
+      .filter(doc => doc.requestedAt !== null || doc.status !== RecruitmentDocumentStatus.PENDING || Boolean(doc.storageKey)),
+    hiringPolicy
+  );
   const evaluation = areRecruitmentDocumentsSatisfied(
     application.recruitmentDocuments,
     hiringPolicy.requirements
@@ -160,6 +164,9 @@ export async function submitCandidateRecruitmentDocumentAction(
     };
   }
 
+  if (!doc.requestedAt && doc.status === RecruitmentDocumentStatus.PENDING) {
+    return { error: 'This document has not been requested by HR.' };
+  }
   // Match the portal's existing upload controls on the server as well.
   if (doc.status === RecruitmentDocumentStatus.VERIFIED || doc.status === RecruitmentDocumentStatus.NOT_APPLICABLE) {
     return { error: 'Verified or waived documents cannot be replaced. Contact HR for review.' };
