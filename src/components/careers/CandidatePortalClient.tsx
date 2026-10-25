@@ -272,6 +272,10 @@ export function CandidatePortalClient({
                 The Head of the Department has reviewed your credential submission. Certain documents could not be accepted (e.g. blurry photos, unreadable grades, or missing pages). Please inspect the reviewer notes below and re-upload clear replacements.
               </p>
             </div>
+          ) : documents.length === 0 ? (
+            <div className="rounded-2xl border border-emerald-100 bg-emerald-50/60 p-5 text-sm text-emerald-900">
+              Application received. No additional documents have been requested yet.
+            </div>
           ) : mandatoryVerified.length === mandatoryDocs.length && mandatoryDocs.length > 0 ? (
             <div className="rounded-3xl border border-emerald-200 bg-emerald-50/80 p-6 dark:border-emerald-900 dark:bg-emerald-950/40 space-y-2 shadow-xs">
               <div className="flex items-center gap-2 text-emerald-800 dark:text-emerald-300">
@@ -294,11 +298,7 @@ export function CandidatePortalClient({
             </div>
           )}
 
-          {documents.length === 0 && (
-            <p className="rounded-xl border border-slate-200 bg-white p-5 text-sm text-slate-600">
-              Your application has been received. HR will notify you if additional documents are required.
-            </p>
-          )}
+          {documents.length > 0 && (<>
           {/* Guidelines Box */}
           <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-2xs dark:border-slate-800 dark:bg-slate-900 space-y-2">
             <div className="flex items-center gap-2 text-xs font-bold text-slate-800 dark:text-slate-200">
@@ -460,6 +460,7 @@ export function CandidatePortalClient({
               })}
             </div>
           </div>
+          </>)}
         </div>
       )}
 
