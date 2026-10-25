@@ -1,0 +1,11 @@
+{
+  "name": "h3-regression",
+  "exitCode": 0,
+  "elapsedMs": 38736,
+  "checks": [
+    "H3 Attendance Foundation tests passed: 39 assertions."
+  ],
+  "errorCodes": [
+    "P0001"
+  ]
+}

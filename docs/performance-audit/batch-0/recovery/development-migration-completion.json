@@ -1,0 +1,35 @@
+{
+  "capturedAt": "2026-10-24T20:02:46.435Z",
+  "identity": {
+    "branchName": "workpulse-ess-design",
+    "branchId": "br-damp-fog-azmmxhga",
+    "endpointId": "ep-wild-mud-az8yzifu",
+    "checkpointBranchId": "br-shy-glitter-az5vqooe",
+    "pooledAndDirectSameEndpoint": true,
+    "distinctFromProtectedOriginal": true,
+    "database": "neondb",
+    "schema": "public",
+    "originalEnvSha256": "e683b25719e068642138ef2551f810634534b3a3b4565e90ce4353b039c3ae8e",
+    "endpointSha256": "8280f5dd51f766ba983085d7ffc9b51de52b23d372478d1861479c3a02b085fb",
+    "consoleMappingComplete": true
+  },
+  "appliedMigrations": [
+    "20261022000200_organization_probation_policy",
+    "20261022000300_payroll_statutory_integration",
+    "20261023000100_platform_administration",
+    "20261023000200_organization_onboarding",
+    "20261023000300_public_company_registration",
+    "20261023000400_organization_gmail_integration",
+    "20261024000100_saga_recruitment_sender",
+    "20261024000200_hr_email_delivery",
+    "20261024000300_organization_resignation_policy",
+    "20261024000400_employee_final_pay",
+    "20261024000500_ess_resignation_notice"
+  ],
+  "appliedCount": 35,
+  "preservedOriginalTables": 51,
+  "checkpointUnchanged": true,
+  "prismaClientRegenerated": true,
+  "startupSchemaVerified": true,
+  "originalEnvUnchanged": true
+}

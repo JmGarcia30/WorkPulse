@@ -1,0 +1,50 @@
+{
+  "readOnly": true,
+  "timeZone": "Asia/Manila",
+  "results": [
+    {
+      "event": {
+        "id": "cmvnh68as000bujdg1egxvzqj",
+        "employeeId": "cmtrd14400046uj4wzylbftui",
+        "direction": "TIME_OUT",
+        "occurredAt": "2026-10-25T06:57:05.212Z"
+      },
+      "attendanceDate": "2026-10-25",
+      "record": {
+        "id": "cmvnh4wbf0006ujdg4xtqwiol",
+        "attendanceStatus": "REST_DAY",
+        "firstTimeIn": "2026-10-25T06:55:58.813Z",
+        "lastTimeOut": "2026-10-25T06:57:05.212Z",
+        "timeZoneSnapshot": "Asia/Manila",
+        "scheduleAssignmentId": "cmu5mn2r80007ujmkz08ne2yg",
+        "lateGraceSeconds": 900,
+        "scheduledStartAt": null,
+        "scheduledEndAt": null,
+        "lateSeconds": null,
+        "undertimeSeconds": null
+      }
+    },
+    {
+      "event": {
+        "id": "cmvnh4usz0004ujdgpzqj0397",
+        "employeeId": "cmtrd14400046uj4wzylbftui",
+        "direction": "TIME_IN",
+        "occurredAt": "2026-10-25T06:55:58.813Z"
+      },
+      "attendanceDate": "2026-10-25",
+      "record": {
+        "id": "cmvnh4wbf0006ujdg4xtqwiol",
+        "attendanceStatus": "REST_DAY",
+        "firstTimeIn": "2026-10-25T06:55:58.813Z",
+        "lastTimeOut": "2026-10-25T06:57:05.212Z",
+        "timeZoneSnapshot": "Asia/Manila",
+        "scheduleAssignmentId": "cmu5mn2r80007ujmkz08ne2yg",
+        "lateGraceSeconds": 900,
+        "scheduledStartAt": null,
+        "scheduledEndAt": null,
+        "lateSeconds": null,
+        "undertimeSeconds": null
+      }
+    }
+  ]
+}

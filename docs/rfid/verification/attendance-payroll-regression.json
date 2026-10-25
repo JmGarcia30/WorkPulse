@@ -1,0 +1,16 @@
+{
+  "name": "attendance-payroll-regression",
+  "exitCode": 1,
+  "elapsedMs": 13780,
+  "checks": [],
+  "errorCodes": [],
+  "diagnostics": [],
+  "safeFailures": [
+    {
+      "code": "ERR_ASSERTION",
+      "phase": "Custom policy: fractional Decimal deductions, paid leave, daily/monthly rates and complete snapshots",
+      "message": "Custom policy: fractional Decimal deductions, paid leave, daily/monthly rates and complete snapshots",
+      "validation": null
+    }
+  ]
+}

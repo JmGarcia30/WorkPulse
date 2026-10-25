@@ -1,0 +1,11 @@
+{
+  "name": "build",
+  "exitCode": 0,
+  "elapsedMs": 54886,
+  "checks": [
+    "✓ Compiled successfully in 11.2s",
+    "✓ Generating static pages using 15 workers (49/49) in 5.1s",
+    "Route (app)"
+  ],
+  "errorCodes": []
+}

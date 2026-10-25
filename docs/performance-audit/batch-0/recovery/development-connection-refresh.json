@@ -1,0 +1,20 @@
+{
+  "capturedAt": "2026-10-24T20:02:28.338Z",
+  "identity": {
+    "branchName": "workpulse-ess-design",
+    "branchId": "br-damp-fog-azmmxhga",
+    "endpointId": "ep-wild-mud-az8yzifu",
+    "checkpointBranchId": "br-shy-glitter-az5vqooe",
+    "pooledAndDirectSameEndpoint": true,
+    "distinctFromProtectedOriginal": true,
+    "database": "neondb",
+    "schema": "public",
+    "originalEnvSha256": "e683b25719e068642138ef2551f810634534b3a3b4565e90ce4353b039c3ae8e",
+    "endpointSha256": "8280f5dd51f766ba983085d7ffc9b51de52b23d372478d1861479c3a02b085fb",
+    "consoleMappingComplete": true
+  },
+  "name": "development-connection-refresh",
+  "exitCode": 0,
+  "errorCodes": [],
+  "summary": []
+}

@@ -1,0 +1,39 @@
+{
+  "capturedAt": "2026-10-25T08:02:20.495Z",
+  "passed": true,
+  "tables": [
+    {
+      "table": "AttendanceEvent",
+      "unchanged": true
+    },
+    {
+      "table": "DailyAttendanceRecord",
+      "unchanged": true
+    },
+    {
+      "table": "AttendanceCorrection",
+      "unchanged": true
+    },
+    {
+      "table": "EmployeeScheduleAssignment",
+      "unchanged": true
+    },
+    {
+      "table": "WorkScheduleVersion",
+      "unchanged": true
+    },
+    {
+      "table": "OrganizationPayrollPolicy",
+      "unchanged": true
+    },
+    {
+      "table": "PayrollEntry",
+      "unchanged": true
+    },
+    {
+      "table": "PayrollStatutoryPosting",
+      "unchanged": true
+    }
+  ],
+  "originalEnvUnchanged": true
+}

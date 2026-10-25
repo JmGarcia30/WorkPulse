@@ -1,0 +1,124 @@
+{
+  "capturedAt": "2026-10-25T08:16:27.728Z",
+  "passed": false,
+  "scope": "Local compiled production server with simulated Vercel Host; NOT a hosted Vercel deployment",
+  "assertions": 14,
+  "checks": [
+    {
+      "path": "/saga/login",
+      "method": "GET",
+      "status": 404,
+      "expectedStatus": 200,
+      "passed": false,
+      "location": null
+    },
+    {
+      "path": "/platform/login",
+      "method": "GET",
+      "status": 404,
+      "expectedStatus": 200,
+      "passed": false,
+      "location": null
+    },
+    {
+      "path": "/platform",
+      "method": "GET",
+      "status": 404,
+      "expectedStatus": 307,
+      "passed": false,
+      "location": null
+    },
+    {
+      "path": "/saga/dashboard",
+      "method": "GET",
+      "status": 404,
+      "expectedStatus": 307,
+      "passed": false,
+      "location": null
+    },
+    {
+      "path": "/saga/employee",
+      "method": "GET",
+      "status": 404,
+      "expectedStatus": 307,
+      "passed": false,
+      "location": null
+    },
+    {
+      "path": "/dashboard",
+      "method": "GET",
+      "status": 404,
+      "expectedStatus": 307,
+      "passed": false,
+      "location": null
+    },
+    {
+      "path": "/saga/dashboard",
+      "method": "GET",
+      "status": 404,
+      "expectedStatus": 307,
+      "passed": false,
+      "location": null
+    },
+    {
+      "path": "/saga/attendance-kiosk",
+      "method": "GET",
+      "status": 404,
+      "expectedStatus": 200,
+      "passed": false,
+      "location": null
+    },
+    {
+      "path": "/saga/api/attendance/rfid/scan",
+      "method": "POST",
+      "status": 404,
+      "expectedStatus": 401,
+      "passed": false,
+      "location": null
+    },
+    {
+      "path": "/saga/api/attendance/rfid/kiosk",
+      "method": "POST",
+      "status": 404,
+      "expectedStatus": 403,
+      "passed": false,
+      "location": null
+    },
+    {
+      "path": "/saga/api/attendance/rfid/scan",
+      "method": "POST",
+      "status": 404,
+      "expectedStatus": 400,
+      "passed": false,
+      "location": null
+    },
+    {
+      "path": "/register",
+      "method": "GET",
+      "status": 404,
+      "expectedStatus": 200,
+      "passed": false,
+      "location": null
+    },
+    {
+      "path": "/api/email-integration/google/callback?error=access_denied",
+      "method": "GET",
+      "status": 404,
+      "expectedStatus": 400,
+      "passed": false,
+      "location": null
+    },
+    {
+      "path": "/saga/login",
+      "method": "GET",
+      "status": 404,
+      "expectedStatus": 404,
+      "passed": true,
+      "location": null
+    }
+  ],
+  "protectedTablesUnchanged": true,
+  "protectedTableCount": 11,
+  "protectedFilesUnchanged": true,
+  "databaseReadOnly": true
+}

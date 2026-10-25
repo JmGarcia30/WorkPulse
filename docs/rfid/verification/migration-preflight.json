@@ -1,0 +1,22 @@
+{
+  "capturedAt": "2026-10-25T05:43:08.639Z",
+  "state": {
+    "database": "neondb",
+    "schema": "public",
+    "branch": "br-damp-fog-azmmxhga",
+    "endpoint": "ep-wild-mud-az8yzifu",
+    "read_only": "on"
+  },
+  "migration": "20261025000100_rfid_attendance_phase1",
+  "migrationSha256": "5fe381f40eba728cfa2eae03c2b8337cb0c90726a494c07a383a4e200fbccd19",
+  "appliedMigrations": 35,
+  "pending": [
+    "20261025000100_rfid_attendance_phase1"
+  ],
+  "checkpointBranchId": "br-shy-glitter-az5vqooe",
+  "checkpointVerifiedReadOnly": true,
+  "checkpointHistoryAndDataUnchanged": true,
+  "checkpointRecovery": "Retained pre-recovery development checkpoint; replay the 11 previously verified local migrations to recover the 35-migration development baseline.",
+  "baselineTables": 68,
+  "originalEnvUnchanged": true
+}

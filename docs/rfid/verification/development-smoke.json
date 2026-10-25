@@ -1,0 +1,14 @@
+{
+  "capturedAt": "2026-10-25T06:22:41.550Z",
+  "normalSagaLogin": true,
+  "dashboardRendered": true,
+  "rfidAdminPageRendered": true,
+  "unauthorisedKioskGated": true,
+  "originalRecoveryTablesUnchanged": 51,
+  "originalRecoveryColumnsOnly": true,
+  "migrationTimeAllExistingTablesVerified": 68,
+  "publicRfidCards": 0,
+  "publicKioskSessions": 0,
+  "publicRfidAuditRows": 0,
+  "originalEnvUnchanged": true
+}

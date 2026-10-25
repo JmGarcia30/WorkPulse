@@ -12,7 +12,7 @@ function exercise(verification, missingProfile = false) {
     directory: 'verified',
     configuration() {
       if (missingProfile) throw Object.assign(Error('PROFILE_MISSING'), { code: 'PROFILE_MISSING' });
-      return { pooled: { href: 'approved-recovery-pooled' }, direct: { href: 'approved-recovery-direct' }, identity: { endpointSha256: 'approved' } };
+      return { pooled: { href: 'approved-recovery-pooled' }, direct: { href: 'approved-recovery-direct' }, profile: { SESSION_SECRET: 'local-only-session-secret-at-least-32-characters' }, environment: { ...environment, SESSION_SECRET: 'local-only-session-secret-at-least-32-characters', SMTP_HOST: '', BLOB_READ_WRITE_TOKEN: '' }, identity: { endpointSha256: 'approved', branchName: 'development', branchId: 'br-development', endpointId: 'ep-development', checkpointBranchId: null, originalEnvSha256: 'original' } };
     },
     assertOriginalUnchanged() {},
     fail(code) { throw Object.assign(Error(code), { code }); },
@@ -26,15 +26,17 @@ function exercise(verification, missingProfile = false) {
   }, { resolve: () => 'next-cli' }) });
   return { spawned, processMock, environment };
 }
-const valid = { h10Applied: true, h10ChecksumMatch: true, identity: { endpointSha256: 'approved' } };
+const valid = { startupVerified: true, h10Applied: true, h10ChecksumMatch: true, identity: { endpointSha256: 'approved', branchName: 'development', branchId: 'br-development', endpointId: 'ep-development', checkpointBranchId: null, originalEnvSha256: 'original' } };
 const good = exercise(valid);
 assert.equal(good.spawned.options.env.DATABASE_URL, 'approved-recovery-pooled');
 assert.equal(good.spawned.options.env.H10_TEST_DATABASE_URL, 'approved-recovery-direct');
-assert.equal(good.spawned.options.env.SESSION_SECRET, good.environment.SESSION_SECRET);
+assert.equal(good.spawned.options.env.SESSION_SECRET, 'local-only-session-secret-at-least-32-characters');
+assert.equal(good.spawned.options.env.SMTP_HOST, '');
+assert.equal(good.spawned.options.env.BLOB_READ_WRITE_TOKEN, '');
 assert.equal(good.environment.DATABASE_URL, 'protected-original');
 assert.deepEqual(Array.from(good.spawned.args), ['next-cli', 'dev', '--webpack', '--port', '3000']);
-console.log(`PASS ${++checks}: inherited production URLs are overridden only in the child; session and CLI arguments are preserved`);
-for (const proof of [{ ...valid, h10Applied: false }, { ...valid, h10ChecksumMatch: false }, { ...valid, identity: { endpointSha256: 'other' } }]) {
+console.log(`PASS ${++checks}: child uses recovery URLs and local session, disables integrations, and preserves CLI arguments`);
+for (const proof of [{ ...valid, startupVerified: false }, { ...valid, h10Applied: false }, { ...valid, h10ChecksumMatch: false }, { ...valid, identity: { ...valid.identity, endpointSha256: 'other' } }, { ...valid, identity: { ...valid.identity, branchId: 'br-other' } }, { ...valid, missingColumns: ['Organization.finalPayPolicy'] }, { ...valid, pendingMigrations: ['unreviewed'] }]) {
   const blocked = exercise(proof);
   assert.equal(blocked.spawned, null); assert.equal(blocked.processMock.exitCode, 1);
   console.log(`PASS ${++checks}: unverified recovery configuration cannot launch or fall back to production`);

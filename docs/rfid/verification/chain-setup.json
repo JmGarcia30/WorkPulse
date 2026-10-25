@@ -1,0 +1,9 @@
+{
+  "name": "chain-setup",
+  "exitCode": 0,
+  "elapsedMs": 22580,
+  "checks": [
+    "CHAIN PASS 1: copied SAGA schedule and reviewed payroll setup complete"
+  ],
+  "errorCodes": []
+}

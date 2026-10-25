@@ -1,0 +1,10 @@
+{
+  "capturedAt": "2026-10-25T05:43:38.878Z",
+  "branchName": "workpulse-ess-design",
+  "branchId": "br-damp-fog-azmmxhga",
+  "migration": "20261025000100_rfid_attendance_phase1",
+  "sha256": "5fe381f40eba728cfa2eae03c2b8337cb0c90726a494c07a383a4e200fbccd19",
+  "appliedMigrations": 36,
+  "existingTablesUnchanged": 68,
+  "originalEnvUnchanged": true
+}

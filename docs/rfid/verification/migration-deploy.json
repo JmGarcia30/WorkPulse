@@ -1,0 +1,10 @@
+{
+  "name": "migration-deploy",
+  "exitCode": 0,
+  "elapsedMs": 8262,
+  "checks": [
+    "Applying migration `20261025000100_rfid_attendance_phase1`",
+    "All migrations have been successfully applied."
+  ],
+  "errorCodes": []
+}

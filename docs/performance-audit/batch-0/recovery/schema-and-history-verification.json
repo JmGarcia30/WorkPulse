@@ -1,19 +1,19 @@
 {
-  "capturedAt": "2026-10-17T15:33:19.150Z",
+  "capturedAt": "2026-10-24T20:02:30.376Z",
   "identity": {
-    "branchName": "workpulse-batch0-recovery",
-    "branchId": "br-broad-forest-az55xwfe",
-    "endpointId": "ep-bitter-queen-azfwx70v",
-    "checkpointBranchId": null,
+    "branchName": "workpulse-ess-design",
+    "branchId": "br-damp-fog-azmmxhga",
+    "endpointId": "ep-wild-mud-az8yzifu",
+    "checkpointBranchId": "br-shy-glitter-az5vqooe",
     "pooledAndDirectSameEndpoint": true,
     "distinctFromProtectedOriginal": true,
     "database": "neondb",
     "schema": "public",
-    "originalEnvSha256": "eefb1ccb8aad1895fef4d6a154efce261d3c26b00692265aba855e0be0c1d523",
-    "endpointSha256": "54e42c8d8591f1c8ee24b89396a4c92e661e1c12df3d826102d7614f50568931",
+    "originalEnvSha256": "e683b25719e068642138ef2551f810634534b3a3b4565e90ce4353b039c3ae8e",
+    "endpointSha256": "8280f5dd51f766ba983085d7ffc9b51de52b23d372478d1861479c3a02b085fb",
     "consoleMappingComplete": true
   },
-  "appliedCount": 22,
+  "appliedCount": 35,
   "h10Applied": true,
   "h10ChecksumMatch": true,
   "missingColumns": [],
@@ -36,6 +36,12 @@
     {
       "proname": "SeparationAudit_server_time",
       "proconfig": null
+    },
+    {
+      "proname": "SeparationCase_preserve_employee_notice",
+      "proconfig": [
+        "search_path=\"$user\", public"
+      ]
     },
     {
       "proname": "SeparationCase_protect_final_state",
@@ -412,6 +418,22 @@
     {
       "conname": "ProbationRecord_lifecycle_state_check",
       "convalidated": true
+    },
+    {
+      "conname": "EmployeeSeparationCase_submissionSource_not_null",
+      "convalidated": true
+    },
+    {
+      "conname": "EmployeeSeparationCase_acknowledgedById_organizationId_fkey",
+      "convalidated": true
+    },
+    {
+      "conname": "SeparationCase_notice_source",
+      "convalidated": true
+    },
+    {
+      "conname": "SeparationCase_acknowledgment_documented",
+      "convalidated": true
     }
   ],
   "criticalIndexes": [
@@ -437,7 +459,10 @@
       "indexdef": "CREATE UNIQUE INDEX \"EmployeeSeparationCase_one_active_employee\" ON public.\"EmployeeSeparationCase\" USING btree (\"organizationId\", \"employeeId\") WHERE (status = ANY (ARRAY['DRAFT'::\"SeparationCaseStatus\", 'IN_PROGRESS'::\"SeparationCaseStatus\", 'READY_FOR_FINAL_REVIEW'::\"SeparationCaseStatus\", 'APPROVED_PENDING_EFFECTIVE'::\"SeparationCaseStatus\"]))"
     }
   ],
-  "protectedTablesCompared": 46,
+  "protectedTablesCompared": 0,
   "changedProtectedTables": [],
-  "originalEnvUnchanged": true
+  "originalEnvUnchanged": true,
+  "protectedDataComparison": "Not performed: read-only startup verification; historical baseline belongs to the previous recovery branch.",
+  "pendingMigrations": [],
+  "startupVerified": true
 }

@@ -1,0 +1,87 @@
+{
+  "capturedAt": "2026-10-25T08:33:21.027Z",
+  "buildId": "6TMvrmctIVmL-h6ZZhfyg",
+  "databaseBranch": "workpulse-ess-design",
+  "staticTargetVerified": true,
+  "distinctFromProtectedOriginal": true,
+  "productionDatabaseAccessed": false,
+  "preflight": [
+    {
+      "kind": "pooled",
+      "connected": true,
+      "readOnly": true,
+      "developmentBranchVerified": true
+    },
+    {
+      "kind": "direct",
+      "connected": true,
+      "readOnly": true,
+      "developmentBranchVerified": true
+    }
+  ],
+  "checks": [
+    {
+      "label": "Existing SAGA account normal password login",
+      "status": 303,
+      "expected": 303,
+      "passed": true
+    },
+    {
+      "label": "Authenticated SAGA login resolves current tenant session",
+      "status": 307,
+      "expected": 307,
+      "passed": true
+    },
+    {
+      "label": "Tenant session cannot authenticate as Platform Admin",
+      "status": 307,
+      "expected": 307,
+      "passed": true
+    },
+    {
+      "label": "Cross-host tenant spoof rejected",
+      "status": 404,
+      "expected": 404,
+      "passed": true
+    },
+    {
+      "label": "SAGA logout clears production cookie and preserves login path",
+      "status": 303,
+      "expected": 303,
+      "passed": true
+    },
+    {
+      "label": "Anonymous dashboard after logout",
+      "status": 307,
+      "expected": 307,
+      "passed": true
+    }
+  ],
+  "migrations": 36,
+  "existingAccountRole": "ORGANIZATION_ADMIN",
+  "existingUserCountUnchanged": true,
+  "datasourceGuards": [
+    {
+      "authorizedDevelopmentOnly": true,
+      "readOnly": true,
+      "runtimeEnvironment": "production",
+      "expectedRoutingEnvironment": true
+    },
+    {
+      "authorizedDevelopmentOnly": true,
+      "readOnly": true,
+      "runtimeEnvironment": "production",
+      "expectedRoutingEnvironment": true
+    },
+    {
+      "authorizedDevelopmentOnly": true,
+      "readOnly": true,
+      "runtimeEnvironment": "production",
+      "expectedRoutingEnvironment": true
+    }
+  ],
+  "serverDiagnostics": [],
+  "protectedFilesUnchanged": true,
+  "databaseReadOnlyEnforced": true,
+  "passed": true
+}

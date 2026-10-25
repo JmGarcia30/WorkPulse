@@ -9,7 +9,7 @@ const mode=process.argv[2]||'verify';
 const prior=JSON.parse(fs.readFileSync(path.join(helper.directory,'connection-verification.json')));
 if(prior.endpointSha256!==config.identity.endpointSha256||prior.originalEnvSha256!==config.identity.originalEnvSha256)helper.fail('VERIFIED_TARGET_CHANGED');
 const authorization={branch:'workpulse-batch0-recovery',basis:'User confirmed in Neon Console that the configured endpoint is a separate child of production and authorized migration/regressions; user confirmed disposal/recreation from production.',fullBranchId:config.identity.branchId,branchIdRequiredForSqlConnection:false,recreation:'Create a replacement disposable child from the intact production parent via the already-used Console workflow. This recreates a testing dataset; it is not an exact-point production restore.',originalEndpointNeverSelected:true};
-helper.save('authorization-and-recreation',authorization);
+if (mode !== 'verify-startup') helper.save('authorization-and-recreation',authorization);
 const environment={...config.environment,DATABASE_URL:config.direct.href,H10_TEST_DATABASE_URL:config.direct.href,NODE_ENV:'test'};
 const expected=['20261017090000_h10_1_exit_clearance','20261017120000_h10_2_final_separation'];
 async function run(name,args,env=environment){
@@ -24,8 +24,10 @@ async function run(name,args,env=environment){
   helper.assertOriginalUnchanged(config);return result;
 }
 async function history(db){return db.$queryRaw`SELECT migration_name,checksum,finished_at IS NOT NULL AS finished,rolled_back_at IS NOT NULL AS rolled_back FROM "_prisma_migrations" ORDER BY migration_name,started_at`;}
-async function verify(db){
+async function verify(db, compareProtectedData=true){
   const migrations=await history(db);
+  const localMigrations=fs.readdirSync('prisma/migrations',{withFileTypes:true}).filter(e=>e.isDirectory()&&fs.existsSync('prisma/migrations/'+e.name+'/migration.sql')).map(e=>e.name);
+  const pendingMigrations=localMigrations.filter(name=>!migrations.some(m=>m.migration_name===name&&m.finished&&!m.rolled_back));
   const h10ChecksumMatch=expected.every(name=>{const text=fs.readFileSync('prisma/migrations/'+name+'/migration.sql','utf8');const hashes=[helper.digest(Buffer.from(text)),helper.digest(Buffer.from(text.replace(/\r\n/g,'\n'))),helper.digest(Buffer.from(text.replace(/\r?\n/g,'\r\n')))];return migrations.some(m=>m.migration_name===name&&m.finished&&!m.rolled_back&&hashes.includes(m.checksum));});
   const columns=await db.$queryRaw`SELECT table_name,column_name FROM information_schema.columns WHERE table_schema='public'`;
   const columnSet=new Set(columns.map(c=>c.table_name+'.'+c.column_name));
@@ -41,12 +43,15 @@ async function verify(db){
   const criticalIndexes=await db.$queryRaw`SELECT indexname,indexdef FROM pg_indexes WHERE schemaname='public' AND indexname IN ('User_id_organizationId_key','Employee_id_organizationId_key','ProbationRecord_closedBySeparationCaseId_idx','EmployeeSeparationCase_one_active_employee')`;
   const index=await db.$queryRaw`SELECT indexdef FROM pg_indexes WHERE schemaname='public' AND indexname='EmployeeSeparationCase_one_active_employee'`;
   const beforeFile=path.join(helper.directory,'protected-data-before.json');
-  const before=JSON.parse(fs.readFileSync(beforeFile));
-  const after=await helper.fingerprints(db,before.columns);
+  const before=compareProtectedData ? JSON.parse(fs.readFileSync(beforeFile)) : {columns:[],tables:[]};
+  const after=compareProtectedData ? await helper.fingerprints(db,before.columns) : null;
   const changedTables=before.tables.filter(t=>JSON.stringify(t)!==JSON.stringify(after.tables.find(a=>a.table===t.table))).map(t=>t.table);
   const result={capturedAt:new Date().toISOString(),identity:config.identity,appliedCount:migrations.filter(m=>m.finished&&!m.rolled_back).length,h10Applied:expected.every(n=>migrations.some(m=>m.migration_name===n&&m.finished&&!m.rolled_back)),h10ChecksumMatch,missingColumns,missingEnumValues,expectedTriggers:names.length,missingTriggers,triggerFunctions,constraints,criticalIndexes,index,protectedTablesCompared:before.tables.length,changedProtectedTables:changedTables,originalEnvUnchanged:true};
-  helper.save('schema-and-history-verification',result);helper.save('protected-data-after',after);
-  if(!result.h10Applied||!h10ChecksumMatch||result.missingColumns.length||missingEnumValues.length||result.missingTriggers.length||criticalIndexes.length!==4||constraints.some(c=>!c.convalidated)||changedTables.length||!index[0]?.indexdef.includes('APPROVED_PENDING_EFFECTIVE'))helper.fail('POST_MIGRATION_VERIFICATION_FAILED');
+  if (!compareProtectedData) result.protectedDataComparison = 'Not performed: read-only startup verification; historical baseline belongs to the previous recovery branch.';
+  result.pendingMigrations=pendingMigrations;
+  result.startupVerified=result.h10Applied&&h10ChecksumMatch&&!missingColumns.length&&!missingEnumValues.length&&!missingTriggers.length&&criticalIndexes.length===4&&!constraints.some(c=>!c.convalidated)&&!changedTables.length&&!!index[0]?.indexdef.includes('APPROVED_PENDING_EFFECTIVE')&&!pendingMigrations.length&&!migrations.some(m=>!m.finished&&!m.rolled_back);
+  helper.save('schema-and-history-verification',result);if(compareProtectedData)helper.save('protected-data-after',after);
+  if(!result.startupVerified)helper.fail('POST_MIGRATION_VERIFICATION_FAILED');
   console.log(JSON.stringify({verification:'PASS',appliedCount:result.appliedCount,missingColumns:0,enabledH10Triggers:names.length,protectedTablesUnchanged:before.tables.length}));return result;
 }
 async function main(){
@@ -63,7 +68,8 @@ async function main(){
       const result=await run('migration-deploy',['node_modules/prisma/build/index.js','migrate','deploy','--schema','prisma/schema.prisma']);
       if(result.exitCode!==0)helper.fail('MIGRATION_DEPLOY_FAILED');
       await verify(db);
-    }else if(mode==='verify'){await verify(db);}
+    }else if(mode==='verify-startup'){await verify(db,false);}
+    else if(mode==='verify'){await verify(db);}
     else if(mode==='regressions'){
       const npmCli=path.join(path.dirname(process.execPath),'node_modules/npm/bin/npm-cli.js');
       if(!fs.existsSync(npmCli))helper.fail('NPM_CLI_NOT_FOUND');

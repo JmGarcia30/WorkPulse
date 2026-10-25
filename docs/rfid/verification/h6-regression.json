@@ -1,0 +1,33 @@
+{
+  "name": "h6-regression",
+  "exitCode": 1,
+  "elapsedMs": 13440,
+  "checks": [
+    "PASS 1: monthly rate resolves for an exact calendar-month period",
+    "PASS 2: non-deterministic monthly period fails with SETUP_REQUIRED",
+    "PASS 3: HR Admin can create compensation",
+    "PASS 4: Organization Admin can create compensation",
+    "PASS 5: Hiring Manager is denied",
+    "PASS 6: Employee is denied",
+    "PASS 7: employee must belong to organization",
+    "PASS 8: cross-tenant compensation access is denied",
+    "PASS 9: invalid compensation rate is rejected",
+    "PASS 10: invalid effective dates are rejected",
+    "PASS 11: overlapping compensation is rejected",
+    "PASS 12: payroll period creation works with DRAFT status",
+    "PASS 13: invalid payroll period dates are rejected",
+    "PASS 14: cross-tenant payroll period access is denied",
+    "PASS 15: payroll data belongs to its organization",
+    "PASS 16: overlapping payroll periods are rejected",
+    "PASS 17: Hiring Manager cannot generate payroll",
+    "PASS 18: cross-tenant payroll generation is blocked"
+  ],
+  "errorCodes": [],
+  "diagnostics": [
+    "Error: FAIL: generation creates eligible entries and reports missing compensation safely",
+    "    at ok (G:\\CAPSTONE\\WorkPulse\\scripts\\test-h6-payroll-foundation.ts:11:77)",
+    "    at prisma.$transaction.timeout (G:\\CAPSTONE\\WorkPulse\\scripts\\test-h6-payroll-foundation.ts:105:7)",
+    "    at async main (G:\\CAPSTONE\\WorkPulse\\scripts\\test-h6-payroll-foundation.ts:35:5)"
+  ],
+  "safeFailures": []
+}

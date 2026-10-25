@@ -1,0 +1,332 @@
+{
+  "capturedAt": "2026-10-25T07:54:00.449Z",
+  "isolatedSchema": true,
+  "testClockOnly": true,
+  "assertions": 42,
+  "failed": 0,
+  "checks": [
+    {
+      "passed": true,
+      "message": "SAGA currently has no configured company-deduction policy; no SAGA rates are invented"
+    },
+    {
+      "passed": true,
+      "message": "two September plus two October late days do not meet four in one month"
+    },
+    {
+      "passed": true,
+      "message": "three occurrences do not meet the habitual threshold"
+    },
+    {
+      "passed": true,
+      "message": "2026-09-01 RFID chooses server-time Time In in Asia/Manila"
+    },
+    {
+      "passed": true,
+      "message": "same-UUID replay and rapid new-UUID scan do not switch direction"
+    },
+    {
+      "passed": true,
+      "message": "duplicate RFID inputs preserve one Time In event"
+    },
+    {
+      "passed": true,
+      "message": "2026-09-01 RFID pair materializes attendance through the existing schedule"
+    },
+    {
+      "passed": true,
+      "message": "2026-09-01 exact lateness, grace, undertime and unpaid break are correct",
+      "detail": {
+        "actualLate": 0,
+        "actualUndertime": 0,
+        "actualWorked": 28800
+      }
+    },
+    {
+      "passed": true,
+      "message": "2026-09-02 RFID chooses server-time Time In in Asia/Manila"
+    },
+    {
+      "passed": true,
+      "message": "2026-09-02 RFID pair materializes attendance through the existing schedule"
+    },
+    {
+      "passed": true,
+      "message": "2026-09-02 exact lateness, grace, undertime and unpaid break are correct",
+      "detail": {
+        "actualLate": 0,
+        "actualUndertime": 0,
+        "actualWorked": 27900
+      }
+    },
+    {
+      "passed": true,
+      "message": "2026-09-03 RFID chooses server-time Time In in Asia/Manila"
+    },
+    {
+      "passed": true,
+      "message": "2026-09-03 RFID pair materializes attendance through the existing schedule"
+    },
+    {
+      "passed": true,
+      "message": "2026-09-03 exact lateness, grace, undertime and unpaid break are correct",
+      "detail": {
+        "actualLate": 300,
+        "actualUndertime": 1800,
+        "actualWorked": 25800
+      }
+    },
+    {
+      "passed": true,
+      "message": "2026-09-04 RFID chooses server-time Time In in Asia/Manila"
+    },
+    {
+      "passed": true,
+      "message": "2026-09-04 RFID pair materializes attendance through the existing schedule"
+    },
+    {
+      "passed": true,
+      "message": "2026-09-04 exact lateness, grace, undertime and unpaid break are correct",
+      "detail": {
+        "actualLate": 60,
+        "actualUndertime": 0,
+        "actualWorked": 27840
+      }
+    },
+    {
+      "passed": true,
+      "message": "2026-09-07 RFID chooses server-time Time In in Asia/Manila"
+    },
+    {
+      "passed": true,
+      "message": "2026-09-07 RFID pair materializes attendance through the existing schedule"
+    },
+    {
+      "passed": true,
+      "message": "2026-09-07 exact lateness, grace, undertime and unpaid break are correct",
+      "detail": {
+        "actualLate": 120,
+        "actualUndertime": 0,
+        "actualWorked": 27780
+      }
+    },
+    {
+      "passed": true,
+      "message": "2026-09-08 RFID chooses server-time Time In in Asia/Manila"
+    },
+    {
+      "passed": true,
+      "message": "2026-09-08 RFID pair materializes attendance through the existing schedule"
+    },
+    {
+      "passed": true,
+      "message": "2026-09-08 exact lateness, grace, undertime and unpaid break are correct",
+      "detail": {
+        "actualLate": 180,
+        "actualUndertime": 0,
+        "actualWorked": 27720
+      }
+    },
+    {
+      "passed": true,
+      "message": "zero grace counts 20 late minutes and records overtime without inventing overtime pay"
+    },
+    {
+      "passed": true,
+      "message": "no-scan workday is not marked absent before schedule end"
+    },
+    {
+      "passed": true,
+      "message": "no-scan workday becomes absent after schedule end"
+    },
+    {
+      "passed": true,
+      "message": "scheduled rest day is not an absence"
+    },
+    {
+      "passed": true,
+      "message": "four late occurrences in September trigger SAGA HR review only"
+    },
+    {
+      "passed": true,
+      "message": "RFID → assigned schedule → evaluated month → reviewed statutory payroll succeeds",
+      "detail": []
+    },
+    {
+      "passed": true,
+      "message": "payroll reads the exact materialized daily totals, including 11 late minutes"
+    },
+    {
+      "passed": true,
+      "message": "only the authorized fixture policy applies; absence uses its derived daily rate and NONE rules charge zero"
+    },
+    {
+      "passed": true,
+      "message": "unchanged attendance and policy can pass payroll review"
+    },
+    {
+      "passed": true,
+      "message": "payroll review rejects changed daily attendance instead of finalizing stale deductions",
+      "detail": [
+        {
+          "employeeId": "cmvnizsj00009ujf8m9h9jlu2",
+          "employeeNumber": "2B-mvnizrkc-xkswn7",
+          "employeeName": "Payroll mvnizrkc-xkswn7",
+          "kind": "SETUP_REQUIRED",
+          "message": "Attendance calculation inputs changed or the snapshot lacks attendance evidence. Review and explicitly recalculate payroll before finalization."
+        }
+      ]
+    },
+    {
+      "passed": true,
+      "message": "stale attendance blocks finalization without changing the existing entry"
+    },
+    {
+      "passed": true,
+      "message": "missing schedule retains RFID evidence but never invents lateness or absence"
+    },
+    {
+      "passed": true,
+      "message": "attendance-based payroll is blocked on NO_SCHEDULE records",
+      "detail": {
+        "createdCount": 0,
+        "existingCount": 0,
+        "setupErrors": [
+          {
+            "employeeId": "cmvnj3i48006pujf8gvuli6z1",
+            "employeeNumber": "2B-mvnj3haa-0lapzj",
+            "employeeName": "Payroll mvnj3haa-0lapzj",
+            "code": "SETUP_REQUIRED",
+            "message": "Work schedule is missing for 1 attendance day(s). Assign the schedule and evaluate attendance before payroll."
+          }
+        ]
+      }
+    },
+    {
+      "passed": true,
+      "message": "attendance-based payroll rejects OPEN/future workdays",
+      "detail": {
+        "createdCount": 0,
+        "existingCount": 0,
+        "setupErrors": [
+          {
+            "employeeId": "cmvnj54mk00aaujf8qo5j7t7w",
+            "employeeNumber": "2B-mvnj54bx-cjdwu6",
+            "employeeName": "Payroll mvnj54bx-cjdwu6",
+            "code": "SETUP_REQUIRED",
+            "message": "Attendance is unresolved for 22 day(s) (OPEN/INCOMPLETE). Complete or review attendance before payroll."
+          }
+        ]
+      }
+    },
+    {
+      "passed": true,
+      "message": "missing Time Out becomes INCOMPLETE after day end"
+    },
+    {
+      "passed": true,
+      "message": "attendance-based payroll rejects INCOMPLETE RFID days",
+      "detail": {
+        "createdCount": 0,
+        "existingCount": 0,
+        "setupErrors": [
+          {
+            "employeeId": "cmvnj54mk00aaujf8qo5j7t7w",
+            "employeeNumber": "2B-mvnj54bx-cjdwu6",
+            "employeeName": "Payroll mvnj54bx-cjdwu6",
+            "code": "SETUP_REQUIRED",
+            "message": "Attendance is unresolved for 1 day(s) (OPEN/INCOMPLETE). Complete or review attendance before payroll."
+          }
+        ]
+      }
+    },
+    {
+      "passed": true,
+      "message": "no configured policy means zero company deductions, not invented SAGA rates"
+    },
+    {
+      "passed": true,
+      "message": "missing monetary rate is rejected rather than invented"
+    },
+    {
+      "passed": true,
+      "message": "legacy-style fixture without statutory setup fails with SETUP_REQUIRED"
+    }
+  ],
+  "scenarios": [
+    {
+      "day": "2026-09-01",
+      "in": "2026-09-01T00:00:00.000Z",
+      "out": "2026-09-01T09:00:00.000Z",
+      "lateSeconds": 0,
+      "undertimeSeconds": 0,
+      "workedSeconds": 28800
+    },
+    {
+      "day": "2026-09-02",
+      "in": "2026-09-02T00:15:00.000Z",
+      "out": "2026-09-02T09:00:00.000Z",
+      "lateSeconds": 0,
+      "undertimeSeconds": 0,
+      "workedSeconds": 27900
+    },
+    {
+      "day": "2026-09-03",
+      "in": "2026-09-03T00:20:00.000Z",
+      "out": "2026-09-03T08:30:00.000Z",
+      "lateSeconds": 300,
+      "undertimeSeconds": 1800,
+      "workedSeconds": 25800
+    },
+    {
+      "day": "2026-09-04",
+      "in": "2026-09-04T00:16:00.000Z",
+      "out": "2026-09-04T09:00:00.000Z",
+      "lateSeconds": 60,
+      "undertimeSeconds": 0,
+      "workedSeconds": 27840
+    },
+    {
+      "day": "2026-09-07",
+      "in": "2026-09-07T00:17:00.000Z",
+      "out": "2026-09-07T09:00:00.000Z",
+      "lateSeconds": 120,
+      "undertimeSeconds": 0,
+      "workedSeconds": 27780
+    },
+    {
+      "day": "2026-09-08",
+      "in": "2026-09-08T00:18:00.000Z",
+      "out": "2026-09-08T09:00:00.000Z",
+      "lateSeconds": 180,
+      "undertimeSeconds": 0,
+      "workedSeconds": 27720
+    },
+    {
+      "payroll": {
+        "summary": {
+          "absentDays": 16,
+          "lateSeconds": 660,
+          "presentDays": 6,
+          "statusCounts": {
+            "OPEN": 0,
+            "ABSENT": 16,
+            "PRESENT": 6,
+            "REST_DAY": 8,
+            "INCOMPLETE": 0,
+            "NO_SCHEDULE": 0
+          },
+          "totalRecords": 30,
+          "lateOccurrences": 4,
+          "approvedLeaveDays": 0,
+          "scheduledWorkdays": 22
+        },
+        "configuredRule": "DAILY_RATE_PER_ABSENT_DAY",
+        "derivedAbsenceAmount": "25454.55",
+        "lateRule": "NONE",
+        "undertimeRule": "NONE",
+        "source": "Synthetic authorized policy only; no SAGA policy or rate created"
+      }
+    }
+  ]
+}

@@ -20,17 +20,19 @@ function configuration() {
   if ((pooled.searchParams.get('schema')||'public')!=='public' || (direct.searchParams.get('schema')||'public')!=='public') fail('UNEXPECTED_TARGET_SCHEMA');
   if (!pooled.hostname.includes('-pooler.') || direct.hostname.includes('-pooler.')) fail('UNEXPECTED_CONNECTION_TYPES');
   const metadata = {
+    branchName: profile.WORKPULSE_TEST_NEON_BRANCH_NAME?.trim() || null,
     branchId: /^br-[a-z0-9-]+$/.test(profile.WORKPULSE_TEST_NEON_BRANCH_ID||'') ? profile.WORKPULSE_TEST_NEON_BRANCH_ID : null,
     endpointId: /^ep-[a-z0-9-]+$/.test(profile.WORKPULSE_TEST_NEON_ENDPOINT_ID||'') ? profile.WORKPULSE_TEST_NEON_ENDPOINT_ID : normalize(pooled).split('.')[0],
     checkpointBranchId: /^br-[a-z0-9-]+$/.test(profile.WORKPULSE_TEST_NEON_CHECKPOINT_BRANCH_ID||'') ? profile.WORKPULSE_TEST_NEON_CHECKPOINT_BRANCH_ID : null,
   };
+  if (!metadata.branchName || !metadata.branchId) fail('MISSING_TEST_BRANCH_IDENTITY');
   if (metadata.endpointId && normalize(pooled).split('.')[0]!==metadata.endpointId) fail('CONSOLE_ENDPOINT_MISMATCH');
   const environment = { ...process.env, ...profile, DATABASE_URL:pooled.href, H10_TEST_DATABASE_URL:direct.href,
     SESSION_SECRET: profile.SESSION_SECRET?.length>=32 ? profile.SESSION_SECRET : randomBytes(48).toString('hex'),
     GMAIL_USER:'',GMAIL_APP_PASSWORD:'',SMTP_USER:'',SMTP_PASSWORD:'',SMTP_HOST:'',BLOB_READ_WRITE_TOKEN:'',GOOGLE_AI_API_KEY:'',VERCEL:'0',
     PLATFORM_ROOT_DOMAIN:'localhost:3000',PLATFORM_PUBLIC_ORIGIN:'http://localhost:3000',NEXT_TELEMETRY_DISABLED:'1' };
   delete environment.PRISMA_SCHEMA_DISABLE_ADVISORY_LOCK;
-  const identity = {branchName:'workpulse-batch0-recovery',...metadata,pooledAndDirectSameEndpoint:true,distinctFromProtectedOriginal:true,database:pooled.pathname.slice(1),schema:'public',originalEnvSha256:digest(originalBytes),endpointSha256:digest(normalize(pooled)),consoleMappingComplete:!!(metadata.branchId&&metadata.endpointId)};
+  const identity = {...metadata,pooledAndDirectSameEndpoint:true,distinctFromProtectedOriginal:true,database:pooled.pathname.slice(1),schema:'public',originalEnvSha256:digest(originalBytes),endpointSha256:digest(normalize(pooled)),consoleMappingComplete:!!(metadata.branchId&&metadata.endpointId)};
   return {profile,pooled,direct,environment,identity};
 }
 function readOnly(url) {const result=new URL(url);result.searchParams.set('options',`${result.searchParams.get('options')||''} -c default_transaction_read_only=on`.trim());return result.href;}
@@ -43,8 +45,10 @@ async function inspect() {
   for(const [label,url] of [['pooled',config.pooled],['direct',config.direct]]) {
     const db=new PrismaClient({datasources:{db:{url:readOnly(url)}},log:[]});
     try {
-      const state=await db.$queryRaw`SELECT current_database() AS database,current_schema() AS schema,current_setting('default_transaction_read_only') AS read_only`;
+      const state=await db.$queryRaw`SELECT current_database() AS database,current_schema() AS schema,current_setting('default_transaction_read_only') AS read_only,current_setting('neon.branch_id',true) AS branch_id,current_setting('neon.endpoint_id',true) AS endpoint_id`;
       if(state[0].database!==config.identity.database || state[0].schema!=='public' || state[0].read_only!=='on') fail('LIVE_TARGET_STATE_MISMATCH');
+      if (state[0].branch_id && state[0].branch_id !== config.identity.branchId) fail('LIVE_BRANCH_ID_MISMATCH');
+      if (state[0].endpoint_id && state[0].endpoint_id !== config.identity.endpointId) fail('LIVE_ENDPOINT_ID_MISMATCH');
       const migrations=await db.$queryRaw`SELECT migration_name,checksum,finished_at IS NOT NULL AS finished,rolled_back_at IS NOT NULL AS rolled_back FROM "_prisma_migrations" ORDER BY migration_name,started_at`;
       connections.push({label,state:state[0],migrations});
     } finally {await db.$disconnect();}

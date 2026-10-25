@@ -1,0 +1,9 @@
+{
+  "check": "Single follow-up diagnostic for local production-mode GET /saga/login HTTP 500",
+  "status": "BLOCKED",
+  "errorType": "PrismaClientInitializationError",
+  "rootCauseOfOriginal500Confirmed": false,
+  "furtherRetriesAttempted": false,
+  "productionAccessed": false,
+  "databaseWritesAttempted": false
+}

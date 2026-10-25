@@ -1,0 +1,7 @@
+{
+  "migration": "20261025000100_rfid_attendance_phase1",
+  "sha256": "5fe381f40eba728cfa2eae03c2b8337cb0c90726a494c07a383a4e200fbccd19",
+  "review": "Four new tables only; no existing table or data changes. Partial unique indexes enforce active card and employee uniqueness; composite foreign keys enforce tenants; append-only audit triggers apply only to the new audit table.",
+  "authorization": "User authorized additive RFID migration on workpulse-ess-design only after safety and checkpoint verification.",
+  "checkpoint": "Read-only verification of retained development checkpoint, its recorded history and original-column fingerprints; all 35 existing development migration checksums verified before deploy."
+}

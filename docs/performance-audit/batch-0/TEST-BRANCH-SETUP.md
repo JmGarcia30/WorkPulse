@@ -1,6 +1,77 @@
 # WorkPulse Batch 0 — disposable Neon branch setup
 
-Status: awaiting a configured testing branch and explicit authorization. No branch, connection configuration, migration or application data was changed while preparing this guide.
+## Development startup re-verification (2026-10-25)
+
+`npm run dev` now invokes `scripts/dev-recovery.cjs`, which explicitly selects
+`.env.recovery.local` and rejects stale identities or failed schema verification.
+In PowerShell with script execution disabled, use `npm.cmd run dev`.
+The original setup instructions below describe the earlier migration exercise.
+
+To refresh verification without database writes or migration authorization:
+
+```powershell
+node scripts/batch0-recovery-environment.cjs
+node scripts/execute-batch0-recovery.cjs verify-startup
+npm.cmd run dev
+```
+
+The first command checks pooled/direct connections read-only, including live Neon
+branch and endpoint IDs when exposed by the server. The branch name comes from
+the local profile; confirm its mapping in Neon Console. The second checks the
+current schema, H10 checksums, constraints, triggers and pending migrations. It
+does not replace historical protected-data baselines or migration authorization.
+
+Current profile: `workpulse-ess-design`, branch `br-damp-fog-azmmxhga`, endpoint
+`ep-wild-mud-az8yzifu`. Both connections report those IDs and `neondb/public`.
+Checkpoint `br-shy-glitter-az5vqooe`, endpoint `ep-young-salad-azvs78pp`, is a
+separate development checkpoint. Its parent mapping to the development branch
+comes from user-confirmed Console metadata; SQL does not expose parent metadata.
+Its live branch/endpoint identity, supplied pooled connection and corresponding
+direct connection passed read-only checks. Before migration, its schema, history
+and all 51 original-table fingerprints matched development exactly.
+
+The eleven reviewed migrations were applied only to development. All 35 local
+migrations are now applied, with zero pending migrations, missing columns or enum
+values. H10 checksums and all 16 H10 triggers pass. Existing records across all
+51 original tables and the checkpoint remain unchanged. Prisma Client was
+regenerated. A fresh local-only session secret was configured securely; the
+working database URLs and original `.env` were preserved. `npm.cmd run dev`
+reached Next.js Ready on port 3000 with the startup gate enabled.
+The browser smoke check passed normal password login using an existing account,
+the rendered dashboard, and actual SAGA workspace discovery form submission.
+Discovery correctly returns an already signed-in SAGA user to the dashboard.
+No fixture accounts, record updates, or record deletions were needed.
+The agent's server process required network permission to reach Neon; running
+inside the restricted sandbox alone produced database connectivity errors.
+
+The supported continuation for this eleven-migration recovery was:
+
+```powershell
+node scripts/development-database-recovery.cjs checkpoint
+node scripts/development-database-recovery.cjs migrate
+node scripts/development-database-recovery.cjs finalize
+npm.cmd run dev
+# In another terminal, while development is running:
+node scripts/verify-development-startup.cjs
+```
+
+Do not rerun checkpoint capture or migration deployment after completion.
+`finalize` is a separate process so native Prisma engine locks are released before
+Windows regenerates the client. The runner locks the authorized development
+identity, compares reviewed SQL checksums, rejects unexpected pending migrations,
+and preserves historical baselines in separate development evidence files.
+For a read-only data recheck use
+`node scripts/development-database-recovery.cjs verify-data`.
+
+See `recovery/development-checkpoint-verification.json`,
+`recovery/development-migration-completion.json`,
+`recovery/development-protected-data-after.json`, and
+`recovery/schema-and-history-verification.json` for current evidence. Browser
+startup, discovery and login results are in
+`recovery/development-startup-verification.json`.
+
+The remaining sections preserve the original Batch 0 setup procedure. Its old
+two-H10-migration assumptions do not describe the completed development recovery.
 
 ## Current setup
 

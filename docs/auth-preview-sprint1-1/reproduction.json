@@ -1,0 +1,57 @@
+{
+  "capturedAt": "2026-10-25T08:32:02.067Z",
+  "buildId": "6TMvrmctIVmL-h6ZZhfyg",
+  "databaseBranch": "workpulse-ess-design",
+  "staticTargetVerified": true,
+  "distinctFromProtectedOriginal": true,
+  "productionDatabaseAccessed": false,
+  "preflight": [
+    {
+      "kind": "pooled",
+      "connected": true,
+      "readOnly": true,
+      "developmentBranchVerified": true
+    },
+    {
+      "kind": "direct",
+      "connected": true,
+      "readOnly": true,
+      "developmentBranchVerified": true
+    }
+  ],
+  "checks": [
+    {
+      "label": "Original production-mode SAGA login reproduction",
+      "status": 200,
+      "expected": 200,
+      "passed": true
+    },
+    {
+      "label": "Existing SAGA account normal password login",
+      "status": 200,
+      "expected": 303,
+      "passed": false
+    }
+  ],
+  "original500Reproduced": false,
+  "migrations": 36,
+  "existingAccountRole": "ORGANIZATION_ADMIN",
+  "datasourceGuards": [
+    {
+      "authorizedDevelopmentOnly": true,
+      "readOnly": true,
+      "runtimeEnvironment": "production",
+      "expectedRoutingEnvironment": true
+    },
+    {
+      "authorizedDevelopmentOnly": true,
+      "readOnly": true,
+      "runtimeEnvironment": "production",
+      "expectedRoutingEnvironment": true
+    }
+  ],
+  "serverDiagnostics": [],
+  "protectedFilesUnchanged": true,
+  "databaseReadOnlyEnforced": true,
+  "passed": false
+}

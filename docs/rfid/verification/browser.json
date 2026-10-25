@@ -1,0 +1,29 @@
+{
+  "name": "browser",
+  "exitCode": 0,
+  "elapsedMs": 155731,
+  "checks": [
+    "RFID PASS 1: real HR search and scanned-card enrollment succeed",
+    "RFID PASS 2: real replacement UI deactivates the old card",
+    "RFID PASS 3: real HR deactivation and fresh enrollment succeed",
+    "RFID PASS 4: kiosk authorization issues an HttpOnly cookie and removes HR authentication",
+    "RFID PASS 5: attendance commits even when the successful HTTP confirmation is lost",
+    "RFID PASS 6: request remains valid beyond the former 20-second client deadline",
+    "RFID PASS 7: Retry Same Scan resubmits the original UUID after a committed scan",
+    "RFID PASS 8: keyboard scanner with Enter records attendance and displays employee and exact time",
+    "RFID PASS 9: reader without Enter suffix submits automatically and rapid duplicate does not toggle",
+    "RFID PASS 10: unknown and inactive card feedback restores scanner focus",
+    "RFID PASS 11: kiosk fits a mobile viewport without horizontal overflow",
+    "RFID PASS 12: network retry keeps the same UUID and at most the intended daily pair",
+    "RFID PASS 13: cross-origin API writes are rejected",
+    "RFID PASS 14: API rejects scans without a kiosk session",
+    "RFID PASS 15: copied kiosk token is refused on another tenant host",
+    "RFID PASS 16: kiosk has no hydration errors or unexpected browser exceptions",
+    "RFID PASS 17: locked kiosk token is revoked server-side",
+    "RFID PASS 18: committed scan appears in HR Employee Attendance with its Asia/Manila time and RFID source",
+    "RFID PASS 19: successful scan is intentionally included in Recent RFID Activity",
+    "RFID PASS 20: Vercel /saga HR authorization, kiosk page, and prefixed scan API work",
+    "RFID PASS 21: committed scan appears in employee self-service Attendance with the same Asia/Manila time"
+  ],
+  "errorCodes": []
+}

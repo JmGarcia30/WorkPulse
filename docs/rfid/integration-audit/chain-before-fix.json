@@ -1,0 +1,16 @@
+{
+  "name": "chain-integration",
+  "exitCode": 1,
+  "elapsedMs": 387628,
+  "checks": [],
+  "errorCodes": [],
+  "diagnostics": [
+    "CHAIN FAIL 2: two September plus two October late days do not meet four in one month",
+    "CHAIN FAIL 33: payroll review rejects changed daily attendance instead of finalizing stale deductions",
+    "CHAIN FAIL 34: stale attendance blocks finalization without changing the existing entry",
+    "CHAIN FAIL 37: attendance-based payroll rejects OPEN/future workdays",
+    "CHAIN FAIL 39: attendance-based payroll rejects INCOMPLETE RFID days",
+    "CHAIN FAILURE two September plus two October late days do not meet four in one month; payroll review rejects changed daily attendance instead of finalizing stale deductions; stale attendance blocks finalization without changing the existing entry; attendance-based payroll rejects OPEN/future workdays; attendance-based payroll rejects INCOMPLETE RFID days"
+  ],
+  "safeFailures": []
+}

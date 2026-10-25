@@ -1,0 +1,15 @@
+{
+  "inspectedAt": "2026-10-25T06:35:43.980Z",
+  "branch": "br-damp-fog-azmmxhga",
+  "employeeId": "cmtrd14400046uj4wzylbftui",
+  "employeeName": "H2 Test Non-Teaching",
+  "organizationSlug": "st-aloysius",
+  "timeZone": "Asia/Manila",
+  "activeCardAssignments": 1,
+  "attendanceEvents": 0,
+  "committedScanReceipts": 0,
+  "serverError": "P2028",
+  "transactionLimitMs": 15000,
+  "elapsedMsAtFailure": 15654,
+  "rollbackLogged": true
+}

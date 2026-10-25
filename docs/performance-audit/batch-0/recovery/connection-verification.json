@@ -1,23 +1,25 @@
 {
-  "capturedAt": "2026-10-17T08:59:51.371Z",
-  "branchName": "workpulse-batch0-recovery",
-  "branchId": null,
-  "endpointId": null,
-  "checkpointBranchId": null,
+  "capturedAt": "2026-10-24T20:02:28.319Z",
+  "branchName": "workpulse-ess-design",
+  "branchId": "br-damp-fog-azmmxhga",
+  "endpointId": "ep-wild-mud-az8yzifu",
+  "checkpointBranchId": "br-shy-glitter-az5vqooe",
   "pooledAndDirectSameEndpoint": true,
   "distinctFromProtectedOriginal": true,
   "database": "neondb",
   "schema": "public",
-  "originalEnvSha256": "eefb1ccb8aad1895fef4d6a154efce261d3c26b00692265aba855e0be0c1d523",
-  "endpointSha256": "54e42c8d8591f1c8ee24b89396a4c92e661e1c12df3d826102d7614f50568931",
-  "consoleMappingComplete": false,
+  "originalEnvSha256": "e683b25719e068642138ef2551f810634534b3a3b4565e90ce4353b039c3ae8e",
+  "endpointSha256": "8280f5dd51f766ba983085d7ffc9b51de52b23d372478d1861479c3a02b085fb",
+  "consoleMappingComplete": true,
   "connections": [
     {
       "label": "pooled",
       "state": {
         "database": "neondb",
         "schema": "public",
-        "read_only": "on"
+        "read_only": "on",
+        "branch_id": "br-damp-fog-azmmxhga",
+        "endpoint_id": "ep-wild-mud-az8yzifu"
       },
       "migrations": [
         {
@@ -143,6 +145,96 @@
         {
           "migration_name": "20260928210000_h6_3_payroll_finalization",
           "checksum": "e884e60fac32b854a67e9ab20207c397e0c6ef5a5ceb95824a6eb93e4d107d48",
+          "finished": true,
+          "rolled_back": false
+        },
+        {
+          "migration_name": "20261017090000_h10_1_exit_clearance",
+          "checksum": "ff13d527ce230b08eaa54d99a6d2c75e493a5235e34903f300f3752cb46c974a",
+          "finished": true,
+          "rolled_back": false
+        },
+        {
+          "migration_name": "20261017120000_h10_2_final_separation",
+          "checksum": "8b2cad450524f1eef19fa32c1a8756fb60eb49dec28dfafe469d294b3e041bce",
+          "finished": true,
+          "rolled_back": false
+        },
+        {
+          "migration_name": "20261021000100_candidate_access",
+          "checksum": "51c987efcad680b6e25053e795911098a42bded92d58e2b972e2bef5dd92771d",
+          "finished": true,
+          "rolled_back": false
+        },
+        {
+          "migration_name": "20261022000100_hiring_document_policy",
+          "checksum": "65980bcc8ddec87eaeedd73a43af66c81756bf871f571ddfcd97de84adaff05f",
+          "finished": true,
+          "rolled_back": false
+        },
+        {
+          "migration_name": "20261022000200_organization_probation_policy",
+          "checksum": "4de2a6ec0ed11012cc0865d267882c89d7aee6407e86425303bb7389bcb6eb71",
+          "finished": true,
+          "rolled_back": false
+        },
+        {
+          "migration_name": "20261022000300_payroll_statutory_integration",
+          "checksum": "9a7457a7e641f650b13271cd5d9fe8f06ad59afefc2d776cfbc600bf2ad4f733",
+          "finished": true,
+          "rolled_back": false
+        },
+        {
+          "migration_name": "20261023000100_platform_administration",
+          "checksum": "f4b334a536b139d885cd96da04cc0accaad5810fbd1aa4f762eef42c0ec1026b",
+          "finished": true,
+          "rolled_back": false
+        },
+        {
+          "migration_name": "20261023000200_organization_onboarding",
+          "checksum": "9abf7ed306c62b69bed3028f574ab63ddc39a0ca626934ae6c846b46f27763de",
+          "finished": true,
+          "rolled_back": false
+        },
+        {
+          "migration_name": "20261023000300_public_company_registration",
+          "checksum": "006fbae7e86ce9328bfe82ea62d6fee68a464164153f1f6423bf43fec07b6a6b",
+          "finished": true,
+          "rolled_back": false
+        },
+        {
+          "migration_name": "20261023000400_organization_gmail_integration",
+          "checksum": "32953ac24e40948185d60e5ad036a3060b80d4973689c1a677e913e12571eeeb",
+          "finished": true,
+          "rolled_back": false
+        },
+        {
+          "migration_name": "20261024000100_saga_recruitment_sender",
+          "checksum": "907196e6008c2f816db29bdc719093bad5508c8588c226a36ce71bfb07fd835a",
+          "finished": true,
+          "rolled_back": false
+        },
+        {
+          "migration_name": "20261024000200_hr_email_delivery",
+          "checksum": "b2e99192a487e5cb53288005ca636b348ee6e1c1c4cced556fdfd4fcd23cfb78",
+          "finished": true,
+          "rolled_back": false
+        },
+        {
+          "migration_name": "20261024000300_organization_resignation_policy",
+          "checksum": "91777673b2f022854f6ae4762b244bbe5e55a6bed6a694d7e7a90e43835e0475",
+          "finished": true,
+          "rolled_back": false
+        },
+        {
+          "migration_name": "20261024000400_employee_final_pay",
+          "checksum": "edc1ed0f53e0078a2a382478469559c96367ea9cf5fc9eddd681ccfa06ce0e57",
+          "finished": true,
+          "rolled_back": false
+        },
+        {
+          "migration_name": "20261024000500_ess_resignation_notice",
+          "checksum": "3bf465d11d35e8206def2af7f57dd7a6f04f4162f3f321406fb9e4d8c297f11b",
           "finished": true,
           "rolled_back": false
         }
@@ -153,7 +245,9 @@
       "state": {
         "database": "neondb",
         "schema": "public",
-        "read_only": "on"
+        "read_only": "on",
+        "branch_id": "br-damp-fog-azmmxhga",
+        "endpoint_id": "ep-wild-mud-az8yzifu"
       },
       "migrations": [
         {
@@ -279,6 +373,96 @@
         {
           "migration_name": "20260928210000_h6_3_payroll_finalization",
           "checksum": "e884e60fac32b854a67e9ab20207c397e0c6ef5a5ceb95824a6eb93e4d107d48",
+          "finished": true,
+          "rolled_back": false
+        },
+        {
+          "migration_name": "20261017090000_h10_1_exit_clearance",
+          "checksum": "ff13d527ce230b08eaa54d99a6d2c75e493a5235e34903f300f3752cb46c974a",
+          "finished": true,
+          "rolled_back": false
+        },
+        {
+          "migration_name": "20261017120000_h10_2_final_separation",
+          "checksum": "8b2cad450524f1eef19fa32c1a8756fb60eb49dec28dfafe469d294b3e041bce",
+          "finished": true,
+          "rolled_back": false
+        },
+        {
+          "migration_name": "20261021000100_candidate_access",
+          "checksum": "51c987efcad680b6e25053e795911098a42bded92d58e2b972e2bef5dd92771d",
+          "finished": true,
+          "rolled_back": false
+        },
+        {
+          "migration_name": "20261022000100_hiring_document_policy",
+          "checksum": "65980bcc8ddec87eaeedd73a43af66c81756bf871f571ddfcd97de84adaff05f",
+          "finished": true,
+          "rolled_back": false
+        },
+        {
+          "migration_name": "20261022000200_organization_probation_policy",
+          "checksum": "4de2a6ec0ed11012cc0865d267882c89d7aee6407e86425303bb7389bcb6eb71",
+          "finished": true,
+          "rolled_back": false
+        },
+        {
+          "migration_name": "20261022000300_payroll_statutory_integration",
+          "checksum": "9a7457a7e641f650b13271cd5d9fe8f06ad59afefc2d776cfbc600bf2ad4f733",
+          "finished": true,
+          "rolled_back": false
+        },
+        {
+          "migration_name": "20261023000100_platform_administration",
+          "checksum": "f4b334a536b139d885cd96da04cc0accaad5810fbd1aa4f762eef42c0ec1026b",
+          "finished": true,
+          "rolled_back": false
+        },
+        {
+          "migration_name": "20261023000200_organization_onboarding",
+          "checksum": "9abf7ed306c62b69bed3028f574ab63ddc39a0ca626934ae6c846b46f27763de",
+          "finished": true,
+          "rolled_back": false
+        },
+        {
+          "migration_name": "20261023000300_public_company_registration",
+          "checksum": "006fbae7e86ce9328bfe82ea62d6fee68a464164153f1f6423bf43fec07b6a6b",
+          "finished": true,
+          "rolled_back": false
+        },
+        {
+          "migration_name": "20261023000400_organization_gmail_integration",
+          "checksum": "32953ac24e40948185d60e5ad036a3060b80d4973689c1a677e913e12571eeeb",
+          "finished": true,
+          "rolled_back": false
+        },
+        {
+          "migration_name": "20261024000100_saga_recruitment_sender",
+          "checksum": "907196e6008c2f816db29bdc719093bad5508c8588c226a36ce71bfb07fd835a",
+          "finished": true,
+          "rolled_back": false
+        },
+        {
+          "migration_name": "20261024000200_hr_email_delivery",
+          "checksum": "b2e99192a487e5cb53288005ca636b348ee6e1c1c4cced556fdfd4fcd23cfb78",
+          "finished": true,
+          "rolled_back": false
+        },
+        {
+          "migration_name": "20261024000300_organization_resignation_policy",
+          "checksum": "91777673b2f022854f6ae4762b244bbe5e55a6bed6a694d7e7a90e43835e0475",
+          "finished": true,
+          "rolled_back": false
+        },
+        {
+          "migration_name": "20261024000400_employee_final_pay",
+          "checksum": "edc1ed0f53e0078a2a382478469559c96367ea9cf5fc9eddd681ccfa06ce0e57",
+          "finished": true,
+          "rolled_back": false
+        },
+        {
+          "migration_name": "20261024000500_ess_resignation_notice",
+          "checksum": "3bf465d11d35e8206def2af7f57dd7a6f04f4162f3f321406fb9e4d8c297f11b",
           "finished": true,
           "rolled_back": false
         }

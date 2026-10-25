@@ -1,0 +1,352 @@
+{
+  "capturedAt": "2026-10-25T07:07:11.913Z",
+  "branch": "br-damp-fog-azmmxhga",
+  "endpoint": "ep-wild-mud-az8yzifu",
+  "readOnly": true,
+  "organization": {
+    "id": "cmsnk6mt50000ujls46vs5wkb",
+    "name": "St. Aloysius Gonzaga Academy, Inc.",
+    "timeZone": "Asia/Manila"
+  },
+  "policies": [],
+  "schedules": [
+    {
+      "id": "cmtvrlr6t0003ujac23s7wt0k",
+      "version": 1,
+      "displayName": "H3 Test Regular Day Shift",
+      "lateGraceSeconds": 900,
+      "days": [
+        {
+          "isoWeekday": 1,
+          "isWorkday": true,
+          "expectedStartSecond": 28800,
+          "expectedEndSecond": 61200,
+          "breaks": [
+            {
+              "startSecond": 43200,
+              "endSecond": 46800,
+              "isPaid": false
+            }
+          ]
+        },
+        {
+          "isoWeekday": 2,
+          "isWorkday": true,
+          "expectedStartSecond": 28800,
+          "expectedEndSecond": 61200,
+          "breaks": [
+            {
+              "startSecond": 43200,
+              "endSecond": 46800,
+              "isPaid": false
+            }
+          ]
+        },
+        {
+          "isoWeekday": 3,
+          "isWorkday": true,
+          "expectedStartSecond": 28800,
+          "expectedEndSecond": 61200,
+          "breaks": [
+            {
+              "startSecond": 43200,
+              "endSecond": 46800,
+              "isPaid": false
+            }
+          ]
+        },
+        {
+          "isoWeekday": 4,
+          "isWorkday": true,
+          "expectedStartSecond": 28800,
+          "expectedEndSecond": 61200,
+          "breaks": [
+            {
+              "startSecond": 43200,
+              "endSecond": 46800,
+              "isPaid": false
+            }
+          ]
+        },
+        {
+          "isoWeekday": 5,
+          "isWorkday": true,
+          "expectedStartSecond": 28800,
+          "expectedEndSecond": 61200,
+          "breaks": [
+            {
+              "startSecond": 43200,
+              "endSecond": 46800,
+              "isPaid": false
+            }
+          ]
+        },
+        {
+          "isoWeekday": 6,
+          "isWorkday": false,
+          "expectedStartSecond": null,
+          "expectedEndSecond": null,
+          "breaks": []
+        },
+        {
+          "isoWeekday": 7,
+          "isWorkday": false,
+          "expectedStartSecond": null,
+          "expectedEndSecond": null,
+          "breaks": []
+        }
+      ]
+    },
+    {
+      "id": "cmtvrntne000jujacx56r21op",
+      "version": 1,
+      "displayName": "H3 Test Regular Day Shift",
+      "lateGraceSeconds": 0,
+      "days": [
+        {
+          "isoWeekday": 1,
+          "isWorkday": true,
+          "expectedStartSecond": 28800,
+          "expectedEndSecond": 61200,
+          "breaks": [
+            {
+              "startSecond": 43200,
+              "endSecond": 46800,
+              "isPaid": false
+            }
+          ]
+        },
+        {
+          "isoWeekday": 2,
+          "isWorkday": true,
+          "expectedStartSecond": 28800,
+          "expectedEndSecond": 61200,
+          "breaks": [
+            {
+              "startSecond": 43200,
+              "endSecond": 46800,
+              "isPaid": false
+            }
+          ]
+        },
+        {
+          "isoWeekday": 3,
+          "isWorkday": true,
+          "expectedStartSecond": 28800,
+          "expectedEndSecond": 61200,
+          "breaks": [
+            {
+              "startSecond": 43200,
+              "endSecond": 46800,
+              "isPaid": false
+            }
+          ]
+        },
+        {
+          "isoWeekday": 4,
+          "isWorkday": true,
+          "expectedStartSecond": 28800,
+          "expectedEndSecond": 61200,
+          "breaks": [
+            {
+              "startSecond": 43200,
+              "endSecond": 46800,
+              "isPaid": false
+            }
+          ]
+        },
+        {
+          "isoWeekday": 5,
+          "isWorkday": true,
+          "expectedStartSecond": 28800,
+          "expectedEndSecond": 61200,
+          "breaks": [
+            {
+              "startSecond": 43200,
+              "endSecond": 46800,
+              "isPaid": false
+            }
+          ]
+        },
+        {
+          "isoWeekday": 6,
+          "isWorkday": false,
+          "expectedStartSecond": null,
+          "expectedEndSecond": null,
+          "breaks": []
+        },
+        {
+          "isoWeekday": 7,
+          "isWorkday": false,
+          "expectedStartSecond": null,
+          "expectedEndSecond": null,
+          "breaks": []
+        }
+      ]
+    },
+    {
+      "id": "cmtvro3id000zujac8lph3661",
+      "version": 1,
+      "displayName": "H3 Test Regular Day Shift v2",
+      "lateGraceSeconds": 0,
+      "days": [
+        {
+          "isoWeekday": 1,
+          "isWorkday": true,
+          "expectedStartSecond": 28800,
+          "expectedEndSecond": 61200,
+          "breaks": [
+            {
+              "startSecond": 43200,
+              "endSecond": 46800,
+              "isPaid": false
+            }
+          ]
+        },
+        {
+          "isoWeekday": 2,
+          "isWorkday": true,
+          "expectedStartSecond": 28800,
+          "expectedEndSecond": 61200,
+          "breaks": [
+            {
+              "startSecond": 43200,
+              "endSecond": 46800,
+              "isPaid": false
+            }
+          ]
+        },
+        {
+          "isoWeekday": 3,
+          "isWorkday": true,
+          "expectedStartSecond": 28800,
+          "expectedEndSecond": 61200,
+          "breaks": [
+            {
+              "startSecond": 43200,
+              "endSecond": 46800,
+              "isPaid": false
+            }
+          ]
+        },
+        {
+          "isoWeekday": 4,
+          "isWorkday": true,
+          "expectedStartSecond": 28800,
+          "expectedEndSecond": 61200,
+          "breaks": [
+            {
+              "startSecond": 43200,
+              "endSecond": 46800,
+              "isPaid": false
+            }
+          ]
+        },
+        {
+          "isoWeekday": 5,
+          "isWorkday": true,
+          "expectedStartSecond": 28800,
+          "expectedEndSecond": 61200,
+          "breaks": [
+            {
+              "startSecond": 43200,
+              "endSecond": 46800,
+              "isPaid": false
+            }
+          ]
+        },
+        {
+          "isoWeekday": 6,
+          "isWorkday": false,
+          "expectedStartSecond": null,
+          "expectedEndSecond": null,
+          "breaks": []
+        },
+        {
+          "isoWeekday": 7,
+          "isWorkday": false,
+          "expectedStartSecond": null,
+          "expectedEndSecond": null,
+          "breaks": []
+        }
+      ]
+    }
+  ],
+  "counts": {
+    "activeEmployees": 4,
+    "activeCards": 1,
+    "rfidEvents": 2,
+    "dailyRecords": 72,
+    "statutoryInputs": 0,
+    "taxOpenings": 0
+  },
+  "populations": [
+    {
+      "_count": {
+        "_all": 13
+      },
+      "attendanceStatus": "REST_DAY"
+    },
+    {
+      "_count": {
+        "_all": 4
+      },
+      "attendanceStatus": "OPEN"
+    },
+    {
+      "_count": {
+        "_all": 29
+      },
+      "attendanceStatus": "NO_SCHEDULE"
+    },
+    {
+      "_count": {
+        "_all": 26
+      },
+      "attendanceStatus": "ABSENT"
+    }
+  ],
+  "fingerprints": [
+    {
+      "table": "AttendanceEvent",
+      "count": 2,
+      "fingerprint": "23f4a8b441555a9e2651dba0661132ae"
+    },
+    {
+      "table": "DailyAttendanceRecord",
+      "count": 78,
+      "fingerprint": "341a25c04fd706506b479295bc37b2db"
+    },
+    {
+      "table": "AttendanceCorrection",
+      "count": 0,
+      "fingerprint": "d41d8cd98f00b204e9800998ecf8427e"
+    },
+    {
+      "table": "EmployeeScheduleAssignment",
+      "count": 4,
+      "fingerprint": "fbc8cb303a15f79b62e43b174969c6b3"
+    },
+    {
+      "table": "WorkScheduleVersion",
+      "count": 4,
+      "fingerprint": "f3b4792adb9a336250028456955a03e3"
+    },
+    {
+      "table": "OrganizationPayrollPolicy",
+      "count": 0,
+      "fingerprint": "d41d8cd98f00b204e9800998ecf8427e"
+    },
+    {
+      "table": "PayrollEntry",
+      "count": 0,
+      "fingerprint": "d41d8cd98f00b204e9800998ecf8427e"
+    },
+    {
+      "table": "PayrollStatutoryPosting",
+      "count": 0,
+      "fingerprint": "d41d8cd98f00b204e9800998ecf8427e"
+    }
+  ],
+  "originalEnvUnchanged": true
+}

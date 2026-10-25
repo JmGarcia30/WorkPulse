@@ -7,24 +7,28 @@ const helper = require('./batch0-recovery-environment.cjs');
 function start() {
   const config = helper.configuration();
   const verification = JSON.parse(fs.readFileSync(path.join(helper.directory, 'schema-and-history-verification.json'), 'utf8'));
-  if (!verification.h10Applied || !verification.h10ChecksumMatch || verification.identity.endpointSha256 !== config.identity.endpointSha256) {
+  if (!verification.startupVerified || !verification.h10Applied || !verification.h10ChecksumMatch ||
+      verification.identity.endpointSha256 !== config.identity.endpointSha256 ||
+      ['branchName', 'branchId', 'endpointId', 'checkpointBranchId', 'originalEnvSha256'].some(key => verification.identity[key] !== config.identity[key]) ||
+      ['missingColumns', 'missingEnumValues', 'missingTriggers', 'pendingMigrations'].some(key => verification[key]?.length)) {
     helper.fail('UNVERIFIED_RECOVERY_TARGET');
   }
   // Process variables outrank Next's dotenv files. Override both database URLs explicitly.
-  // Keep the existing session/auth environment; never inject the audit helper's ephemeral secret.
+  // Use the local profile and disable external integrations before Next loads .env.
+  if (!config.profile.SESSION_SECRET || config.profile.SESSION_SECRET.length < 32) helper.fail('MISSING_LOCAL_SESSION_SECRET');
   const argumentsList = process.argv.slice(2);
   const portIndex = argumentsList.findIndex(value => value === '--port' || value === '-p');
   const selectedPort = portIndex >= 0 ? argumentsList[portIndex + 1] : argumentsList.find(value => value.startsWith('--port='))?.slice('--port='.length) || process.env.PORT || '3000';
   if (!/^\d{1,5}$/.test(selectedPort || '') || Number(selectedPort) < 1 || Number(selectedPort) > 65535) helper.fail('INVALID_LOCAL_PORT');
   const env = {
-    ...process.env,
+    ...config.environment,
     DATABASE_URL: config.pooled.href,
     H10_TEST_DATABASE_URL: config.direct.href,
     PLATFORM_ROOT_DOMAIN: 'localhost:' + Number(selectedPort),
     PLATFORM_PUBLIC_ORIGIN: 'http://localhost:' + Number(selectedPort),
   };
   helper.assertOriginalUnchanged(config);
-  console.log('[WorkPulse dev] Using verified disposable workpulse-batch0-recovery. Original .env unchanged.');
+  console.log('[WorkPulse dev] Using verified disposable ' + config.identity.branchName + '. Original .env unchanged.');
   const child = spawn(process.execPath, [require.resolve('next/dist/bin/next'), 'dev', '--webpack', ...process.argv.slice(2)], {
     env, stdio: 'inherit', windowsHide: true,
   });

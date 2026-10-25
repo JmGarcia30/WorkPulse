@@ -1,0 +1,129 @@
+{
+  "capturedAt": "2026-10-25T08:21:01.238Z",
+  "developmentBranch": "workpulse-ess-design",
+  "targetDistinctFromProtectedOriginal": true,
+  "readOnly": true,
+  "migrations": {
+    "applied": 36,
+    "unfinished": 0
+  },
+  "localMigrationDirectories": 36,
+  "roles": [
+    {
+      "_count": {
+        "_all": 1
+      },
+      "role": "HIRING_MANAGER"
+    },
+    {
+      "_count": {
+        "_all": 1
+      },
+      "role": "ORGANIZATION_ADMIN"
+    },
+    {
+      "_count": {
+        "_all": 3
+      },
+      "role": "EMPLOYEE"
+    },
+    {
+      "_count": {
+        "_all": 3
+      },
+      "role": "HR_ADMIN"
+    }
+  ],
+  "employeeAccountStatuses": [
+    {
+      "_count": {
+        "_all": 3
+      },
+      "status": "ACTIVE"
+    }
+  ],
+  "activePlatformAdministrators": 0,
+  "linkedVercelProject": false,
+  "environmentPresenceOnly": {
+    "DATABASE_URL": {
+      "localEnv": true,
+      "recoveryProfile": true,
+      "currentShell": true
+    },
+    "SESSION_SECRET": {
+      "localEnv": true,
+      "recoveryProfile": true,
+      "currentShell": true
+    },
+    "PLATFORM_ROOT_DOMAIN": {
+      "localEnv": false,
+      "recoveryProfile": false,
+      "currentShell": false
+    },
+    "PLATFORM_PUBLIC_ORIGIN": {
+      "localEnv": false,
+      "recoveryProfile": false,
+      "currentShell": false
+    },
+    "GOOGLE_EMAIL_CLIENT_ID": {
+      "localEnv": true,
+      "recoveryProfile": false,
+      "currentShell": true
+    },
+    "GOOGLE_EMAIL_CLIENT_SECRET": {
+      "localEnv": true,
+      "recoveryProfile": false,
+      "currentShell": true
+    },
+    "EMAIL_OAUTH_ENCRYPTION_KEY": {
+      "localEnv": true,
+      "recoveryProfile": false,
+      "currentShell": true
+    },
+    "SMTP_HOST": {
+      "localEnv": false,
+      "recoveryProfile": false,
+      "currentShell": false
+    },
+    "SMTP_PORT": {
+      "localEnv": false,
+      "recoveryProfile": false,
+      "currentShell": false
+    },
+    "SMTP_SECURE": {
+      "localEnv": false,
+      "recoveryProfile": false,
+      "currentShell": false
+    },
+    "SMTP_USER": {
+      "localEnv": false,
+      "recoveryProfile": false,
+      "currentShell": false
+    },
+    "SMTP_PASSWORD": {
+      "localEnv": false,
+      "recoveryProfile": false,
+      "currentShell": false
+    },
+    "EMAIL_FROM": {
+      "localEnv": true,
+      "recoveryProfile": false,
+      "currentShell": true
+    },
+    "GMAIL_USER": {
+      "localEnv": true,
+      "recoveryProfile": false,
+      "currentShell": true
+    },
+    "GMAIL_APP_PASSWORD": {
+      "localEnv": true,
+      "recoveryProfile": false,
+      "currentShell": true
+    },
+    "BLOB_READ_WRITE_TOKEN": {
+      "localEnv": false,
+      "recoveryProfile": false,
+      "currentShell": false
+    }
+  }
+}
