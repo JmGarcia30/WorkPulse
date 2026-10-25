@@ -60,6 +60,26 @@ export async function initializeRecruitmentDocumentsAction(applicationId: string
 }
 
 /**
+ * HR explicitly requests one item. Candidate uploads remain server-gated.
+ * Never alter files or verification status while making a request.
+ */
+export async function requestRecruitmentDocumentAction(documentId: string) {
+  const user = await getDocumentStaffContext();
+  if (!user || !canManageRecruitmentDocuments(user)) return { error: 'Unauthorized to request documents.' };
+  const updated = await prisma.recruitmentDocument.updateMany({
+    where: { id: documentId, application: { job: { organizationId: user.organizationId } },
+      requestedAt: null, status: RecruitmentDocumentStatus.PENDING },
+    data: { requestedAt: new Date() },
+  });
+  if (updated.count !== 1) return { error: 'Document is already requested or cannot be requested.' };
+  const doc = await prisma.recruitmentDocument.findUnique({
+    where: { id: documentId }, select: { applicationId: true },
+  });
+  if (doc) safeRevalidatePath(`/dashboard/hiring/applicants/${doc.applicationId}`);
+  return { success: true };
+}
+
+/**
  * Verify a recruitment document submitted by the candidate.
  */
 export async function verifyRecruitmentDocumentAction(
