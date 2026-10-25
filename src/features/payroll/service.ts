@@ -5,6 +5,7 @@ import { readPayrollGenerationInputs } from './generation-inputs';
 import { resolvePayrollPolicy, validateResolvedPolicyParameters } from './policy';
 import { lockPayrollEmployee, lockPayrollPeriod, payrollTransaction } from './transactions';
 import { calculateIntegratedPayroll, persistIntegratedPayroll, STATUTORY_SNAPSHOT_VERSION } from './statutory-integration';
+import { attendanceReadinessIssue, payrollAttendanceEvidence } from './attendance-evidence';
 
 type PayrollDb = Prisma.TransactionClient | typeof prisma;
 
@@ -183,8 +184,9 @@ async function generateInTransaction(input: GeneratePayrollInput, db: Prisma.Tra
       || policy.lateDeductionRule !== LateDeductionRule.NONE
       || policy.absenceDeductionRule !== AbsenceDeductionRule.NONE
       || policy.undertimeDeductionRule !== UndertimeDeductionRule.NONE;
-    if (attendanceRequired && attendance.length !== expectedDays) {
-      setupError(`Attendance must be materialized for all ${expectedDays} calendar days before this payroll policy can be calculated.`);
+    const attendanceIssue = attendanceRequired ? attendanceReadinessIssue(attendance, expectedDays) : null;
+    if (attendanceIssue) {
+      setupError(attendanceIssue);
       continue;
     }
     const treatmentByLeaveType = new Map(policy.leaveTreatments.map(item => [item.leaveTypeId, item.treatment]));
@@ -319,6 +321,7 @@ async function generateInTransaction(input: GeneratePayrollInput, db: Prisma.Tra
       calculation: { baseAmount: amount, payableWorkdays, grossAmount: grossAmount.toFixed(2), totalDeductions: totalDeductions.toFixed(2), netAmount: netAmount.toFixed(2), attendanceAffectsPay: attendanceRequired && !policy.isDefault, leaveAffectsPay: policy.dailyPayBasis === DailyPayBasis.PRESENT_PLUS_PAID_LEAVE },
       statutory: integrated.snapshot,
       attendanceSummary,
+      attendanceEvidence: attendanceRequired ? payrollAttendanceEvidence(attendance) : null,
       leaveSummary,
     } satisfies Prisma.InputJsonObject;
     const entry = await db.payrollEntry.create({

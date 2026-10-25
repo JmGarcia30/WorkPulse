@@ -219,12 +219,17 @@ export function summarizeAttendanceIndicators(
     }
   }
   const tardinessCount = ordered.filter((day) => (day.lateSeconds ?? 0) > 0).length;
+  const lateOccurrencesByMonth = new Map<string, number>();
+  for (const day of ordered.filter(day => (day.lateSeconds ?? 0) > 0)) {
+    const month = day.attendanceDate.slice(0, 7);
+    lateOccurrencesByMonth.set(month, (lateOccurrencesByMonth.get(month) ?? 0) + 1);
+  }
   const absenceDays = ordered.filter((day) => day.status === AttendanceStatus.ABSENT && day.disposition !== AttendanceDisposition.APPROVED_LEAVE).length;
   return {
     tardinessCount,
     absenceDays,
     longestConsecutiveAbsenceDays: longest,
-    habitualTardinessReview: tardinessCount >= 4,
+    habitualTardinessReview: [...lateOccurrencesByMonth.values()].some(count => count >= 4),
     absenceFrequencyReview: absenceDays >= 3,
     possibleAwolPatternReview: longest >= 5,
     unauthorizedAbsenceDays: null,

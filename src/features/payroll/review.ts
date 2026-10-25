@@ -1,9 +1,10 @@
 import { CompensationStatus, PayrollEntryStatus, PayrollPeriodStatus, Prisma, Role } from '@prisma/client';
 import { prisma } from '@/lib/db/prisma';
-import { PayrollError } from './domain';
+import { PayrollError, inclusiveCalendarDays } from './domain';
 import { resolvePayrollPolicy } from './policy';
 import { lockPayrollPeriod, payrollTransaction } from './transactions';
 import { statutoryEntryIssue } from './statutory-integration';
+import { attendanceReadinessIssue, payrollAttendanceEvidence } from './attendance-evidence';
 
 type PayrollDb = Prisma.TransactionClient | typeof prisma;
 
@@ -20,7 +21,8 @@ type SnapshotShape = {
   leaveSummary?: { unpaidDays?: number };
   compensation?: { id?: string };
   policy?: { id?: string; version?: number };
-  calculation?: { baseAmount?: string; grossAmount?: string; totalDeductions?: string; netAmount?: string };
+  calculation?: { baseAmount?: string; grossAmount?: string; totalDeductions?: string; netAmount?: string; attendanceAffectsPay?: boolean };
+  attendanceEvidence?: string | null;
 };
 
 function snapshotObject(value: Prisma.JsonValue | null): SnapshotShape | null {
@@ -128,6 +130,17 @@ async function assessPeriod(organizationId: string, payrollPeriodId: string, db:
     if (period.status === PayrollPeriodStatus.REVIEW && entry.status !== PayrollEntryStatus.REVIEW) {
       issues.push({ ...identity, kind: 'CALCULATION_ERROR', message: 'The payroll entry has not entered review status.' });
     }
+    if (period.status !== PayrollPeriodStatus.FINALIZED && snapshot.calculation?.attendanceAffectsPay) {
+      const attendance = await db.dailyAttendanceRecord.findMany({
+        where: { organizationId, employeeId: employee.id, attendanceDate: { gte: period.periodStart, lte: period.periodEnd } },
+        select: { attendanceDate: true, attendanceStatus: true, disposition: true, lateSeconds: true, undertimeSeconds: true },
+        orderBy: { attendanceDate: 'asc' },
+      });
+      const issue = attendanceReadinessIssue(attendance, inclusiveCalendarDays(period.periodStart, period.periodEnd));
+      if (issue || snapshot.attendanceEvidence !== payrollAttendanceEvidence(attendance)) {
+        issues.push({ ...identity, kind: 'SETUP_REQUIRED', message: issue ?? 'Attendance calculation inputs changed or the snapshot lacks attendance evidence. Review and explicitly recalculate payroll before finalization.' });
+      }
+    }
     const compensation = entry.employeeCompensation;
     const applicableCompensationCount = applicableCounts.get(employee.id) ?? 0;
     const compensationValid = compensation.organizationId === organizationId
@@ -198,6 +211,13 @@ async function moveToReviewInTransaction(input: { organizationId: string; actorU
 async function finalizeInTransaction(input: { organizationId: string; actorUserId: string; payrollPeriodId: string }, db: Prisma.TransactionClient) {
   await lockPayrollPeriod(db, input.organizationId, input.payrollPeriodId);
   const actor = await requirePayrollReviewer(db, input.organizationId, input.actorUserId);
+  // Hold the consumed daily rows stable through the final review and commit.
+  // RFID/corrections can proceed afterward; finalized snapshots remain immutable.
+  await db.$queryRaw`SELECT d.id FROM "DailyAttendanceRecord" d
+    JOIN "PayrollPeriod" p ON p.id = ${input.payrollPeriodId} AND p."organizationId" = d."organizationId"
+    WHERE d."organizationId" = ${input.organizationId}
+      AND d."attendanceDate" BETWEEN p."periodStart" AND p."periodEnd"
+    ORDER BY d."employeeId", d."attendanceDate" FOR SHARE OF d`;
   const review = await assessPayrollPeriod(input.organizationId, input.payrollPeriodId, db);
   if (review.period.status === PayrollPeriodStatus.FINALIZED) throw new PayrollError('FINALIZED', 'Payroll is already finalized.');
   if (review.period.status !== PayrollPeriodStatus.REVIEW) throw new PayrollError('NOT_IN_REVIEW', 'Move the payroll period to review before finalizing.');

@@ -1,0 +1,89 @@
+{
+  "schedules": [
+    {
+      "lateGraceSeconds": 900,
+      "days": [
+        {
+          "isoWeekday": 1,
+          "isWorkday": true,
+          "expectedStartSecond": 28800,
+          "expectedEndSecond": 61200,
+          "breaks": [
+            {
+              "startSecond": 43200,
+              "endSecond": 46800,
+              "isPaid": false
+            }
+          ]
+        },
+        {
+          "isoWeekday": 2,
+          "isWorkday": true,
+          "expectedStartSecond": 28800,
+          "expectedEndSecond": 61200,
+          "breaks": [
+            {
+              "startSecond": 43200,
+              "endSecond": 46800,
+              "isPaid": false
+            }
+          ]
+        },
+        {
+          "isoWeekday": 3,
+          "isWorkday": true,
+          "expectedStartSecond": 28800,
+          "expectedEndSecond": 61200,
+          "breaks": [
+            {
+              "startSecond": 43200,
+              "endSecond": 46800,
+              "isPaid": false
+            }
+          ]
+        },
+        {
+          "isoWeekday": 4,
+          "isWorkday": true,
+          "expectedStartSecond": 28800,
+          "expectedEndSecond": 61200,
+          "breaks": [
+            {
+              "startSecond": 43200,
+              "endSecond": 46800,
+              "isPaid": false
+            }
+          ]
+        },
+        {
+          "isoWeekday": 5,
+          "isWorkday": true,
+          "expectedStartSecond": 28800,
+          "expectedEndSecond": 61200,
+          "breaks": [
+            {
+              "startSecond": 43200,
+              "endSecond": 46800,
+              "isPaid": false
+            }
+          ]
+        },
+        {
+          "isoWeekday": 6,
+          "isWorkday": false,
+          "expectedStartSecond": null,
+          "expectedEndSecond": null,
+          "breaks": []
+        },
+        {
+          "isoWeekday": 7,
+          "isWorkday": false,
+          "expectedStartSecond": null,
+          "expectedEndSecond": null,
+          "breaks": []
+        }
+      ]
+    }
+  ],
+  "policies": []
+}
