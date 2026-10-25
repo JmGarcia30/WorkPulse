@@ -2108,6 +2108,7 @@ model RecruitmentDocument {
   fileType      String?
   fileSize      Int?
   storageKey    String?
+  requestedAt   DateTime?
   verifiedAt    DateTime?
   verifiedById  String?
   createdAt     DateTime                  @default(now())
