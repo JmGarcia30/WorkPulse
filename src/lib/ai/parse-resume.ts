@@ -1,24 +1,30 @@
 import { z } from 'zod';
 import { getGeminiModel } from './gemini';
 
+// Gemini may use null for unknown text fields; preserve missing information.
+const optionalResumeText = z.preprocess(
+  (value) => value === null ? '' : value,
+  z.string().default('')
+);
+
 export const ParsedEducationSchema = z.object({
-  institution: z.string().default(''),
-  degree: z.string().default(''),
-  fieldOfStudy: z.string().default(''),
-  startDate: z.string().default(''),
-  endDate: z.string().default(''),
+  institution: optionalResumeText,
+  degree: optionalResumeText,
+  fieldOfStudy: optionalResumeText,
+  startDate: optionalResumeText,
+  endDate: optionalResumeText,
 });
 
 export const ParsedWorkExperienceSchema = z.object({
-  company: z.string().default(''),
-  position: z.string().default(''),
-  startDate: z.string().default(''),
-  endDate: z.string().default(''),
-  description: z.string().default(''),
+  company: optionalResumeText,
+  position: optionalResumeText,
+  startDate: optionalResumeText,
+  endDate: optionalResumeText,
+  description: optionalResumeText,
 });
 
 export const ParsedResumeSchema = z.object({
-  summary: z.string().default(''),
+  summary: optionalResumeText,
   skills: z.array(z.string()).default([]),
   education: z.array(ParsedEducationSchema).default([]),
   workExperience: z.array(ParsedWorkExperienceSchema).default([]),
