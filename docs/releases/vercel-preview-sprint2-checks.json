@@ -1,0 +1,80 @@
+{
+  "preparedAt": "2026-10-25T08:48:47.287Z",
+  "branch": "employee-ui-design",
+  "applicationChangesDuringPackaging": false,
+  "commits": [
+    {
+      "subject": "feat: add tenant-scoped RFID attendance enrollment and kiosk",
+      "files": [
+        "prisma/schema.prisma",
+        "prisma/migrations/20261025000100_rfid_attendance_phase1/migration.sql",
+        "src/features/attendance/service.ts",
+        "src/features/attendance/rfid-policy.ts",
+        "src/features/attendance/rfid-service.ts",
+        "src/features/attendance/rfid-server.ts",
+        "src/features/attendance/rfid-actions.ts",
+        "src/components/attendance/RfidEnrollment.tsx",
+        "src/components/attendance/RfidKiosk.tsx",
+        "src/app/(dashboard)/dashboard/attendance/page.tsx",
+        "src/app/(dashboard)/dashboard/attendance/rfid/page.tsx",
+        "src/app/attendance-kiosk/page.tsx",
+        "src/app/api/attendance/rfid/kiosk/route.ts",
+        "src/app/api/attendance/rfid/scan/route.ts",
+        "src/app/api/attendance/rfid/transport.ts",
+        "src/proxy.ts",
+        "scripts/test-rfid-attendance.ts",
+        "scripts/test-rfid-browser.cjs"
+      ]
+    },
+    {
+      "subject": "fix: validate attendance inputs before payroll finalization",
+      "files": [
+        "src/features/attendance/domain.ts",
+        "src/app/(dashboard)/dashboard/attendance/[employeeId]/page.tsx",
+        "src/features/payroll/attendance-evidence.ts",
+        "src/features/payroll/service.ts",
+        "src/features/payroll/review.ts",
+        "scripts/test-attendance-payroll-rules.ts",
+        "scripts/test-rfid-schedule-payroll.ts",
+        "scripts/fixtures/rfid-schedule-payroll.json"
+      ]
+    },
+    {
+      "subject": "test: document preview release gates and authentication checks",
+      "files": [
+        "scripts/test-auth-preview.cjs",
+        "scripts/test-saga-login-session.cjs",
+        "docs/releases/vercel-preview-sprint2.md",
+        "docs/releases/vercel-preview-sprint2-checks.json"
+      ]
+    }
+  ],
+  "releaseChecks": {
+    "typescript": "PASS",
+    "focusedLint": "PASS",
+    "prismaSchemaValidate": "PASS (synthetic URL; no connection)",
+    "databaseFreeAttendancePayrollAssertions": 20,
+    "sanitizedFixtureParity": "PASS",
+    "secretScan": "PASS",
+    "migrationFiles": 36,
+    "cachedMigrationChecksums": "PASS; 35 applied plus verified RFID migration"
+  },
+  "reusedEvidence": {
+    "rfidAssertions": 65,
+    "browserChecks": 21,
+    "fullChainAssertions": 42,
+    "attendanceAssertions": 39,
+    "currentPayrollAssertions": 55,
+    "authAssertions": 69,
+    "sprint11HttpChecks": 6,
+    "sprint11HrFixtureAssertions": 8,
+    "productionBuild": "PASS (previous build; unchanged application source)",
+    "historicalLogin500": "Not reproduced; cause unconfirmed"
+  },
+  "databaseConnectionsThisSprint": 0,
+  "migrationsRun": 0,
+  "pushed": false,
+  "deployed": false,
+  "vercelPreviewDatabaseConfigurationVerified": false,
+  "pushAllowed": false
+}
