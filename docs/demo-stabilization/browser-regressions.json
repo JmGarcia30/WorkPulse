@@ -1,0 +1,15 @@
+{
+  "browser": "Installed Chrome, real local Next.js application and development database",
+  "loginFix": {
+    "normalEmployeeLoginPassed": true,
+    "noJavaScriptLoginPassed": true,
+    "nativePostObserved": true,
+    "passwordQueryAbsent": true
+  },
+  "separatedEmployeeLoginRejected": true,
+  "hrSessionRestored": true,
+  "rfidScanner": "Keyboard input through Chrome DevTools; physical USB reader not tested",
+  "realEmailDelivery": false,
+  "payrollCalculationExecuted": false,
+  "localAppLeftRunning": true
+}

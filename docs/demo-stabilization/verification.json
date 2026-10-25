@@ -1,0 +1,39 @@
+{
+  "capturedAt": "2026-10-25T16:31:42.800Z",
+  "development": {
+    "branch": "br-damp-fog-azmmxhga",
+    "endpoint": "ep-wild-mud-az8yzifu",
+    "read_only": "on"
+  },
+  "appliedMigrations": 37,
+  "migrationFailures": 0,
+  "onboarding": {
+    "status": "COMPLETED"
+  },
+  "newEmployee": {
+    "employeeStatus": "ACTIVE"
+  },
+  "newEmployeeAccount": {
+    "status": "ACTIVE"
+  },
+  "rfidEvents": 1,
+  "leave": {
+    "status": "APPROVED"
+  },
+  "finalExit": {
+    "status": "COMPLETED"
+  },
+  "separatedEmployee": {
+    "employeeStatus": "SEPARATED"
+  },
+  "separatedAccount": {
+    "status": "DISABLED"
+  },
+  "payrollPeriods": 0,
+  "payrollPolicies": 0,
+  "activeCompensations": 0,
+  "fixturePayrollEntries": 0,
+  "fixtureFinalPayRecords": 0,
+  "originalEnvUnchanged": true,
+  "productionAccessed": false
+}

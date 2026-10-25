@@ -34,6 +34,12 @@ export async function loginAction(formData: FormData) {
   redirect(await requestWorkspacePath(landingPathForRole(user.role)));
 }
 
+// A directly bound Server Action keeps early and no-JavaScript submissions in
+// POST bodies instead of the browser's default GET query string.
+export async function loginFormAction(_state: { error: string } | null, formData: FormData) {
+  return (await loginAction(formData)) ?? null;
+}
+
 export async function logoutAction() {
   const destination = await requestWorkspacePath('/login');
   await destroySession();
