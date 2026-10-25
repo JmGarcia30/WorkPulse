@@ -11,6 +11,11 @@ export function VerifyCandidateEmail({ slug, id }: { slug: string; id: string })
     <button disabled={pending} onClick={async () => {
       setPending(true);
       const token = new URLSearchParams(window.location.hash.slice(1)).get('token') || '';
+      if (!/^[a-f0-9]{64}$/.test(token)) {
+        setMessage('This verification URL is incomplete. Open the full link from your newest email, or request a new link.');
+        setPending(false);
+        return;
+      }
       window.history.replaceState(null, '', window.location.pathname);
       try { const result = await verifyCandidateEmail(slug, id, token); setMessage(result.error); }
       finally { setPending(false); }
