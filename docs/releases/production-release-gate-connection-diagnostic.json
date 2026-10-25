@@ -1,0 +1,22 @@
+{
+  "capturedAt": "2026-10-25T13:31:00.132Z",
+  "branch": "employee-ui-design",
+  "commit": "5be19f4",
+  "committedMigrations": 36,
+  "targetBasis": "Explicit DATABASE_URL in local .env; NOT verified against Vercel Production environment",
+  "localTargetDistinctFromDevelopment": true,
+  "vercelProductionTargetVerified": false,
+  "productionBackupVerified": false,
+  "availableVercelOrNeonApiCredentials": false,
+  "applied": [],
+  "pending": [],
+  "failed": [],
+  "checksumMismatches": [],
+  "unexpectedApplied": [],
+  "cloudBackupAvailability": "UNVERIFIED: no provider project/API access",
+  "databaseMutationCommandsRun": 0,
+  "databaseCheckBlocked": {
+    "type": "PrismaClientInitializationError",
+    "message": "Error querying the database: ERROR: unsupported startup parameter in options: statement_timeout. Please use unpooled connection or remove this parameter from the startup package. More details: https://neon.com/docs/connect/connection-errors#unsupported-startup-parameter"
+  }
+}

@@ -1,0 +1,23 @@
+{
+  "branch": "employee-ui-design",
+  "postgresqlFocusedAssertions": 63,
+  "authenticationBoundaryAssertions": 69,
+  "hrSessionAssertions": 8,
+  "typescript": "PASS",
+  "prismaSchemaValidation": "PASS",
+  "isolatedPrismaClientGeneration": "PASS",
+  "standardLocalGeneration": "PASS after stopping only the identified development process tree; localhost restarted",
+  "focusedLint": "PASS",
+  "whitespaceCheck": "PASS",
+  "newMigration": "20261025000200_staff_session_security",
+  "migrationTestScope": "New isolated schemas on authorized workpulse-ess-design development endpoint only",
+  "publicDevelopmentMigrationApplied": true,
+  "developmentAppliedMigrations": 37,
+  "developmentPendingMigrations": 0,
+  "actualDevelopmentHrLoginLogoutRevocationChecks": 7,
+  "productionAccessed": false,
+  "existingRecordsChanged": false,
+  "sessionSecretOrRecoveryConfigurationChanged": false,
+  "unrelatedSuitesRun": false,
+  "pushedOrMerged": false
+}

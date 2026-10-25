@@ -1,0 +1,24 @@
+{
+  "capturedAt": "2026-10-25T15:07:35.166Z",
+  "branch": "br-nameless-sea-azximn2k",
+  "durationMs": 10212,
+  "exitCode": 0,
+  "errorCodes": [],
+  "applied": [
+    "Applying migration `20261022000200_organization_probation_policy`",
+    "Applying migration `20261022000300_payroll_statutory_integration`",
+    "Applying migration `20261023000100_platform_administration`",
+    "Applying migration `20261023000200_organization_onboarding`",
+    "Applying migration `20261023000300_public_company_registration`",
+    "Applying migration `20261023000400_organization_gmail_integration`",
+    "Applying migration `20261024000100_saga_recruitment_sender`",
+    "Applying migration `20261024000200_hr_email_delivery`",
+    "Applying migration `20261024000300_organization_resignation_policy`",
+    "Applying migration `20261024000400_employee_final_pay`",
+    "Applying migration `20261024000500_ess_resignation_notice`",
+    "Applying migration `20261025000100_rfid_attendance_phase1`",
+    "Applying migration `20261025000200_staff_session_security`"
+  ],
+  "emptyDiff": false,
+  "outputHash": "9c325d7f7b0d9aac344d1c3088143c98825a22efdad49deed5d4e0dd738a466e"
+}

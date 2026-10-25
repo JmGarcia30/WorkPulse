@@ -1,0 +1,39 @@
+{
+  "capturedAt": "2026-10-25T15:09:17.069Z",
+  "branch": "br-nameless-sea-azximn2k",
+  "passed": false,
+  "migrationDeployPassed": true,
+  "recordPreservationPassed": true,
+  "appliedMigrations": 13,
+  "totalMigrations": 37,
+  "preservedTables": 51,
+  "changedTables": [],
+  "prismaSchemaMatches": false,
+  "schemaDifference": [
+    "[*] Changed the `EmployeeCompensation` table",
+    "  [*] Renamed index `EmployeeCompensation_organizationId_employeeId_effectiveFrom_id` to `EmployeeCompensation_organizationId_employeeId_effectiveFro_idx`",
+    "[*] Changed the `OrganizationPayrollPolicy` table",
+    "  [*] Renamed index `OrganizationPayrollPolicy_organizationId_status_effectiveFrom_e` to `OrganizationPayrollPolicy_organizationId_status_effectiveFr_idx`"
+  ],
+  "onlyIndexRenames": true,
+  "driftPreexisting": true,
+  "renamedIndexes": [
+    {
+      "existing": "EmployeeCompensation_organizationId_employeeId_effectiveFrom_id",
+      "expected": "EmployeeCompensation_organizationId_employeeId_effectiveFro_idx"
+    },
+    {
+      "existing": "OrganizationPayrollPolicy_organizationId_status_effectiveFrom_e",
+      "expected": "OrganizationPayrollPolicy_organizationId_status_effectiveFr_idx"
+    }
+  ],
+  "customSchema": {
+    "enabledReviewedTriggers": 14,
+    "validatedReviewedConstraints": 62,
+    "functionBodiesMatch": true,
+    "allIndexesValid": true
+  },
+  "configurationUnchanged": true,
+  "snapshotProvenance": "Not independently verified; this tests the user-designated isolated branch only.",
+  "productionReleaseApproved": false
+}

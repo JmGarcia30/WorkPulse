@@ -1,0 +1,38 @@
+{
+  "passed": true,
+  "persistedAccountRole": "HR_ADMIN",
+  "existingAccountUsed": true,
+  "checks": [
+    {
+      "label": "LOGIN_PAGE_200",
+      "passed": true
+    },
+    {
+      "label": "NORMAL_PASSWORD_LOGIN",
+      "passed": true
+    },
+    {
+      "label": "DEVELOPMENT_SESSION_PERSISTED",
+      "passed": true
+    },
+    {
+      "label": "AUTHENTICATED_HR_DASHBOARD_200",
+      "passed": true
+    },
+    {
+      "label": "LOGOUT_CLEARS_COOKIE_AND_REDIRECTS",
+      "passed": true
+    },
+    {
+      "label": "COPIED_TOKEN_SERVER_RECORD_REVOKED",
+      "passed": true
+    },
+    {
+      "label": "COPIED_TOKEN_HTTP_REPLAY_DENIED",
+      "passed": true
+    }
+  ],
+  "credentialsSaved": false,
+  "productionAccessed": false,
+  "localhost": "http://localhost:3000"
+}

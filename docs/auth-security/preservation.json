@@ -1,0 +1,8 @@
+{
+  "isolatedSchemaDisposed": true,
+  "publicRecordsUnchanged": true,
+  "configurationUnchanged": true,
+  "productionAccessed": false,
+  "publicMigrationApplied": false,
+  "basis": "Final successful PostgreSQL validation runner output (63 assertions)"
+}

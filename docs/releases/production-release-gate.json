@@ -1,0 +1,27 @@
+{
+  "capturedAt": "2026-10-25T13:29:02.738Z",
+  "branch": "employee-ui-design",
+  "commit": "5be19f4",
+  "committedMigrations": 36,
+  "targetBasis": "Explicit DATABASE_URL in local .env; NOT verified against Vercel Production environment",
+  "localTargetDistinctFromDevelopment": true,
+  "vercelProductionTargetVerified": false,
+  "productionBackupVerified": false,
+  "availableVercelOrNeonApiCredentials": false,
+  "applied": [],
+  "pending": [],
+  "failed": [],
+  "checksumMismatches": [],
+  "unexpectedApplied": [],
+  "cloudBackupAvailability": "UNVERIFIED: no provider project/API access",
+  "databaseMutationCommandsRun": 0,
+  "databaseCheckBlocked": {
+    "type": "PrismaClientInitializationError"
+  },
+  "publicHomepage": {
+    "status": 200,
+    "vercelHosted": true,
+    "locationHost": null
+  },
+  "latestCommitSecretScan": []
+}

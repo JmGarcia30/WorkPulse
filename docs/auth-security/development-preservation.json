@@ -1,0 +1,65 @@
+{
+  "applied": 37,
+  "pending": [],
+  "existingTablesUnchanged": 14,
+  "records": [
+    {
+      "table": "AttendanceCorrection",
+      "count": 0
+    },
+    {
+      "table": "AttendanceEvent",
+      "count": 2
+    },
+    {
+      "table": "DailyAttendanceRecord",
+      "count": 78
+    },
+    {
+      "table": "Employee",
+      "count": 7
+    },
+    {
+      "table": "EmployeeAccount",
+      "count": 3
+    },
+    {
+      "table": "EmployeeScheduleAssignment",
+      "count": 4
+    },
+    {
+      "table": "EmploymentRecord",
+      "count": 11
+    },
+    {
+      "table": "Organization",
+      "count": 3
+    },
+    {
+      "table": "RfidAudit",
+      "count": 9
+    },
+    {
+      "table": "RfidCard",
+      "count": 1
+    },
+    {
+      "table": "RfidKioskSession",
+      "count": 3
+    },
+    {
+      "table": "RfidRequestBudget",
+      "count": 4
+    },
+    {
+      "table": "User",
+      "count": 8
+    },
+    {
+      "table": "WorkScheduleVersion",
+      "count": 4
+    }
+  ],
+  "configurationUnchanged": true,
+  "productionAccessed": false
+}

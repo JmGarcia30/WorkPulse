@@ -1,0 +1,29 @@
+{
+  "states": [
+    {
+      "kind": "pooled",
+      "database": "neondb",
+      "schema": "public",
+      "read_only": "on",
+      "branch_id": "br-damp-fog-azmmxhga",
+      "endpoint_id": "ep-wild-mud-az8yzifu"
+    },
+    {
+      "kind": "direct",
+      "database": "neondb",
+      "schema": "public",
+      "read_only": "on",
+      "branch_id": "br-damp-fog-azmmxhga",
+      "endpoint_id": "ep-wild-mud-az8yzifu"
+    }
+  ],
+  "pending": [
+    "20261025000200_staff_session_security"
+  ],
+  "applied": 36,
+  "migration": "20261025000200_staff_session_security",
+  "sha256": "bc9a43b9889cc4a8a2d21c575e34e674c8cedb94d45f1ebb2ea46fba2510eef6",
+  "review": "Additive StaffSession table/indexes/constraints plus account-revocation triggers; no existing data rewritten",
+  "protectedTables": 14,
+  "productionSelected": false
+}

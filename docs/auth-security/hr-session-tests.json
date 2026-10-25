@@ -1,0 +1,17 @@
+{
+  "capturedAt": "2026-10-25T15:18:45.942Z",
+  "passed": true,
+  "assertions": 8,
+  "scope": "Actual HR_ADMIN action/session/guard modules; in-memory dependencies",
+  "databaseConnections": 0,
+  "checks": [
+    "Wrong HR password creates no session",
+    "Foreign identity cannot log into SAGA",
+    "HR_ADMIN normal password login preserves SAGA dashboard redirect",
+    "Current HR_ADMIN session grants HR back-office permission",
+    "HR session has production host-only cookie attributes",
+    "Valid SAGA HR JWT is rejected in a different tenant",
+    "HR role change invalidates previous session",
+    "HR logout deletes browser session and preserves SAGA login redirect"
+  ]
+}

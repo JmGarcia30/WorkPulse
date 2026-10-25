@@ -1,0 +1,13 @@
+{
+  "exitCode": 2,
+  "errorCodes": [],
+  "applied": [],
+  "emptyDiff": false,
+  "diffSummary": [
+    "[*] Changed the `EmployeeCompensation` table",
+    "  [*] Renamed index `EmployeeCompensation_organizationId_employeeId_effectiveFrom_id` to `EmployeeCompensation_organizationId_employeeId_effectiveFro_idx`",
+    "[*] Changed the `OrganizationPayrollPolicy` table",
+    "  [*] Renamed index `OrganizationPayrollPolicy_organizationId_status_effectiveFrom_e` to `OrganizationPayrollPolicy_organizationId_status_effectiveFr_idx`"
+  ],
+  "outputHash": "b2eb769ba8a17ac6b9ab3130481a34eb621d4a405e0497ad0b0262ae4b6714d2"
+}

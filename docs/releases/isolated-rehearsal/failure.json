@@ -1,0 +1,13 @@
+{
+  "capturedAt": "2026-10-25T15:09:17.072Z",
+  "branch": "br-nameless-sea-azximn2k",
+  "code": "PRISMA_SCHEMA_DRIFT",
+  "diagnostics": {
+    "type": "Error",
+    "codes": [],
+    "cannotReach": false,
+    "unsupportedStartupParameter": false,
+    "permissionDenied": false
+  },
+  "configurationUnchanged": true
+}

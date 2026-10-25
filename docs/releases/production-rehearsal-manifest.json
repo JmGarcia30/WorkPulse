@@ -1,0 +1,285 @@
+{
+  "preparedAt": "2026-10-25T14:39:36.400Z",
+  "branch": "employee-ui-design",
+  "basis": "Prospective bundle against prior candidate ledger; NOT confirmed live Production ledger",
+  "candidateBaselineApplied": 24,
+  "totalMigrationFiles": 37,
+  "pendingAgainstCandidate": 13,
+  "migrations": [
+    {
+      "name": "20260810182207_sprint1_initial",
+      "file": "prisma/migrations/20260810182207_sprint1_initial/migration.sql",
+      "sha256": "2a1391c7342b5e2af4987954458fe85fb5e6a94de3b8a36dedf04e1041e580e2",
+      "pendingAgainstCandidate": false
+    },
+    {
+      "name": "20260810191746_sprint1_5_tenant_portals",
+      "file": "prisma/migrations/20260810191746_sprint1_5_tenant_portals/migration.sql",
+      "sha256": "a7a9f6f0af34f19220797cdfb4aa91e6647e0fac7d0da18e900bb09c37fc6d25",
+      "pendingAgainstCandidate": false
+    },
+    {
+      "name": "20260811133650_expand_application_status_enum",
+      "file": "prisma/migrations/20260811133650_expand_application_status_enum/migration.sql",
+      "sha256": "0bddb0cfef0b78bd3eab1651d83dbfbf09292fd86f86c35a814dc17e70a4caf8",
+      "pendingAgainstCandidate": false
+    },
+    {
+      "name": "20260821112801_sprint2_2_interview_management",
+      "file": "prisma/migrations/20260821112801_sprint2_2_interview_management/migration.sql",
+      "sha256": "8acf4fe6dfc7a6ba774d646db9aae20b1747c61c61f58615f73e8e013bb3c6d0",
+      "pendingAgainstCandidate": false
+    },
+    {
+      "name": "20260822133153_sprint2_3_assessments_offers",
+      "file": "prisma/migrations/20260822133153_sprint2_3_assessments_offers/migration.sql",
+      "sha256": "dffee0cecbae782bcd8e820c7bd38d8c6d3faffeeb688b8c0d48222ef9cf2c15",
+      "pendingAgainstCandidate": false
+    },
+    {
+      "name": "20260825052913_sprint2_4_onboarding",
+      "file": "prisma/migrations/20260825052913_sprint2_4_onboarding/migration.sql",
+      "sha256": "b609e1818c27d5e1944d43f7dc07d9c1471317d7744849edbf7826ea2de76701",
+      "pendingAgainstCandidate": false
+    },
+    {
+      "name": "20260831112506_add_parsed_resume",
+      "file": "prisma/migrations/20260831112506_add_parsed_resume/migration.sql",
+      "sha256": "b2d55da85bb98309bca10af9901de594b28955cc6e25097598bc838ca2d9e305",
+      "pendingAgainstCandidate": false
+    },
+    {
+      "name": "20260906180000_h1_employee_core",
+      "file": "prisma/migrations/20260906180000_h1_employee_core/migration.sql",
+      "sha256": "9bb28a335297e939b8a6f88eae7157667a717f24c1e4ab6b3ef17dab5399e9f4",
+      "pendingAgainstCandidate": false
+    },
+    {
+      "name": "20260907120000_h2_employment_probation",
+      "file": "prisma/migrations/20260907120000_h2_employment_probation/migration.sql",
+      "sha256": "86a376ac88c79cbb3cf2d83228c6da789573b480182afb86696f084ed2786cf9",
+      "pendingAgainstCandidate": false
+    },
+    {
+      "name": "20260908180503_h3_attendance_foundation",
+      "file": "prisma/migrations/20260908180503_h3_attendance_foundation/migration.sql",
+      "sha256": "513d362d61e72e7c79172b416d1eed6267e443498c5b51b0202c078f29e1dfa4",
+      "pendingAgainstCandidate": false
+    },
+    {
+      "name": "20260911120000_h4_employee_self_service",
+      "file": "prisma/migrations/20260911120000_h4_employee_self_service/migration.sql",
+      "sha256": "b251ff8ec10019e974eadf8da8e8b067c573281687ad18e8ffcf63dea9e53eec",
+      "pendingAgainstCandidate": false
+    },
+    {
+      "name": "20260914160000_h5_leave_management",
+      "file": "prisma/migrations/20260914160000_h5_leave_management/migration.sql",
+      "sha256": "fe04d4e297e4a2e452f8c2c3b457e4285f5f750e2be88ff318daf931f3283aaf",
+      "pendingAgainstCandidate": false
+    },
+    {
+      "name": "20260914173000_h5_leave_integrity_followup",
+      "file": "prisma/migrations/20260914173000_h5_leave_integrity_followup/migration.sql",
+      "sha256": "3325017fba8425e0c7ce709dc1e7c1a0d38b4e7de1b0f7521a458f5c273632a1",
+      "pendingAgainstCandidate": false
+    },
+    {
+      "name": "20260915120000_h5_leave_workflow_simplification",
+      "file": "prisma/migrations/20260915120000_h5_leave_workflow_simplification/migration.sql",
+      "sha256": "c6562cfbd06d7c56b56304d821c30a514bd4d959f94821bbd3aa055a93eeae54",
+      "pendingAgainstCandidate": false
+    },
+    {
+      "name": "20260917120000_h5_final_leave_simplification",
+      "file": "prisma/migrations/20260917120000_h5_final_leave_simplification/migration.sql",
+      "sha256": "5e7ecb553b4f5bb793018fca9d0e09a70a3934a73d689cd7405360ca8b9fe3c6",
+      "pendingAgainstCandidate": false
+    },
+    {
+      "name": "20260918120000_s1_tenant_branding",
+      "file": "prisma/migrations/20260918120000_s1_tenant_branding/migration.sql",
+      "sha256": "5028a2d95b17f4c643e8e7ffd6c73615f850bf2395604eda5552be261a9d4aeb",
+      "pendingAgainstCandidate": false
+    },
+    {
+      "name": "20260924190000_h6_1_payroll_foundation",
+      "file": "prisma/migrations/20260924190000_h6_1_payroll_foundation/migration.sql",
+      "sha256": "a79538204f6ae391107532f432219415648bbfe96193f9313782ba25206bb3dd",
+      "pendingAgainstCandidate": false
+    },
+    {
+      "name": "20260928120000_h6_2_simple_payroll_calculation",
+      "file": "prisma/migrations/20260928120000_h6_2_simple_payroll_calculation/migration.sql",
+      "sha256": "7810038d537709df6c327be4380b65cf2858b7ca907175f6fbae4f3a430dae35",
+      "pendingAgainstCandidate": false
+    },
+    {
+      "name": "20260928180000_h6_2_5_payroll_policy",
+      "file": "prisma/migrations/20260928180000_h6_2_5_payroll_policy/migration.sql",
+      "sha256": "9ef846c9dbe7b8f2823b406685371efb75054d2b2e69d4a51c4d353abceec979",
+      "pendingAgainstCandidate": false
+    },
+    {
+      "name": "20260928210000_h6_3_payroll_finalization",
+      "file": "prisma/migrations/20260928210000_h6_3_payroll_finalization/migration.sql",
+      "sha256": "e884e60fac32b854a67e9ab20207c397e0c6ef5a5ceb95824a6eb93e4d107d48",
+      "pendingAgainstCandidate": false
+    },
+    {
+      "name": "20261017090000_h10_1_exit_clearance",
+      "file": "prisma/migrations/20261017090000_h10_1_exit_clearance/migration.sql",
+      "sha256": "ff13d527ce230b08eaa54d99a6d2c75e493a5235e34903f300f3752cb46c974a",
+      "pendingAgainstCandidate": false
+    },
+    {
+      "name": "20261017120000_h10_2_final_separation",
+      "file": "prisma/migrations/20261017120000_h10_2_final_separation/migration.sql",
+      "sha256": "8b2cad450524f1eef19fa32c1a8756fb60eb49dec28dfafe469d294b3e041bce",
+      "pendingAgainstCandidate": false
+    },
+    {
+      "name": "20261021000100_candidate_access",
+      "file": "prisma/migrations/20261021000100_candidate_access/migration.sql",
+      "sha256": "51c987efcad680b6e25053e795911098a42bded92d58e2b972e2bef5dd92771d",
+      "pendingAgainstCandidate": false
+    },
+    {
+      "name": "20261022000100_hiring_document_policy",
+      "file": "prisma/migrations/20261022000100_hiring_document_policy/migration.sql",
+      "sha256": "65980bcc8ddec87eaeedd73a43af66c81756bf871f571ddfcd97de84adaff05f",
+      "pendingAgainstCandidate": false
+    },
+    {
+      "name": "20261022000200_organization_probation_policy",
+      "file": "prisma/migrations/20261022000200_organization_probation_policy/migration.sql",
+      "sha256": "4de2a6ec0ed11012cc0865d267882c89d7aee6407e86425303bb7389bcb6eb71",
+      "pendingAgainstCandidate": true,
+      "reviewedChecksumMatches": true
+    },
+    {
+      "name": "20261022000300_payroll_statutory_integration",
+      "file": "prisma/migrations/20261022000300_payroll_statutory_integration/migration.sql",
+      "sha256": "9a7457a7e641f650b13271cd5d9fe8f06ad59afefc2d776cfbc600bf2ad4f733",
+      "pendingAgainstCandidate": true,
+      "reviewedChecksumMatches": true
+    },
+    {
+      "name": "20261023000100_platform_administration",
+      "file": "prisma/migrations/20261023000100_platform_administration/migration.sql",
+      "sha256": "f4b334a536b139d885cd96da04cc0accaad5810fbd1aa4f762eef42c0ec1026b",
+      "pendingAgainstCandidate": true,
+      "reviewedChecksumMatches": true
+    },
+    {
+      "name": "20261023000200_organization_onboarding",
+      "file": "prisma/migrations/20261023000200_organization_onboarding/migration.sql",
+      "sha256": "9abf7ed306c62b69bed3028f574ab63ddc39a0ca626934ae6c846b46f27763de",
+      "pendingAgainstCandidate": true,
+      "reviewedChecksumMatches": true
+    },
+    {
+      "name": "20261023000300_public_company_registration",
+      "file": "prisma/migrations/20261023000300_public_company_registration/migration.sql",
+      "sha256": "006fbae7e86ce9328bfe82ea62d6fee68a464164153f1f6423bf43fec07b6a6b",
+      "pendingAgainstCandidate": true,
+      "reviewedChecksumMatches": true
+    },
+    {
+      "name": "20261023000400_organization_gmail_integration",
+      "file": "prisma/migrations/20261023000400_organization_gmail_integration/migration.sql",
+      "sha256": "32953ac24e40948185d60e5ad036a3060b80d4973689c1a677e913e12571eeeb",
+      "pendingAgainstCandidate": true,
+      "reviewedChecksumMatches": true
+    },
+    {
+      "name": "20261024000100_saga_recruitment_sender",
+      "file": "prisma/migrations/20261024000100_saga_recruitment_sender/migration.sql",
+      "sha256": "907196e6008c2f816db29bdc719093bad5508c8588c226a36ce71bfb07fd835a",
+      "pendingAgainstCandidate": true,
+      "reviewedChecksumMatches": true
+    },
+    {
+      "name": "20261024000200_hr_email_delivery",
+      "file": "prisma/migrations/20261024000200_hr_email_delivery/migration.sql",
+      "sha256": "b2e99192a487e5cb53288005ca636b348ee6e1c1c4cced556fdfd4fcd23cfb78",
+      "pendingAgainstCandidate": true,
+      "reviewedChecksumMatches": true
+    },
+    {
+      "name": "20261024000300_organization_resignation_policy",
+      "file": "prisma/migrations/20261024000300_organization_resignation_policy/migration.sql",
+      "sha256": "91777673b2f022854f6ae4762b244bbe5e55a6bed6a694d7e7a90e43835e0475",
+      "pendingAgainstCandidate": true,
+      "reviewedChecksumMatches": true
+    },
+    {
+      "name": "20261024000400_employee_final_pay",
+      "file": "prisma/migrations/20261024000400_employee_final_pay/migration.sql",
+      "sha256": "edc1ed0f53e0078a2a382478469559c96367ea9cf5fc9eddd681ccfa06ce0e57",
+      "pendingAgainstCandidate": true,
+      "reviewedChecksumMatches": true
+    },
+    {
+      "name": "20261024000500_ess_resignation_notice",
+      "file": "prisma/migrations/20261024000500_ess_resignation_notice/migration.sql",
+      "sha256": "3bf465d11d35e8206def2af7f57dd7a6f04f4162f3f321406fb9e4d8c297f11b",
+      "pendingAgainstCandidate": true,
+      "reviewedChecksumMatches": true
+    },
+    {
+      "name": "20261025000100_rfid_attendance_phase1",
+      "file": "prisma/migrations/20261025000100_rfid_attendance_phase1/migration.sql",
+      "sha256": "5fe381f40eba728cfa2eae03c2b8337cb0c90726a494c07a383a4e200fbccd19",
+      "pendingAgainstCandidate": true,
+      "reviewedChecksumMatches": true
+    },
+    {
+      "name": "20261025000200_staff_session_security",
+      "file": "prisma/migrations/20261025000200_staff_session_security/migration.sql",
+      "sha256": "bc9a43b9889cc4a8a2d21c575e34e674c8cedb94d45f1ebb2ea46fba2510eef6",
+      "pendingAgainstCandidate": true,
+      "reviewedChecksumMatches": true
+    }
+  ],
+  "staffImplementation": [
+    {
+      "file": "src/lib/auth/actions.ts",
+      "sha256": "21270017898ba987305f9e83f3510ecc3b66fcd4d1bba39dd39410880c7c2716"
+    },
+    {
+      "file": "src/lib/auth/session.ts",
+      "sha256": "ed5d83dfc7f483f087d25bc3b29e8e162d0f774649233436e5fe2889b4fd4356"
+    },
+    {
+      "file": "src/lib/auth/staff-security.ts",
+      "sha256": "d98022fd26a0379f582c4eaa871d173084810048b872aaf751d6314f1bed764d"
+    },
+    {
+      "file": "src/lib/db/prisma.ts",
+      "sha256": "bc9990acf71dd1f483c7854baeb7b628e004eed30356aa64b8f16b99cbc96888"
+    },
+    {
+      "file": "prisma/schema.prisma",
+      "sha256": "60da4cd12ab163140ddb24b38647335644b00e69f0a335eb1376ebc3f1f0f849"
+    },
+    {
+      "file": "prisma/migrations/20261025000200_staff_session_security/migration.sql",
+      "sha256": "bc9a43b9889cc4a8a2d21c575e34e674c8cedb94d45f1ebb2ea46fba2510eef6"
+    }
+  ],
+  "staffImplementationModifiedByThisTask": false,
+  "savedProductionSnapshotIdentified": false,
+  "isolatedSnapshotCopyAvailable": true,
+  "snapshotCopyProvenanceIndependentlyVerified": false,
+  "rehearsalBranchId": "br-nameless-sea-azximn2k",
+  "rehearsalEndpointId": "ep-wispy-field-azwr6g4o",
+  "rehearsalExecuted": true,
+  "rehearsalEvidence": "docs/releases/isolated-rehearsal/result.json",
+  "schemaCompatibilityOnSnapshot": "On designated isolated branch: all 13 migrations applied; strict Prisma comparison flags two pre-existing index-name differences. Snapshot provenance remains unverified.",
+  "recordPreservationOnSnapshot": "PASS on designated isolated branch: all 51 original-table counts and original-column fingerprints unchanged; snapshot provenance remains unverified.",
+  "actualVercelProductionTargetVerified": false,
+  "productionOrDevelopmentDatabaseConnectionsThisTask": 0,
+  "liveProductionModified": false,
+  "pushed": false
+}

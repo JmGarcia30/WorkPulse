@@ -1,0 +1,201 @@
+{
+  "basis": "Changes relative to local main; actual production pending list UNVERIFIED",
+  "migrations": [
+    {
+      "name": "20261022000200_organization_probation_policy",
+      "file": "prisma/migrations/20261022000200_organization_probation_policy/migration.sql",
+      "createTables": [],
+      "destructiveStatements": [],
+      "existingDataUpdates": [],
+      "alterStatements": [
+        "ALTER TABLE \"Organization\" ADD COLUMN \"probationPolicy\" JSONB;",
+        "ALTER TABLE \"Offer\" ADD COLUMN \"probationPolicySnapshot\" JSONB;"
+      ],
+      "uniqueIndexes": 0,
+      "triggers": 0
+    },
+    {
+      "name": "20261022000300_payroll_statutory_integration",
+      "file": "prisma/migrations/20261022000300_payroll_statutory_integration/migration.sql",
+      "createTables": [
+        "PayrollStatutoryInput",
+        "PayrollTaxOpening",
+        "PayrollContributionMonth",
+        "PayrollStatutoryPosting",
+        "PayrollContributionAllocation"
+      ],
+      "destructiveStatements": [],
+      "existingDataUpdates": [],
+      "alterStatements": [
+        "ALTER TYPE \"PayFrequency\" ADD VALUE 'SEMI_MONTHLY';",
+        "ALTER TABLE \"PayrollStatutoryInput\" ADD CONSTRAINT \"PayrollStatutoryInput_employeeId_organizationId_fkey\" FOREIGN KEY (\"employeeId\", \"organizationId\") REFERENCES \"Employee\"(\"id\", \"organizationId\") ON DELETE RESTRICT ON UPDATE CASCADE;",
+        "ALTER TABLE \"PayrollStatutoryInput\" ADD CONSTRAINT \"PayrollStatutoryInput_payrollPeriodId_organizationId_fkey\" FOREIGN KEY (\"payrollPeriodId\", \"organizationId\") REFERENCES \"PayrollPeriod\"(\"id\", \"organizationId\") ON DELETE RESTRICT ON UPDATE CASCADE;",
+        "ALTER TABLE \"PayrollTaxOpening\" ADD CONSTRAINT \"PayrollTaxOpening_employeeId_organizationId_fkey\" FOREIGN KEY (\"employeeId\", \"organizationId\") REFERENCES \"Employee\"(\"id\", \"organizationId\") ON DELETE RESTRICT ON UPDATE CASCADE;",
+        "ALTER TABLE \"PayrollContributionMonth\" ADD CONSTRAINT \"PayrollContributionMonth_employeeId_organizationId_fkey\" FOREIGN KEY (\"employeeId\", \"organizationId\") REFERENCES \"Employee\"(\"id\", \"organizationId\") ON DELETE RESTRICT ON UPDATE CASCADE;",
+        "ALTER TABLE \"PayrollStatutoryPosting\" ADD CONSTRAINT \"PayrollStatutoryPosting_payrollEntryId_organizationId_empl_fkey\" FOREIGN KEY (\"payrollEntryId\", \"organizationId\", \"employeeId\") REFERENCES \"PayrollEntry\"(\"id\", \"organizationId\", \"employeeId\") ON DELETE RESTRICT ON UPDATE CASCADE;",
+        "ALTER TABLE \"PayrollContributionAllocation\" ADD CONSTRAINT \"PayrollContributionAllocation_monthId_frequency_fkey\" FOREIGN KEY (\"monthId\", \"frequency\") REFERENCES \"PayrollContributionMonth\"(\"id\", \"frequency\") ON DELETE RESTRICT ON UPDATE CASCADE;",
+        "ALTER TABLE \"PayrollContributionAllocation\" ADD CONSTRAINT \"PayrollContributionAllocation_postingId_fkey\" FOREIGN KEY (\"postingId\") REFERENCES \"PayrollStatutoryPosting\"(\"id\") ON DELETE RESTRICT ON UPDATE CASCADE;"
+      ],
+      "uniqueIndexes": 10,
+      "triggers": 0
+    },
+    {
+      "name": "20261023000100_platform_administration",
+      "file": "prisma/migrations/20261023000100_platform_administration/migration.sql",
+      "createTables": [
+        "PlatformAdministrator",
+        "PlatformAdministratorSession",
+        "PlatformAuthenticationAttempt"
+      ],
+      "destructiveStatements": [],
+      "existingDataUpdates": [],
+      "alterStatements": [
+        "ALTER TABLE \"PlatformAdministratorSession\" ADD CONSTRAINT \"PlatformAdministratorSession_administratorId_fkey\" FOREIGN KEY (\"administratorId\") REFERENCES \"PlatformAdministrator\"(\"id\") ON DELETE CASCADE ON UPDATE CASCADE;"
+      ],
+      "uniqueIndexes": 1,
+      "triggers": 0
+    },
+    {
+      "name": "20261023000200_organization_onboarding",
+      "file": "prisma/migrations/20261023000200_organization_onboarding/migration.sql",
+      "createTables": [
+        "OrganizationAdministratorInvitation",
+        "PlatformOrganizationAudit"
+      ],
+      "destructiveStatements": [],
+      "existingDataUpdates": [],
+      "alterStatements": [
+        "ALTER TABLE \"Organization\" ADD COLUMN \"contactEmail\" TEXT;",
+        "ALTER TABLE \"OrganizationAdministratorInvitation\" ADD CONSTRAINT \"OrganizationAdministratorInvitation_organizationId_fkey\" FOREIGN KEY (\"organizationId\") REFERENCES \"Organization\"(\"id\") ON DELETE RESTRICT ON UPDATE CASCADE;",
+        "ALTER TABLE \"OrganizationAdministratorInvitation\" ADD CONSTRAINT \"OrganizationAdministratorInvitation_userId_organizationId_fkey\" FOREIGN KEY (\"userId\", \"organizationId\") REFERENCES \"User\"(\"id\", \"organizationId\") ON DELETE RESTRICT ON UPDATE CASCADE;",
+        "ALTER TABLE \"OrganizationAdministratorInvitation\" ADD CONSTRAINT \"OrganizationAdministratorInvitation_createdById_fkey\" FOREIGN KEY (\"createdById\") REFERENCES \"PlatformAdministrator\"(\"id\") ON DELETE RESTRICT ON UPDATE CASCADE;",
+        "ALTER TABLE \"PlatformOrganizationAudit\" ADD CONSTRAINT \"PlatformOrganizationAudit_organizationId_fkey\" FOREIGN KEY (\"organizationId\") REFERENCES \"Organization\"(\"id\") ON DELETE RESTRICT ON UPDATE CASCADE;",
+        "ALTER TABLE \"PlatformOrganizationAudit\" ADD CONSTRAINT \"PlatformOrganizationAudit_actorAdministratorId_fkey\" FOREIGN KEY (\"actorAdministratorId\") REFERENCES \"PlatformAdministrator\"(\"id\") ON DELETE RESTRICT ON UPDATE CASCADE;"
+      ],
+      "uniqueIndexes": 6,
+      "triggers": 0
+    },
+    {
+      "name": "20261023000300_public_company_registration",
+      "file": "prisma/migrations/20261023000300_public_company_registration/migration.sql",
+      "createTables": [
+        "CompanyRegistration"
+      ],
+      "destructiveStatements": [],
+      "existingDataUpdates": [],
+      "alterStatements": [
+        "ALTER TABLE \"CompanyRegistration\" ADD CONSTRAINT \"CompanyRegistration_organizationId_fkey\" FOREIGN KEY (\"organizationId\") REFERENCES \"Organization\"(\"id\") ON DELETE RESTRICT ON UPDATE CASCADE;"
+      ],
+      "uniqueIndexes": 3,
+      "triggers": 0
+    },
+    {
+      "name": "20261023000400_organization_gmail_integration",
+      "file": "prisma/migrations/20261023000400_organization_gmail_integration/migration.sql",
+      "createTables": [
+        "OrganizationEmailIntegration",
+        "OrganizationEmailOAuthAttempt"
+      ],
+      "destructiveStatements": [],
+      "existingDataUpdates": [],
+      "alterStatements": [],
+      "uniqueIndexes": 1,
+      "triggers": 0
+    },
+    {
+      "name": "20261024000100_saga_recruitment_sender",
+      "file": "prisma/migrations/20261024000100_saga_recruitment_sender/migration.sql",
+      "createTables": [],
+      "destructiveStatements": [],
+      "existingDataUpdates": [],
+      "alterStatements": [
+        "ALTER TABLE \"OrganizationEmailIntegration\""
+      ],
+      "uniqueIndexes": 0,
+      "triggers": 0
+    },
+    {
+      "name": "20261024000200_hr_email_delivery",
+      "file": "prisma/migrations/20261024000200_hr_email_delivery/migration.sql",
+      "createTables": [
+        "HrEmailDelivery"
+      ],
+      "destructiveStatements": [],
+      "existingDataUpdates": [],
+      "alterStatements": [],
+      "uniqueIndexes": 1,
+      "triggers": 0
+    },
+    {
+      "name": "20261024000300_organization_resignation_policy",
+      "file": "prisma/migrations/20261024000300_organization_resignation_policy/migration.sql",
+      "createTables": [],
+      "destructiveStatements": [],
+      "existingDataUpdates": [],
+      "alterStatements": [
+        "ALTER TABLE \"Organization\" ADD COLUMN \"resignationPolicy\" JSONB;"
+      ],
+      "uniqueIndexes": 0,
+      "triggers": 0
+    },
+    {
+      "name": "20261024000400_employee_final_pay",
+      "file": "prisma/migrations/20261024000400_employee_final_pay/migration.sql",
+      "createTables": [
+        "EmployeeFinalPay",
+        "EmployeeFinalPayAudit",
+        "EmployeeFinalPayPayment"
+      ],
+      "destructiveStatements": [],
+      "existingDataUpdates": [],
+      "alterStatements": [
+        "ALTER TABLE \"Organization\" ADD COLUMN \"finalPayPolicy\" JSONB;"
+      ],
+      "uniqueIndexes": 0,
+      "triggers": 7
+    },
+    {
+      "name": "20261024000500_ess_resignation_notice",
+      "file": "prisma/migrations/20261024000500_ess_resignation_notice/migration.sql",
+      "createTables": [],
+      "destructiveStatements": [],
+      "existingDataUpdates": [],
+      "alterStatements": [
+        "ALTER TABLE \"EmployeeSeparationCase\"",
+        "ALTER TABLE \"EmployeeSeparationCase\""
+      ],
+      "uniqueIndexes": 0,
+      "triggers": 1
+    },
+    {
+      "name": "20261025000100_rfid_attendance_phase1",
+      "file": "prisma/migrations/20261025000100_rfid_attendance_phase1/migration.sql",
+      "createTables": [
+        "RfidCard",
+        "RfidKioskSession",
+        "RfidAudit",
+        "RfidRequestBudget"
+      ],
+      "destructiveStatements": [],
+      "existingDataUpdates": [],
+      "alterStatements": [
+        "ALTER TABLE \"RfidCard\" ADD CONSTRAINT \"RfidCard_organizationId_fkey\" FOREIGN KEY (\"organizationId\") REFERENCES \"Organization\"(\"id\") ON DELETE RESTRICT ON UPDATE CASCADE;",
+        "ALTER TABLE \"RfidCard\" ADD CONSTRAINT \"RfidCard_employeeId_organizationId_fkey\" FOREIGN KEY (\"employeeId\", \"organizationId\") REFERENCES \"Employee\"(\"id\", \"organizationId\") ON DELETE RESTRICT ON UPDATE CASCADE;",
+        "ALTER TABLE \"RfidKioskSession\" ADD CONSTRAINT \"RfidKioskSession_organizationId_fkey\" FOREIGN KEY (\"organizationId\") REFERENCES \"Organization\"(\"id\") ON DELETE RESTRICT ON UPDATE CASCADE;",
+        "ALTER TABLE \"RfidKioskSession\" ADD CONSTRAINT \"RfidKioskSession_authorizedById_organizationId_fkey\" FOREIGN KEY (\"authorizedById\", \"organizationId\") REFERENCES \"User\"(\"id\", \"organizationId\") ON DELETE RESTRICT ON UPDATE CASCADE;",
+        "ALTER TABLE \"RfidAudit\" ADD CONSTRAINT \"RfidAudit_organizationId_fkey\" FOREIGN KEY (\"organizationId\") REFERENCES \"Organization\"(\"id\") ON DELETE RESTRICT ON UPDATE CASCADE;",
+        "ALTER TABLE \"RfidAudit\" ADD CONSTRAINT \"RfidAudit_actorUserId_organizationId_fkey\" FOREIGN KEY (\"actorUserId\", \"organizationId\") REFERENCES \"User\"(\"id\", \"organizationId\") ON DELETE RESTRICT ON UPDATE CASCADE;",
+        "ALTER TABLE \"RfidAudit\" ADD CONSTRAINT \"RfidAudit_employeeId_organizationId_fkey\" FOREIGN KEY (\"employeeId\", \"organizationId\") REFERENCES \"Employee\"(\"id\", \"organizationId\") ON DELETE RESTRICT ON UPDATE CASCADE;",
+        "ALTER TABLE \"RfidRequestBudget\" ADD CONSTRAINT \"RfidRequestBudget_organizationId_fkey\" FOREIGN KEY (\"organizationId\") REFERENCES \"Organization\"(\"id\") ON DELETE RESTRICT ON UPDATE CASCADE;",
+        "ALTER TABLE \"RfidCard\" ADD CONSTRAINT \"RfidCard_digest_check\" CHECK (\"cardDigest\" ~ '^[a-f0-9]{64}$');",
+        "ALTER TABLE \"RfidCard\" ADD CONSTRAINT \"RfidCard_deactivation_check\" CHECK (\"deactivatedAt\" IS NULL OR \"deactivatedAt\" >= \"createdAt\");",
+        "ALTER TABLE \"RfidKioskSession\" ADD CONSTRAINT \"RfidKioskSession_token_check\" CHECK (\"tokenHash\" ~ '^[a-f0-9]{64}$');",
+        "ALTER TABLE \"RfidKioskSession\" ADD CONSTRAINT \"RfidKioskSession_expiry_check\" CHECK (\"expiresAt\" > \"createdAt\");",
+        "ALTER TABLE \"RfidRequestBudget\" ADD CONSTRAINT \"RfidRequestBudget_attempts_check\" CHECK (attempts > 0);",
+        "ALTER TABLE \"RfidAudit\" ADD CONSTRAINT \"RfidAudit_request_check\" CHECK ((\"requestKey\" IS NULL AND \"requestFingerprint\" IS NULL) OR (\"requestKey\" IS NOT NULL AND \"requestFingerprint\" ~ '^[a-f0-9]{64}$'));"
+      ],
+      "uniqueIndexes": 4,
+      "triggers": 2
+    }
+  ]
+}

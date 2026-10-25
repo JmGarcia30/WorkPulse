@@ -1,0 +1,8 @@
+{
+  "migration": "20261025000200_staff_session_security",
+  "applied": 37,
+  "pending": [],
+  "existingTablesUnchanged": 14,
+  "configurationUnchanged": true,
+  "developmentOnly": true
+}
