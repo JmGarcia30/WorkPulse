@@ -1,5 +1,7 @@
 'use server';
 import { redirect } from 'next/navigation';
+import { cookies } from 'next/headers';
+import { COOKIE_NAME } from '@/lib/auth/session';
 import { revalidatePath } from 'next/cache';
 import { consumeCandidateLink, issueCandidateLink, validCandidateId } from './candidate-access';
 import { getDocumentStaffContext } from '@/features/hiring/document-access';
@@ -12,6 +14,7 @@ export async function requestCandidateVerification(slug: string, id: string, for
 }
 
 export async function verifyCandidateEmail(slug: string, id: string, token: string) {
+  if ((await cookies()).has(COOKIE_NAME)) return { error: 'You are signed in to WorkPulse as staff. Open this email link in a private/incognito window to verify as an applicant.' };
   if (!await consumeCandidateLink(slug, id, token)) return { error: 'Link unavailable or expired. Request a new verification email.' };
   redirect(`/careers/${encodeURIComponent(slug)}/portal/${encodeURIComponent(id)}`);
 }
