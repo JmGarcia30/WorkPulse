@@ -294,6 +294,11 @@ export function CandidatePortalClient({
             </div>
           )}
 
+          {documents.length === 0 && (
+            <p className="rounded-xl border border-slate-200 bg-white p-5 text-sm text-slate-600">
+              Your application has been received. HR will notify you if additional documents are required.
+            </p>
+          )}
           {/* Guidelines Box */}
           <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-2xs dark:border-slate-800 dark:bg-slate-900 space-y-2">
             <div className="flex items-center gap-2 text-xs font-bold text-slate-800 dark:text-slate-200">
