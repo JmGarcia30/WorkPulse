@@ -1,53 +1,35 @@
 'use server';
 
-import { compare } from 'bcryptjs';
 import { redirect } from 'next/navigation';
 import { prisma } from '@/lib/db/prisma';
 import { createSession, destroySession, getSession } from './session';
-import { EmployeeAccountStatus, EmployeeStatus, Role } from '@prisma/client';
+import { authenticateStaff, StaffCredentialsChanged } from './staff-security';
 import { landingPathForRole } from './routing';
 import { requireRequestTenant, requestWorkspacePath } from '@/lib/tenant/server';
 
 export async function loginAction(formData: FormData) {
   const tenant = await requireRequestTenant();
-  const email = (formData.get('email') as string)?.trim().toLowerCase();
-  const password = formData.get('password') as string;
+  const email = formData.get('email');
+  const password = formData.get('password');
 
   if (!email || !password) {
     return { error: 'Please enter both email and password.' };
   }
 
-  const user = await prisma.user.findFirst({
-    where: { email, organizationId: tenant.organizationId },
-    include: { organization: true, employeeAccount: { include: { employee: true } } },
-  });
+  const user = await authenticateStaff(prisma, tenant.organizationId, email, password);
+  if (!user) return { error: 'Invalid email or password, or too many attempts. Try again in 15 minutes if you have made several attempts.' };
 
-  if (!user) {
-    return { error: 'Invalid email or password.' };
-  }
-
-  if (!user.passwordHash) {
-    return { error: 'Invalid email or password.' };
-  }
-  const isValidPassword = await compare(password, user.passwordHash);
-  if (!isValidPassword) {
-    return { error: 'Invalid email or password.' };
-  }
-
-  if (user.role === Role.EMPLOYEE) {
-    const account = user.employeeAccount;
-    if (!account || account.status !== EmployeeAccountStatus.ACTIVE || account.organizationId !== user.organizationId || account.employee.organizationId !== user.organizationId || account.employee.employeeStatus !== EmployeeStatus.ACTIVE) {
-      return { error: 'Invalid email or password.' };
-    }
-  }
-
-  await createSession({
+  try { await createSession({
     userId: user.id,
     email: user.email,
     name: user.name,
     role: user.role,
     organizationId: user.organizationId,
-  });
+  }, user.passwordHash); }
+  catch (error) {
+    if (error instanceof StaffCredentialsChanged) return { error: error.message };
+    throw error;
+  }
 
   redirect(await requestWorkspacePath(landingPathForRole(user.role)));
 }

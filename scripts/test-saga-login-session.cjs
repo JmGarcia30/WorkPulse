@@ -14,6 +14,7 @@ const db = { user: {
   findFirst: async ({ where }) => user?.email === where.email && user.organizationId === where.organizationId ? user : null,
   findUnique: async ({ where }) => user?.id === where.id ? user : null,
 } };
+require('./staff-auth-test-double.cjs')(db);
 Module._load = function(name,parent,main) {
   if (name === 'server-only') return {};
   if (name === 'next/headers') return { cookies: async () => ({ get:key => jar.get(key),set:(key,value,options) => jar.set(key,{value,...options}),delete:key => jar.delete(key) }) };
@@ -40,7 +41,7 @@ async function main() {
   user.role = 'EMPLOYEE';ok(await session.getSession() === null,'HR role change invalidates previous session');user.role = 'HR_ADMIN';
   await assert.rejects(() => actions.logoutAction(),{message:'REDIRECT:/saga/login'});ok(await session.getSession() === null && !jar.has(session.COOKIE_NAME),'HR logout deletes browser session and preserves SAGA login redirect');
   const result = {capturedAt:new Date().toISOString(),passed:true,assertions:checks.length,scope:'Actual HR_ADMIN action/session/guard modules; in-memory dependencies',databaseConnections:0,checks};
-  fs.mkdirSync('docs/auth-preview-sprint1-1',{recursive:true});fs.writeFileSync('docs/auth-preview-sprint1-1/hr-session-tests.json',JSON.stringify(result,null,2)+'\n');
+  fs.mkdirSync('docs/auth-security',{recursive:true});fs.writeFileSync('docs/auth-security/hr-session-tests.json',JSON.stringify(result,null,2)+'\n');
   console.log(JSON.stringify({passed:true,assertions:checks.length,databaseConnections:0}));
 }
 main().catch(error => {console.error(JSON.stringify({passed:false,type:error.name,message:error.message.slice(0,200)}));process.exitCode=1;}).finally(() => {Module._load=original;});

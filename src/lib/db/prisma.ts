@@ -7,6 +7,7 @@ const globalForPrisma = globalThis as unknown as {
 // Development reloads can retain an instance created before these models existed.
 const cachedPrisma = globalForPrisma.prisma;
 export const prisma =
+  cachedPrisma?.staffSession &&
   cachedPrisma?.organizationEmailIntegration &&
   cachedPrisma?.organizationEmailOAuthAttempt &&
   cachedPrisma?.hrEmailDelivery

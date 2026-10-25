@@ -669,6 +669,7 @@ model PlatformOrganizationAudit {
 }
 
 model Organization {
+  staffSessions StaffSession[]
   rfidCards RfidCard[]
   rfidKiosks RfidKioskSession[]
   rfidAudits RfidAudit[]
@@ -729,6 +730,7 @@ model Organization {
 }
 
 model User {
+  staffSessions StaffSession[]
   rfidKiosks RfidKioskSession[]
   rfidAudits RfidAudit[]
   separationsAcknowledged EmployeeSeparationCase[] @relation("SeparationAcknowledger")
@@ -1651,6 +1653,18 @@ model EmployeeScheduleAssignment {
   @@index([organizationId, employeeId, effectiveFrom])
   @@index([scheduleVersionId])
   @@index([createdById])
+}
+
+model StaffSession {
+  tokenHash String @id @db.Char(64)
+  organizationId String
+  userId String
+  createdAt DateTime @default(now())
+  expiresAt DateTime
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  user User @relation(fields: [userId, organizationId], references: [id, organizationId], onDelete: Cascade)
+  @@index([organizationId, userId])
+  @@index([expiresAt])
 }
 
 // Active-card uniqueness is enforced by partial indexes in the RFID migration.

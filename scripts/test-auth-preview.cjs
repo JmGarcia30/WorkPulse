@@ -49,6 +49,7 @@ const db = {
   $transaction: async operation => operation(db),
 };
 const original = Module._load;
+require('./staff-auth-test-double.cjs')(db);
 Module._load = function(name, parent, main) {
   if (name === 'server-only') return {};
   if (name === 'next/headers') return { headers: async () => context.headers, cookies: async () => ({
@@ -126,14 +127,16 @@ async function main() {
   check(await session.getSession() === null, 'Signed SAGA JWT cannot authenticate on another persisted tenant');
   adopt(login);
   for (const role of ['ORGANIZATION_ADMIN', 'HR_ADMIN', 'HIRING_MANAGER', 'EMPLOYEE']) {
+    users[0].employeeAccount = { status: 'ACTIVE', organizationId: 'org-saga', employee: { organizationId: 'org-saga', employeeStatus: 'ACTIVE' } };
     users[0].role = role; await session.createSession({ ...payload, role });
     if (role === 'EMPLOYEE') await reject(() => guards.requireBackOfficeContext(), 'FORBIDDEN', 'Employee cannot enter HR back office');
     else check((await guards.requireBackOfficeContext()).role === role, role + ' has the existing back-office role permission');
   }
+  context.jar.set(session.COOKIE_NAME, { value: staffToken });
   await reject(() => actions.logoutAction(), 'REDIRECT:/saga/login', 'Staff logout preserves SAGA login path');
   check(await session.getSession() === null && !context.jar.has(session.COOKIE_NAME), 'Logout deletes this browser staff session');
   users[0].role = 'HR_ADMIN'; context.jar.set(session.COOKIE_NAME, { value: staffToken });
-  check(!!await session.getSession(), 'Recorded limitation: copied staff JWT remains usable after browser-only logout');
+  check(await session.getSession() === null, 'Copied staff JWT is revoked after logout');
   context.jar.clear();
   const { resolveEmployeeSelfContext } = require('../src/features/employee-self-service/access.ts');
   users[0].role = 'EMPLOYEE'; users[0].employeeAccount = { id: 'account', status: 'ACTIVE', organizationId: 'org-saga', employee: { id: 'employee', organizationId: 'org-saga', employeeStatus: 'ACTIVE' }, organization: { id: 'org-saga', timeZone: 'Asia/Manila' } };
@@ -168,6 +171,7 @@ async function main() {
   const rfidServer = require('../src/features/attendance/rfid-server.ts');
   const transport = require('../src/app/api/attendance/rfid/transport.ts');
   adopt(login);
+  users[0].employeeAccount.status = 'ACTIVE';
   for (const role of ['HR_ADMIN', 'ORGANIZATION_ADMIN', 'HIRING_MANAGER', 'EMPLOYEE']) {
     users[0].role = role; await session.createSession({ ...payload, role });
     if (role.endsWith('ADMIN')) check((await rfidServer.rfidHRContext()).actorUserId === 'hr', role + ' may authorize RFID');
@@ -212,8 +216,8 @@ async function main() {
   await reject(() => registration.verifyCompanyRegistration(db, token, token), 'SETUP_REQUIRED', 'Registration verification requires supported tenant hosting on Preview');
 
   const result = { capturedAt: new Date().toISOString(), passed: true, assertions: checks.length, scope: 'Actual modules; in-memory request/database boundaries, not hosted end-to-end', databaseConnections: 0, checks };
-  fs.mkdirSync('docs/auth-preview-sprint1', { recursive: true });
-  fs.writeFileSync('docs/auth-preview-sprint1/focused-tests.json', JSON.stringify(result, null, 2) + '\n');
+  fs.mkdirSync('docs/auth-security', { recursive: true });
+  fs.writeFileSync('docs/auth-security/preview-boundaries.json', JSON.stringify(result, null, 2) + '\n');
   console.log(JSON.stringify({ passed: true, assertions: checks.length, databaseConnections: 0 }));
 }
 main().catch(error => { console.error(JSON.stringify({ passed: false, code: error.code || error.name, message: error.message.slice(0, 400), stack: error.stack?.split('\n').slice(1, 4) })); process.exitCode = 1; }).finally(() => { Module._load = original; });
