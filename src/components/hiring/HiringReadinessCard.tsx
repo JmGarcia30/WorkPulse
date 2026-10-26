@@ -50,8 +50,10 @@ export function HiringReadinessCard({ isSagaOrganization = false, probationTerms
   const isTerminal =
     currentStatus === ApplicationStatus.REJECTED ||
     currentStatus === ApplicationStatus.WITHDRAWN;
+  const canConvert = isHired ? readiness.canCompleteEmployeeRecord === true : readiness.isReadyToHire;
 
   const handleConfirmHire = () => {
+    if (!canManage || !canConvert || employeeId) return;
     setActionError(null);
     startTransition(async () => {
       const result = await convertApplicationToEmployeeAction(
@@ -122,9 +124,7 @@ export function HiringReadinessCard({ isSagaOrganization = false, probationTerms
               <span>Candidate Successfully Hired</span>
             </div>
             <p className="text-teal-700 leading-relaxed">
-              {candidateName} has cleared all hiring prerequisites and onboarding verifications.
-              The recruitment lifecycle is complete and the compliance handoff package is prepared for
-              Employee Core.
+              {employeeId ? `${candidateName} has a linked employee record.` : readiness.summary}
             </p>
             {employeeId ? (
               <button
@@ -137,12 +137,21 @@ export function HiringReadinessCard({ isSagaOrganization = false, probationTerms
             ) : canManage ? (
               <button
                 type="button"
+                disabled={!canConvert || isPending}
                 onClick={() => setShowConfirmModal(true)}
-                className="rounded-lg bg-teal-700 px-3 py-2 font-bold text-white hover:bg-teal-800"
+                className="rounded-lg bg-teal-700 px-3 py-2 font-bold text-white hover:bg-teal-800 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 Complete Employee Record
               </button>
             ) : null}
+            {!employeeId && !canConvert && (
+              <div role="status" className="text-sm text-teal-700">
+                <p>Complete Employee Record is blocked until current requirements are satisfied.</p>
+                <ul className="list-disc list-inside text-xs">
+                  {readiness.unmetRequirements.map((reason, index) => <li key={index}>{reason}</li>)}
+                </ul>
+              </div>
+            )}
           </div>
         )}
 
@@ -245,7 +254,7 @@ export function HiringReadinessCard({ isSagaOrganization = false, probationTerms
               {readiness.isReadyToHire ? (
                 <button
                   type="button"
-                  disabled={!canManage || isPending}
+                  disabled={!canManage || !canConvert || isPending}
                   onClick={() => setShowConfirmModal(true)}
                   className="w-full flex items-center justify-center gap-2 rounded-md bg-emerald-600 px-5 py-3 text-sm font-bold text-white shadow-emerald-600/20 hover:bg-emerald-700 active:scale-[0.99] transition disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
                 >
@@ -339,7 +348,7 @@ export function HiringReadinessCard({ isSagaOrganization = false, probationTerms
               <button
                 type="button"
                 disabled={
-                  isPending || (!isSagaOrganization && !probationStandardsConfirmed) ||
+                  isPending || !canManage || !canConvert || (!isSagaOrganization && !probationStandardsConfirmed) ||
                   (isSagaOrganization && employmentCategory === EmploymentCategory.TEACHING &&
                     !teachingExpectedEndAt)
                 }

@@ -1,0 +1,24 @@
+{
+  "projectId": "late-block-61364102",
+  "testBranch": {
+    "id": "br-damp-fog-azmmxhga",
+    "name": "workpulse-ess-design",
+    "parentId": "br-hidden-violet-azjl3vam",
+    "default": false,
+    "primary": false,
+    "state": "ready",
+    "endpointId": "ep-wild-mud-az8yzifu"
+  },
+  "defaultBranch": {
+    "id": "br-hidden-violet-azjl3vam",
+    "name": "production",
+    "default": true,
+    "primary": true,
+    "endpointId": "ep-weathered-mouse-azpx765h"
+  },
+  "evidence": "Live Neon get_branch, get_default_branch, list_postgres_endpoints, and list_branches; corroborated by read-only SQL branch/endpoint/project settings.",
+  "testEndpointDistinctFromProduction": true,
+  "productionDatabaseConnections": 0,
+  "credentialsReturnedOrSaved": false,
+  "otherBranches": "Snapshot/checkpoint/pre-change backup branches were listed as metadata only; none was repurposed or written. The configured test branch is missing a required schema column."
+}

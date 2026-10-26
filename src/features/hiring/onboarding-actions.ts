@@ -12,14 +12,14 @@ import {
 } from '@prisma/client';
 import {
   isValidTaskTransition,
-  canCompleteOnboarding,
-  getSagaOnboardingTaskTemplates,
+  evaluateOnboardingChecklist,
+  getOnboardingTaskTemplates,
   RECRUITMENT_DOC_TO_ONBOARDING_TITLE_MAP,
 } from './onboarding-pipeline';
 import { RecruitmentDocumentStatus, Prisma } from '@prisma/client';
 import { localStorageProvider } from '@/lib/storage';
 import { resolveHiringDocumentPolicy } from './document-policy';
-import type { DefaultOnboardingTaskTemplate } from './onboarding-pipeline';
+import { appendOnboardingAudit } from './onboarding-audit';
 
 const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
 const ALLOWED_MIME_TYPES = [
@@ -79,10 +79,7 @@ export async function createSagaOnboardingProcessInTx(
     },
   });
 
-  const templates: DefaultOnboardingTaskTemplate[] = policy.isSaga ? getSagaOnboardingTaskTemplates(category) : [
-    ...policy.requirements.map(def => ({ title: def.title, description: def.description || def.submissionTarget, type: OnboardingTaskType.DOCUMENT, isRequired: def.isRequired && !def.isConditional, matchedRecruitmentDocType: def.type })),
-    { title: 'Organization onboarding review', description: 'HR confirms completion of the organization’s onboarding activities.', type: OnboardingTaskType.ORIENTATION, isRequired: true },
-  ];
+  const templates = getOnboardingTaskTemplates(policy, category);
 
   for (const template of templates) {
     let initialStatus: OnboardingTaskStatus = OnboardingTaskStatus.PENDING;
@@ -374,106 +371,71 @@ export async function updateOnboardingTaskStatusAction(
     return { error: 'Unauthorized to update onboarding task status.' };
   }
 
-  // Derived tenant verification: OnboardingTask -> OnboardingProcess -> Application -> Job -> Organization
-  const task = await prisma.onboardingTask.findFirst({
-    where: {
-      id: taskId,
-      onboardingProcess: {
-        application: {
-          job: { organizationId: user.organizationId },
-        },
-      },
-    },
-    include: {
-      onboardingProcess: {
-        include: {
-          tasks: true,
-        },
-      },
-    },
-  });
-
-  if (!task) {
-    return { error: 'Task not found or access denied.' };
-  }
-
-  if (task.status === newStatus) {
+  try {
+    const result = await prisma.$transaction(async tx => {
+      // Read ownership, task state and historical metadata in the same snapshot.
+      const task = await tx.onboardingTask.findFirst({
+        where: { id: taskId, onboardingProcess: { application: { job: { organizationId: user.organizationId } } } },
+        include: { onboardingProcess: { include: { application: { include: { job: { include: { organization: true } } } } } } },
+      });
+      if (!task) return { error: 'Task not found or access denied.' };
+      const parent = task.onboardingProcess;
+      const success = { success: true, processId: parent.id, applicationId: parent.applicationId };
+      if (task.status === newStatus) return success;
+      if (!isValidTaskTransition(task.status, newStatus)) return { error: 'Invalid task transition from ' + task.status + ' to ' + newStatus + '.' };
+      const reopening = task.status === OnboardingTaskStatus.VERIFIED || task.status === OnboardingTaskStatus.WAIVED;
+      const reason = reviewerNotes?.trim();
+      if (reopening && (!reason || reason.length < 5 || reason.length > 2000)) {
+        return { error: 'Reopening requires an explicit reason of 5 to 2000 characters. Historical completion and verification evidence will be retained in the audit record.' };
+      }
+      if (reopening && parent.status === OnboardingStatus.CANCELLED) return { error: 'A cancelled onboarding process cannot be reopened through task review.' };
+      const now = new Date();
+      const previousVerification = { status: task.status, verifiedAt: task.verifiedAt, verifiedById: task.verifiedById, reviewerNotes: task.reviewerNotes };
+      const data: Prisma.OnboardingTaskUncheckedUpdateInput = { status: newStatus };
+      if (reviewerNotes !== undefined) data.reviewerNotes = reason || null;
+      if (newStatus === OnboardingTaskStatus.VERIFIED || newStatus === OnboardingTaskStatus.REJECTED) {
+        data.verifiedAt = now;
+        data.verifiedById = user.userId;
+      } else if (newStatus === OnboardingTaskStatus.IN_PROGRESS || newStatus === OnboardingTaskStatus.PENDING) {
+        data.verifiedAt = null;
+        data.verifiedById = null;
+      }
+      await tx.onboardingTask.update({ where: { id: taskId }, data });
+      if (reopening) {
+        // Only the explicit Reopen Item operation can reopen a completed process.
+        // The audit retains prior verification evidence before task state changes.
+        await tx.onboardingProcess.update({ where: { id: parent.id }, data: {
+          ...(parent.status === OnboardingStatus.COMPLETED ? { status: OnboardingStatus.IN_PROGRESS } : {}),
+          notes: appendOnboardingAudit(parent.notes, {
+            action: 'TASK_REOPENED', actorUserId: user.userId, organizationId: user.organizationId,
+            at: now, historicalCompletedAt: parent.completedAt, reason, taskId,
+            fromStatus: parent.status, toStatus: parent.status === OnboardingStatus.COMPLETED ? OnboardingStatus.IN_PROGRESS : parent.status,
+            previousVerification,
+          }),
+        } });
+      } else if (parent.status !== OnboardingStatus.COMPLETED && parent.status !== OnboardingStatus.CANCELLED) {
+        const tasks = await tx.onboardingTask.findMany({ where: { onboardingProcessId: parent.id }, select: { title: true, isRequired: true, status: true } });
+        const job = parent.application.job;
+        if (evaluateOnboardingChecklist(tasks, resolveHiringDocumentPolicy(job.organization, job.category), job.category).isComplete) {
+          await tx.candidateAccess.upsert({ where: { applicationId: parent.applicationId }, create: { applicationId: parent.applicationId, revoked: true }, update: { revoked: true, linkHash: null, sessionHash: null, delivered: false } });
+          await tx.onboardingProcess.update({ where: { id: parent.id }, data: {
+            status: OnboardingStatus.COMPLETED, completedAt: parent.completedAt ?? now,
+            notes: appendOnboardingAudit(parent.notes, { action: 'PROCESS_COMPLETED', actorUserId: user.userId, organizationId: user.organizationId, at: now, historicalCompletedAt: parent.completedAt, fromStatus: parent.status, toStatus: OnboardingStatus.COMPLETED }),
+          } });
+        }
+      }
+      // Missing policy items block eligibility independently of historical status.
+      return success;
+    }, { isolationLevel: Prisma.TransactionIsolationLevel.Serializable });
+    if ('error' in result) return result;
+    revalidatePath('/dashboard/hiring/onboarding');
+    revalidatePath('/dashboard/hiring/onboarding/' + result.processId);
+    revalidatePath('/dashboard/hiring/applicants/' + result.applicationId);
     return { success: true };
+  } catch (error) {
+    if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2034') return { error: 'Onboarding changed concurrently. Refresh and review before retrying.' };
+    throw error;
   }
-
-  // Check state machine transition validity
-  if (!isValidTaskTransition(task.status, newStatus)) {
-    return {
-      error: `Invalid task transition from ${task.status} to ${newStatus}.`,
-    };
-  }
-
-  const updateData: {
-    status: OnboardingTaskStatus;
-    reviewerNotes?: string | null;
-    verifiedById?: string | null;
-    verifiedAt?: Date | null;
-  } = {
-    status: newStatus,
-  };
-
-  if (reviewerNotes !== undefined) {
-    updateData.reviewerNotes = reviewerNotes.trim() || null;
-  }
-
-  if (newStatus === OnboardingTaskStatus.VERIFIED) {
-    updateData.verifiedById = user.userId;
-    updateData.verifiedAt = new Date();
-  } else if (newStatus === OnboardingTaskStatus.REJECTED) {
-    updateData.verifiedById = user.userId;
-    updateData.verifiedAt = new Date();
-  } else if (
-    newStatus === OnboardingTaskStatus.IN_PROGRESS ||
-    newStatus === OnboardingTaskStatus.PENDING
-  ) {
-    updateData.verifiedById = null;
-    updateData.verifiedAt = null;
-  }
-
-  await prisma.$transaction(async (tx) => {
-    await tx.onboardingTask.update({
-      where: { id: taskId },
-      data: updateData,
-    });
-
-    // Re-evaluate parent OnboardingProcess completion state
-    const siblingTasks = await tx.onboardingTask.findMany({
-      where: { onboardingProcessId: task.onboardingProcessId },
-      select: { isRequired: true, status: true },
-    });
-
-    const isAllComplete = canCompleteOnboarding(siblingTasks);
-    const parentProcess = task.onboardingProcess;
-
-    if (isAllComplete && parentProcess.status !== OnboardingStatus.COMPLETED) {
-      await tx.candidateAccess.upsert({ where: { applicationId: parentProcess.applicationId }, create: { applicationId: parentProcess.applicationId, revoked: true }, update: { revoked: true, linkHash: null, sessionHash: null, delivered: false } });
-      await tx.onboardingProcess.update({
-        where: { id: parentProcess.id },
-        data: {
-          status: OnboardingStatus.COMPLETED,
-          completedAt: new Date(),
-        },
-      });
-    } else if (!isAllComplete && parentProcess.status === OnboardingStatus.COMPLETED) {
-      await tx.onboardingProcess.update({
-        where: { id: parentProcess.id },
-        data: {
-          status: OnboardingStatus.IN_PROGRESS,
-          completedAt: null,
-        },
-      });
-    }
-  });
-
-  revalidatePath('/dashboard/hiring/onboarding');
-  revalidatePath(`/dashboard/hiring/onboarding/${task.onboardingProcessId}`);
-  revalidatePath(`/dashboard/hiring/applicants/${task.onboardingProcess.applicationId}`);
-  return { success: true };
 }
 
 /**
@@ -625,43 +587,52 @@ export async function completeOnboardingAction(onboardingProcessId: string) {
     return { error: 'Unauthorized to complete onboarding.' };
   }
 
-  // Derived tenant verification
-  const process = await prisma.onboardingProcess.findFirst({
-    where: {
-      id: onboardingProcessId,
-      application: {
-        job: { organizationId: user.organizationId },
+  const result = await prisma.$transaction(async tx => {
+    // Derived tenant verification and all completion checks share one snapshot.
+    const process = await tx.onboardingProcess.findFirst({
+      where: {
+        id: onboardingProcessId,
+        application: {
+          job: { organizationId: user.organizationId },
+        },
       },
-    },
-    include: {
-      tasks: true,
-    },
-  });
+      include: {
+        tasks: true,
+        application: { include: { job: { include: { organization: true } } } },
+      },
+    });
 
-  if (!process) {
-    return { error: 'Onboarding process not found or access denied.' };
-  }
+    if (!process) {
+      return { error: 'Onboarding process not found or access denied.' };
+    }
 
-  if (!canCompleteOnboarding(process.tasks)) {
-    return {
-      error:
-        'Cannot complete onboarding: All required checklist tasks must be verified or waived first.',
-    };
-  }
+    const job = process.application.job;
+    const completeness = evaluateOnboardingChecklist(process.tasks, resolveHiringDocumentPolicy(job.organization, job.category), job.category);
+    if (process.status === OnboardingStatus.CANCELLED || !completeness.isComplete) {
+      return {
+        error:
+          `Cannot complete onboarding: All policy requirements must exist and be verified or waived. ${[...completeness.missing, ...completeness.pending].join(', ')}`,
+      };
+    }
 
-  await prisma.$transaction(async tx => {
+    if (process.status === OnboardingStatus.COMPLETED) return { success: true, applicationId: process.applicationId };
+    const now = new Date();
+
     await tx.candidateAccess.upsert({ where: { applicationId: process.applicationId }, create: { applicationId: process.applicationId, revoked: true }, update: { revoked: true, linkHash: null, sessionHash: null, delivered: false } });
     await tx.onboardingProcess.update({
       where: { id: onboardingProcessId },
       data: {
         status: OnboardingStatus.COMPLETED,
-        completedAt: new Date(),
+        completedAt: process.completedAt ?? now,
+        notes: appendOnboardingAudit(process.notes, { action: 'PROCESS_COMPLETED', actorUserId: user.userId, organizationId: user.organizationId, at: now, historicalCompletedAt: process.completedAt, fromStatus: process.status, toStatus: OnboardingStatus.COMPLETED }),
       },
     });
-  });
+    return { success: true, applicationId: process.applicationId };
+  }, { isolationLevel: Prisma.TransactionIsolationLevel.Serializable });
+  if ('error' in result) return result;
 
   revalidatePath('/dashboard/hiring/onboarding');
   revalidatePath(`/dashboard/hiring/onboarding/${onboardingProcessId}`);
-  revalidatePath(`/dashboard/hiring/applicants/${process.applicationId}`);
+  revalidatePath(`/dashboard/hiring/applicants/${result.applicationId}`);
   return { success: true };
 }

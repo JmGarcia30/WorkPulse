@@ -17,7 +17,6 @@ import {
   canViewEmployees,
 } from '@/lib/permissions/rbac';
 import { calculateHiringReadiness } from '@/features/hiring/readiness';
-import { ensureRecruitmentDocumentsExist } from '@/features/hiring/document-requirements';
 import { ApplicantProfileView } from '@/components/hiring/ApplicantProfileView';
 
 interface CandidateProfilePageProps {
@@ -123,15 +122,6 @@ export default async function CandidateProfilePage({
 
   if (!application) {
     notFound();
-  }
-
-  // Idempotently ensure standard SAGA document checklist records are populated
-  {
-    const seededDocs = await ensureRecruitmentDocumentsExist(
-      application.id,
-      user.organizationId
-    );
-    application.recruitmentDocuments = seededDocs as typeof application.recruitmentDocuments;
   }
 
   const hiringPolicy = resolveHiringDocumentPolicy(application.job.organization, application.job.category);

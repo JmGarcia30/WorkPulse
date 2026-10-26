@@ -1,0 +1,28 @@
+{
+  "capturedAt": "2026-10-26T15:50:24.273Z",
+  "identity": {
+    "database": "neondb",
+    "schema": "public",
+    "read_only": "on",
+    "branch_id": "br-damp-fog-azmmxhga",
+    "endpoint_id": "ep-wild-mud-az8yzifu",
+    "project_id": "late-block-61364102"
+  },
+  "isolation": "PASS",
+  "schema": "BLOCKED",
+  "modelsCompared": 73,
+  "missingColumns": [
+    "RecruitmentDocument.requestedAt"
+  ],
+  "missingEnums": [],
+  "appliedMigrations": 37,
+  "pendingMigrations": [
+    "20261026000000_stage_document_requests"
+  ],
+  "unresolvedMigrations": [],
+  "prismaRequestedAtRead": "P2022",
+  "databaseWrites": 0,
+  "migrationsExecuted": 0,
+  "productionRecordQueries": 0,
+  "originalEnvUnchanged": true
+}

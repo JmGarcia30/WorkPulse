@@ -1,0 +1,33 @@
+{
+  "capturedAt": "2026-10-26T16:48:46.092Z",
+  "status": "PASS",
+  "scope": "Read-only catalogs and Prisma migration metadata only; no business-record reads or production writes",
+  "branch_id": "br-hidden-violet-azjl3vam",
+  "missing_columns": [],
+  "missing_enum_values": [],
+  "stage_migration": [
+    {
+      "migration_name": "20261026000000_stage_document_requests",
+      "checksum": "7c73cea6b2cec647580722896474a573b73111bc55041b6f4b9812ef25e16ec3",
+      "finished": true,
+      "rolled_back": false
+    }
+  ],
+  "unfinished_migrations": 0,
+  "details": {
+    "branch_id": "br-hidden-violet-azjl3vam",
+    "requestedAt": [
+      {
+        "data_type": "timestamp without time zone",
+        "datetime_precision": 3,
+        "is_nullable": "YES",
+        "column_default": null
+      }
+    ],
+    "applied_count": 38,
+    "unfinished_count": 0,
+    "missing_migrations": []
+  },
+  "checksumLineEndingEquivalence": true,
+  "productionWrites": 0
+}

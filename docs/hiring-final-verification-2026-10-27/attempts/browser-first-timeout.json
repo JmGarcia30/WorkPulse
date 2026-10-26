@@ -1,0 +1,12 @@
+{
+  "capturedAt": "2026-10-26T16:50:28.655Z",
+  "status": "FAIL",
+  "checks": [
+    {
+      "label": "Normal password login reaches synthetic tenant dashboard through real auth/session storage",
+      "status": "PASS"
+    }
+  ],
+  "errorCode": "Error",
+  "message": "BROWSER_PAGE_READY"
+}

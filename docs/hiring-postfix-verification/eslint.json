@@ -1,0 +1,269 @@
+{
+  "capturedAt": "2026-10-26T15:50:43.313Z",
+  "changedFiles": {
+    "errors": 0,
+    "warnings": 0
+  },
+  "repository": {
+    "errors": 96,
+    "warnings": 64
+  },
+  "changedFileDiagnostics": [],
+  "repositoryProblemFiles": [
+    {
+      "file": "scripts\\batch0-recovery-environment.cjs",
+      "errors": 5,
+      "warnings": 0
+    },
+    {
+      "file": "scripts\\check-batch0-compatibility.cjs",
+      "errors": 4,
+      "warnings": 0
+    },
+    {
+      "file": "scripts\\demo-browser.cjs",
+      "errors": 3,
+      "warnings": 1
+    },
+    {
+      "file": "scripts\\demo-stabilization.cjs",
+      "errors": 9,
+      "warnings": 0
+    },
+    {
+      "file": "scripts\\execute-batch0-recovery.cjs",
+      "errors": 5,
+      "warnings": 1
+    },
+    {
+      "file": "scripts\\measure-batch0-recovery.cjs",
+      "errors": 9,
+      "warnings": 0
+    },
+    {
+      "file": "scripts\\performance-audit-browser.cjs",
+      "errors": 3,
+      "warnings": 1
+    },
+    {
+      "file": "scripts\\performance-audit-preload.cjs",
+      "errors": 1,
+      "warnings": 0
+    },
+    {
+      "file": "scripts\\performance-audit.cjs",
+      "errors": 10,
+      "warnings": 0
+    },
+    {
+      "file": "scripts\\reference\\final-ux-employees.ts",
+      "errors": 0,
+      "warnings": 1
+    },
+    {
+      "file": "scripts\\rehearse-isolated-migrations.cjs",
+      "errors": 6,
+      "warnings": 0
+    },
+    {
+      "file": "scripts\\reproduce-audit.ts",
+      "errors": 1,
+      "warnings": 1
+    },
+    {
+      "file": "scripts\\seed-parsed-resume.ts",
+      "errors": 2,
+      "warnings": 0
+    },
+    {
+      "file": "scripts\\summarize-batch0-recovery.cjs",
+      "errors": 3,
+      "warnings": 0
+    },
+    {
+      "file": "scripts\\test-candidate-onboarding-submission.ts",
+      "errors": 1,
+      "warnings": 1
+    },
+    {
+      "file": "scripts\\test-candidate-portal-and-rejection.ts",
+      "errors": 0,
+      "warnings": 2
+    },
+    {
+      "file": "scripts\\test-extraction-units.ts",
+      "errors": 0,
+      "warnings": 2
+    },
+    {
+      "file": "scripts\\test-pipeline-diagnostics.ts",
+      "errors": 1,
+      "warnings": 0
+    },
+    {
+      "file": "scripts\\test-saga-institutional-hiring.ts",
+      "errors": 0,
+      "warnings": 9
+    },
+    {
+      "file": "scripts\\test-sprint2-1-pipeline.ts",
+      "errors": 1,
+      "warnings": 0
+    },
+    {
+      "file": "scripts\\test-sprint2-2-interviews.ts",
+      "errors": 0,
+      "warnings": 2
+    },
+    {
+      "file": "scripts\\test-sprint2-3-assessments-offers.ts",
+      "errors": 0,
+      "warnings": 3
+    },
+    {
+      "file": "scripts\\test-sprint2-4-onboarding.ts",
+      "errors": 0,
+      "warnings": 1
+    },
+    {
+      "file": "scripts\\test-vertical-slice.ts",
+      "errors": 1,
+      "warnings": 0
+    },
+    {
+      "file": "scripts\\validate-batch0-build.cjs",
+      "errors": 2,
+      "warnings": 0
+    },
+    {
+      "file": "src\\app\\product-modules-showcase.tsx",
+      "errors": 0,
+      "warnings": 2
+    },
+    {
+      "file": "src\\components\\careers\\CandidatePortalClient.tsx",
+      "errors": 0,
+      "warnings": 10
+    },
+    {
+      "file": "src\\components\\employees\\profile\\ComplianceTab.tsx",
+      "errors": 0,
+      "warnings": 2
+    },
+    {
+      "file": "src\\components\\employees\\profile\\DecisionsAuditTab.tsx",
+      "errors": 0,
+      "warnings": 3
+    },
+    {
+      "file": "src\\components\\employees\\profile\\EmployeeProfileTabs.tsx",
+      "errors": 0,
+      "warnings": 1
+    },
+    {
+      "file": "src\\components\\employees\\profile\\EmploymentHistoryTab.tsx",
+      "errors": 0,
+      "warnings": 2
+    },
+    {
+      "file": "src\\components\\employees\\profile\\EssAccountTab.tsx",
+      "errors": 0,
+      "warnings": 3
+    },
+    {
+      "file": "src\\components\\employees\\profile\\OverviewTab.tsx",
+      "errors": 0,
+      "warnings": 3
+    },
+    {
+      "file": "src\\components\\hiring\\ApplicationTimeline.tsx",
+      "errors": 0,
+      "warnings": 1
+    },
+    {
+      "file": "src\\components\\hiring\\AssessmentResultModal.tsx",
+      "errors": 0,
+      "warnings": 1
+    },
+    {
+      "file": "src\\components\\hiring\\CandidateLifecycleStepper.tsx",
+      "errors": 0,
+      "warnings": 2
+    },
+    {
+      "file": "src\\components\\hiring\\CandidateOnboardingSection.tsx",
+      "errors": 0,
+      "warnings": 2
+    },
+    {
+      "file": "src\\components\\hiring\\OnboardingTaskReviewModal.tsx",
+      "errors": 0,
+      "warnings": 3
+    },
+    {
+      "file": "src\\components\\hiring\\OnboardingTaskUploadModal.tsx",
+      "errors": 0,
+      "warnings": 1
+    },
+    {
+      "file": "src\\components\\hiring\\ParsedResumeSection.tsx",
+      "errors": 0,
+      "warnings": 2
+    },
+    {
+      "file": "src\\components\\public\\WorkspaceDiscoveryForm.tsx",
+      "errors": 0,
+      "warnings": 1
+    },
+    {
+      "file": "storage\\hiring-policy\\edit.cjs",
+      "errors": 1,
+      "warnings": 0
+    },
+    {
+      "file": "storage\\hiring-policy\\finalize.cjs",
+      "errors": 3,
+      "warnings": 0
+    },
+    {
+      "file": "storage\\hiring-policy\\save-progress.cjs",
+      "errors": 2,
+      "warnings": 0
+    },
+    {
+      "file": "storage\\hiring-policy\\test-edit.cjs",
+      "errors": 1,
+      "warnings": 0
+    },
+    {
+      "file": "storage\\hiring-policy\\ui-edit.cjs",
+      "errors": 1,
+      "warnings": 0
+    },
+    {
+      "file": "storage\\integration-check\\candidate.cjs",
+      "errors": 6,
+      "warnings": 0
+    },
+    {
+      "file": "storage\\integration-check\\inspect.cjs",
+      "errors": 5,
+      "warnings": 0
+    },
+    {
+      "file": "storage\\integration-check\\release.cjs",
+      "errors": 3,
+      "warnings": 0
+    },
+    {
+      "file": "storage\\integration-check\\run.cjs",
+      "errors": 3,
+      "warnings": 0
+    },
+    {
+      "file": "storage\\loading-consistency\\finalize.cjs",
+      "errors": 4,
+      "warnings": 0
+    }
+  ]
+}

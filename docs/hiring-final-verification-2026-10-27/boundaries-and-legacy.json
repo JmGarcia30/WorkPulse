@@ -1,0 +1,61 @@
+{
+  "capturedAt": "2026-10-26T16:44:39.429Z",
+  "status": "PASS",
+  "liveDatabase": false,
+  "boundaryChecks": [
+    {
+      "check": "Persisted EMPLOYEE cannot change stage or convert despite HR session claims",
+      "status": "PASS"
+    },
+    {
+      "check": "Persisted HIRING_MANAGER cannot change stage or convert despite HR session claims",
+      "status": "PASS"
+    },
+    {
+      "check": "Foreign actor denied before application access",
+      "status": "PASS"
+    },
+    {
+      "check": "Foreign application denied by derived ownership",
+      "status": "PASS"
+    },
+    {
+      "check": "OFFER missing policy task denied by actual conversion with no mutations",
+      "status": "PASS"
+    },
+    {
+      "check": "HIRED missing policy task denied by actual conversion with no mutations",
+      "status": "PASS"
+    },
+    {
+      "check": "Unauthorized role and foreign tenant cannot verify or reopen onboarding tasks",
+      "status": "PASS"
+    },
+    {
+      "check": "Verification on incomplete legacy COMPLETED process preserves status, timestamp and notes; manual completion stays blocked",
+      "status": "PASS"
+    },
+    {
+      "check": "Explicit reopening requires a reason and atomically retains completion/verification evidence in audit; duplicate is idempotent",
+      "status": "PASS"
+    },
+    {
+      "check": "Subsequent verification/recompletion preserves original timestamp, existing waivers and prior audit; repeated completion is idempotent",
+      "status": "PASS"
+    },
+    {
+      "check": "Explicit waiver reopening retains original waiver evidence and completion timestamp",
+      "status": "PASS"
+    },
+    {
+      "check": "Onboarding serialization conflict returns a refresh/review error",
+      "status": "PASS"
+    }
+  ],
+  "legacyMetadataFinding": {
+    "status": "PASS",
+    "historicalCompletedAtClearedAfterVerification": false,
+    "explicitReopeningAudited": true,
+    "recompletionPreservesHistory": true
+  }
+}

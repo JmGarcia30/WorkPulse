@@ -19,7 +19,6 @@ import {
   CheckCircle2,
   XCircle,
   FileText,
-  Clock,
   Download,
   AlertCircle,
   RotateCcw,
@@ -55,10 +54,8 @@ export function OnboardingTaskReviewModal({
   onClose,
 }: TaskReviewModalProps) {
   const router = useRouter();
-  const [selectedStatus, setSelectedStatus] = useState<OnboardingTaskStatus>(
-    OnboardingTaskStatus.VERIFIED
-  );
-  const [reviewerNotes, setReviewerNotes] = useState(task.reviewerNotes || '');
+  const isReopening = task.status === OnboardingTaskStatus.VERIFIED || task.status === OnboardingTaskStatus.WAIVED;
+  const [reviewerNotes, setReviewerNotes] = useState(isReopening ? '' : task.reviewerNotes || '');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -206,9 +203,12 @@ export function OnboardingTaskReviewModal({
           {/* Reviewer Feedback Notes */}
           <div className="space-y-1.5">
             <label className="block text-sm font-bold text-[var(--wp-text)]">
-              Reviewer Notes / Feedback (Optional)
+              {isReopening ? 'Reason for Reopening (Required)' : 'Reviewer Notes / Feedback (Optional)'}
             </label>
-            <textarea aria-label="Reviewer Notes / Feedback (Optional)"
+            <textarea aria-label={isReopening ? 'Reason for Reopening (Required)' : 'Reviewer Notes / Feedback (Optional)'}
+              required={isReopening}
+              minLength={isReopening ? 5 : undefined}
+              maxLength={isReopening ? 2000 : undefined}
               value={reviewerNotes}
               onChange={(e) => setReviewerNotes(e.target.value)}
               placeholder="e.g. Document verified against official PRC database. Approved."
@@ -264,11 +264,11 @@ export function OnboardingTaskReviewModal({
               </button>
             )}
 
-            {task.status === OnboardingTaskStatus.VERIFIED && (
+            {isReopening && (
               <button
                 type="button"
-                disabled={isSubmitting}
-                onClick={() => handleStatusUpdate(OnboardingTaskStatus.IN_PROGRESS)}
+                disabled={isSubmitting || reviewerNotes.trim().length < 5 || reviewerNotes.trim().length > 2000}
+                onClick={() => handleStatusUpdate(task.status === OnboardingTaskStatus.WAIVED ? OnboardingTaskStatus.PENDING : OnboardingTaskStatus.IN_PROGRESS)}
                 className="inline-flex items-center gap-1.5 rounded-md bg-amber-50 border border-amber-200 px-3.5 py-2 text-sm font-semibold text-amber-700 hover:bg-amber-100 transition disabled:opacity-50"
               >
                 <RotateCcw className="h-3.5 w-3.5" />

@@ -1,0 +1,151 @@
+{
+  "capturedAt": "2026-10-26T16:44:39.035Z",
+  "status": "PASS",
+  "liveBrowser": false,
+  "checks": [
+    {
+      "isSaga": true,
+      "category": "TEACHING",
+      "taskCount": 0,
+      "status": "PASS",
+      "disabledHireButton": true
+    },
+    {
+      "isSaga": true,
+      "category": "TEACHING",
+      "taskCount": 9,
+      "status": "PASS",
+      "disabledHireButton": true
+    },
+    {
+      "isSaga": true,
+      "category": "TEACHING",
+      "legacyHired": true,
+      "status": "PASS",
+      "missingTasksBlockRecovery": true
+    },
+    {
+      "isSaga": true,
+      "category": "TEACHING",
+      "status": "PASS",
+      "missingDocumentsBlockRecovery": true
+    },
+    {
+      "isSaga": true,
+      "category": "TEACHING",
+      "status": "PASS",
+      "completeLegacyRecoveryEnabled": true
+    },
+    {
+      "isSaga": true,
+      "category": "NON_TEACHING",
+      "taskCount": 0,
+      "status": "PASS",
+      "disabledHireButton": true
+    },
+    {
+      "isSaga": true,
+      "category": "NON_TEACHING",
+      "taskCount": 9,
+      "status": "PASS",
+      "disabledHireButton": true
+    },
+    {
+      "isSaga": true,
+      "category": "NON_TEACHING",
+      "legacyHired": true,
+      "status": "PASS",
+      "missingTasksBlockRecovery": true
+    },
+    {
+      "isSaga": true,
+      "category": "NON_TEACHING",
+      "status": "PASS",
+      "missingDocumentsBlockRecovery": true
+    },
+    {
+      "isSaga": true,
+      "category": "NON_TEACHING",
+      "status": "PASS",
+      "completeLegacyRecoveryEnabled": true
+    },
+    {
+      "isSaga": false,
+      "category": "TEACHING",
+      "taskCount": 0,
+      "status": "PASS",
+      "disabledHireButton": true
+    },
+    {
+      "isSaga": false,
+      "category": "TEACHING",
+      "taskCount": 1,
+      "status": "PASS",
+      "disabledHireButton": true
+    },
+    {
+      "isSaga": false,
+      "category": "TEACHING",
+      "legacyHired": true,
+      "status": "PASS",
+      "missingTasksBlockRecovery": true
+    },
+    {
+      "isSaga": false,
+      "category": "TEACHING",
+      "status": "PASS",
+      "missingDocumentsBlockRecovery": true
+    },
+    {
+      "isSaga": false,
+      "category": "TEACHING",
+      "status": "PASS",
+      "completeLegacyRecoveryEnabled": true
+    },
+    {
+      "isSaga": false,
+      "category": "NON_TEACHING",
+      "taskCount": 0,
+      "status": "PASS",
+      "disabledHireButton": true
+    },
+    {
+      "isSaga": false,
+      "category": "NON_TEACHING",
+      "taskCount": 1,
+      "status": "PASS",
+      "disabledHireButton": true
+    },
+    {
+      "isSaga": false,
+      "category": "NON_TEACHING",
+      "legacyHired": true,
+      "status": "PASS",
+      "missingTasksBlockRecovery": true
+    },
+    {
+      "isSaga": false,
+      "category": "NON_TEACHING",
+      "status": "PASS",
+      "missingDocumentsBlockRecovery": true
+    },
+    {
+      "isSaga": false,
+      "category": "NON_TEACHING",
+      "status": "PASS",
+      "completeLegacyRecoveryEnabled": true
+    },
+    {
+      "taskStatus": "VERIFIED",
+      "status": "PASS",
+      "reopeningReasonRequired": true,
+      "reopeningInitiallyDisabled": true
+    },
+    {
+      "taskStatus": "WAIVED",
+      "status": "PASS",
+      "reopeningReasonRequired": true,
+      "reopeningInitiallyDisabled": true
+    }
+  ]
+}

@@ -3,6 +3,7 @@ import {
   OnboardingTaskType,
   OnboardingTaskStatus,
 } from '@prisma/client';
+import type { HiringDocumentPolicy } from './document-policy';
 
 export const ALLOWED_TASK_TRANSITIONS: Record<
   OnboardingTaskStatus,
@@ -218,6 +219,50 @@ export const RECRUITMENT_DOC_TO_ONBOARDING_TITLE_MAP: Record<string, string[]> =
     'NBI / Police Clearance Certificate',
   ],
 };
+
+/** The same policy drives initialization and read-only completeness checks. */
+export function getOnboardingTaskTemplates(
+  policy: HiringDocumentPolicy,
+  category: 'TEACHING' | 'NON_TEACHING'
+): DefaultOnboardingTaskTemplate[] {
+  return policy.isSaga ? getSagaOnboardingTaskTemplates(category) : [
+    ...policy.requirements.map(def => ({
+      title: def.title, description: def.description || def.submissionTarget,
+      type: OnboardingTaskType.DOCUMENT,
+      isRequired: def.isRequired && !def.isConditional,
+      matchedRecruitmentDocType: def.type,
+    })),
+    { title: 'Organization onboarding review', description: 'HR confirms completion of the organization’s onboarding activities.', type: OnboardingTaskType.ORIENTATION, isRequired: true },
+  ];
+}
+
+export function evaluateOnboardingChecklist(
+  tasks: Array<{ title: string; isRequired: boolean; status: OnboardingTaskStatus }>,
+  policy?: HiringDocumentPolicy,
+  category?: 'TEACHING' | 'NON_TEACHING'
+) {
+  const cleared = (task: { status: OnboardingTaskStatus }) =>
+    task.status === OnboardingTaskStatus.VERIFIED || task.status === OnboardingTaskStatus.WAIVED;
+  const missing: string[] = [];
+  const pending = tasks.filter(task => task.isRequired && !cleared(task)).map(task => task.title);
+  // Category and tenant context must be explicit; never infer SAGA from a task title.
+  if (policy && !category) missing.push('Employment category for onboarding policy review');
+  if (policy && category) {
+    for (const template of getOnboardingTaskTemplates(policy, category).filter(task => task.isRequired)) {
+      // Only documented legacy aliases qualify. Unknown legacy titles require HR review.
+      const aliases = policy.isSaga && template.matchedRecruitmentDocType
+        ? RECRUITMENT_DOC_TO_ONBOARDING_TITLE_MAP[template.matchedRecruitmentDocType] || [] : [];
+      const matches = tasks.filter(task => [template.title, ...aliases].includes(task.title));
+      if (matches.length === 0) missing.push(template.title);
+      else if (!matches.every(cleared)) pending.push(template.title);
+    }
+  }
+  return {
+    isComplete: tasks.length > 0 && missing.length === 0 && pending.length === 0,
+    missing,
+    pending: [...new Set(pending)],
+  };
+}
 
 /**
  * Categorizes an onboarding task into its institutional section.

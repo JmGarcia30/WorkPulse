@@ -1,0 +1,61 @@
+{
+  "capturedAt": "2026-10-26T16:58:08.140Z",
+  "checks": [
+    {
+      "label": "Normal password login reaches synthetic tenant dashboard through real auth/session storage",
+      "status": "PASS"
+    },
+    {
+      "label": "Profile shows NOT READY and disabled hiring for incomplete COMPLETED checklist",
+      "status": "PASS"
+    },
+    {
+      "label": "Progress tracker and stage controller display the same derived generic lifecycle number",
+      "status": "PASS"
+    },
+    {
+      "label": "Direct authenticated HTTP conversion cannot bypass missing onboarding requirements",
+      "status": "PASS"
+    },
+    {
+      "label": "Legacy HIRED recovery is disabled and explains current unmet prerequisites",
+      "status": "PASS"
+    },
+    {
+      "label": "Browser task verification preserves legacy completion status, timestamp and notes",
+      "status": "PASS"
+    },
+    {
+      "label": "Explicit Reopen Item starts blocked until a fresh reason is entered",
+      "status": "PASS"
+    },
+    {
+      "label": "Browser explicit reopening persists authorized audit and preserves the historical completion timestamp",
+      "status": "PASS"
+    },
+    {
+      "label": "Kanban Move dialog blocks progression while initial screening is scheduled",
+      "status": "PASS"
+    },
+    {
+      "label": "Direct HTTP stage action repeats scheduled-interview enforcement",
+      "status": "PASS"
+    },
+    {
+      "label": "Authorized rejection remains available despite incomplete interviews and records one status event",
+      "status": "PASS"
+    },
+    {
+      "label": "Profile progression commits prerequisites-approved status and renders the updated stage",
+      "status": "PASS"
+    },
+    {
+      "label": "Authenticated HTTP conversion rejects foreign-tenant application IDs",
+      "status": "PASS"
+    },
+    {
+      "label": "Browser hiring performs atomic conversion and opens the linked employee record",
+      "status": "PASS"
+    }
+  ]
+}

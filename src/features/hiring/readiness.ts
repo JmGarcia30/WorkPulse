@@ -4,7 +4,6 @@ import {
   AssessmentStatus,
   AssessmentType,
   EmploymentCategory,
-  EvaluationRecommendation,
   InterviewStatus,
   InterviewType,
   OfferStatus,
@@ -13,8 +12,9 @@ import {
   RecruitmentDocumentStatus,
   RecruitmentDocumentType,
 } from '@prisma/client';
-import { canCompleteOnboarding } from './onboarding-pipeline';
+import { evaluateOnboardingChecklist } from './onboarding-pipeline';
 import { areRecruitmentDocumentsSatisfied } from './saga-requirements';
+import { isAssessmentPassed, isInterviewApproved } from './qualification';
 
 export interface ReadinessChecklistItem {
   key: string;
@@ -36,6 +36,7 @@ export interface ReadinessChecklistItem {
 
 export interface HiringReadinessResult {
   isReadyToHire: boolean;
+  canCompleteEmployeeRecord?: boolean;
   overallStatus: 'READY' | 'NOT_READY' | 'HIRED' | 'TERMINAL';
   badgeLabel: string;
   badgeBg: string;
@@ -47,6 +48,7 @@ export interface HiringReadinessResult {
 
 export interface ApplicationReadinessSource {
   id?: string;
+  employee?: { id: string } | null;
   status: ApplicationStatus;
   appliedAt?: Date;
   hiringPolicy?: HiringDocumentPolicy;
@@ -132,15 +134,19 @@ function calculateHiringReadinessInternal(
     application.status === ApplicationStatus.HIRED &&
     !evaluateHiredPrerequisites
   ) {
+    const prerequisites = calculateHiringReadinessInternal(application, true);
     return {
       isReadyToHire: false,
+      canCompleteEmployeeRecord: prerequisites.isReadyToHire,
       overallStatus: 'HIRED',
       badgeLabel: 'Already Hired',
       badgeBg: 'bg-teal-50 dark:bg-teal-950/60 ring-1 ring-teal-500/20',
       badgeText: 'text-teal-700 dark:text-teal-300',
-      checklist: [],
-      unmetRequirements: [],
-      summary: 'Candidate has completed all pre-employment requirements and is hired.',
+      checklist: prerequisites.checklist,
+      unmetRequirements: prerequisites.unmetRequirements,
+      summary: prerequisites.isReadyToHire
+        ? 'Application is recorded as hired. Current prerequisites for employee record completion are satisfied.'
+        : 'Application is recorded as hired. Current prerequisites require HR review before completing an employee record.',
     };
   }
 
@@ -243,7 +249,8 @@ function calculateHiringReadinessInternal(
   );
 
   const failedAssessments = assessments.filter(
-    (a) => a.status === AssessmentStatus.FAILED
+    (a) => a.status === AssessmentStatus.FAILED || a.status === AssessmentStatus.EXPIRED ||
+      (a.status === AssessmentStatus.PASSED && !isAssessmentPassed(a))
   );
   const pendingAssessments = assessments.filter(
     (a) =>
@@ -262,7 +269,7 @@ function calculateHiringReadinessInternal(
     assessmentStatusText = `${pendingAssessments.length} assessment(s) in progress / pending evaluation`;
     assessmentBlockingReason = 'Candidate has assigned assessments awaiting score submission.';
   } else if (writtenExam) {
-    if (writtenExam.status === AssessmentStatus.PASSED) {
+    if (isAssessmentPassed(writtenExam)) {
       assessmentComplete = true;
       assessmentStatusText = `Written Examination passed (${writtenExam.score ?? 'Pass'})`;
     } else {
@@ -308,7 +315,7 @@ function calculateHiringReadinessInternal(
     if (teachingDemoIv) {
       if (teachingDemoIv.status === InterviewStatus.COMPLETED) {
         if (
-          teachingDemoIv.recommendation === EvaluationRecommendation.DO_NOT_RECOMMEND
+          !isInterviewApproved(teachingDemoIv)
         ) {
           demoComplete = false;
           demoStatusText = 'Teaching demonstration unsatisfactory';
@@ -322,7 +329,7 @@ function calculateHiringReadinessInternal(
         demoStatusText = 'Teaching demonstration scheduled / pending';
         demoBlockingReason = 'Teaching demonstration has not been completed.';
       }
-    } else if (teachingDemoAss && teachingDemoAss.status === AssessmentStatus.PASSED) {
+    } else if (teachingDemoAss && isAssessmentPassed(teachingDemoAss)) {
       demoComplete = true;
       demoStatusText = 'Teaching demonstration cleared';
     } else {
@@ -356,7 +363,7 @@ function calculateHiringReadinessInternal(
 
     if (hodIv) {
       if (hodIv.status === InterviewStatus.COMPLETED) {
-        if (hodIv.recommendation === EvaluationRecommendation.DO_NOT_RECOMMEND) {
+        if (!isInterviewApproved(hodIv)) {
           hodComplete = false;
           hodStatusText = 'Not endorsed by Head of Department';
           hodBlockingReason = 'Head of Department did not endorse applicant for final interview.';
@@ -398,7 +405,7 @@ function calculateHiringReadinessInternal(
     if (presidentIv) {
       if (presidentIv.status === InterviewStatus.COMPLETED) {
         if (
-          presidentIv.recommendation === EvaluationRecommendation.DO_NOT_RECOMMEND
+          !isInterviewApproved(presidentIv)
         ) {
           presComplete = false;
           presStatusText = 'President final interview not approved';
@@ -429,8 +436,9 @@ function calculateHiringReadinessInternal(
     if (!presComplete && presBlockingReason) {
       unmetRequirements.push(presBlockingReason);
     }
-  } else {
-    // Non-SAGA legacy mode: Standard unified interview check
+  }
+  {
+    // Assigned activities also block final hiring, including initial screening in SAGA.
     const interviews = application.interviews || [];
     let interviewComplete = true;
     let interviewStatusText = 'No interviews required or scheduled';
@@ -438,7 +446,7 @@ function calculateHiringReadinessInternal(
 
     if (interviews.length > 0) {
       const hasPendingInterview = interviews.some(
-        (iv) => iv.status === InterviewStatus.SCHEDULED
+        (iv) => iv.status !== InterviewStatus.CANCELLED && !isInterviewApproved(iv)
       );
       const hasCompletedInterview = interviews.some(
         (iv) => iv.status === InterviewStatus.COMPLETED
@@ -447,7 +455,7 @@ function calculateHiringReadinessInternal(
       if (hasPendingInterview) {
         interviewComplete = false;
         interviewStatusText = 'Active interview scheduled, pending completion';
-        interviewBlockingReason = 'One or more scheduled interviews have not been completed.';
+        interviewBlockingReason = 'One or more interviews require completion and a positive evaluation.';
       } else if (!hasCompletedInterview) {
         interviewComplete = false;
         interviewStatusText = 'No completed interviews recorded';
@@ -482,6 +490,11 @@ function calculateHiringReadinessInternal(
 
   if (acceptedOffer) {
     offerStatusText = `Employment Contract accepted (${acceptedOffer.employmentType}, starting ${new Date(acceptedOffer.startDate).toLocaleDateString()})`;
+    if (isSagaMode && (!acceptedOffer.contractSignedByPresident || !acceptedOffer.contractSignedByEmployee)) {
+      offerComplete = false;
+      offerStatusText = 'Accepted contract awaiting required signatures';
+      offerBlockingReason = 'The institutional employment contract must be signed by the President and the employee.';
+    }
   } else if (
     activeRejectedOffers.length > 0 &&
     offers.length === activeRejectedOffers.length
@@ -532,24 +545,20 @@ function calculateHiringReadinessInternal(
       'Pre-employment onboarding checklist must be initialized and verified.';
   } else {
     const tasks = onboarding.tasks || [];
-    const isCompletedProcess = onboarding.status === OnboardingStatus.COMPLETED;
-    const allRequiredVerifiedOrWaived =
-      tasks.length > 0 && canCompleteOnboarding(tasks);
+    const completeness = evaluateOnboardingChecklist(tasks, application.hiringPolicy, category);
 
-    if (isCompletedProcess || allRequiredVerifiedOrWaived) {
+    if (onboarding.status !== OnboardingStatus.CANCELLED && completeness.isComplete) {
       onboardingComplete = true;
       const totalRequired = tasks.filter((t) => t.isRequired).length;
       onboardingStatusText = `All ${totalRequired} mandatory orientation & onboarding items verified`;
     } else {
       onboardingComplete = false;
-      const pendingRequired = tasks.filter(
-        (t) =>
-          t.isRequired &&
-          t.status !== OnboardingTaskStatus.VERIFIED &&
-          t.status !== OnboardingTaskStatus.WAIVED
-      );
-      onboardingStatusText = `${pendingRequired.length} required onboarding task(s) pending`;
-      onboardingBlockingReason = `${pendingRequired.length} mandatory onboarding requirement(s) remain unverified: ${pendingRequired.map((t) => t.title).slice(0, 3).join(', ')}${pendingRequired.length > 3 ? '...' : ''}.`;
+      const outstanding = [...completeness.missing, ...completeness.pending];
+      onboardingStatusText = `${completeness.missing.length} missing and ${completeness.pending.length} unverified onboarding requirement(s)`;
+      onboardingBlockingReason = onboarding.status === OnboardingStatus.CANCELLED
+        ? 'Onboarding process is cancelled.'
+        : tasks.length === 0 ? 'Onboarding checklist is empty; authorized HR review is required.'
+        : `Onboarding checklist requires HR review. Missing or unverified requirements: ${outstanding.join(', ')}. Existing verified and waived records are preserved.`;
     }
   }
 

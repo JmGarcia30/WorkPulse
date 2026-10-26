@@ -1,0 +1,40 @@
+{
+  "capturedAt": "2026-10-26T16:15:53.549Z",
+  "checks": [
+    {
+      "script": "test-hiring-functional-fixes.cjs",
+      "exitCode": 0,
+      "status": "PASS",
+      "output": "PASS TEACHING complete checklist passes; evaluation is read-only\nPASS TEACHING missing requirements block even when IN_PROGRESS (0 tasks)\nPASS TEACHING missing requirements block even when IN_PROGRESS (1 tasks)\nPASS TEACHING missing requirements block even when IN_PROGRESS (9 tasks)\nPASS TEACHING missing requirements block even when COMPLETED (0 tasks)\nPASS TEACHING missing requirements block even when COMPLETED (1 tasks)\nPASS TEACHING missing requirements block even when COMPLETED (9 tasks)\nPASS TEACHING WAIVED requirements preserved and accepted\nPASS TEACHING required template cannot be bypassed by stored optional flag\nPASS TEACHING documented legacy TOR/diploma aliases preserve evidence\nPASS TEACHING CANCELLED onboarding blocks; legacy HIRED prerequisites rechecked\nPASS TEACHING legitimate SCREENING -> SHORTLISTED\nPASS TEACHING missing policy documents block SHORTLISTED\nPASS TEACHING legitimate SHORTLISTED -> INTERVIEW\nPASS TEACHING missing policy documents block INTERVIEW\nPASS TEACHING legitimate INTERVIEW -> ASSESSMENT\nPASS TEACHING missing policy documents block ASSESSMENT\nPASS TEACHING legitimate ASSESSMENT -> OFFER\nPASS TEACHING missing policy documents block OFFER\nPASS TEACHING initial screening cannot advance while scheduled/unapproved/no-show\nPASS TEACHING SAGA institutional interviews do not precede entry into examinations\nPASS TEACHING missing exam/end endorsements block OFFER and final hiring\nPASS TEACHING failed/expired/pending/below-threshold exams block\nPASS TEACHING individual missing/negative institutional approvals and unsigned contracts block\nPASS NON_TEACHING complete checklist passes; evaluation is read-only\nPASS NON_TEACHING missing requirements block even when IN_PROGRESS (0 tasks)\nPASS NON_TEACHING missing requirements block even when IN_PROGRESS (1 tasks)\nPASS NON_TEACHING missing requirements block even when IN_PROGRESS (9 tasks)\nPASS NON_TEACHING missing requirements block even when COMPLETED (0 tasks)\nPASS NON_TEACHING missing requirements block even when COMPLETED (1 tasks)\nPASS NON_TEACHING missing requirements block even when COMPLETED (9 tasks)\nPASS NON_TEACHING WAIVED requirements preserved and accepted\nPASS NON_TEACHING required template cannot be bypassed by stored optional flag\nPASS NON_TEACHING documented legacy TOR/diploma aliases preserve evidence\nPASS NON_TEACHING CANCELLED onboarding blocks; legacy HIRED prerequisites rechecked\nPASS NON_TEACHING legitimate SCREENING -> SHORTLISTED\nPASS NON_TEACHING missing policy documents block SHORTLISTED\nPASS NON_TEACHING legitimate SHORTLISTED -> INTERVIEW\nPASS NON_TEACHING missing policy documents block INTERVIEW\nPASS NON_TEACHING legitimate INTERVIEW -> ASSESSMENT\nPASS NON_TEACHING missing policy documents block ASSESSMENT\nPASS NON_TEACHING legitimate ASSESSMENT -> OFFER\nPASS NON_TEACHING missing policy documents block OFFER\nPASS NON_TEACHING initial screening cannot advance while scheduled/unapproved/no-show\nPASS NON_TEACHING SAGA institutional interviews do not precede entry into examinations\nPASS NON_TEACHING missing exam/end endorsements block OFFER and final hiring\nPASS NON_TEACHING failed/expired/pending/below-threshold exams block\nPASS NON_TEACHING individual missing/negative institutional approvals and unsigned contracts block\nPASS non-teaching policy excludes mandatory LET and demonstration\nPASS custom tenant policy remains distinct, including category-specific requirements\nPASS rejection/withdrawal remain allowed; skipping/terminal progression invalid\nPASS lifecycle numbering matches shared tracker model for every category/status\nPASS actual stage action/service atomically records transition and duplicate is idempotent\nPASS actual action/service preserve role, tenant, and conversion-only HIRED checks\nPASS read-only frontend restrictions match stage enforcement; rejection stays available\nPASS concurrent synthetic transactions commit once; loser reports review/retry\nPASS old stale update reproduces HIRED history/OFFER status; current service rejects terminal overwrite\nPASS legacy OFFER/employee mismatch requires HR review and remains untouched\nPASS actual employee conversion blocks incomplete COMPLETED checklists before any writes\nPASS complete readiness reaches downstream conversion safeguards without writes\nPASS actual conversion creates synthetic employee/employment/probation and HIRED audit atomically; retry is idempotent\nPASS simulated concurrent rejection/conversion retain one consistent status/audit and no partial employee\nPASS manual/automatic completion cannot mark a partial institutional checklist complete; verified record retained\nPASS 63 synthetic functional regression groups; no database/network/storage access",
+      "error": ""
+    },
+    {
+      "script": "test-hiring-policy.cjs",
+      "exitCode": 0,
+      "status": "PASS",
+      "output": "PASS exact SAGA baseline lists, two-category tenant defaults/configuration, legacy-file retention, mandatory/rejected documents, generic versus institutional readiness, and policy validation",
+      "error": ""
+    },
+    {
+      "script": "test-hiring-candidate-security.cjs",
+      "exitCode": 0,
+      "status": "PASS",
+      "output": "PASS anonymous portal and both upload actions deny before private reads\nPASS hashed fifteen-minute links, rate limits, expiry and failed delivery deny access\nPASS successful one-time exchange, secure twenty-four-hour cookie, application/tenant binding, invalid staff fallback, revoked/expired session denial\nPASS unverified existing-email submissions and duplicates use neutral receipt without shared identity mutation",
+      "error": ""
+    },
+    {
+      "script": "test-candidate-document-headers.cjs",
+      "exitCode": 0,
+      "status": "PASS",
+      "output": "PASS all three actual handlers: HTML/SVG attachment, PDF preview, no-store/nosniff, safe errors; unknown tenant rejection and public careers compatibility\nPASS private Blob SDK contract: private upload/read and keys instead of public URLs; no hosted call",
+      "error": ""
+    },
+    {
+      "script": "test-final-ux-hiring.cjs",
+      "exitCode": 0,
+      "status": "PASS",
+      "output": "UX Hiring: parallel default reads, valid filters, foreign-ID fallback, blank filters and tenant scope pass.",
+      "error": ""
+    }
+  ]
+}

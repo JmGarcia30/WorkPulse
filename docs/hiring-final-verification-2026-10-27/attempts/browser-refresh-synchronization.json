@@ -1,0 +1,32 @@
+{
+  "capturedAt": "2026-10-26T16:54:16.640Z",
+  "status": "FAIL",
+  "checks": [
+    {
+      "label": "Normal password login reaches synthetic tenant dashboard through real auth/session storage",
+      "status": "PASS"
+    },
+    {
+      "label": "Profile shows NOT READY and disabled hiring for incomplete COMPLETED checklist",
+      "status": "PASS"
+    },
+    {
+      "label": "Progress tracker and stage controller display the same derived generic lifecycle number",
+      "status": "PASS"
+    },
+    {
+      "label": "Direct authenticated HTTP conversion cannot bypass missing onboarding requirements",
+      "status": "PASS"
+    },
+    {
+      "label": "Legacy HIRED recovery is disabled and explains current unmet prerequisites",
+      "status": "PASS"
+    },
+    {
+      "label": "Browser task verification preserves legacy completion status, timestamp and notes",
+      "status": "PASS"
+    }
+  ],
+  "errorCode": "Error",
+  "message": "BROWSER_REOPEN_REASON"
+}

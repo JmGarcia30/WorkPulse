@@ -1,0 +1,74 @@
+{
+  "capturedAt": "2026-10-26T16:34:38.148Z",
+  "identity": {
+    "database": "neondb",
+    "schema": "public",
+    "read_only": "on",
+    "branch_id": "br-damp-fog-azmmxhga",
+    "endpoint_id": "ep-wild-mud-az8yzifu",
+    "project_id": "late-block-61364102"
+  },
+  "isolation": "PASS",
+  "schema": "PASS",
+  "modelsCompared": 73,
+  "missingColumns": [],
+  "missingEnums": [],
+  "appliedMigrations": 38,
+  "pendingMigrations": [],
+  "unresolvedMigrations": [],
+  "prismaRequestedAtRead": "PASS",
+  "migrationReview": {
+    "path": "prisma/migrations/20261026000000_stage_document_requests/migration.sql",
+    "sha256": "98cfa9b3c729926e970aa8a4f721c271f255adae33fdd050499500e0ce169961",
+    "sql": "ALTER TABLE \"RecruitmentDocument\" ADD COLUMN \"requestedAt\" TIMESTAMP(3);",
+    "checksumMismatches": [],
+    "columnBefore": [
+      {
+        "column_name": "requestedAt",
+        "data_type": "timestamp without time zone",
+        "is_nullable": "YES",
+        "column_default": null
+      }
+    ],
+    "server": [
+      {
+        "version": "18.6 (fd34222)"
+      }
+    ],
+    "table": [
+      {
+        "row_count": 171
+      }
+    ],
+    "originalDocumentColumns": [
+      "\"id\"",
+      "\"applicationId\"",
+      "\"type\"",
+      "\"title\"",
+      "\"status\"",
+      "\"isRequired\"",
+      "\"isConditional\"",
+      "\"notes\"",
+      "\"fileName\"",
+      "\"fileType\"",
+      "\"fileSize\"",
+      "\"storageKey\"",
+      "\"verifiedAt\"",
+      "\"verifiedById\"",
+      "\"createdAt\"",
+      "\"updatedAt\""
+    ],
+    "existingRecordFingerprint": [
+      {
+        "row_count": 171,
+        "fingerprint": "938faea6afe3cb021b715611ca6eafd7"
+      }
+    ],
+    "locks": [],
+    "automaticApplyAllowed": false
+  },
+  "databaseWrites": 0,
+  "migrationsExecuted": 0,
+  "productionRecordQueries": 0,
+  "originalEnvUnchanged": true
+}

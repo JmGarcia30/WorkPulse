@@ -1,8 +1,8 @@
 'use client';
 
-import { useState, useTransition } from 'react';
+import { useEffect, useState, useTransition } from 'react';
 import { ApplicationStatus } from '@prisma/client';
-import { updateApplicationStatusAction } from '@/features/hiring/actions';
+import { getApplicationTransitionOptionsAction, updateApplicationStatusAction } from '@/features/hiring/actions';
 import { getAvailableNextStatuses, STAGE_CONFIG } from '@/features/hiring/pipeline';
 import { Check, Loader2, AlertCircle, ShieldAlert } from 'lucide-react';
 
@@ -17,6 +17,19 @@ export function StatusChangeDialog({
   currentStatus,
   onStatusUpdated,
 }: StatusChangeDialogProps) {
+  const [restrictions, setRestrictions] = useState<{ applicationId: string; status: ApplicationStatus; options: Array<{ status: ApplicationStatus; blockers: string[] }> } | null>(null);
+  const [restrictionError, setRestrictionError] = useState<string | null>(null);
+  useEffect(() => {
+    let active = true;
+    getApplicationTransitionOptionsAction(applicationId).then(result => {
+      if (!active) return;
+      if (result.error || !result.options || !result.status) setRestrictionError(result.error || 'Unable to check prerequisites.');
+      else if (result.status !== currentStatus) setRestrictionError('Application status changed. Refresh before continuing.');
+      else { setRestrictions({ applicationId, status: result.status, options: result.options }); setRestrictionError(null); }
+    }).catch(() => { if (active) setRestrictionError('Unable to check prerequisites. Refresh before continuing.'); });
+    return () => { active = false; };
+  }, [applicationId, currentStatus]);
+  const restrictionsLoaded = restrictions?.applicationId === applicationId && restrictions.status === currentStatus && !restrictionError;
   const allowedNextStatuses = getAvailableNextStatuses(currentStatus).filter(
     (status) => status !== ApplicationStatus.HIRED
   );
@@ -29,14 +42,15 @@ export function StatusChangeDialog({
   const [feedback, setFeedback] = useState<{ type: 'success' | 'error'; message: string } | null>(
     null
   );
+  const selectedBlockers = restrictions?.options.find(option => option.status === selectedStatus)?.blockers || [];
 
   const handleUpdate = () => {
-    if (!selectedStatus || selectedStatus === currentStatus) return;
+    if (!selectedStatus || selectedStatus === currentStatus || !restrictionsLoaded || selectedBlockers.length > 0) return;
     setFeedback(null);
 
     startTransition(async () => {
       const result = await updateApplicationStatusAction(applicationId, selectedStatus);
-      if (result.error) {
+      if ('error' in result && result.error) {
         setFeedback({ type: 'error', message: result.error });
       } else {
         setFeedback({ type: 'success', message: `Candidate successfully moved to ${selectedStatus}` });
@@ -135,12 +149,18 @@ export function StatusChangeDialog({
             })}
           </div>
 
+          {(restrictionError || !restrictionsLoaded || selectedBlockers.length > 0) && (
+            <p role="status" className="text-sm text-slate-600">
+              {restrictionError || (!restrictionsLoaded ? 'Checking stage prerequisites…' : selectedBlockers.join(' '))}
+            </p>
+          )}
+
           {selectedStatus && selectedStatus !== currentStatus && (
             <div className="flex justify-end pt-2">
               <button
                 type="button"
                 onClick={handleUpdate}
-                disabled={isPending}
+                disabled={isPending || !restrictionsLoaded || selectedBlockers.length > 0}
                 className="inline-flex items-center gap-2 rounded-md bg-[var(--tenant-primary)] px-4 py-2.5 text-sm font-bold text-[var(--tenant-primary-foreground)] hover:brightness-95 disabled:opacity-50 disabled:cursor-not-allowed transition"
               >
                 {isPending && <Loader2 className="h-3.5 w-3.5 animate-spin" />}

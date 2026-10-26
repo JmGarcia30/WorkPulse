@@ -1,0 +1,95 @@
+{
+  "capturedAt": "2026-10-26T15:51:21.685Z",
+  "status": "PASS",
+  "liveBrowser": false,
+  "checks": [
+    {
+      "isSaga": true,
+      "category": "TEACHING",
+      "taskCount": 0,
+      "status": "PASS",
+      "disabledHireButton": true
+    },
+    {
+      "isSaga": true,
+      "category": "TEACHING",
+      "taskCount": 9,
+      "status": "PASS",
+      "disabledHireButton": true
+    },
+    {
+      "isSaga": true,
+      "category": "TEACHING",
+      "legacyHired": true,
+      "serverRequiresSeparatePrerequisiteEvaluation": true,
+      "enabledCompleteEmployeeRecordVisible": true,
+      "note": "Existing HIRED presentation does not evaluate checklist; final conversion still rechecks prerequisites."
+    },
+    {
+      "isSaga": true,
+      "category": "NON_TEACHING",
+      "taskCount": 0,
+      "status": "PASS",
+      "disabledHireButton": true
+    },
+    {
+      "isSaga": true,
+      "category": "NON_TEACHING",
+      "taskCount": 9,
+      "status": "PASS",
+      "disabledHireButton": true
+    },
+    {
+      "isSaga": true,
+      "category": "NON_TEACHING",
+      "legacyHired": true,
+      "serverRequiresSeparatePrerequisiteEvaluation": true,
+      "enabledCompleteEmployeeRecordVisible": true,
+      "note": "Existing HIRED presentation does not evaluate checklist; final conversion still rechecks prerequisites."
+    },
+    {
+      "isSaga": false,
+      "category": "TEACHING",
+      "taskCount": 0,
+      "status": "PASS",
+      "disabledHireButton": true
+    },
+    {
+      "isSaga": false,
+      "category": "TEACHING",
+      "taskCount": 1,
+      "status": "PASS",
+      "disabledHireButton": true
+    },
+    {
+      "isSaga": false,
+      "category": "TEACHING",
+      "legacyHired": true,
+      "serverRequiresSeparatePrerequisiteEvaluation": true,
+      "enabledCompleteEmployeeRecordVisible": true,
+      "note": "Existing HIRED presentation does not evaluate checklist; final conversion still rechecks prerequisites."
+    },
+    {
+      "isSaga": false,
+      "category": "NON_TEACHING",
+      "taskCount": 0,
+      "status": "PASS",
+      "disabledHireButton": true
+    },
+    {
+      "isSaga": false,
+      "category": "NON_TEACHING",
+      "taskCount": 1,
+      "status": "PASS",
+      "disabledHireButton": true
+    },
+    {
+      "isSaga": false,
+      "category": "NON_TEACHING",
+      "legacyHired": true,
+      "serverRequiresSeparatePrerequisiteEvaluation": true,
+      "enabledCompleteEmployeeRecordVisible": true,
+      "note": "Existing HIRED presentation does not evaluate checklist; final conversion still rechecks prerequisites."
+    }
+  ]
+}

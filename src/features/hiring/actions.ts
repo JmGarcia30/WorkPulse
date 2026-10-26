@@ -11,7 +11,9 @@ import {
   ApplicationStatus,
   RequirementType,
 } from '@prisma/client';
-import { isValidStatusTransition } from './pipeline';
+import { getAvailableNextStatuses } from './pipeline';
+import { transitionApplicationStatus, transitionInclude, transitionSource } from './status-transition';
+import { getStageTransitionBlockers } from './stage-prerequisites';
 
 function slugify(text: string): string {
   return text
@@ -268,78 +270,27 @@ export async function updateApplicationStatusAction(
     return { error: 'Unauthorized to update application status.' };
   }
 
-  if (newStatus === ApplicationStatus.HIRED) {
-    return {
-      error:
-        'Use the Hiring Readiness conversion action to create the Employee record atomically.',
-    };
-  }
-
-  // Derived Multi-tenant check: Verify application belongs to user's Organization
-  const application = await prisma.application.findFirst({
-    where: {
-      id: applicationId,
-      job: {
-        organizationId: user.organizationId,
-      },
-    },
-    include: {
-      applicant: true,
-      job: true,
-      offers: true,
-      assessments: true,
-      interviews: true,
-      recruitmentDocuments: true,
-      onboarding: {
-        include: {
-          tasks: true,
-        },
-      },
-    },
-  });
-
-  if (!application) {
-    return { error: 'Application not found or access denied.' };
-  }
-
-  const previousStatus = application.status;
-  if (previousStatus === newStatus) {
-    return { success: true };
-  }
-
-  // Validate status transition using centralized transition rules
-  if (!isValidStatusTransition(previousStatus, newStatus)) {
-    return {
-      error: `Invalid status transition from ${previousStatus} to ${newStatus}.`,
-    };
-  }
-
-  // Atomic status/history transaction. HIRED is handled by Employee conversion above.
-  await prisma.$transaction(async (tx) => {
-    // 1. Update Application status
-    await tx.application.update({
-      where: { id: applicationId },
-      data: { status: newStatus },
-    });
-    if (newStatus === 'REJECTED' || newStatus === 'WITHDRAWN') {
-      await tx.candidateAccess.upsert({ where: { applicationId }, create: { applicationId, revoked: true }, update: { revoked: true, linkHash: null, sessionHash: null, delivered: false } });
-    }
-
-    // 2. Record ApplicationStatusHistory
-    await tx.applicationStatusHistory.create({
-      data: {
-        applicationId,
-        fromStatus: previousStatus,
-        toStatus: newStatus,
-        changedById: user.userId,
-      },
-    });
-
-  });
+  const result = await transitionApplicationStatus({ applicationId, target: newStatus, organizationId: user.organizationId, actorUserId: user.userId });
+  if (result.error) return result;
 
   revalidatePath('/dashboard/hiring/pipeline');
   revalidatePath('/dashboard/hiring/applicants');
   revalidatePath('/dashboard/hiring/onboarding');
   revalidatePath(`/dashboard/hiring/applicants/${applicationId}`);
   return { success: true };
+}
+
+/** Read-only, tenant-scoped restrictions for both the board and profile controller. */
+export async function getApplicationTransitionOptionsAction(applicationId: string) {
+  const user = await getSession();
+  if (!user || !canUpdateApplicationStatus(user)) return { error: 'Unauthorized to view stage restrictions.' };
+  const application = await prisma.application.findFirst({
+    where: { id: applicationId, job: { organizationId: user.organizationId } },
+    include: transitionInclude,
+  });
+  if (!application) return { error: 'Application not found or access denied.' };
+  const source = transitionSource(application);
+  return { status: application.status, options: getAvailableNextStatuses(application.status)
+    .filter(status => status !== ApplicationStatus.HIRED)
+    .map(status => ({ status, blockers: getStageTransitionBlockers(source, status) })) };
 }

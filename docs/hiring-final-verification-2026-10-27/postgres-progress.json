@@ -1,0 +1,249 @@
+{
+  "capturedAt": "2026-10-26T16:42:46.440Z",
+  "checks": [
+    {
+      "label": "custom tenant TEACHING: incomplete COMPLETED checklist blocks readiness",
+      "status": "PASS"
+    },
+    {
+      "label": "custom tenant TEACHING: premature conversion creates no employee",
+      "status": "PASS"
+    },
+    {
+      "label": "custom tenant TEACHING: subsequent task verification succeeds",
+      "status": "PASS"
+    },
+    {
+      "label": "custom tenant TEACHING: verification preserves historical completion metadata",
+      "status": "PASS"
+    },
+    {
+      "label": "custom tenant TEACHING: manual completion cannot bypass missing policy items",
+      "status": "PASS"
+    },
+    {
+      "label": "custom tenant TEACHING: reopening without a reason is denied",
+      "status": "PASS"
+    },
+    {
+      "label": "custom tenant TEACHING: explicit authorized reopening succeeds",
+      "status": "PASS"
+    },
+    {
+      "label": "custom tenant TEACHING: reopening audit retains original completion and verification",
+      "status": "PASS"
+    },
+    {
+      "label": "custom tenant TEACHING: re-completion preserves original timestamp",
+      "status": "PASS"
+    },
+    {
+      "label": "custom tenant TEACHING: complete verified/waived checklist passes",
+      "status": "PASS"
+    },
+    {
+      "label": "custom tenant TEACHING: conversion and retry retain one employee and consistent audit",
+      "status": "PASS"
+    },
+    {
+      "label": "custom tenant NON_TEACHING: incomplete COMPLETED checklist blocks readiness",
+      "status": "PASS"
+    },
+    {
+      "label": "custom tenant NON_TEACHING: premature conversion creates no employee",
+      "status": "PASS"
+    },
+    {
+      "label": "custom tenant NON_TEACHING: subsequent task verification succeeds",
+      "status": "PASS"
+    },
+    {
+      "label": "custom tenant NON_TEACHING: verification preserves historical completion metadata",
+      "status": "PASS"
+    },
+    {
+      "label": "custom tenant NON_TEACHING: manual completion cannot bypass missing policy items",
+      "status": "PASS"
+    },
+    {
+      "label": "custom tenant NON_TEACHING: reopening without a reason is denied",
+      "status": "PASS"
+    },
+    {
+      "label": "custom tenant NON_TEACHING: explicit authorized reopening succeeds",
+      "status": "PASS"
+    },
+    {
+      "label": "custom tenant NON_TEACHING: reopening audit retains original completion and verification",
+      "status": "PASS"
+    },
+    {
+      "label": "custom tenant NON_TEACHING: re-completion preserves original timestamp",
+      "status": "PASS"
+    },
+    {
+      "label": "custom tenant NON_TEACHING: complete verified/waived checklist passes",
+      "status": "PASS"
+    },
+    {
+      "label": "custom tenant NON_TEACHING: conversion and retry retain one employee and consistent audit",
+      "status": "PASS"
+    },
+    {
+      "label": "SAGA TEACHING: incomplete COMPLETED checklist blocks readiness",
+      "status": "PASS"
+    },
+    {
+      "label": "SAGA TEACHING: premature conversion creates no employee",
+      "status": "PASS"
+    },
+    {
+      "label": "SAGA TEACHING: subsequent task verification succeeds",
+      "status": "PASS"
+    },
+    {
+      "label": "SAGA TEACHING: verification preserves historical completion metadata",
+      "status": "PASS"
+    },
+    {
+      "label": "SAGA TEACHING: manual completion cannot bypass missing policy items",
+      "status": "PASS"
+    },
+    {
+      "label": "SAGA TEACHING: reopening without a reason is denied",
+      "status": "PASS"
+    },
+    {
+      "label": "SAGA TEACHING: explicit authorized reopening succeeds",
+      "status": "PASS"
+    },
+    {
+      "label": "SAGA TEACHING: reopening audit retains original completion and verification",
+      "status": "PASS"
+    },
+    {
+      "label": "SAGA TEACHING: re-completion preserves original timestamp",
+      "status": "PASS"
+    },
+    {
+      "label": "SAGA TEACHING: complete verified/waived checklist passes",
+      "status": "PASS"
+    },
+    {
+      "label": "SAGA TEACHING: conversion and retry retain one employee and consistent audit",
+      "status": "PASS"
+    },
+    {
+      "label": "SAGA NON_TEACHING: incomplete COMPLETED checklist blocks readiness",
+      "status": "PASS"
+    },
+    {
+      "label": "SAGA NON_TEACHING: premature conversion creates no employee",
+      "status": "PASS"
+    },
+    {
+      "label": "SAGA NON_TEACHING: subsequent task verification succeeds",
+      "status": "PASS"
+    },
+    {
+      "label": "SAGA NON_TEACHING: verification preserves historical completion metadata",
+      "status": "PASS"
+    },
+    {
+      "label": "SAGA NON_TEACHING: manual completion cannot bypass missing policy items",
+      "status": "PASS"
+    },
+    {
+      "label": "SAGA NON_TEACHING: reopening without a reason is denied",
+      "status": "PASS"
+    },
+    {
+      "label": "SAGA NON_TEACHING: explicit authorized reopening succeeds",
+      "status": "PASS"
+    },
+    {
+      "label": "SAGA NON_TEACHING: reopening audit retains original completion and verification",
+      "status": "PASS"
+    },
+    {
+      "label": "SAGA NON_TEACHING: re-completion preserves original timestamp",
+      "status": "PASS"
+    },
+    {
+      "label": "SAGA NON_TEACHING: complete verified/waived checklist passes",
+      "status": "PASS"
+    },
+    {
+      "label": "SAGA NON_TEACHING: conversion and retry retain one employee and consistent audit",
+      "status": "PASS"
+    },
+    {
+      "label": "PostgreSQL: scheduled initial screening blocks advancement",
+      "status": "PASS"
+    },
+    {
+      "label": "PostgreSQL: approved initial screening permits assessment entry",
+      "status": "PASS"
+    },
+    {
+      "label": "PostgreSQL: failed examination blocks OFFER",
+      "status": "PASS"
+    },
+    {
+      "label": "PostgreSQL: valid institutional progression succeeds",
+      "status": "PASS"
+    },
+    {
+      "label": "PostgreSQL: invalid stage skipping/backtracking denied",
+      "status": "PASS"
+    },
+    {
+      "label": "PostgreSQL: persisted unauthorized role cannot change stage",
+      "status": "PASS"
+    },
+    {
+      "label": "PostgreSQL: unauthorized employee conversion denied",
+      "status": "PASS"
+    },
+    {
+      "label": "PostgreSQL: foreign tenant cannot change owned application",
+      "status": "PASS"
+    },
+    {
+      "label": "PostgreSQL: legacy HIRED incomplete checklist remains ineligible",
+      "status": "PASS"
+    },
+    {
+      "label": "PostgreSQL: legacy employee-record recovery blocked before writes",
+      "status": "PASS"
+    },
+    {
+      "label": "Real concurrent duplicate stage updates: one commit, one conflict, consistent history",
+      "status": "PASS"
+    },
+    {
+      "label": "Repeated successful stage submission adds no audit duplicate",
+      "status": "PASS"
+    },
+    {
+      "label": "Real concurrent different stage updates: one commit, one conflict, consistent history",
+      "status": "PASS"
+    },
+    {
+      "label": "Repeated successful stage submission adds no audit duplicate",
+      "status": "PASS"
+    },
+    {
+      "label": "Real duplicate conversion: one linked employee/employment/probation and one HIRED audit",
+      "status": "PASS"
+    },
+    {
+      "label": "Real rejection/conversion contention cannot leave OFFER/HIRED history mismatch or partial employee",
+      "status": "PASS"
+    },
+    {
+      "label": "Real concurrent task reopening preserves completion timestamp and one atomic audit without lost evidence",
+      "status": "PASS"
+    }
+  ]
+}

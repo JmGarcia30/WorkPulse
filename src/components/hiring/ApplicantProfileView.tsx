@@ -18,6 +18,7 @@ import { CandidateInterviewsSection } from './CandidateInterviewsSection';
 import { CandidateAssessmentsSection } from './CandidateAssessmentsSection';
 import { CandidateOffersSection } from './CandidateOffersSection';
 import { CandidateOnboardingSection } from './CandidateOnboardingSection';
+import { getHiringLifecycle } from '@/features/hiring/lifecycle';
 import { STAGE_CONFIG } from '@/features/hiring/pipeline';
 import { HiringReadinessResult } from '@/features/hiring/readiness';
 import { ApplicationStatus } from '@prisma/client';
@@ -251,7 +252,7 @@ export function ApplicantProfileView({
   )?.isComplete;
   const writtenExamPassed = readiness.checklist.find(
     (c) => c.key === 'assessment'
-  )?.isComplete;
+  )?.isComplete && (isSaga || (application.assessments.length > 0 && readiness.checklist.find(c => c.key === 'interview')?.isComplete));
   const teachingDemoSatisfactory = readiness.checklist.find(
     (c) => c.key === 'teaching_demo'
   )?.isComplete;
@@ -264,6 +265,17 @@ export function ApplicantProfileView({
   const hasAcceptedOffer = application.offers.some(
     (o) => o.status === 'ACCEPTED'
   );
+
+  const lifecycleState = {
+    isSaga, currentStatus: application.status, category: application.job.category,
+    documentsSatisfied, writtenExamPassed, teachingDemoSatisfactory,
+    hodInterviewCompleted, presidentInterviewCompleted,
+    hasOffer: application.offers.length > 0, offerAccepted: hasAcceptedOffer,
+    isOnboarding: Boolean(application.onboarding),
+    onboardingCompleted: readiness.checklist.find(item => item.key === 'onboarding')?.isComplete,
+    isReadyToHire: readiness.isReadyToHire,
+  };
+  const lifecycle = getHiringLifecycle(lifecycleState);
 
   return (
     <div className="mx-auto space-y-6">
@@ -295,21 +307,7 @@ export function ApplicantProfileView({
       />
 
       {/* 3. Hiring Progress Tracker */}
-      <HiringProgressTracker
-        isSaga={isSaga}
-        currentStatus={application.status}
-        category={application.job.category}
-        documentsSatisfied={documentsSatisfied}
-        writtenExamPassed={writtenExamPassed}
-        teachingDemoSatisfactory={teachingDemoSatisfactory}
-        hodInterviewCompleted={hodInterviewCompleted}
-        presidentInterviewCompleted={presidentInterviewCompleted}
-        hasOffer={application.offers.length > 0}
-        offerAccepted={hasAcceptedOffer}
-        isOnboarding={Boolean(application.onboarding)}
-        onboardingCompleted={application.onboarding?.status === 'COMPLETED'}
-        isReadyToHire={readiness.isReadyToHire}
-      />
+      <HiringProgressTracker {...lifecycleState} />
 
       {/* 4. Tab Navigation (Overview, Documents, Interviews, Assessments, Offers, Onboarding, History) */}
       <ApplicantProfileTabs
@@ -439,8 +437,8 @@ export function ApplicantProfileView({
             canViewEmployee={permissions.canViewEmployees}
             recentActivities={recentActivities}
             stageName={stageConfig.label}
-            stageNumber={2}
-            totalStages={application.job.category === 'TEACHING' ? 10 : 9}
+            stageNumber={lifecycle.activeIndex + 1}
+            totalStages={lifecycle.steps.length}
             onSelectTab={handleTabChange}
           />
         </div>

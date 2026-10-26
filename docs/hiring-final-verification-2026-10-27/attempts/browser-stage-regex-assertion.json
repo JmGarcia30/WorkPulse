@@ -1,0 +1,16 @@
+{
+  "capturedAt": "2026-10-26T16:51:30.942Z",
+  "status": "FAIL",
+  "checks": [
+    {
+      "label": "Normal password login reaches synthetic tenant dashboard through real auth/session storage",
+      "status": "PASS"
+    },
+    {
+      "label": "Profile shows NOT READY and disabled hiring for incomplete COMPLETED checklist",
+      "status": "PASS"
+    }
+  ],
+  "errorCode": "ERR_ASSERTION",
+  "message": "Progress tracker and stage controller display the same derived generic lifecycle number"
+}

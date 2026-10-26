@@ -1,0 +1,23 @@
+{
+  "capturedAt": "2026-10-26T15:50:05.096Z",
+  "files": {
+    "docs/hiring-functional-fixes-2026-10-26.md": "c62b3794585caaf2f9f321698eb7bda9fda6f9fa56e845ca63195782ff26981f",
+    "scripts/test-hiring-functional-fixes.cjs": "dcdbe1f84859b899ebf621cfc06d02428509030019bb81852367d8cb7cf373e4",
+    "scripts/test-hiring-policy.cjs": "637489116b97b120eb1277a5cad0a4f02ff7050d08576cf83c4fc635600614db",
+    "src/features/hiring/actions.ts": "2397f2802e65d629a42352e83dac56f09797f74b311c66acff69437e61327b1a",
+    "src/features/hiring/onboarding-actions.ts": "bf4a909c1cb0bfc4879760bb4765c0ae6fbc40616d2edb57d13e12962f03a4df",
+    "src/features/hiring/onboarding-pipeline.ts": "ac97de6bdb8cbe77fb4a0a9b104d14b618daeb09f60c808fb0b5a64cfdc85738",
+    "src/features/hiring/readiness.ts": "b606d239f502e447bc311250c88508252a2ff377e847bac7807c764f046f8a3a",
+    "src/features/hiring/qualification.ts": "d0322d1586bff1d98490079f604c380f97cb0fa5eb97bd45879d25357519a810",
+    "src/features/hiring/stage-prerequisites.ts": "adc9ffed8bfc11562ab837518299c9059feaaf98b999ce8f6ce7a8e1d7144b47",
+    "src/features/hiring/status-transition.ts": "31c26f0b8abcf4b1a761d02b8fae8114793abb8461ee3a56b0bca01514084dd6",
+    "src/features/hiring/lifecycle.ts": "3f14c12f2eb6beed3adc2e4120ccaaeb53a991bdc11f99792bae2920e83960a4",
+    "src/components/hiring/ApplicantProfileView.tsx": "0c1a57d00dfcfa0032a9ac4ca78e11de6b09c922cb258b7f36dddb92289175d1",
+    "src/components/hiring/HiringProgressTracker.tsx": "1e9448089e666d5de245bef4c759ea72b5aea11f747eddc4946f78fb471e4225",
+    "src/components/hiring/StatusChangeDialog.tsx": "9e0a775ff8ed81fd1fd0376eedda0ffcb984acb84b35abca044b1a439a45669a",
+    "src/app/(dashboard)/dashboard/hiring/applicants/[applicationId]/page.tsx": "76f997eaa8f5145a37b92ff1e2fc0a653ef5562c7ae7eee4e1eb2191cf9a1d4c",
+    "package-lock.json": "72f6f27e1a95745cca4c68766bbd0df065ad2cb9e6ea4bc8e0d6482c64c7f0df",
+    ".env": "e683b25719e068642138ef2551f810634534b3a3b4565e90ce4353b039c3ae8e",
+    ".env.recovery.local": "78fc548c42893aa779aad4f72606a3f7eaff43901efc82bbd43045a5f4350661"
+  }
+}
