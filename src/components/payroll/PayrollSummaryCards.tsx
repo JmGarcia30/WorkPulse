@@ -21,7 +21,7 @@ export function PayrollSummaryCards({ kpis, periodName }: PayrollSummaryCardsPro
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3.5 sm:gap-4">
       {/* 1. Gross Payroll */}
-      <div className="rounded-xl border border-slate-200/80 bg-white p-4 shadow-2xs hover:border-slate-300/90 transition flex flex-col justify-between">
+      <div className="rounded-xl bg-white p-4 shadow-[0_3px_16px_rgba(30,35,40,0.06)] hover:shadow-[0_4px_20px_rgba(30,35,40,0.08)] transition flex flex-col justify-between">
         <div className="flex items-center justify-between">
           <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500">
             Gross Payroll
@@ -41,7 +41,7 @@ export function PayrollSummaryCards({ kpis, periodName }: PayrollSummaryCardsPro
       </div>
 
       {/* 2. Total Deductions */}
-      <div className="rounded-xl border border-slate-200/80 bg-white p-4 shadow-2xs hover:border-slate-300/90 transition flex flex-col justify-between">
+      <div className="rounded-xl bg-white p-4 shadow-[0_3px_16px_rgba(30,35,40,0.06)] hover:shadow-[0_4px_20px_rgba(30,35,40,0.08)] transition flex flex-col justify-between">
         <div className="flex items-center justify-between">
           <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500">
             Total Deductions
@@ -61,7 +61,7 @@ export function PayrollSummaryCards({ kpis, periodName }: PayrollSummaryCardsPro
       </div>
 
       {/* 3. Net Payroll (Highlighted) */}
-      <div className="rounded-xl border border-slate-200/90 bg-white p-4 shadow-2xs hover:border-slate-300 transition flex flex-col justify-between relative overflow-hidden">
+      <div className="rounded-xl bg-white p-4 shadow-[0_3px_16px_rgba(30,35,40,0.06)] hover:shadow-[0_4px_20px_rgba(30,35,40,0.08)] transition flex flex-col justify-between relative overflow-hidden">
         <div className="absolute top-0 left-0 right-0 h-1 bg-[var(--tenant-primary,#0f766e)] opacity-80" />
         <div className="flex items-center justify-between">
           <span className="text-[11px] font-bold uppercase tracking-wider text-slate-700">
@@ -82,7 +82,7 @@ export function PayrollSummaryCards({ kpis, periodName }: PayrollSummaryCardsPro
       </div>
 
       {/* 4. Employees Included */}
-      <div className="rounded-xl border border-slate-200/80 bg-white p-4 shadow-2xs hover:border-slate-300/90 transition flex flex-col justify-between">
+      <div className="rounded-xl bg-white p-4 shadow-[0_3px_16px_rgba(30,35,40,0.06)] hover:shadow-[0_4px_20px_rgba(30,35,40,0.08)] transition flex flex-col justify-between">
         <div className="flex items-center justify-between">
           <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500">
             Employees
@@ -111,12 +111,12 @@ export function PayrollSummaryCards({ kpis, periodName }: PayrollSummaryCardsPro
       </div>
 
       {/* 5. Requires Attention */}
-      <div className={`rounded-xl border p-4 shadow-2xs transition flex flex-col justify-between ${
+      <div className={`rounded-xl p-4 shadow-[0_3px_16px_rgba(30,35,40,0.06)] hover:shadow-[0_4px_20px_rgba(30,35,40,0.08)] transition flex flex-col justify-between ${
         !hasCalculatedData
-          ? 'border-slate-200/80 bg-white'
+          ? 'bg-white'
           : requiresAttention > 0
-          ? 'border-amber-200 bg-amber-50/50'
-          : 'border-slate-200/80 bg-white'
+          ? 'border border-amber-200 bg-amber-50/50'
+          : 'bg-white'
       }`}>
         <div className="flex items-center justify-between">
           <span className={`text-[11px] font-bold uppercase tracking-wider ${

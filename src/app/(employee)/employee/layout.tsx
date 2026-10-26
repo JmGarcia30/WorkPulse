@@ -8,6 +8,7 @@ import { TenantTheme } from '@/components/layout/TenantTheme';
 import { EmployeeNav } from '@/components/employee-self-service/EmployeeNav';
 import { EmployeeHeader } from '@/components/employee-self-service/EmployeeHeader';
 import { TenantLogo } from '@/components/layout/TenantLogo';
+import { ScrollableMainContent } from '@/components/layout/ScrollableMainContent';
 
 export default async function EmployeeLayout({ children }: { children: React.ReactNode }) {
   let context;
@@ -31,7 +32,7 @@ export default async function EmployeeLayout({ children }: { children: React.Rea
 
   return (
     <TenantTheme branding={brand}>
-      <div className="wp-workspace wp-tenant-shell flex min-h-screen text-[var(--wp-text)]">
+      <div className="wp-workspace wp-tenant-shell flex h-screen h-[100dvh] overflow-hidden text-[var(--wp-text)] bg-white">
         <a
           href="#employee-workspace-content"
           className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50 wp-button-primary"
@@ -39,9 +40,9 @@ export default async function EmployeeLayout({ children }: { children: React.Rea
           Skip to content
         </a>
 
-        {/* Desktop Sidebar */}
-        <aside className="wp-tenant-sidebar sticky top-0 z-30 hidden h-screen w-60 shrink-0 flex-col border-r md:flex">
-          <div className="wp-tenant-rule border-b px-5 py-5">
+        {/* Desktop Sidebar outside the container */}
+        <aside className="wp-tenant-sidebar sticky top-0 z-30 hidden h-full w-60 shrink-0 flex-col bg-transparent md:flex">
+          <div className="px-3 pt-5 pb-3">
             <div className="flex items-center gap-3">
               <TenantLogo
                 branding={brand}
@@ -62,7 +63,7 @@ export default async function EmployeeLayout({ children }: { children: React.Rea
             <EmployeeNav />
           </div>
 
-          <div className="wp-tenant-rule border-t p-4">
+          <div className="p-3 pb-8">
             <div className="flex items-center gap-3">
               <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[var(--tenant-tint-strong)] text-sm font-bold text-[var(--tenant-primary)]">
                 {initials}
@@ -85,21 +86,26 @@ export default async function EmployeeLayout({ children }: { children: React.Rea
           </div>
         </aside>
 
-        {/* Main Workspace Body with Header and Content */}
-        <div className="min-w-0 flex-1">
-          <EmployeeHeader
-            orgName={brand.displayName}
-            orgSlug={brand.slug}
-            employeeName={fullName}
-            employeeNumber={context.employee.employeeNumber}
-          />
-          <main
-            id="employee-workspace-content"
-            tabIndex={-1}
-            className="mx-auto w-full max-w-[100rem] p-4 sm:p-6 lg:p-8 xl:p-8"
-          >
-            {children}
-          </main>
+        {/* Outer margin wrapper */}
+        <div className="flex-1 min-w-0 h-full p-2.5 sm:p-3 lg:p-3.5 flex flex-col">
+          {/* One unified rounded rectangular container enclosing header and main content */}
+          <div className="flex-1 min-h-0 flex flex-col rounded-xl lg:rounded-2xl border border-[var(--wp-border)] wp-content-canvas shadow-2xs overflow-hidden">
+            {/* Stationary ESS Top Header Bar */}
+            <EmployeeHeader
+              orgName={brand.displayName}
+              orgSlug={brand.slug}
+              employeeName={fullName}
+              employeeNumber={context.employee.employeeNumber}
+            />
+
+            {/* Inset horizontal divider (16px on mobile, 24px on desktop) */}
+            <div className="shrink-0 mx-4 sm:mx-6 h-[1px] bg-[var(--wp-border)]" aria-hidden="true" />
+
+            {/* Scrollable Main Content with Conditional Bottom Blur */}
+            <ScrollableMainContent id="employee-workspace-content">
+              {children}
+            </ScrollableMainContent>
+          </div>
         </div>
       </div>
     </TenantTheme>

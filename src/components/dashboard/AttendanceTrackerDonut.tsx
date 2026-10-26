@@ -46,7 +46,7 @@ export function AttendanceTrackerDonut({
   });
 
   return (
-    <div className="flex flex-col justify-between rounded-2xl bg-white p-5 border border-slate-200/80 h-full">
+    <div className="flex flex-col justify-between rounded-2xl bg-white p-5 shadow-[0_3px_16px_rgba(30,35,40,0.06)] h-full">
       {/* Header */}
       <div className="flex items-center justify-between">
         <h2 className="text-base font-bold text-slate-900 tracking-tight">

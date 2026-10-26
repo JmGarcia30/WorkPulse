@@ -17,18 +17,18 @@ import { EssHeroBanner } from '@/components/employee-self-service/EssHeroBanner'
 const formatTime = (value: Date | null | undefined, zone: string) =>
   value
     ? new Intl.DateTimeFormat('en-PH', {
-        timeZone: zone,
-        hour: 'numeric',
-        minute: '2-digit',
-      }).format(value)
+      timeZone: zone,
+      hour: 'numeric',
+      minute: '2-digit',
+    }).format(value)
     : '—';
 
 const formatSeconds = (value: number | null | undefined) =>
   value == null
     ? '—'
     : `${String(Math.floor(value / 3600)).padStart(2, '0')}:${String(
-        Math.floor((value % 3600) / 60)
-      ).padStart(2, '0')}`;
+      Math.floor((value % 3600) / 60)
+    ).padStart(2, '0')}`;
 
 const formatDate = (value: Date | string | null | undefined) => {
   if (!value) return 'Not available';
@@ -60,8 +60,8 @@ export default async function EmployeeDashboardPage() {
   const scheduleText = !schedule || !todayRule
     ? 'No schedule assigned today'
     : isWorkday
-    ? `Scheduled today (${formatSeconds(todayRule.expectedStartSecond)}–${formatSeconds(todayRule.expectedEndSecond)})`
-    : 'Rest day today';
+      ? `Scheduled today (${formatSeconds(todayRule.expectedStartSecond)}–${formatSeconds(todayRule.expectedEndSecond)})`
+      : 'Rest day today';
 
   const pendingLeaves = data.leave.pendingRequestCount;
   const leaveText =
@@ -107,16 +107,15 @@ export default async function EmployeeDashboardPage() {
         {/* Card 1: Today's Shift */}
         <Link
           href="/employee/attendance"
-          className="group relative flex flex-col justify-between rounded-2xl bg-white p-5 border border-slate-200/80 transition-all hover:border-slate-300 hover:bg-slate-50/30"
+          className="group relative flex flex-col justify-between rounded-2xl bg-white p-5 shadow-[0_3px_16px_rgba(30,35,40,0.06)] transition-all hover:shadow-[0_4px_20px_rgba(30,35,40,0.08)]"
         >
           <div className="flex items-center justify-between">
             <span className="flex h-9 w-9 items-center justify-center rounded-xl text-sm transition-transform group-hover:scale-105 text-[var(--tenant-primary)] bg-[var(--tenant-tint)]">
               <Clock3 className="h-4 w-4" />
             </span>
             <span
-              className={`rounded-full px-2 py-0.5 text-[11px] font-bold ${
-                isWorkday ? 'bg-emerald-50 text-emerald-700' : 'bg-slate-100 text-slate-600'
-              }`}
+              className={`rounded-full px-2 py-0.5 text-[11px] font-bold ${isWorkday ? 'bg-emerald-50 text-emerald-700' : 'bg-slate-100 text-slate-600'
+                }`}
             >
               {isWorkday ? 'Workday' : 'Rest Day'}
             </span>
@@ -137,7 +136,7 @@ export default async function EmployeeDashboardPage() {
         {/* Card 2: Attendance Status */}
         <Link
           href="/employee/attendance"
-          className="group relative flex flex-col justify-between rounded-2xl bg-white p-5 border border-slate-200/80 transition-all hover:border-slate-300 hover:bg-slate-50/30"
+          className="group relative flex flex-col justify-between rounded-2xl bg-white p-5 shadow-[0_3px_16px_rgba(30,35,40,0.06)] transition-all hover:shadow-[0_4px_20px_rgba(30,35,40,0.08)]"
         >
           <div className="flex items-center justify-between">
             <span className="flex h-9 w-9 items-center justify-center rounded-xl text-sm transition-transform group-hover:scale-105 text-emerald-700 bg-emerald-50">
@@ -161,7 +160,7 @@ export default async function EmployeeDashboardPage() {
         {/* Card 3: Leave Balances & Requests */}
         <Link
           href="/employee/leave"
-          className="group relative flex flex-col justify-between rounded-2xl bg-white p-5 border border-slate-200/80 transition-all hover:border-slate-300 hover:bg-slate-50/30"
+          className="group relative flex flex-col justify-between rounded-2xl bg-white p-5 shadow-[0_3px_16px_rgba(30,35,40,0.06)] transition-all hover:shadow-[0_4px_20px_rgba(30,35,40,0.08)]"
         >
           <div className="flex items-center justify-between">
             <span className="flex h-9 w-9 items-center justify-center rounded-xl text-sm transition-transform group-hover:scale-105 text-indigo-700 bg-indigo-50">
@@ -193,7 +192,7 @@ export default async function EmployeeDashboardPage() {
         {/* Card 4: Latest Payslip */}
         <Link
           href="/employee/payroll"
-          className="group relative flex flex-col justify-between rounded-2xl bg-white p-5 border border-slate-200/80 transition-all hover:border-slate-300 hover:bg-slate-50/30"
+          className="group relative flex flex-col justify-between rounded-2xl bg-white p-5 shadow-[0_3px_16px_rgba(30,35,40,0.06)] transition-all hover:shadow-[0_4px_20px_rgba(30,35,40,0.08)]"
         >
           <div className="flex items-center justify-between">
             <span className="flex h-9 w-9 items-center justify-center rounded-xl text-sm transition-transform group-hover:scale-105 text-emerald-700 bg-emerald-50">
@@ -208,9 +207,9 @@ export default async function EmployeeDashboardPage() {
             <div className="text-lg sm:text-xl font-bold tracking-tight text-slate-900 truncate">
               {data.latestPayroll
                 ? new Intl.NumberFormat('en-PH', {
-                    style: 'currency',
-                    currency: data.latestPayroll.currency,
-                  }).format(Number(data.latestPayroll.netPay))
+                  style: 'currency',
+                  currency: data.latestPayroll.currency,
+                }).format(Number(data.latestPayroll.netPay))
                 : 'Awaiting payroll'}
             </div>
             <p className="text-xs text-slate-500 truncate">
@@ -227,7 +226,7 @@ export default async function EmployeeDashboardPage() {
         {/* Left Column (8 cols): Today's Activity & Leave Balances */}
         <div className="lg:col-span-8 flex flex-col gap-5">
           {/* Today's Attendance Activity Card */}
-          <section className="rounded-2xl border border-slate-200/80 bg-white p-5 sm:p-6 shadow-2xs">
+          <section className="rounded-2xl bg-white p-5 sm:p-6 shadow-[0_3px_16px_rgba(30,35,40,0.06)]">
             <div className="flex items-center justify-between border-b border-slate-100 pb-4">
               <div className="flex items-center gap-2.5">
                 <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-[var(--tenant-tint)] text-[var(--tenant-primary)]">
@@ -278,7 +277,7 @@ export default async function EmployeeDashboardPage() {
           </section>
 
           {/* Leave Entitlements and Balances Card */}
-          <section className="rounded-2xl border border-slate-200/80 bg-white p-5 sm:p-6 shadow-2xs">
+          <section className="rounded-2xl bg-white p-5 sm:p-6 shadow-[0_3px_16px_rgba(30,35,40,0.06)]">
             <div className="flex items-center justify-between border-b border-slate-100 pb-4">
               <div className="flex items-center gap-2.5">
                 <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-indigo-50 text-indigo-700">
@@ -346,7 +345,7 @@ export default async function EmployeeDashboardPage() {
         {/* Right Column (4 cols): Employment Overview & Quick Actions */}
         <div className="lg:col-span-4 flex flex-col gap-5">
           {/* Employment Overview Widget */}
-          <section className="rounded-2xl border border-slate-200/80 bg-white p-5 sm:p-6 shadow-2xs">
+          <section className="rounded-2xl bg-white p-5 sm:p-6 shadow-[0_3px_16px_rgba(30,35,40,0.06)]">
             <div className="flex items-center gap-2.5 border-b border-slate-100 pb-4">
               <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-teal-50 text-teal-700">
                 <BriefcaseBusiness className="h-4 w-4" />
@@ -399,7 +398,7 @@ export default async function EmployeeDashboardPage() {
           </section>
 
           {/* Quick Actions Panel */}
-          <section className="rounded-2xl border border-slate-200/80 bg-white p-5 sm:p-6 shadow-2xs">
+          <section className="rounded-2xl bg-white p-5 sm:p-6 shadow-[0_3px_16px_rgba(30,35,40,0.06)]">
             <h2 className="text-sm font-bold text-slate-900 mb-3">Self-Service Actions</h2>
             <div className="space-y-2">
               <Link

@@ -12,7 +12,7 @@ export function HiringPipelineWidget({
   stages,
 }: HiringPipelineWidgetProps) {
   return (
-    <div className="flex flex-col justify-between rounded-2xl bg-white p-5 border border-slate-200/80 h-full">
+    <div className="flex flex-col justify-between rounded-2xl bg-white p-5 shadow-[0_3px_16px_rgba(30,35,40,0.06)] h-full">
       {/* Top Header */}
       <div>
         <div className="flex items-center justify-between">

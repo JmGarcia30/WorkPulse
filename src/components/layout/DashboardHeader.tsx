@@ -52,7 +52,7 @@ export function DashboardHeader({ orgName, orgSlug, role }: { orgName: string; o
 
   return (
     <>
-      <header className="sticky top-0 z-20 flex h-16 items-center justify-between gap-3 border-b border-[var(--wp-border)] bg-white px-4 sm:px-6 lg:px-8">
+      <header className="shrink-0 sticky top-0 z-20 flex h-16 items-center justify-between gap-3 bg-transparent px-4 sm:px-6 lg:px-8">
         <div className="flex min-w-0 items-center gap-3">
           <button
             type="button"

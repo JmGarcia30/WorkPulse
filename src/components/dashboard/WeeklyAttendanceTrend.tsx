@@ -73,7 +73,7 @@ export function WeeklyAttendanceTrend({
   const selectedPoint = pointsPresent[selectedIndex];
 
   return (
-    <div className="flex flex-col justify-between rounded-2xl bg-white p-5 border border-slate-200/80 h-full">
+    <div className="flex flex-col justify-between rounded-2xl bg-white p-5 shadow-[0_3px_16px_rgba(30,35,40,0.06)] h-full">
       {/* Header Row */}
       <div className="flex items-start justify-between">
         <div className="space-y-1">
@@ -238,11 +238,10 @@ export function WeeklyAttendanceTrend({
                 key={day.dateStr}
                 type="button"
                 onClick={() => setSelectedIndex(idx)}
-                className={`flex flex-col items-center justify-center transition-all px-2.5 py-1 rounded-xl ${
-                  isSelected
+                className={`flex flex-col items-center justify-center transition-all px-2.5 py-1 rounded-xl ${isSelected
                     ? 'bg-slate-900 text-white shadow-sm'
                     : 'text-slate-500 hover:text-slate-900 hover:bg-slate-100'
-                }`}
+                  }`}
               >
                 <span className="text-[11px] font-bold">
                   {day.dayShort}

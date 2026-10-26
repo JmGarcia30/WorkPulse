@@ -104,7 +104,7 @@ export function EssHeroBanner({
   return (
     <section
       aria-label="Welcome and daily summary banner"
-      className={`relative overflow-hidden rounded-2xl border border-slate-200/90 bg-gradient-to-br from-white via-slate-50/50 to-teal-50/20 p-5 sm:p-6 lg:p-7 shadow-xs ${className}`}
+      className={`relative overflow-hidden rounded-2xl bg-white p-5 sm:p-6 lg:p-7 shadow-[0_3px_16px_rgba(30,35,40,0.06)] ${className}`}
     >
       {/* Background ambient accents */}
       <div 

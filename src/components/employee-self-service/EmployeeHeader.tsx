@@ -11,7 +11,6 @@ import { resolveTenantHref, stripTenantPrefix } from '@/lib/tenant/navigation';
 
 export function EmployeeHeader({
   orgName,
-  orgSlug: _orgSlug,
   employeeName,
   employeeNumber,
 }: {
@@ -50,7 +49,7 @@ export function EmployeeHeader({
 
   return (
     <>
-      <header className="sticky top-0 z-20 flex h-16 items-center justify-between gap-3 border-b border-[var(--wp-border)] bg-white px-4 sm:px-6 lg:px-8">
+      <header className="shrink-0 sticky top-0 z-20 flex h-16 items-center justify-between gap-3 bg-transparent px-4 sm:px-6 lg:px-8">
         <div className="flex min-w-0 items-center gap-3">
           <button
             type="button"
@@ -86,10 +85,14 @@ export function EmployeeHeader({
             </ol>
           </nav>
         </div>
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-3 sm:gap-3.5">
           <span className="hidden text-xs font-semibold uppercase tracking-wider text-[var(--tenant-accent)] sm:inline">
             ESS Portal
           </span>
+          <span
+            className="hidden h-5 w-[1px] shrink-0 bg-[var(--wp-border)] sm:inline-block"
+            aria-hidden="true"
+          />
           <span className="max-w-36 truncate text-sm font-medium text-[var(--wp-text-muted)] sm:max-w-64">
             {orgName}
           </span>

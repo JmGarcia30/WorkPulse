@@ -79,7 +79,7 @@ export function HrSchedulePanel({
   };
 
   return (
-    <div className="flex flex-col justify-between rounded-2xl bg-white p-5 border border-slate-200/80 h-full">
+    <div className="flex flex-col justify-between rounded-2xl bg-white p-5 shadow-[0_3px_16px_rgba(30,35,40,0.06)] h-full">
       {/* Top Header */}
       <div>
         <div className="flex items-center justify-between pb-3">
@@ -95,11 +95,10 @@ export function HrSchedulePanel({
           <button
             type="button"
             onClick={() => setShowAllWeek(!showAllWeek)}
-            className={`text-xs font-semibold px-2 py-1 rounded-lg transition-colors ${
-              showAllWeek
+            className={`text-xs font-semibold px-2 py-1 rounded-lg transition-colors ${showAllWeek
                 ? 'bg-slate-900 text-white'
                 : 'text-slate-500 hover:text-slate-900 hover:bg-slate-100'
-            }`}
+              }`}
           >
             {showAllWeek ? 'Show Selected Day' : 'View All Week'}
           </button>
@@ -129,11 +128,10 @@ export function HrSchedulePanel({
                   setSelectedDate(d.dateStr);
                   setShowAllWeek(false);
                 }}
-                className={`group relative flex flex-col items-center justify-center py-2 px-1 rounded-xl transition-all ${
-                  isSelected
+                className={`group relative flex flex-col items-center justify-center py-2 px-1 rounded-xl transition-all ${isSelected
                     ? 'bg-slate-900 text-white shadow-sm'
                     : 'text-slate-500 hover:text-slate-900 hover:bg-slate-50'
-                }`}
+                  }`}
               >
                 <span className="text-[11px] font-medium tracking-tight">
                   {shortName}
@@ -145,9 +143,8 @@ export function HrSchedulePanel({
                 {/* Event count indicator dot */}
                 {d.eventCount > 0 && (
                   <span
-                    className={`mt-1 h-1 w-1 rounded-full ${
-                      isSelected ? 'bg-emerald-400' : 'bg-emerald-600'
-                    }`}
+                    className={`mt-1 h-1 w-1 rounded-full ${isSelected ? 'bg-emerald-400' : 'bg-emerald-600'
+                      }`}
                   />
                 )}
               </button>
