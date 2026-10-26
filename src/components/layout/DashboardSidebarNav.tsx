@@ -135,7 +135,7 @@ export function DashboardSidebarNav({
   };
 
   return (
-    <nav aria-label="Main navigation" className="space-y-1 p-3">
+    <nav aria-label="Main navigation" className="space-y-1.5 p-3">
       {sections.map((section) => {
         const Icon = section.icon;
         const sectionActive = isSectionActive(section.href, pathname, section.sectionPrefix);
@@ -154,9 +154,9 @@ export function DashboardSidebarNav({
                 onClick={() => toggleSection(section.label, sectionActive)}
                 aria-expanded={isExpanded}
                 aria-controls={subMenuId}
-                className={`flex w-full min-h-11 items-center justify-between rounded-md px-3 text-sm font-semibold transition ${
+                className={`flex w-full min-h-11 items-center justify-between relative rounded-lg px-3.5 text-sm font-medium transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--tenant-primary)] ${
                   sectionActive
-                    ? 'border-l-2 border-[var(--tenant-primary)] bg-[var(--tenant-tint)] text-[var(--tenant-primary)]'
+                    ? 'bg-[var(--tenant-tint)] font-semibold text-[var(--tenant-primary)] before:absolute before:bottom-2 before:left-0 before:top-2 before:w-[3px] before:rounded-full before:bg-[var(--tenant-primary)]'
                     : 'text-[var(--wp-text-muted)] hover:bg-[var(--tenant-tint-strong)] hover:text-[var(--wp-text)]'
                 }`}
               >
@@ -176,9 +176,9 @@ export function DashboardSidebarNav({
                 href={resolveTenantHref(section.href, pathname)}
                 onClick={onNavigate}
                 aria-current={sectionActive ? 'page' : undefined}
-                className={`flex min-h-11 items-center gap-3 rounded-md px-3 text-sm font-semibold transition ${
+                className={`flex min-h-11 items-center gap-3 relative rounded-lg px-3.5 text-sm font-medium transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--tenant-primary)] ${
                   sectionActive
-                    ? 'border-l-2 border-[var(--tenant-primary)] bg-[var(--tenant-tint)] text-[var(--tenant-primary)]'
+                    ? 'bg-[var(--tenant-tint)] font-semibold text-[var(--tenant-primary)] before:absolute before:bottom-2 before:left-0 before:top-2 before:w-[3px] before:rounded-full before:bg-[var(--tenant-primary)]'
                     : 'text-[var(--wp-text-muted)] hover:bg-[var(--tenant-tint-strong)] hover:text-[var(--wp-text)]'
                 }`}
               >
@@ -192,7 +192,7 @@ export function DashboardSidebarNav({
                 id={subMenuId}
                 role="region"
                 aria-label={`${section.label} sub-navigation`}
-                className="ml-5 mt-1 space-y-0.5 border-l border-[var(--tenant-border)] pl-3"
+                className="ml-5 mt-1.5 space-y-1 border-l border-[var(--tenant-border)] pl-3"
               >
                 {section.children!.map((child) => {
                   const childActive = isChildRouteActive(
@@ -206,9 +206,9 @@ export function DashboardSidebarNav({
                       href={resolveTenantHref(child.href, pathname)}
                       onClick={onNavigate}
                       aria-current={childActive ? 'page' : undefined}
-                      className={`block rounded-md px-3 py-2 text-sm font-semibold transition ${
+                      className={`block relative rounded-lg px-3 py-2.5 text-sm font-medium transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--tenant-primary)] ${
                         childActive
-                          ? 'bg-[var(--tenant-tint-strong)] font-bold text-[var(--tenant-primary)]'
+                          ? 'bg-[var(--tenant-tint-strong)] font-semibold text-[var(--tenant-primary)]'
                           : 'text-[var(--wp-text-muted)] hover:bg-[var(--tenant-tint)] hover:text-[var(--wp-text)]'
                       }`}
                     >
