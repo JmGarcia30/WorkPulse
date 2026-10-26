@@ -33,7 +33,7 @@ export function EmployeeNav({ onNavigate }: { onNavigate?: () => void }) {
   const pathname = usePathname();
 
   return (
-    <nav aria-label="Employee navigation" className="space-y-1 p-3">
+    <nav aria-label="Employee navigation" className="space-y-1.5 p-3">
       {employeeNavLinks.map(({ href, label, icon: Icon }) => {
         const active = isRouteActive(href, pathname);
         return (
@@ -42,9 +42,9 @@ export function EmployeeNav({ onNavigate }: { onNavigate?: () => void }) {
             href={resolveTenantHref(href, pathname)}
             onClick={onNavigate}
             aria-current={active ? 'page' : undefined}
-            className={`flex min-h-11 items-center gap-3 rounded-md px-3 text-sm font-semibold transition ${
+            className={`flex min-h-11 items-center gap-3 relative rounded-lg px-3.5 text-sm font-medium transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--tenant-primary)] ${
               active
-                ? 'border-l-2 border-[var(--tenant-primary)] bg-[var(--tenant-tint)] text-[var(--tenant-primary)]'
+                ? 'bg-[var(--tenant-tint)] font-semibold text-[var(--tenant-primary)] before:absolute before:bottom-2 before:left-0 before:top-2 before:w-[3px] before:rounded-full before:bg-[var(--tenant-primary)]'
                 : 'text-[var(--wp-text-muted)] hover:bg-[var(--tenant-tint-strong)] hover:text-[var(--wp-text)]'
             }`}
           >
