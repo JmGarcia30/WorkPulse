@@ -47,6 +47,14 @@ function configuredSmtpCredentials() {
   const pass = !process.env.SMTP_HOST && /^[a-z]{4}(?: [a-z]{4}){3}$/i.test(rawPass) ? rawPass.replace(/ /g, '') : rawPass;
   return { user, pass };
 }
+// Sensitive onboarding emails use the authenticated SMTP mailbox as the sender.
+// EMAIL_FROM may be a branded display address in other workflows; Gmail App Password
+// accounts generally cannot send from an arbitrary unverified address.
+function onboardingSenderAddress() {
+  const { user } = configuredSmtpCredentials();
+  return user;
+}
+
 function getTransporter() {
   const { user, pass } = configuredSmtpCredentials();
 
@@ -76,7 +84,8 @@ function smtpFailureDiagnostic(error: unknown): { category: string; smtpStatus?:
   const code = typeof details.code === 'string' ? details.code : '';
   const status = typeof details.responseCode === 'number' && Number.isInteger(details.responseCode) &&
     details.responseCode >= 400 && details.responseCode <= 599 ? details.responseCode : undefined;
-  const category = status === 535 || status === 534 || code === 'EAUTH' ? 'AUTHENTICATION'
+  const category = code === 'EINVALIDSENDER' ? 'SENDER_CONFIGURATION'
+    : status === 535 || status === 534 || code === 'EAUTH' ? 'AUTHENTICATION'
     : status === 550 || status === 553 || code === 'EENVELOPE' ? 'SENDER_OR_RECIPIENT'
     : status === 421 || status === 450 || status === 451 || status === 452 ? 'PROVIDER_TEMPORARY'
     : code === 'ETIMEDOUT' ? 'TIMEOUT'
@@ -104,8 +113,8 @@ export async function sendEmail({ to, subject, html, text, sensitive = false, se
 
   if (transporter) {
     try {
-      const fromAddress = unquoteEmailEnv(process.env.EMAIL_FROM || process.env.GMAIL_USER || (requireConfiguredSender ? process.env.SMTP_USER : undefined) || (requireConfiguredSender ? '' : 'no-reply@workpulse.saga.edu'));
-      if (requireConfiguredSender && !/^[^\s@<>]+@[^\s@<>]+\.[^\s@<>]+$/.test(fromAddress)) throw new Error('CONFIGURED_SENDER_REQUIRED');
+      const fromAddress = requireConfiguredSender ? onboardingSenderAddress() : unquoteEmailEnv(process.env.EMAIL_FROM || process.env.GMAIL_USER || 'no-reply@workpulse.saga.edu');
+      if (requireConfiguredSender && !/^[^\s@<>]+@[^\s@<>]+\.[^\s@<>]+$/.test(fromAddress)) throw Object.assign(new Error('Configured SMTP mailbox is invalid.'), { code: 'EINVALIDSENDER' });
       await transporter.sendMail({
         from: `"${senderName || 'WorkPulse — St. Aloysius Gonzaga Academy'}" <${fromAddress}>`,
         to,
@@ -135,8 +144,8 @@ export async function sendEmail({ to, subject, html, text, sensitive = false, se
             host: 'smtp.gmail.com', port: 587, secure: false, requireTLS: true,
             auth: { user, pass }, connectionTimeout: 12000, greetingTimeout: 12000, socketTimeout: 20000,
           });
-          const fromAddress = unquoteEmailEnv(process.env.EMAIL_FROM || process.env.GMAIL_USER);
-          if (requireConfiguredSender && !/^[^\s@<>]+@[^\s@<>]+\.[^\s@<>]+$/.test(fromAddress)) throw new Error('CONFIGURED_SENDER_REQUIRED');
+          const fromAddress = requireConfiguredSender ? onboardingSenderAddress() : unquoteEmailEnv(process.env.EMAIL_FROM || process.env.GMAIL_USER);
+          if (requireConfiguredSender && !/^[^\s@<>]+@[^\s@<>]+\.[^\s@<>]+$/.test(fromAddress)) throw Object.assign(new Error('Configured SMTP mailbox is invalid.'), { code: 'EINVALIDSENDER' });
           await fallback.sendMail({
             from: '"' + (senderName || 'WorkPulse') + '" <' + fromAddress + '>',
             to, subject, text: plainText, html,
