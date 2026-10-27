@@ -53,7 +53,7 @@ export function parsePlatformHost(value: string, configuredRoot = rootDomain()):
 }
 
 export function tenantOrigin(slug: string) {
-  if (usesTemporaryPathTenancy(rootDomain())) return `/${slug}`;
+  if (usesTemporaryPathTenancy(rootDomain())) return slug === 'saga' || slug === 'st-aloysius' ? '/saga' : `/w/${slug}`;
   const root = rootDomain();
   const protocol = root.startsWith('localhost') || root.startsWith('127.0.0.1') ? 'http' : 'https';
   return `${protocol}://${slug}.${root}`;

@@ -6,7 +6,7 @@ import { platformName, platformPassword } from './credentials';
 import { tokenHash } from './service';
 import { createEmployeeInvitation, hashActivationToken, isActivationTokenFormatValid } from '@/features/employee-self-service/activation';
 import { sendOrganizationAdministratorActivationEmail } from '@/lib/email';
-import { normalizeHostname, parsePlatformHost, rootDomain, tenantOrigin, usesTemporaryPathTenancy } from '@/lib/tenant/host';
+import { normalizeHostname, parsePlatformHost, publicOrigin, rootDomain, tenantOrigin, usesTemporaryPathTenancy } from '@/lib/tenant/host';
 
 export class OrganizationOnboardingError extends Error {
   constructor(public readonly code: string, message: string) { super(message); }
@@ -24,7 +24,16 @@ async function assertActor(tx: Prisma.TransactionClient, actorId: string) {
 }
 export function workspaceActivationOrigin(slug: string) {
   const root = rootDomain();
-  if (!process.env.PLATFORM_ROOT_DOMAIN || usesTemporaryPathTenancy(root) || normalizeHostname(root).endsWith('.vercel.app')) fail('SETUP_REQUIRED', 'Configure a public root domain with working tenant subdomains before creating organizations. The temporary SAGA path does not support new workspaces.');
+  if (!process.env.PLATFORM_ROOT_DOMAIN) fail('SETUP_REQUIRED', 'Configure the platform root before creating organizations.');
+  if (usesTemporaryPathTenancy(root)) {
+    // Stable HTTPS single-host demo: /saga for the legacy school, /w/:slug for new organizations.
+    // Every request remains scoped to a signed proxy context and verified tenant session.
+    const publicUrl = new URL(publicOrigin());
+    if (publicUrl.host !== root || publicUrl.protocol !== 'https:') fail('SETUP_REQUIRED', 'Configure matching HTTPS public and root hosts.');
+    const path = slug === 'st-aloysius' || slug === 'saga' ? '/saga' : '/w/' + slug;
+    return publicUrl.origin + path;
+  }
+  if (normalizeHostname(root).endsWith('.vercel.app')) fail('SETUP_REQUIRED', 'Use the canonical Vercel domain for temporary path tenancy, or configure a custom root domain.');
   const origin = tenantOrigin(slug);
   let url: URL;
   try { url = new URL(origin); } catch { return fail('SETUP_REQUIRED', 'Configure an absolute tenant origin.'); }

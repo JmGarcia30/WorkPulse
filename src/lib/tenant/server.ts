@@ -41,5 +41,5 @@ export async function requireRequestTenant() {
 // client transitions. Keep the explicitly verified legacy path workspace.
 export async function requestWorkspacePath(pathname: string) {
   const context = readRoutingContext(await headers());
-  return context?.mode === 'saga-path' ? `/saga${pathname}` : pathname;
+  return context?.mode === 'saga-path' ? `/saga${pathname}` : context?.mode === 'shared-path' ? `/w/${context.slug}${pathname}` : pathname;
 }

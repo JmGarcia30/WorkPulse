@@ -8,11 +8,12 @@ import { prisma } from '@/lib/db/prisma';
 import { requireRegistrationHost } from './host';
 import { isActivationTokenFormatValid } from '@/features/employee-self-service/activation';
 import { RegistrationError, registerCompany, resendCompanyVerification, verifyCompanyRegistration } from './service';
+import { OrganizationOnboardingError } from '@/features/platform-admin/onboarding';
 import type { RegistrationState } from './schema';
 
 const cookieName = process.env.NODE_ENV === 'production' ? '__Host-workpulse_registration' : 'workpulse_registration';
 function failure(error: unknown): RegistrationState {
-  return { error: error instanceof RegistrationError ? error.message : 'We could not complete your request. Please try again shortly.' };
+  return { error: error instanceof RegistrationError || error instanceof OrganizationOnboardingError ? error.message : 'We could not complete your request. Please try again shortly.' };
 }
 async function browserProof(create: boolean) {
   const jar = await cookies();

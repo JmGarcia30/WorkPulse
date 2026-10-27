@@ -2,7 +2,7 @@ import { createHmac, timingSafeEqual } from 'node:crypto';
 import { classifyRequestHost, requestAuthority } from './host';
 
 export const ROUTING_CONTEXT_HEADER = 'x-workpulse-routing-context';
-type RoutingContext = { organizationId: string; slug: string; host: string; issuedAt: number; mode: 'subdomain' | 'saga-path' };
+type RoutingContext = { organizationId: string; slug: string; host: string; issuedAt: number; mode: 'subdomain' | 'saga-path' | 'shared-path' };
 function signingKey() {
   const secret = process.env.SESSION_SECRET;
   if (secret && secret.length >= 32) return secret;
@@ -26,6 +26,7 @@ export function readRoutingContext(requestHeaders: Headers): RoutingContext | nu
     const host = requestAuthority(requestHeaders), classification = classifyRequestHost(requestHeaders);
     if (!host || context.host !== host || typeof context.organizationId !== 'string' || !context.organizationId || typeof context.slug !== 'string' || !Number.isFinite(context.issuedAt) || context.issuedAt > Date.now() + 1000 || Date.now() - context.issuedAt > 300000) return null;
     if (context.mode === 'saga-path') return classification.kind === 'public' && context.slug === 'st-aloysius' ? context : null;
+    if (context.mode === 'shared-path') return classification.kind === 'public' && /^[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?$/.test(context.slug) && context.slug !== 'st-aloysius' ? context : null;
     return context.mode === 'subdomain' && classification.kind === 'tenant' && (classification.slug === 'saga' ? 'st-aloysius' : classification.slug) === context.slug ? context : null;
   } catch { return null; }
 }

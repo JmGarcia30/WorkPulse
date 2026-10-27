@@ -19,6 +19,8 @@ const KNOWN_TOP_LEVEL_ROUTES = new Set([
  */
 export function getTenantPrefix(pathname: string): string {
   if (!pathname) return '';
+  const shared = pathname.match(/^\/w\/([a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?)(?=\/(?:dashboard|employee|careers|login|api|tenant-entry)(?:\/|$))/);
+  if (shared) return `/w/${shared[1]}`;
   const match = pathname.match(/^\/([a-zA-Z0-9_-]+)(?=\/(?:dashboard|employee|careers|login|api|tenant-entry)(?:\/|$))/);
   if (match) {
     const candidate = match[1].toLowerCase();

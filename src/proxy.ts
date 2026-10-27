@@ -8,7 +8,7 @@ const sessionCookieNames = ['__Host-workpulse_session', 'workpulse_session'];
 const pathTenantCookie = 'workpulse_path_tenant';
 
 type RoutedOrganization = { id: string; slug: string };
-function cleanRequestHeaders(request: NextRequest, organization?: RoutedOrganization | null, mode: 'subdomain' | 'saga-path' = 'subdomain') {
+function cleanRequestHeaders(request: NextRequest, organization?: RoutedOrganization | null, mode: 'subdomain' | 'saga-path' | 'shared-path' = 'subdomain') {
   const headers = new Headers(request.headers);
   headers.delete('x-workpulse-tenant-slug');
   headers.delete(ROUTING_CONTEXT_HEADER);
@@ -27,13 +27,13 @@ function requestUrl(request: NextRequest) {
   return url;
 }
 
-function pathTenantResponse(request: NextRequest, internalPathname: string, tenantSlug: string, organization: RoutedOrganization | null) {
+function pathTenantResponse(request: NextRequest, internalPathname: string, tenantSlug: string, organization: RoutedOrganization | null, mode: 'saga-path' | 'shared-path' = 'saga-path') {
   if (!organization) return new NextResponse('Workspace not found.', { status: 404 });
   // Keep Next's internal origin for rewrites. Changing it to the public Host
   // can turn a local rewrite into an external request and discard its context.
   const url = request.nextUrl.clone();
   url.pathname = internalPathname;
-  const requestHeaders = cleanRequestHeaders(request, organization, 'saga-path');
+  const requestHeaders = cleanRequestHeaders(request, organization, mode);
   requestHeaders.set('x-workpulse-tenant-slug', tenantSlug);
   const response = NextResponse.rewrite(url, { request: { headers: requestHeaders } });
   response.cookies.set(pathTenantCookie, tenantSlug, {
@@ -72,6 +72,45 @@ export async function proxy(request: NextRequest) {
       }
     }
     return NextResponse.next({ request: { headers: cleanRequestHeaders(request) } });
+  }
+
+  // Temporary single-host, multi-organization routing. Keep SAGA's existing /saga flow unchanged.
+  // The workspace cookie only selects an address; signed routing and persisted sessions enforce authorization.
+  if (classification.kind === 'public' && usesTemporaryPathTenancy(host)) {
+    const shared = pathname.match(/^\/w\/([a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?)(\/.*)?$/);
+    if (shared) {
+      const tenantSlug = shared[1], suffix = shared[2] || '/';
+      const invalid = new Set(['saga', 'st-aloysius', 'platform', 'register', 'w']);
+      if (invalid.has(tenantSlug)) return new NextResponse('Workspace not found.', { status: 404 });
+      const org = await prisma.organization.findUnique({ where: { slug: tenantSlug }, select: { id: true, slug: true } });
+      if (!org) return new NextResponse('Workspace not found.', { status: 404 });
+      if (suffix === '/') return pathTenantResponse(request, '/tenant-entry', tenantSlug, org, 'shared-path');
+      if (suffix === '/login') return pathTenantResponse(request, '/login', tenantSlug, org, 'shared-path');
+      if (suffix === '/activate/organization-admin') return pathTenantResponse(request, suffix, tenantSlug, org, 'shared-path');
+      if (suffix.startsWith('/dashboard') || suffix.startsWith('/employee')) {
+        if (!hasSession) {
+          const login = requestUrl(request);
+          login.pathname = '/w/' + tenantSlug + '/login';
+          login.searchParams.set('callbackUrl', '/w/' + tenantSlug + suffix);
+          return NextResponse.redirect(login);
+        }
+        return pathTenantResponse(request, suffix, tenantSlug, org, 'shared-path');
+      }
+      return new NextResponse('Workspace route not found.', { status: 404 });
+    }
+    const remembered = request.cookies.get(pathTenantCookie)?.value;
+    if (remembered && remembered !== 'saga' && /^[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?$/.test(remembered)) {
+      const org = await prisma.organization.findUnique({ where: { slug: remembered }, select: { id: true, slug: true } });
+      if (!org) return new NextResponse('Workspace not found.', { status: 404 });
+      if (pathname.startsWith('/api/') && !pathname.startsWith('/api/email-integration/google/')) {
+        return pathTenantResponse(request, pathname, remembered, org, 'shared-path');
+      }
+      if (pathname === '/login' || pathname.startsWith('/dashboard') || pathname.startsWith('/employee')) {
+        const destination = requestUrl(request);
+        destination.pathname = '/w/' + remembered + pathname;
+        return NextResponse.redirect(destination);
+      }
+    }
   }
 
   // A syntactically valid wildcard hostname is only a routing candidate. Every
