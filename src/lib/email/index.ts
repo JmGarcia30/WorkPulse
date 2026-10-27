@@ -33,9 +33,22 @@ export function getLastSentEmail(): EmailLogEntry | undefined {
  * Creates a transporter instance if credentials exist in environment variables.
  * Free Gmail SMTP requires a standard Gmail address and an App Password (zero cost).
  */
+// Normalize literal .env-style quoting accidentally pasted into Vercel's editor.
+function unquoteEmailEnv(value: string | undefined) {
+  const clean = (value ?? '').trim();
+  if (clean.length >= 2 && ((clean.startsWith('"') && clean.endsWith('"')) || (clean.startsWith("'") && clean.endsWith("'")))) return clean.slice(1, -1);
+  return clean;
+}
+
+function configuredSmtpCredentials() {
+  const user = unquoteEmailEnv(process.env.GMAIL_USER || process.env.SMTP_USER);
+  const rawPass = unquoteEmailEnv(process.env.GMAIL_APP_PASSWORD || process.env.SMTP_PASSWORD);
+  // Google sometimes displays its 16-letter App Password in four space-separated groups.
+  const pass = !process.env.SMTP_HOST && /^[a-z]{4}(?: [a-z]{4}){3}$/i.test(rawPass) ? rawPass.replace(/ /g, '') : rawPass;
+  return { user, pass };
+}
 function getTransporter() {
-  const user = process.env.GMAIL_USER || process.env.SMTP_USER;
-  const pass = process.env.GMAIL_APP_PASSWORD || process.env.SMTP_PASSWORD;
+  const { user, pass } = configuredSmtpCredentials();
 
   if (user && pass) {
     if (process.env.SMTP_HOST) {
@@ -91,7 +104,7 @@ export async function sendEmail({ to, subject, html, text, sensitive = false, se
 
   if (transporter) {
     try {
-      const fromAddress = process.env.EMAIL_FROM || process.env.GMAIL_USER || (requireConfiguredSender ? process.env.SMTP_USER : undefined) || (requireConfiguredSender ? '' : 'no-reply@workpulse.saga.edu');
+      const fromAddress = unquoteEmailEnv(process.env.EMAIL_FROM || process.env.GMAIL_USER || (requireConfiguredSender ? process.env.SMTP_USER : undefined) || (requireConfiguredSender ? '' : 'no-reply@workpulse.saga.edu'));
       if (requireConfiguredSender && !/^[^\s@<>]+@[^\s@<>]+\.[^\s@<>]+$/.test(fromAddress)) throw new Error('CONFIGURED_SENDER_REQUIRED');
       await transporter.sendMail({
         from: `"${senderName || 'WorkPulse — St. Aloysius Gonzaga Academy'}" <${fromAddress}>`,
