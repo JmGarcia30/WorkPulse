@@ -3,8 +3,8 @@ const fs = require('node:fs'), path = require('node:path'), Module = require('no
 const { spawnSync } = require('node:child_process');
 const { PrismaClient } = require('@prisma/client');
 const helper = require('./batch0-recovery-environment.cjs');
-const directory = 'docs/public-company-onboarding';
-const migration = '20261023000300_public_company_registration';
+const directory = 'docs/company-registration-otp';
+const migration = '20261027000100_company_registration_otp';
 const save = (name, value) => { fs.mkdirSync(directory, { recursive: true }); fs.writeFileSync(`${directory}/${name}.json`, JSON.stringify(value, null, 2)); };
 
 async function main() {
@@ -12,7 +12,7 @@ async function main() {
   if (!['migrate', 'test', 'regression', 'build'].includes(mode)) throw Error('EXPECTED_MIGRATE_TEST_REGRESSION_OR_BUILD');
   const config = helper.configuration();
   const verified = JSON.parse(fs.readFileSync(helper.directory + '/schema-and-history-verification.json', 'utf8'));
-  if (!config.identity.consoleMappingComplete || config.identity.branchId !== 'br-broad-forest-az55xwfe' || config.identity.branchId !== verified.identity.branchId || config.identity.endpointSha256 !== verified.identity.endpointSha256 || !verified.h10Applied || !verified.h10ChecksumMatch) throw Error('UNVERIFIED_RECOVERY_TARGET');
+  if (!config.identity.consoleMappingComplete || config.identity.branchId !== verified.identity.branchId || config.identity.endpointSha256 !== verified.identity.endpointSha256 || !verified.h10Applied || !verified.h10ChecksumMatch) throw Error('UNVERIFIED_RECOVERY_TARGET');
   const histories = [];
   for (const url of [config.pooled, config.direct]) {
     const reader = new PrismaClient({ datasources: { db: { url: helper.readOnly(url) } }, log: [] });
@@ -54,40 +54,40 @@ async function main() {
       if (result.status !== 0) throw Error('CHECK_FAILED');
     } else if (mode === 'regression') {
       require('tsx/cjs');
-      const { createHash, randomBytes } = require('node:crypto');
-      const digest = value => createHash('sha256').update(value).digest('hex');
-      const globalKey = digest('platform-login-global');
-      const fixtureKey = digest('registration-regression:' + randomBytes(16).toString('hex'));
-      // Existing suites clean up their global login counter. Give that counter its
-      // own namespace so current operator login history is never changed/deleted.
-      const rewrite = value => {
-        if (value === globalKey) return fixtureKey;
-        if (Array.isArray(value)) return value.map(rewrite);
-        if (value && typeof value === 'object' && !(value instanceof Date)) return Object.fromEntries(Object.entries(value).map(([key, item]) => [key, rewrite(item)]));
-        return value;
-      };
-      const wrap = client => new Proxy(client, { get(target, key) {
-        if (key === '$transaction') return (callback, options) => target.$transaction(tx => callback(wrap(tx)), options);
-        if (key === 'platformAuthenticationAttempt') return new Proxy(target[key], { get(delegate, method) { const value = Reflect.get(delegate, method); return typeof value === 'function' ? args => value.call(delegate, rewrite(args)) : value; } });
-        const value = Reflect.get(target, key); return typeof value === 'function' ? value.bind(target) : value;
-      } });
-      const scoped = wrap(db), original = Module._load;
-      const context = { headers: new Headers({ host: 'localhost:3000' }), jar: new Map() };
-      Module._load = function(name, parent, main) {
-        if (name === 'server-only') return {};
-        if (name === 'next/headers') return { headers: async () => context.headers, cookies: async () => ({ get: key => context.jar.get(key), set: (key, value, options) => context.jar.set(key, { value, ...options }), delete: key => context.jar.delete(key) }) };
-        if (name === 'next/navigation') return { redirect: target => { throw Error('REDIRECT:' + target); }, notFound: () => { throw Error('NOT_FOUND'); } };
-        if (name === 'next/cache') return { revalidatePath: () => {} };
-        if (name === '@/lib/db/prisma') return { prisma: scoped };
-        if (name.startsWith('@/')) return original.call(this, path.resolve('src', name.slice(2)), parent, main);
-        return original.call(this, name, parent, main);
-      };
+      const { randomBytes } = require('node:crypto');
+      // Legacy regressions exercise real login budgets. Put all of their writes
+      // in a disposable schema, including their synthetic SAGA routing fixture.
+      const schema = 'registration_test_' + randomBytes(12).toString('hex');
+      if (!/^registration_test_[a-f0-9]{24}$/.test(schema)) throw Error('INVALID_TEST_SCHEMA');
+      const testUrl = new URL(config.direct);
+      testUrl.searchParams.set('schema', schema);
+      testUrl.searchParams.set('options', '-c search_path=' + schema + ',public');
+      await db.$executeRawUnsafe(`CREATE SCHEMA "${schema}"`);
+      const regressionDb = new PrismaClient({ datasources: { db: { url: testUrl.href } }, log: [] });
       try {
-        save('routing-regression', await require('./test-platform-routing.cjs')(scoped, context));
-        save('manual-onboarding-regression', await require('./test-platform-onboarding.cjs')(scoped, context));
+        const setup = spawnSync(process.execPath, ['node_modules/prisma/build/index.js', 'migrate', 'deploy'], { env: { ...config.environment, DATABASE_URL: testUrl.href, H10_TEST_DATABASE_URL: testUrl.href }, windowsHide: true, encoding: 'utf8' });
+        if (setup.status !== 0) throw Error('REGRESSION_SCHEMA_SETUP_FAILED');
+        await regressionDb.organization.create({ data: { name: 'Synthetic SAGA routing fixture', slug: 'st-aloysius', timeZone: 'Asia/Manila' } });
+        const scoped = regressionDb, original = Module._load;
+        const context = { headers: new Headers({ host: 'localhost:3000' }), jar: new Map() };
+        Module._load = function(name, parent, main) {
+          if (name === 'server-only') return {};
+          if (name === 'next/headers') return { headers: async () => context.headers, cookies: async () => ({ get: key => context.jar.get(key), set: (key, value, options) => context.jar.set(key, { value, ...options }), delete: key => context.jar.delete(key) }) };
+          if (name === 'next/navigation') return { redirect: target => { throw Error('REDIRECT:' + target); }, notFound: () => { throw Error('NOT_FOUND'); } };
+          if (name === 'next/cache') return { revalidatePath: () => {} };
+          if (name === '@/lib/db/prisma') return { prisma: scoped };
+          if (name.startsWith('@/')) return original.call(this, path.resolve('src', name.slice(2)), parent, main);
+          return original.call(this, name, parent, main);
+        };
+        try {
+          save('routing-regression', await require('./test-platform-routing.cjs')(scoped, context));
+          save('manual-onboarding-regression', await require('./test-platform-onboarding.cjs')(scoped, context));
+        } finally {
+          Module._load = original;
+        }
       } finally {
-        Module._load = original;
-        await db.platformAuthenticationAttempt.deleteMany({ where: { key: fixtureKey } });
+        await regressionDb.$disconnect();
+        await db.$executeRawUnsafe(`DROP SCHEMA "${schema}" CASCADE`);
       }
     } else {
       require('tsx/cjs');

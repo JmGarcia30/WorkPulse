@@ -9,7 +9,7 @@ export const companyRegistration = z.object({
   password: platformPassword,
 });
 export type RegistrationInput = z.infer<typeof companyRegistration>;
-export type RegistrationState = { error?: string; success?: string; email?: string };
+export type RegistrationState = { error?: string; success?: string; email?: string; retryAt?: number };
 
 export function companySlugBase(name: string) {
   const base = name.normalize('NFKD').replace(/[\u0300-\u036f]/g, '').toLowerCase()

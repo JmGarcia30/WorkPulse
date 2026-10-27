@@ -197,13 +197,13 @@ export async function sendApplicantVerificationEmail(input: { organizationId: st
   return sendSagaRecruitment(org.id, message, () => sendEmail(message));
 }
 
-export function sendCompanyRegistrationVerificationEmail(input: { to: string; organizationName: string; activationUrl: string; expiresAt: Date }) {
+export function sendCompanyRegistrationVerificationEmail(input: { to: string; organizationName: string; code: string; verificationUrl: string; expiresAt: Date }) {
   const escape = (value: string) => value.replace(/[&<>"']/g, char => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[char] ?? char);
   return sendEmail({
     to: input.to, subject: 'Verify your company email — WorkPulse',
     sensitive: true, senderName: 'WorkPulse', requireConfiguredSender: true,
-    text: `Verify your email to create ${input.organizationName} on WorkPulse: ${input.activationUrl}\nOpen this link in the browser where you registered. It expires at ${input.expiresAt.toISOString()} and can only be used once. If you did not register, ignore this email. No workspace has been created.`,
-    html: `<p>Verify your email to create <strong>${escape(input.organizationName)}</strong> on WorkPulse.</p><p><a href="${escape(input.activationUrl)}">Verify email and create workspace</a></p><p>Open this link in the browser where you registered. It expires at ${input.expiresAt.toISOString()} and can only be used once. If you did not register, ignore this email. No workspace has been created.</p>`,
+    text: `Your WorkPulse verification code is: ${input.code}\nVerify your email to create ${input.organizationName}: ${input.verificationUrl}\nThis code expires in 10 minutes (${input.expiresAt.toISOString()}) and can only be used once. On another browser, enter your email and registration password too. Never share this code. If you did not register, ignore this email. No workspace has been created.`,
+    html: `<p>Verify your email to create <strong>${escape(input.organizationName)}</strong> on WorkPulse.</p><p>Your verification code:</p><p style="font-size:32px;letter-spacing:8px;font-weight:bold">${escape(input.code)}</p><p><a href="${escape(input.verificationUrl)}">Enter verification code</a></p><p>This code expires in 10 minutes and can only be used once. On another browser, enter your email and registration password too. Never share this code. If you did not register, ignore this email. No workspace has been created.</p>`,
   });
 }
 

@@ -29,22 +29,23 @@ export async function registerCompanyAction(_state: RegistrationState, form: For
   await requireRegistrationHost();
   const email = String(form.get('email') ?? '');
   try {
-    return await registerCompany(prisma, { companyName: String(form.get('companyName') ?? ''), administratorName: String(form.get('administratorName') ?? ''), email, password: String(form.get('password') ?? '') }, await browserProof(true));
+    await registerCompany(prisma, { companyName: String(form.get('companyName') ?? ''), administratorName: String(form.get('administratorName') ?? ''), email, password: String(form.get('password') ?? '') }, await browserProof(true));
   } catch (error) {
     return { ...failure(error), ...(error instanceof RegistrationError && error.code === 'DELIVERY_FAILED' ? { email } : {}) };
   }
+  redirect('/register/verify#email=' + encodeURIComponent(email.trim().toLowerCase()));
 }
 
 export async function resendCompanyVerificationAction(_state: RegistrationState, form: FormData): Promise<RegistrationState> {
   await requireRegistrationHost();
-  try { return await resendCompanyVerification(prisma, String(form.get('email') ?? ''), await browserProof(false)); }
+  try { return await resendCompanyVerification(prisma, String(form.get('email') ?? ''), await browserProof(false), undefined, String(form.get('registrationPassword') ?? '')); }
   catch (error) { return failure(error); }
 }
 
 export async function verifyCompanyRegistrationAction(_state: RegistrationState, form: FormData): Promise<RegistrationState> {
   await requireRegistrationHost();
   let loginUrl: string;
-  try { ({ loginUrl } = await verifyCompanyRegistration(prisma, String(form.get('token') ?? ''), await browserProof(false), String(form.get('registrationPassword') ?? ''))); }
+  try { ({ loginUrl } = await verifyCompanyRegistration(prisma, String(form.get('token') || form.get('code') || ''), await browserProof(false), String(form.get('registrationPassword') ?? ''), form.get('token') ? '' : String(form.get('email') ?? ''))); }
   catch (error) { return failure(error); }
   revalidatePath('/platform');
   redirect(loginUrl);

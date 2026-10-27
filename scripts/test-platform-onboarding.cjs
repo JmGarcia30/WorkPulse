@@ -27,7 +27,7 @@ module.exports = async function testOnboarding(db, context) {
     check(workspaceSlug.parse('  New-Workspace  ') === 'new-workspace', 'Workspace identifiers are normalized consistently');
     await rejects(() => onboarding.createOrganization(db, admin.id, { ...input('invalid-zone'), timeZone: 'Not/AZone' }, sender), 'INVALID_INPUT', 'Invalid timezone cannot initialize a tenant');
     const originalRoot = process.env.PLATFORM_ROOT_DOMAIN, originalOrigin = process.env.PLATFORM_PUBLIC_ORIGIN;
-    process.env.PLATFORM_ROOT_DOMAIN = 'sample.vercel.app'; process.env.PLATFORM_PUBLIC_ORIGIN = 'https://sample.vercel.app';
+    process.env.PLATFORM_ROOT_DOMAIN = 'sample.vercel.app'; process.env.PLATFORM_PUBLIC_ORIGIN = 'https://different.vercel.app';
     await rejects(() => onboarding.createOrganization(db, admin.id, input('unsupported-route'), sender), 'SETUP_REQUIRED', 'Unroutable temporary SAGA-only hosting cannot create tenants');
     process.env.PLATFORM_ROOT_DOMAIN = originalRoot; process.env.PLATFORM_PUBLIC_ORIGIN = originalOrigin;
     const first = input('first');

@@ -606,6 +606,9 @@ model CompanyRegistration {
   passwordHash   String?
   browserHash    String
   tokenHash      String? @unique
+  otpHash        String?
+  otpNonce       String?
+  otpAttempts    Int @default(0)
   expiresAt      DateTime
   lastIssuedAt   DateTime @default(now())
   deliveryStatus OrganizationInvitationDelivery @default(PENDING)

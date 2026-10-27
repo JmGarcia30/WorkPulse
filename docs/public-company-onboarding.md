@@ -1,5 +1,7 @@
 # Public self-service company onboarding
 
+The current six-digit code flow supersedes the link flow described in this historical implementation report. See [Email OTP verification](company-registration-otp/REPORT.md) for current behavior, validation, and migration requirements. Existing pending links remain supported.
+
 Implemented locally against the verified `workpulse-batch0-recovery` branch (`br-broad-forest-az55xwfe`). No production connection, production migration, deployment, push, or environment-file edit was performed.
 
 The public website now has a **Create Workspace** action linking to `/register`. The mobile-friendly form collects company name, administrator name, email, and password. The email must be verified before either an Organization or a login-capable User is created. No System Administrator approval is required.

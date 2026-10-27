@@ -17,7 +17,7 @@ export default function CompanyVerificationPage() {
         </div>
       </section>
       <section className={styles.formPanel} aria-label="Verify company email">
-        <div className={styles.formHeading}><p>Email verification</p><span>One-time secure link</span></div>
+        <div className={styles.formHeading}><p>Email verification</p><span>Six-digit verification code</span></div>
         <div style={{ marginTop: 28 }}><CompanyVerificationForm /></div>
       </section>
     </div>
