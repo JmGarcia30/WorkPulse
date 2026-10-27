@@ -99,13 +99,26 @@ export async function proxy(request: NextRequest) {
       return new NextResponse('Workspace route not found.', { status: 404 });
     }
     const remembered = request.cookies.get(pathTenantCookie)?.value;
-    if (remembered && remembered !== 'saga' && /^[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?$/.test(remembered)) {
+    // A deleted workspace must never block the platform home, registration,
+    // or other public pages. Only resolve a remembered tenant for actual
+    // tenant-only entry points, never for '/'.
+    const sharedApiPath = pathname.startsWith('/api/') && !pathname.startsWith('/api/email-integration/google/');
+    const sharedEntryPath = pathname === '/login' || pathname.startsWith('/dashboard') || pathname.startsWith('/employee');
+    if (remembered && remembered !== 'saga' && /^[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?$/.test(remembered) && (sharedApiPath || sharedEntryPath)) {
       const org = await prisma.organization.findUnique({ where: { slug: remembered }, select: { id: true, slug: true } });
-      if (!org) return new NextResponse('Workspace not found.', { status: 404 });
-      if (pathname.startsWith('/api/') && !pathname.startsWith('/api/email-integration/google/')) {
+      if (!org) {
+        // Fail closed for APIs. On interactive pages, discard the orphaned
+        // selection and return to workspace discovery instead of a dead end.
+        const response = sharedApiPath
+          ? new NextResponse('Workspace not found.', { status: 404, headers: { 'Cache-Control': 'no-store' } })
+          : NextResponse.redirect(new URL('/workspace-discovery', requestUrl(request)));
+        response.cookies.delete(pathTenantCookie);
+        return response;
+      }
+      if (sharedApiPath) {
         return pathTenantResponse(request, pathname, remembered, org, 'shared-path');
       }
-      if (pathname === '/login' || pathname.startsWith('/dashboard') || pathname.startsWith('/employee')) {
+      if (sharedEntryPath) {
         const destination = requestUrl(request);
         destination.pathname = '/w/' + remembered + pathname;
         return NextResponse.redirect(destination);
