@@ -33,7 +33,7 @@ export type PdfReport = { title: string; organization: string; period: string; s
 
 function pdfText(value: string): string {
   // Built-in Helvetica cannot render arbitrary Unicode, so sanitize unsupported glyphs.
-  return value.replace(/[\r\n\t]/g, ' ').replace(/[^\x20-\x7e\xa0-\xff]/g, '?').slice(0, 2000);
+  return value.normalize('NFKD').replace(/[\r\n\t]/g, ' ').replace(/[^\x20-\x7e]/g, '?').slice(0, 2000);
 }
 
 export async function pdfDocument(report: PdfReport): Promise<Uint8Array> {
@@ -46,7 +46,7 @@ export async function pdfDocument(report: PdfReport): Promise<Uint8Array> {
   const right = 46;
   const usableWidth = width - left - right;
   let page: PDFPage;
-  let y: number;
+  let y = height - 44;
   let pageNumber = 0;
 
   function newPage() {
