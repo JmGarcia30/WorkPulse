@@ -1,6 +1,6 @@
 'use client';
 
-import { useActionState, useEffect, useRef, useState } from 'react';
+import { useActionState, useEffect, useState } from 'react';
 import { registerCompanyAction, resendCompanyVerificationAction, verifyCompanyRegistrationAction } from './actions';
 import styles from '@/app/request-demo/request-demo.module.css';
 
@@ -29,25 +29,75 @@ export function CompanyRegistrationForm() {
   </div>;
 }
 
+// Keep the token in the URL fragment (never sent in HTTP request headers).
+// Email apps can open just /register/verify; users may paste the full
+// verification link or the code printed in the email as a recovery path.
+function verificationToken(raw: string): string {
+  const value = raw.trim();
+  if (/^[A-Za-z0-9_-]{43}$/.test(value)) return value;
+  try {
+    const url = new URL(value);
+    if (url.origin !== window.location.origin || url.pathname !== '/register/verify') return '';
+    const token = new URLSearchParams(url.hash.slice(1)).get('token') ?? '';
+    return /^[A-Za-z0-9_-]{43}$/.test(token) ? token : '';
+  } catch {
+    return '';
+  }
+}
+
 export function CompanyVerificationForm() {
-  const retained = useRef('');
   const [token, setToken] = useState('');
+  const [pasted, setPasted] = useState('');
+  const [password, setPassword] = useState('');
   const [state, action, pending] = useActionState(verifyCompanyRegistrationAction, {});
+
   useEffect(() => {
     const capture = () => {
-      if (window.location.hash) retained.current = new URLSearchParams(window.location.hash.slice(1)).get('token') ?? '';
-      setToken(retained.current);
-      if (window.location.hash) window.history.replaceState(null, '', window.location.pathname);
+      const current = verificationToken(window.location.href);
+      if (current) setToken(current);
     };
     capture();
     window.addEventListener('hashchange', capture);
     return () => window.removeEventListener('hashchange', capture);
   }, []);
+
   return <form action={action} className="space-y-5">
     <input type="hidden" name="token" value={token} />
-    <p className="text-sm">Verify your email to create your company workspace. You will then sign in securely with the email and password you registered.</p>
-    <button disabled={pending || !token} className="wp-button-primary w-full">{pending ? 'Creating your workspace…' : 'Verify email and create workspace'}</button>
-    {!token && <p role="status" className="text-sm">Open the complete verification link from your email in the browser where you registered.</p>}
+    <p className="text-sm">Confirm your email to create the company workspace and first HR administrator account. Use the verification link sent to your inbox.</p>
+
+    <label className="block space-y-2 text-sm font-medium">
+      <span>Verification link or code</span>
+      <input
+        className="wp-input w-full"
+        type="text"
+        autoComplete="off"
+        autoCapitalize="off"
+        spellCheck={false}
+        value={pasted}
+        onChange={(event) => { const next = event.target.value; setPasted(next); setToken(verificationToken(next)); }}
+        placeholder="Paste your complete email link or verification code"
+        aria-describedby="registration-token-help"
+      />
+    </label>
+    <p id="registration-token-help" className="text-xs text-[var(--wp-text-muted)]">
+      If the email button opens this page without a token, copy the complete link from the email and paste it here. If the token is detected from the link automatically, you do not need to paste it.
+    </p>
+    <label className="block space-y-2 text-sm font-medium">
+      <span>Original registration password (if verifying in another browser)</span>
+      <input
+        className="wp-input w-full"
+        type="password"
+        name="registrationPassword"
+        autoComplete="off"
+        minLength={14}
+        maxLength={72}
+        value={password}
+        onChange={(event) => setPassword(event.target.value)}
+        placeholder="Not needed when using the original browser"
+      />
+    </label>
+    <button disabled={pending || !token} className="wp-button-primary w-full" type="submit">{pending ? 'Creating your workspace…' : 'Verify email and create workspace'}</button>
+    {!token && <p role="status" className="text-sm text-[var(--wp-text-muted)]">A valid 43-character verification code is needed. Copy the full link from the latest WorkPulse email if it was not detected automatically.</p>}
     {state.error && <p role="alert" className="wp-alert-danger">{state.error}</p>}
   </form>;
 }
