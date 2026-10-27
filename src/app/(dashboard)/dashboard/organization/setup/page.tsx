@@ -10,7 +10,7 @@ export default async function WorkspaceSetupPage() {
   if (user.role !== Role.HR_ADMIN && user.role !== Role.ORGANIZATION_ADMIN) notFound();
   const branding = await getRequestOrganizationBranding(user.organizationId);
   if (!branding) notFound();
-  const complete = Boolean(branding.brandingUpdatedAt && branding.displayName && branding.primary && branding.accent);
+  const complete = branding.primary !== '#17324D' || branding.accent !== '#167D77' || branding.displayName !== branding.canonicalName;
   return <div className="mx-auto max-w-5xl space-y-8">
     <header className="space-y-3 border-b pb-6">
       <p className="wp-eyebrow">Workspace setup</p>
