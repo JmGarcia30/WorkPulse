@@ -39,7 +39,14 @@ export default async function AnalyticsPage({ searchParams }: { searchParams: Pr
   }
   const { range, workforce, attendance, leave, payroll, employment } = data;
   const presetLink = (preset: string) => `/dashboard/analytics?${new URLSearchParams({ preset, category: range.category })}`;
+  const exportLink = `/api/reports/analytics?${new URLSearchParams({
+    preset: range.preset,
+    from: range.from,
+    to: range.to,
+    category: range.category,
+  })}`;
   return <div className="space-y-5">
+    <div><Link href={exportLink} prefetch={false} className="wp-button-secondary">Export analytics PDF</Link></div>
     <header><p className="wp-eyebrow">Workforce insights</p><h1 className="wp-page-title mt-1">HR Analytics</h1><p className="mt-2 text-sm text-[var(--wp-text-muted)]">Stored WorkPulse records for {range.from} to {range.to}. Dates use {data.timeZone}.</p></header>
     {filterError && <p role="alert" className="rounded-xl border border-amber-200 bg-amber-50 p-3 text-sm text-amber-900">{filterError} Showing This Month instead.</p>}
     <div className="wp-card p-4"><div className="mb-4 flex flex-wrap items-center gap-2"><Link href={presetLink('this-month')} aria-current={range.preset === 'this-month' ? 'page' : undefined} className={range.preset === 'this-month' ? 'wp-button-primary' : 'wp-button-secondary'}>This Month</Link><Link href={presetLink('last-month')} aria-current={range.preset === 'last-month' ? 'page' : undefined} className={range.preset === 'last-month' ? 'wp-button-primary' : 'wp-button-secondary'}>Last Month</Link><span className="text-xs text-[var(--wp-text-muted)]">Or apply a custom range (maximum 366 days).</span></div>
