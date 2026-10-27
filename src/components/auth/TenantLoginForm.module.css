@@ -13,3 +13,11 @@
 @media (prefers-reduced-motion: reduce) {
   .form input, .form button { transition: none; }
 }
+
+/* Keep the password control inside the field without triggering submit. */
+.form .passwordField { position: relative; }
+.form .passwordField input { padding-right: 54px; }
+.form .passwordField .visibilityToggle { position: absolute; top: 50%; right: 7px; transform: translateY(-50%); width: 40px; min-height: 36px; display: grid; place-items: center; border-radius: 7px; border: 0; background: transparent; color: #4b5563; cursor: pointer; }
+.form .passwordField .visibilityToggle:hover { background: #f1eee8; filter: none; transform: translateY(-50%); }
+.form .passwordField .visibilityToggle:active { transform: translateY(-50%); }
+.form .passwordField .visibilityToggle:focus-visible { outline: 2px solid var(--tenant-accent); outline-offset: 1px; }
