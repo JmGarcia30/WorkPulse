@@ -1,4 +1,7 @@
 import { redirect } from 'next/navigation';
+import { Role } from '@prisma/client';
+import { prisma } from '@/lib/db/prisma';
+import { requestWorkspacePath } from '@/lib/tenant/server';
 import { getBackOfficeReadContext } from '@/lib/auth/guards';
 import { readDashboardData } from '@/features/dashboard/read-model';
 import { DashboardHeader } from '@/components/dashboard/DashboardHeader';
@@ -11,6 +14,23 @@ import { RequiresAttentionWidget } from '@/components/dashboard/RequiresAttentio
 
 export default async function DashboardPage() {
   const user = await getBackOfficeReadContext();
+
+  // Only newly registered workspaces need first-time setup. SAGA retains its
+  // established institutional branding and existing HR dashboard flow.
+  if (user.role === Role.HR_ADMIN || user.role === Role.ORGANIZATION_ADMIN) {
+    const [organization, branding] = await Promise.all([
+      prisma.organization.findUnique({ where: { id: user.organizationId }, select: { slug: true } }),
+      prisma.organizationBranding.findUnique({
+        where: { organizationId: user.organizationId },
+        select: { displayName: true, primaryColor: true, accentColor: true },
+      }),
+    ]);
+    if (organization && organization.slug !== 'st-aloysius' &&
+        (!branding?.displayName || !branding?.primaryColor || !branding?.accentColor)) {
+      redirect(await requestWorkspacePath('/dashboard/organization/setup'));
+    }
+  }
+
   const data = await readDashboardData(user);
 
   if (!data) {
