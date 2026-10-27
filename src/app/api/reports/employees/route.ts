@@ -2,7 +2,7 @@ import { EmployeeStatus, EmploymentCategory } from '@prisma/client';
 import { getSession } from '@/lib/auth/session';
 import { canViewEmployees } from '@/lib/permissions/rbac';
 import { getOrganizationEmployees } from '@/features/employees/queries';
-import { csvDocument, csvCell, fileResponse, MAX_CSV_ROWS } from '@/features/reports/export-utils';
+import { csvDocument, fileResponse, MAX_CSV_ROWS } from '@/features/reports/export-utils';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
