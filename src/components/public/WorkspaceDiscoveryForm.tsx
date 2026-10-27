@@ -39,7 +39,7 @@ export function WorkspaceDiscoveryForm({
       }
 
       if (pathTenantRouting) {
-        window.location.assign(`/${result.slug}`);
+        window.location.assign(result.slug === 'saga' || result.slug === 'st-aloysius' ? '/saga' : `/w/${result.slug}`);
         return;
       }
 
@@ -82,7 +82,7 @@ export function WorkspaceDiscoveryForm({
           aria-invalid={Boolean(error)}
         />
         <span className={styles.domainSuffix} aria-hidden="true">
-          .{rootSuffix}
+          {pathTenantRouting ? 'WorkPulse path' : `.${rootSuffix}`}
         </span>
       </div>
       <p id="workspace-helper" className={styles.helperText}>Use the name before the first dot in your organization&apos;s WorkPulse URL.</p>
