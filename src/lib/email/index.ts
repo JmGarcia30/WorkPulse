@@ -33,9 +33,22 @@ export function getLastSentEmail(): EmailLogEntry | undefined {
  * Creates a transporter instance if credentials exist in environment variables.
  * Free Gmail SMTP requires a standard Gmail address and an App Password (zero cost).
  */
+// Normalize literal .env-style quoting accidentally pasted into Vercel's editor.
+function unquoteEmailEnv(value: string | undefined) {
+  const clean = (value ?? '').trim();
+  if (clean.length >= 2 && ((clean.startsWith('"') && clean.endsWith('"')) || (clean.startsWith("'") && clean.endsWith("'")))) return clean.slice(1, -1);
+  return clean;
+}
+
+function configuredSmtpCredentials() {
+  const user = unquoteEmailEnv(process.env.GMAIL_USER || process.env.SMTP_USER);
+  const rawPass = unquoteEmailEnv(process.env.GMAIL_APP_PASSWORD || process.env.SMTP_PASSWORD);
+  // Google sometimes displays its 16-letter App Password in four space-separated groups.
+  const pass = !process.env.SMTP_HOST && /^[a-z]{4}(?: [a-z]{4}){3}$/i.test(rawPass) ? rawPass.replace(/ /g, '') : rawPass;
+  return { user, pass };
+}
 function getTransporter() {
-  const user = process.env.GMAIL_USER || process.env.SMTP_USER;
-  const pass = process.env.GMAIL_APP_PASSWORD || process.env.SMTP_PASSWORD;
+  const { user, pass } = configuredSmtpCredentials();
 
   if (user && pass) {
     if (process.env.SMTP_HOST) {
@@ -56,6 +69,23 @@ function getTransporter() {
   return null;
 }
 
+// Only log non-sensitive SMTP failure classifications. Never log provider
+// messages, stack traces, headers, credentials, recipients, or activation URLs.
+function smtpFailureDiagnostic(error: unknown): { category: string; smtpStatus?: number; stage?: string } {
+  const details = error && typeof error === 'object' ? error as { code?: unknown; responseCode?: unknown; command?: unknown } : {};
+  const code = typeof details.code === 'string' ? details.code : '';
+  const status = typeof details.responseCode === 'number' && Number.isInteger(details.responseCode) &&
+    details.responseCode >= 400 && details.responseCode <= 599 ? details.responseCode : undefined;
+  const category = status === 535 || status === 534 || code === 'EAUTH' ? 'AUTHENTICATION'
+    : status === 550 || status === 553 || code === 'EENVELOPE' ? 'SENDER_OR_RECIPIENT'
+    : status === 421 || status === 450 || status === 451 || status === 452 ? 'PROVIDER_TEMPORARY'
+    : code === 'ETIMEDOUT' ? 'TIMEOUT'
+    : ['ESOCKET', 'ECONNECTION', 'ECONNREFUSED', 'ENOTFOUND', 'EHOSTUNREACH'].includes(code) ? 'CONNECTION'
+    : 'OTHER';
+  const stage = typeof details.command === 'string' && /^(AUTH|CONN|MAIL|RCPT|DATA)$/.test(details.command) ? details.command : undefined;
+  return { category, ...(status === undefined ? {} : { smtpStatus: status }), ...(stage ? { stage } : {}) };
+}
+
 interface SendEmailParams {
   to: string;
   subject: string;
@@ -74,7 +104,7 @@ export async function sendEmail({ to, subject, html, text, sensitive = false, se
 
   if (transporter) {
     try {
-      const fromAddress = process.env.EMAIL_FROM || process.env.GMAIL_USER || (requireConfiguredSender ? process.env.SMTP_USER : undefined) || (requireConfiguredSender ? '' : 'no-reply@workpulse.saga.edu');
+      const fromAddress = unquoteEmailEnv(process.env.EMAIL_FROM || process.env.GMAIL_USER || (requireConfiguredSender ? process.env.SMTP_USER : undefined) || (requireConfiguredSender ? '' : 'no-reply@workpulse.saga.edu'));
       if (requireConfiguredSender && !/^[^\s@<>]+@[^\s@<>]+\.[^\s@<>]+$/.test(fromAddress)) throw new Error('CONFIGURED_SENDER_REQUIRED');
       await transporter.sendMail({
         from: `"${senderName || 'WorkPulse — St. Aloysius Gonzaga Academy'}" <${fromAddress}>`,
@@ -89,10 +119,36 @@ export async function sendEmail({ to, subject, html, text, sensitive = false, se
         const entry: EmailLogEntry = { id, to, subject, text: plainText, html, sentAt: new Date(), mode: 'smtp' };
         emailLogQueue.push(entry);
       }
-      console.log(`[WorkPulse Emailer (SMTP)] Dispatched to ${to} | Subject: "${subject}"`);
+      if (sensitive) console.log('[WorkPulse Emailer (SMTP)] Sensitive transactional email accepted by SMTP provider.');
+      else console.log(`[WorkPulse Emailer (SMTP)] Dispatched to ${to} | Subject: "${subject}"`);
       return { success: true, mode: 'smtp', id };
-    } catch {
-      console.warn('[WorkPulse Emailer] SMTP delivery failed.');
+    } catch (error) {
+      console.warn('[WorkPulse Emailer] SMTP primary delivery failed:', smtpFailureDiagnostic(error));
+      const details = error && typeof error === 'object' ? error as { code?: unknown; command?: unknown; responseCode?: unknown } : {};
+      const connectionFailure = !process.env.SMTP_HOST && Boolean(process.env.GMAIL_USER) && !details.responseCode &&
+        (['ECONNREFUSED', 'ENOTFOUND', 'EHOSTUNREACH'].includes(String(details.code ?? '')) ||
+        (details.command === 'CONN' && ['ETIMEDOUT', 'ESOCKET', 'ECONNECTION'].includes(String(details.code ?? ''))));
+      if (connectionFailure) {
+        try {
+          const { user, pass } = configuredSmtpCredentials();
+          const fallback = nodemailer.createTransport({
+            host: 'smtp.gmail.com', port: 587, secure: false, requireTLS: true,
+            auth: { user, pass }, connectionTimeout: 12000, greetingTimeout: 12000, socketTimeout: 20000,
+          });
+          const fromAddress = unquoteEmailEnv(process.env.EMAIL_FROM || process.env.GMAIL_USER);
+          if (requireConfiguredSender && !/^[^\s@<>]+@[^\s@<>]+\.[^\s@<>]+$/.test(fromAddress)) throw new Error('CONFIGURED_SENDER_REQUIRED');
+          await fallback.sendMail({
+            from: '"' + (senderName || 'WorkPulse') + '" <' + fromAddress + '>',
+            to, subject, text: plainText, html,
+            attachments: inlineLogo ? [{ filename: 'organization-logo', content: inlineLogo.content, contentType: inlineLogo.contentType, cid: inlineLogo.cid, contentDisposition: 'inline' }] : undefined,
+          });
+          if (!sensitive) emailLogQueue.push({ id, to, subject, text: plainText, html, sentAt: new Date(), mode: 'smtp' });
+          console.log('[WorkPulse Emailer] SMTP STARTTLS fallback accepted email.');
+          return { success: true, mode: 'smtp', id };
+        } catch (retryError) {
+          console.warn('[WorkPulse Emailer] SMTP STARTTLS fallback failed:', smtpFailureDiagnostic(retryError));
+        }
+      }
     }
   }
 
