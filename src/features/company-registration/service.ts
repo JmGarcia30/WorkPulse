@@ -1,6 +1,6 @@
 import 'server-only';
 import { randomBytes } from 'node:crypto';
-import { hash } from 'bcryptjs';
+import { hash, compare } from 'bcryptjs';
 import { Prisma, PrismaClient } from '@prisma/client';
 import { createEmployeeInvitation, hashActivationToken, isActivationTokenFormatValid } from '@/features/employee-self-service/activation';
 import { initializeOrganization, OrganizationOnboardingError, workspaceActivationOrigin } from '@/features/platform-admin/onboarding';
@@ -100,8 +100,9 @@ async function availableSlug(tx: Prisma.TransactionClient, name: string) {
   return fail('RETRY_REQUIRED', 'We could not reserve your workspace. Please try verification again.');
 }
 
-export async function verifyCompanyRegistration(db: PrismaClient, token: string, browserProof: string) {
-  if (!isActivationTokenFormatValid(token) || !isActivationTokenFormatValid(browserProof)) fail('INVALID_VERIFICATION', 'Open the complete verification link in the browser where you registered.');
+export async function verifyCompanyRegistration(db: PrismaClient, token: string, browserProof: string, registrationPassword = '') {
+  if (!isActivationTokenFormatValid(token)) fail('INVALID_VERIFICATION', 'Paste the complete verification link or code from your email.');
+  if (Buffer.byteLength(registrationPassword, 'utf8') > 72) fail('INVALID_VERIFICATION', 'Invalid verification credentials.');
   verificationOrigin();
   await budget(db, 'verify', hashActivationToken(browserProof));
   return db.$transaction(async tx => {
@@ -110,8 +111,12 @@ export async function verifyCompanyRegistration(db: PrismaClient, token: string,
     // Same email lock/order as manual onboarding and registration/resend.
     await tx.$queryRaw`SELECT pg_advisory_xact_lock(hashtextextended(${'tenant-login-email:' + initial.email}, 0))::text`;
     const record = await tx.companyRegistration.findUnique({ where: { tokenHash: hashActivationToken(token) } });
-    if (!record || record.verifiedAt || record.expiresAt <= new Date() || !record.passwordHash || record.browserHash !== hashActivationToken(browserProof)) {
-      fail('INVALID_VERIFICATION', 'This link is invalid or expired. Use the latest email in the browser where you registered.');
+    if (!record || record.verifiedAt || record.expiresAt <= new Date() || !record.passwordHash) {
+      fail('INVALID_VERIFICATION', 'This link is invalid or expired. Use the latest verification email.');
+    }
+    const sameBrowser = isActivationTokenFormatValid(browserProof) && record.browserHash === hashActivationToken(browserProof);
+    if (!sameBrowser && !(registrationPassword.length >= 14 && await compare(registrationPassword, record.passwordHash))) {
+      fail('INVALID_VERIFICATION', 'Verification requires the original browser or the password used when registering.');
     }
     const slug = await availableSlug(tx, record.companyName);
     let org;
