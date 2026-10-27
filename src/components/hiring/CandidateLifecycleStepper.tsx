@@ -279,17 +279,17 @@ export function CandidateLifecycleStepper({
             Current Stage:
           </span>
           <span
-            className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-sm font-bold ${
+            className={`inline-flex items-center gap-1.5 rounded-[6px] border-none px-2.5 py-[3px] text-xs font-semibold ${
               currentStatus === ApplicationStatus.HIRED
-                ? 'bg-teal-50 text-teal-700 ring-1 ring-teal-500/30'
+                ? 'bg-[#E5F5EC] text-[#18794E]'
                 : isReadyToHire
-                ? 'bg-emerald-50 text-emerald-700 ring-1 ring-emerald-500/30 animate-pulse'
+                ? 'bg-[#E5F5EC] text-[#18794E]'
                 : isTerminal
-                ? 'bg-rose-50 text-rose-700 '
-                : 'bg-[var(--tenant-primary)] text-[var(--tenant-primary-foreground)] '
+                ? 'bg-[#FCE8E9] text-[#B42318]'
+                : 'bg-[#E8EDF9] text-[#245B9E]'
             }`}
           >
-            <span className="h-1.5 w-1.5 rounded-full bg-current" />
+            <span className="h-1.5 w-1.5 rounded-full shrink-0 bg-current" />
             {isReadyToHire
               ? 'Ready to Hire'
               : steps[activeIndex]?.label || currentStatus}

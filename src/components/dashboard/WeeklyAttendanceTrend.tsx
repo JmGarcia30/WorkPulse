@@ -78,18 +78,18 @@ export function WeeklyAttendanceTrend({
       <div className="flex items-start justify-between">
         <div className="space-y-1">
           <div className="flex items-center gap-2">
-            <h2 className="text-base font-bold text-slate-900 tracking-tight">
+            <h2 className="text-base font-bold text-[#282934] tracking-tight">
               Weekly Attendance Trend
             </h2>
-            <span className="text-xs font-medium text-slate-400">
+            <span className="text-xs font-medium text-[#777882]">
               ({weekRangeLabel})
             </span>
           </div>
           <div className="flex items-baseline gap-2 pt-1">
-            <span className="text-2xl sm:text-3xl font-bold tracking-tight text-slate-900 tabular-nums">
+            <span className="text-2xl sm:text-3xl font-bold tracking-tight text-[#282934] tabular-nums">
               {totalPresentThisWeek.toLocaleString()}
             </span>
-            <span className="text-xs font-medium text-slate-400">
+            <span className="text-xs font-medium text-[#777882]">
               Total Present This Week (Avg {avgDailyPresent}/day)
             </span>
           </div>
@@ -98,7 +98,7 @@ export function WeeklyAttendanceTrend({
         {/* Header Right Actions */}
         <div className="flex items-center gap-3">
           {/* Series Legend */}
-          <div className="hidden sm:flex items-center gap-4 text-xs font-medium text-slate-500">
+          <div className="hidden sm:flex items-center gap-4 text-xs font-medium text-[#62636B]">
             <div className="flex items-center gap-1.5">
               <span className="h-2 w-2 rounded-full bg-[var(--tenant-primary,#0f766e)]" />
               <span>Present</span>
@@ -111,7 +111,7 @@ export function WeeklyAttendanceTrend({
 
           <Link
             href="/dashboard/attendance"
-            className="flex h-8 w-8 items-center justify-center rounded-lg border border-slate-200 text-slate-500 hover:text-slate-900 hover:border-slate-300 transition-colors"
+            className="flex h-8 w-8 items-center justify-center rounded-lg border border-slate-200 text-[#C7A759] hover:border-[#C7A759] transition-colors"
             title="Open attendance trends"
           >
             <ArrowUpRight className="h-4 w-4" />
@@ -212,7 +212,7 @@ export function WeeklyAttendanceTrend({
                 width="90"
                 height="22"
                 rx="11"
-                fill="#0f172a"
+                fill="#282934"
                 className="shadow-sm"
               />
               <text
@@ -239,14 +239,14 @@ export function WeeklyAttendanceTrend({
                 type="button"
                 onClick={() => setSelectedIndex(idx)}
                 className={`flex flex-col items-center justify-center transition-all px-2.5 py-1 rounded-xl ${isSelected
-                    ? 'bg-slate-900 text-white shadow-sm'
-                    : 'text-slate-500 hover:text-slate-900 hover:bg-slate-100'
+                    ? 'bg-[#282934] text-white shadow-sm font-semibold'
+                    : 'text-[#62636B] hover:text-[#282934] hover:bg-slate-100'
                   }`}
               >
-                <span className="text-[11px] font-bold">
+                <span className={`text-[11px] font-bold ${isSelected ? 'text-white' : ''}`}>
                   {day.dayShort}
                 </span>
-                <span className={`text-[10px] ${isSelected ? 'text-slate-300 font-medium' : 'text-slate-400'}`}>
+                <span className={`text-[10px] ${isSelected ? 'text-white font-medium' : 'text-[#777882]'}`}>
                   {day.dayNumber}
                 </span>
               </button>
@@ -256,21 +256,21 @@ export function WeeklyAttendanceTrend({
       </div>
 
       {/* Active Day Detail Footer */}
-      <div className="flex items-center justify-between border-t border-slate-100 pt-3 text-xs text-slate-500">
+      <div className="flex items-center justify-between border-t border-slate-100 pt-3 text-xs text-[#62636B]">
         <div>
           Selected:{' '}
-          <span className="font-semibold text-slate-800">
+          <span className="font-semibold text-[#282934]">
             {activeDay.dayLabel}, {activeDay.dateStr}
           </span>
           {activeDay.isToday && (
-            <span className="ml-2 rounded-full bg-emerald-50 px-2 py-0.5 text-[10px] font-bold text-emerald-700">
+            <span className="ml-2 inline-flex items-center justify-center rounded-[6px] bg-emerald-50 px-[7px] py-[3px] text-[10px] font-bold text-emerald-700 leading-none">
               Today
             </span>
           )}
         </div>
         <div className="flex items-center gap-3 tabular-nums font-medium">
           <span>
-            Present: <strong className="text-slate-900">{activeDay.presentCount}</strong>
+            Present: <strong className="text-[#282934]">{activeDay.presentCount}</strong>
           </span>
           <span>
             Late: <strong className="text-amber-700">{activeDay.lateCount}</strong>

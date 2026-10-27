@@ -66,20 +66,20 @@ export default async function CandidatePortalPage({ params }: CandidatePortalPag
     },
     ...(isTeaching
       ? [
-          {
-            step: 3,
-            title: 'Teaching Demonstration',
-            target: 'Faculty Evaluation Board',
-            isComplete: application.interviews.some(
+        {
+          step: 3,
+          title: 'Teaching Demonstration',
+          target: 'Faculty Evaluation Board',
+          isComplete: application.interviews.some(
+            (i) => i.type === 'TEACHING_DEMONSTRATION' && i.status === 'COMPLETED'
+          ),
+          isCurrent:
+            application.assessments.some((a) => a.status === 'PASSED') &&
+            !application.interviews.some(
               (i) => i.type === 'TEACHING_DEMONSTRATION' && i.status === 'COMPLETED'
             ),
-            isCurrent:
-              application.assessments.some((a) => a.status === 'PASSED') &&
-              !application.interviews.some(
-                (i) => i.type === 'TEACHING_DEMONSTRATION' && i.status === 'COMPLETED'
-              ),
-          },
-        ]
+        },
+      ]
       : []),
     {
       step: isTeaching ? 4 : 3,
@@ -161,11 +161,10 @@ export default async function CandidatePortalPage({ params }: CandidatePortalPag
 
           <div className="shrink-0 flex items-center gap-2">
             <span
-              className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-bold ${
-                isTeaching
+              className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-bold ${isTeaching
                   ? 'bg-purple-100 text-purple-800 dark:bg-purple-950 dark:text-purple-300'
                   : 'bg-blue-100 text-blue-800 dark:bg-blue-950 dark:text-blue-300'
-              }`}
+                }`}
             >
               {isTeaching ? (
                 <>
@@ -197,24 +196,22 @@ export default async function CandidatePortalPage({ params }: CandidatePortalPag
             {steps.map((s) => (
               <div
                 key={s.step}
-                className={`rounded-xl border p-2.5 text-center transition-all ${
-                  s.isComplete
+                className={`rounded-xl border p-2.5 text-center transition-all ${s.isComplete
                     ? 'border-emerald-200 bg-emerald-50/60 dark:border-emerald-900/60 dark:bg-emerald-950/20'
                     : s.isCurrent
-                    ? 'border-indigo-400 bg-indigo-50/60 dark:border-indigo-800 dark:bg-indigo-950/30 ring-2 ring-indigo-500/20'
-                    : 'border-slate-200 bg-slate-50/50 dark:border-slate-800 dark:bg-slate-950/50'
-                }`}
+                      ? 'border-indigo-400 bg-indigo-50/60 dark:border-indigo-800 dark:bg-indigo-950/30 ring-2 ring-indigo-500/20'
+                      : 'border-slate-200 bg-slate-50/50 dark:border-slate-800 dark:bg-slate-950/50'
+                  }`}
               >
                 <div className="flex items-center justify-center mb-1">
                   {s.isComplete ? (
                     <CheckCircle2 className="h-4 w-4 text-emerald-600" />
                   ) : (
                     <span
-                      className={`flex h-4 w-4 items-center justify-center rounded-full text-[10px] font-bold ${
-                        s.isCurrent
+                      className={`flex h-4 w-4 items-center justify-center rounded-full text-[10px] font-bold ${s.isCurrent
                           ? 'bg-indigo-600 text-white'
                           : 'bg-slate-200 text-slate-600 dark:bg-slate-800 dark:text-slate-400'
-                      }`}
+                        }`}
                     >
                       {s.step}
                     </span>

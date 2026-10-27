@@ -295,8 +295,8 @@ export function EmployeeDirectoryTable({
                   {employee.employmentCategory && employee.employmentStatus
                     ? `${formatStatusLabel(employee.employmentCategory)} · ${formatStatusLabel(employee.employmentStatus)}`
                     : employee.employmentCategory
-                    ? formatStatusLabel(employee.employmentCategory)
-                    : '—'}
+                      ? formatStatusLabel(employee.employmentCategory)
+                      : '—'}
                 </span>
               </div>
               <div>

@@ -173,10 +173,10 @@ export function CandidateOnboardingSection({
                 </h3>
                 {category && (
                   <span
-                    className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-xs font-bold ${
+                    className={`inline-flex items-center gap-1 rounded-[6px] border-none px-2 py-[3px] text-xs font-semibold ${
                       isTeaching
-                        ? 'bg-purple-100 text-purple-800 '
-                        : 'bg-blue-100 text-blue-800 '
+                        ? 'bg-purple-100 text-purple-800'
+                        : 'bg-blue-100 text-blue-800'
                     }`}
                   >
                     {isTeaching ? <GraduationCap className="h-3 w-3" /> : <Briefcase className="h-3 w-3" />}
@@ -255,34 +255,34 @@ export function CandidateOnboardingSection({
         <div className="space-y-1.5 min-w-0 max-w-2xl">
           <div className="flex items-center gap-2 flex-wrap">
             <span
-              className={`inline-flex items-center rounded-md px-2 py-0.5 text-xs font-semibold ${typeConf.badgeBg} ${typeConf.badgeText}`}
+              className={`inline-flex items-center rounded-[6px] border-none px-2 py-[2px] text-[10px] font-semibold ${typeConf.badgeBg} ${typeConf.badgeText}`}
             >
               {typeConf.label}
             </span>
             <span
-              className={`inline-flex items-center rounded-md px-2 py-0.5 text-xs font-semibold ${statusConf.badgeBg} ${statusConf.badgeText}`}
+              className={`inline-flex items-center rounded-[6px] border-none px-2 py-[2px] text-[10px] font-semibold ${statusConf.badgeBg} ${statusConf.badgeText}`}
             >
               {statusConf.label}
             </span>
             {task.isRequired ? (
-              <span className="rounded-md bg-amber-50 px-1.5 py-0.5 text-[9px] font-bold text-amber-700">
+              <span className="rounded-[6px] border-none bg-[#FFF0D9] px-1.5 py-[2px] text-[9px] font-semibold text-[#9A6700]">
                 REQUIRED
               </span>
             ) : (
-              <span className="rounded-md bg-slate-100 px-1.5 py-0.5 text-[9px] font-semibold text-slate-600">
+              <span className="rounded-[6px] border-none bg-[#EEEDF1] px-1.5 py-[2px] text-[9px] font-semibold text-[#282934]">
                 CONDITIONAL
               </span>
             )}
 
             {isAutoVerified && (
-              <span className="inline-flex items-center gap-1 rounded-md bg-emerald-50 px-2 py-0.5 text-[9px] font-bold text-emerald-700 ring-1 ring-emerald-500/20">
+              <span className="inline-flex items-center gap-1 rounded-[6px] border-none bg-[#E5F5EC] px-2 py-[2px] text-[9px] font-semibold text-[#18794E]">
                 <ShieldCheck className="h-3 w-3" />
                 Carried from Recruitment
               </span>
             )}
 
             {isContractVerified && (
-              <span className="inline-flex items-center gap-1 rounded-md bg-[var(--tenant-tint)] px-2 py-0.5 text-[9px] font-bold text-indigo-700 ring-1 ring-indigo-500/20">
+              <span className="inline-flex items-center gap-1 rounded-[6px] border-none bg-[#E5F5EC] px-2 py-[2px] text-[9px] font-semibold text-[#18794E]">
                 <FileCheck2 className="h-3 w-3" />
                 Contract Executed
               </span>
@@ -388,16 +388,16 @@ export function CandidateOnboardingSection({
                 Pre-Employment & Onboarding Checklist
               </h3>
               <span
-                className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold ${statusConfig.badgeBg} ${statusConfig.badgeText}`}
+                className={`inline-flex items-center rounded-[6px] border-none px-2 py-[3px] text-xs font-semibold ${statusConfig.badgeBg} ${statusConfig.badgeText}`}
               >
                 {statusConfig.label}
               </span>
               {category && (
                 <span
-                  className={`inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-xs font-bold ${
+                  className={`inline-flex items-center gap-1 rounded-[6px] border-none px-2 py-[3px] text-xs font-semibold ${
                     isTeaching
-                      ? 'bg-purple-100 text-purple-800 '
-                      : 'bg-blue-100 text-blue-800 '
+                      ? 'bg-purple-100 text-purple-800'
+                      : 'bg-blue-100 text-blue-800'
                   }`}
                 >
                   {isTeaching ? <GraduationCap className="h-3 w-3" /> : <Briefcase className="h-3 w-3" />}

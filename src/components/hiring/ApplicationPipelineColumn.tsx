@@ -38,11 +38,11 @@ export function ApplicationPipelineColumn({
 
           {/* Stage badge pill matching reference design */}
           <div
-            className={`inline-flex items-center gap-2 px-2.5 py-1 rounded-full text-xs font-bold shadow-2xs ${config.headerPillBg} ${config.headerPillText}`}
+            className={`inline-flex items-center gap-2 px-2 py-[3px] rounded-[6px] border-none text-xs font-semibold shadow-2xs ${config.headerPillBg} ${config.headerPillText}`}
           >
             <span>{config.label}</span>
             <span
-              className={`flex h-4 min-w-[16px] px-1 items-center justify-center rounded-full text-[10px] font-bold ${config.headerCountBg} ${config.headerCountText}`}
+              className={`flex h-4 min-w-[16px] px-1 items-center justify-center rounded-[6px] border-none text-[10px] font-bold ${config.headerCountBg} ${config.headerCountText}`}
             >
               {applications.length}
             </span>

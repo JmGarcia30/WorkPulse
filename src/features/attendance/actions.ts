@@ -13,12 +13,16 @@ import {
 import { prisma } from '@/lib/db/prisma';
 import { instantForLocalDateTime } from './domain';
 import {
+  archiveScheduleGroup,
   assignSchedule,
   AttendanceError,
   correctAttendance,
   createScheduleVersion,
+  deleteScheduleGroup,
+  deleteScheduleVersion,
   materializeAttendancePeriod,
   recordAttendanceEvent,
+  removeScheduleAssignment,
 } from './service';
 
 type ActionResult = { success: true; [key: string]: unknown } | { success?: false; error: string; code?: string };
@@ -130,3 +134,100 @@ export async function correctAttendanceAction(input: {
     return { success: true, ...result };
   } catch (error) { return failure(error); }
 }
+
+export async function archiveScheduleGroupAction(input: {
+  scheduleGroupId: string;
+  isArchived: boolean;
+}): Promise<ActionResult> {
+  const user = await getSession();
+  if (!user || !canManageSchedules(user)) return { error: 'Unauthorized to manage schedules.' };
+  try {
+    const result = await archiveScheduleGroup({
+      organizationId: user.organizationId,
+      actorUserId: user.userId,
+      scheduleGroupId: input.scheduleGroupId,
+      isArchived: input.isArchived,
+    });
+    revalidatePath('/dashboard/attendance/schedules');
+    revalidatePath('/dashboard/attendance');
+    return {
+      success: true,
+      message: input.isArchived
+        ? `Schedule "${result.name}" has been archived and hidden from new assignments.`
+        : `Schedule "${result.name}" has been unarchived and is available for assignments.`,
+      ...result,
+    };
+  } catch (error) {
+    return failure(error);
+  }
+}
+
+export async function deleteScheduleVersionAction(input: {
+  scheduleVersionId: string;
+}): Promise<ActionResult> {
+  const user = await getSession();
+  if (!user || !canManageSchedules(user)) return { error: 'Unauthorized to manage schedules.' };
+  try {
+    const result = await deleteScheduleVersion({
+      organizationId: user.organizationId,
+      actorUserId: user.userId,
+      scheduleVersionId: input.scheduleVersionId,
+    });
+    revalidatePath('/dashboard/attendance/schedules');
+    revalidatePath('/dashboard/attendance');
+    return {
+      success: true,
+      message: `Schedule version ${result.version} was permanently deleted.`,
+      ...result,
+    };
+  } catch (error) {
+    return failure(error);
+  }
+}
+
+export async function deleteScheduleGroupAction(input: {
+  scheduleGroupId: string;
+}): Promise<ActionResult> {
+  const user = await getSession();
+  if (!user || !canManageSchedules(user)) return { error: 'Unauthorized to manage schedules.' };
+  try {
+    const result = await deleteScheduleGroup({
+      organizationId: user.organizationId,
+      actorUserId: user.userId,
+      scheduleGroupId: input.scheduleGroupId,
+    });
+    revalidatePath('/dashboard/attendance/schedules');
+    revalidatePath('/dashboard/attendance');
+    return {
+      success: true,
+      message: `Schedule "${result.name}" was permanently deleted.`,
+      ...result,
+    };
+  } catch (error) {
+    return failure(error);
+  }
+}
+
+export async function removeScheduleAssignmentAction(input: {
+  assignmentId: string;
+}): Promise<ActionResult> {
+  const user = await getSession();
+  if (!user || !canManageSchedules(user)) return { error: 'Unauthorized to manage schedule assignments.' };
+  try {
+    const result = await removeScheduleAssignment({
+      organizationId: user.organizationId,
+      actorUserId: user.userId,
+      assignmentId: input.assignmentId,
+    });
+    revalidatePath('/dashboard/attendance/schedules');
+    revalidatePath('/dashboard/attendance');
+    return {
+      success: true,
+      message: `Future schedule assignment for ${result.employeeName} was removed.`,
+      ...result,
+    };
+  } catch (error) {
+    return failure(error);
+  }
+}
+

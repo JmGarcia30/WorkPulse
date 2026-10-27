@@ -101,16 +101,16 @@ export function EmployeeHeader({
 
       {mobileOpen ? (
         <DialogFrame label="WorkPulse Employee Navigation" onClose={() => setMobileOpen(false)} className="wp-mobile-nav">
-          <div className="flex min-h-full flex-col bg-white">
-            <div className="flex min-h-16 items-center justify-between gap-3 border-b border-[var(--wp-border)] px-4">
+          <div className="flex min-h-full flex-col bg-[#282934] text-white">
+            <div className="flex min-h-16 items-center justify-between gap-3 border-b border-white/10 px-4">
               <div className="min-w-0">
-                <p className="truncate text-sm font-bold text-[var(--wp-text)]">{orgName}</p>
-                <p className="text-xs font-semibold uppercase tracking-wider text-[var(--tenant-accent)]">WorkPulse ESS</p>
+                <p className="truncate text-sm font-bold text-white">{orgName}</p>
+                <p className="text-xs font-semibold text-[#C7A759]">WorkPulse ESS</p>
               </div>
               <button
                 type="button"
                 onClick={() => setMobileOpen(false)}
-                className="flex h-11 w-11 shrink-0 items-center justify-center rounded-md border border-[var(--wp-border)] text-[var(--wp-text)] hover:bg-[var(--wp-surface-subtle)]"
+                className="flex h-11 w-11 shrink-0 items-center justify-center rounded-md border border-white/20 text-[#B4B5C0] hover:text-white hover:bg-white/10"
                 aria-label="Close navigation"
               >
                 <X className="h-5 w-5" />
@@ -119,18 +119,18 @@ export function EmployeeHeader({
             <div className="flex-1 overflow-y-auto">
               <EmployeeNav onNavigate={() => setMobileOpen(false)} />
             </div>
-            <div className="border-t border-[var(--wp-border)] p-4">
+            <div className="border-t border-white/10 p-4">
               <div className="mb-3 flex items-center gap-3">
                 <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[var(--tenant-tint-strong)] text-sm font-bold text-[var(--tenant-primary)]">
                   <User className="h-4 w-4" />
                 </div>
                 <div className="min-w-0 flex-1">
-                  <p className="truncate text-sm font-bold text-[var(--wp-text)]">{employeeName}</p>
-                  <p className="truncate text-xs text-[var(--wp-text-muted)]">{employeeNumber}</p>
+                  <p className="truncate text-sm font-bold text-white">{employeeName}</p>
+                  <p className="truncate text-xs text-[#B4B5C0]">{employeeNumber}</p>
                 </div>
               </div>
               <form action={logoutAction}>
-                <button type="submit" className="wp-button-secondary w-full text-xs font-bold text-[var(--wp-danger)] hover:bg-red-50">
+                <button type="submit" className="wp-button-secondary w-full text-xs font-bold border-white/20 bg-transparent text-[#B4B5C0] hover:text-white hover:bg-white/10">
                   <LogOut className="h-4 w-4" />
                   Sign out
                 </button>

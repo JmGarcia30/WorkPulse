@@ -100,28 +100,28 @@ export function getSagaOnboardingTaskTemplates(
     },
     ...(isTeaching
       ? [
-          {
-            title:
-              'Photocopy of Board Licensure Examination for Teachers (LET - Basic Education)',
-            description:
-              'PRC Board Professional Teacher license card or Certificate of Good Standing.',
-            type: OnboardingTaskType.DOCUMENT,
-            isRequired: true,
-            section: 'PRE_EMPLOYMENT_CREDENTIALS' as OnboardingSectionType,
-            matchedRecruitmentDocType: 'LET_BASIC_EDUCATION',
-          },
-        ]
+        {
+          title:
+            'Photocopy of Board Licensure Examination for Teachers (LET - Basic Education)',
+          description:
+            'PRC Board Professional Teacher license card or Certificate of Good Standing.',
+          type: OnboardingTaskType.DOCUMENT,
+          isRequired: true,
+          section: 'PRE_EMPLOYMENT_CREDENTIALS' as OnboardingSectionType,
+          matchedRecruitmentDocType: 'LET_BASIC_EDUCATION',
+        },
+      ]
       : [
-          {
-            title: 'Photocopy of Professional License (if applicable)',
-            description:
-              'PRC license for professional non-teaching roles (e.g. Guidance Counselor, Psychometrician, CPA, Librarian, Nurse).',
-            type: OnboardingTaskType.DOCUMENT,
-            isRequired: false,
-            section: 'PRE_EMPLOYMENT_CREDENTIALS' as OnboardingSectionType,
-            matchedRecruitmentDocType: 'PROFESSIONAL_LICENSE',
-          },
-        ]),
+        {
+          title: 'Photocopy of Professional License (if applicable)',
+          description:
+            'PRC license for professional non-teaching roles (e.g. Guidance Counselor, Psychometrician, CPA, Librarian, Nurse).',
+          type: OnboardingTaskType.DOCUMENT,
+          isRequired: false,
+          section: 'PRE_EMPLOYMENT_CREDENTIALS' as OnboardingSectionType,
+          matchedRecruitmentDocType: 'PROFESSIONAL_LICENSE',
+        },
+      ]),
     {
       title: 'Valid NBI Clearance',
       description:

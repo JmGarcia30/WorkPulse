@@ -120,7 +120,7 @@ function RequirementBadge({
 }) {
   if (detail.matched) {
     return (
-      <span className="inline-flex items-center gap-1 rounded-full bg-emerald-50 px-2.5 py-0.5 text-xs font-semibold text-emerald-700">
+      <span className="inline-flex items-center gap-1 rounded-[6px] border-none bg-[#E5F5EC] px-2 py-[3px] text-xs font-semibold text-[#18794E]">
         <CheckCircle2 className="h-3 w-3" />
         {detail.requirementName}
       </span>
@@ -128,7 +128,7 @@ function RequirementBadge({
   }
 
   return (
-    <span className="inline-flex items-center gap-1 rounded-full bg-rose-50 px-2.5 py-0.5 text-xs font-semibold text-rose-700">
+    <span className="inline-flex items-center gap-1 rounded-[6px] border-none bg-[#FCE8E9] px-2 py-[3px] text-xs font-semibold text-[#B42318]">
       <AlertCircle className="h-3 w-3" />
       {detail.requirementName}
     </span>
@@ -304,10 +304,10 @@ export function ParsedResumeSection({
                   return (
                     <span
                       key={i}
-                      className={`rounded-full px-2.5 py-0.5 text-xs font-medium ${
+                      className={`rounded-[6px] border-none px-2 py-[3px] text-xs font-medium ${
                         isMatched
-                          ? 'bg-emerald-50 text-emerald-700 ring-1 ring-emerald-200 '
-                          : 'bg-[var(--wp-surface-subtle)] text-[var(--wp-text)] border border-[var(--wp-border)] '
+                          ? 'bg-[#E5F5EC] text-[#18794E]'
+                          : 'bg-[#EEEDF1] text-[#282934]'
                       }`}
                     >
                       {skill}
@@ -416,7 +416,7 @@ export function ParsedResumeSection({
                   {localParsed.languages.map((lang, i) => (
                     <span
                       key={i}
-                      className="rounded-full bg-[var(--wp-surface-subtle)] border border-[var(--wp-border)] px-2.5 py-0.5 text-xs font-semibold text-[var(--wp-text)]"
+                      className="rounded-[6px] border-none bg-[#EEEDF1] px-2 py-[3px] text-xs font-medium text-[#282934]"
                     >
                       {lang}
                     </span>

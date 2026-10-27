@@ -321,25 +321,25 @@ export function CandidateDocumentsSection({
 
             // Minimalist badge configuration matching target image
             let badgeLabel = 'Pending';
-            let badgeBg = 'bg-amber-50 text-amber-700 border-amber-200/50';
-            let dotColor = 'bg-amber-500';
+            let badgeBg = 'bg-[#FFF0D9] text-[#9A6700]';
+            let dotColor = 'bg-[#9A6700]';
 
             if (isVerified) {
               badgeLabel = 'Completed';
-              badgeBg = 'bg-emerald-50 text-emerald-700 border-emerald-200/50';
-              dotColor = 'bg-emerald-500';
+              badgeBg = 'bg-[#E5F5EC] text-[#18794E]';
+              dotColor = 'bg-[#18794E]';
             } else if (isSubmitted) {
               badgeLabel = 'Submitted';
-              badgeBg = 'bg-blue-50 text-blue-700 border-blue-200/50';
-              dotColor = 'bg-blue-500';
+              badgeBg = 'bg-[#E8EDF9] text-[#245B9E]';
+              dotColor = 'bg-[#245B9E]';
             } else if (isRejected) {
               badgeLabel = 'Action Required';
-              badgeBg = 'bg-rose-50 text-rose-700 border-rose-200/50';
-              dotColor = 'bg-rose-500';
+              badgeBg = 'bg-[#FCE8E9] text-[#B42318]';
+              dotColor = 'bg-[#B42318]';
             } else if (isNA || (!doc.isRequired && doc.isConditional)) {
               badgeLabel = 'Optional';
-              badgeBg = 'bg-slate-100 text-slate-600 border-slate-200/50';
-              dotColor = 'bg-slate-400';
+              badgeBg = 'bg-[#EEEDF1] text-[#282934]';
+              dotColor = 'bg-[#282934]';
             }
 
             return (
@@ -368,9 +368,9 @@ export function CandidateDocumentsSection({
                 <div className="flex items-center gap-2 sm:gap-3 shrink-0">
                   {/* Status Badge with dot matching reference */}
                   <span
-                    className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-xs font-semibold border ${badgeBg}`}
+                    className={`inline-flex items-center gap-1.5 rounded-[6px] border-none px-2 py-[3px] text-xs font-semibold ${badgeBg}`}
                   >
-                    <span className={`h-1.5 w-1.5 rounded-full ${dotColor}`} />
+                    <span className={`h-1.5 w-1.5 rounded-full shrink-0 ${dotColor}`} />
                     <span>{badgeLabel}</span>
                   </span>
 

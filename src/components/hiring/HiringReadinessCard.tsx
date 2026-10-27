@@ -101,9 +101,9 @@ export function HiringReadinessCard({ isSagaOrganization = false, probationTerms
           </div>
 
           <span
-            className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-sm ${readiness.badgeBg} ${readiness.badgeText}`}
+            className={`inline-flex items-center gap-1.5 rounded-[6px] border-none px-2.5 py-[3px] text-xs font-semibold ${readiness.badgeBg} ${readiness.badgeText}`}
           >
-            <span className="h-1.5 w-1.5 rounded-full bg-current" />
+            <span className="h-1.5 w-1.5 rounded-full shrink-0 bg-current" />
             {readiness.badgeLabel}
           </span>
         </div>

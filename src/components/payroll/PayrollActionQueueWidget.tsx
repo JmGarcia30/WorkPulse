@@ -63,13 +63,12 @@ export function PayrollActionQueueWidget({ actions }: PayrollActionQueueWidgetPr
           actions.map((item) => (
             <div
               key={item.id}
-              className={`rounded-xl border p-3 flex flex-col justify-between gap-2.5 transition ${
-                item.kind === 'CALCULATION_ERROR'
+              className={`rounded-xl border p-3 flex flex-col justify-between gap-2.5 transition ${item.kind === 'CALCULATION_ERROR'
                   ? 'border-red-200 bg-red-50/40'
                   : item.kind === 'SETUP_REQUIRED'
-                  ? 'border-amber-200 bg-amber-50/40'
-                  : 'border-slate-100 bg-slate-50/70 hover:bg-slate-50'
-              }`}
+                    ? 'border-amber-200 bg-amber-50/40'
+                    : 'border-slate-100 bg-slate-50/70 hover:bg-slate-50'
+                }`}
             >
               <div>
                 <div className="flex items-center justify-between gap-2">
@@ -77,13 +76,12 @@ export function PayrollActionQueueWidget({ actions }: PayrollActionQueueWidgetPr
                     {item.title}
                   </span>
                   {item.badge && (
-                    <span className={`rounded-full px-1.5 py-0.2 text-[9px] font-bold shrink-0 ${
-                      item.kind === 'CALCULATION_ERROR'
+                    <span className={`rounded-full px-1.5 py-0.2 text-[9px] font-bold shrink-0 ${item.kind === 'CALCULATION_ERROR'
                         ? 'bg-red-100 text-red-800'
                         : item.kind === 'SETUP_REQUIRED'
-                        ? 'bg-amber-100 text-amber-800'
-                        : 'bg-emerald-100 text-emerald-800'
-                    }`}>
+                          ? 'bg-amber-100 text-amber-800'
+                          : 'bg-emerald-100 text-emerald-800'
+                      }`}>
                       {item.badge}
                     </span>
                   )}

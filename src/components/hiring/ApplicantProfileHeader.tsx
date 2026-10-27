@@ -85,18 +85,18 @@ export function ApplicantProfileHeader({
 
             {/* Stage Badge */}
             <span
-              className={`inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-xs font-medium ${stageBadgeBg} ${stageBadgeText}`}
+              className={`inline-flex items-center gap-1 rounded-[6px] border-none px-2 py-[3px] text-xs font-medium ${stageBadgeBg} ${stageBadgeText}`}
             >
-              <span className="h-1.5 w-1.5 rounded-full bg-current" />
+              <span className="h-1.5 w-1.5 rounded-full shrink-0 bg-current" />
               {stageLabel}
             </span>
 
             {/* Readiness Badge */}
             {readinessLabel && (
               <span
-                className={`inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-xs font-medium ${readinessBadgeBg} ${readinessBadgeText}`}
+                className={`inline-flex items-center gap-1 rounded-[6px] border-none px-2 py-[3px] text-xs font-medium ${readinessBadgeBg} ${readinessBadgeText}`}
               >
-                <span className="h-1.5 w-1.5 rounded-full bg-current" />
+                <span className="h-1.5 w-1.5 rounded-full shrink-0 bg-current" />
                 {readinessLabel}
               </span>
             )}

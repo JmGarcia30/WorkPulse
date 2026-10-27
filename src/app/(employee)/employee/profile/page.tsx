@@ -11,19 +11,19 @@ import { getMyProfile } from '@/features/employee-self-service/queries';
 const formatDate = (value: Date | null | undefined) =>
   value
     ? new Intl.DateTimeFormat('en-PH', {
-        year: 'numeric',
-        month: 'short',
-        day: 'numeric',
-        timeZone: 'UTC',
-      }).format(value)
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric',
+      timeZone: 'UTC',
+    }).format(value)
     : '—';
 
 const formatClock = (seconds: number | null) =>
   seconds == null
     ? '—'
     : `${String(Math.floor(seconds / 3600)).padStart(2, '0')}:${String(
-        Math.floor((seconds % 3600) / 60)
-      ).padStart(2, '0')}`;
+      Math.floor((seconds % 3600) / 60)
+    ).padStart(2, '0')}`;
 
 const weekdays = [
   'Monday',
@@ -217,11 +217,10 @@ export default async function MyProfilePage() {
                 <div className="flex items-center gap-3 min-w-32">
                   <strong className="text-slate-900 w-24">{weekdays[day.isoWeekday - 1]}</strong>
                   <span
-                    className={`rounded-full px-2 py-0.5 text-[11px] font-bold ${
-                      day.isWorkday
+                    className={`rounded-full px-2 py-0.5 text-[11px] font-bold ${day.isWorkday
                         ? 'bg-emerald-50 text-emerald-700'
                         : 'bg-slate-100 text-slate-500'
-                    }`}
+                      }`}
                   >
                     {day.isWorkday ? 'Workday' : 'Rest Day'}
                   </span>

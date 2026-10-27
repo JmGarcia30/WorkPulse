@@ -49,16 +49,16 @@ export function AttendanceTrackerDonut({
     <div className="flex flex-col justify-between rounded-2xl bg-white p-5 shadow-[0_3px_16px_rgba(30,35,40,0.06)] h-full">
       {/* Header */}
       <div className="flex items-center justify-between">
-        <h2 className="text-base font-bold text-slate-900 tracking-tight">
+        <h2 className="text-base font-bold text-[#282934] tracking-tight">
           Today&apos;s Attendance
         </h2>
         <Link
           href="/dashboard/attendance"
-          className="text-xs font-semibold text-slate-500 hover:text-slate-900 inline-flex items-center gap-1 transition-colors"
+          className="text-xs font-semibold text-[#62636B] hover:text-[#282934] inline-flex items-center gap-1 transition-colors"
           title="Open attendance module"
         >
           View Details
-          <ArrowUpRight className="h-3.5 w-3.5" />
+          <ArrowUpRight className="h-3.5 w-3.5 text-[#C7A759]" />
         </Link>
       </div>
 
@@ -105,13 +105,13 @@ export function AttendanceTrackerDonut({
 
           {/* Center Statistic */}
           <div className="absolute inset-0 flex flex-col items-center justify-center text-center">
-            <span className="text-2xl font-bold tracking-tight text-slate-900 tabular-nums">
+            <span className="text-2xl font-bold tracking-tight text-[#282934] tabular-nums">
               {present.toLocaleString()}
             </span>
-            <span className="text-xs font-medium text-slate-400">
+            <span className="text-xs font-medium text-[#777882]">
               Present
             </span>
-            <span className="mt-0.5 text-[11px] font-semibold text-slate-500 tabular-nums">
+            <span className="mt-0.5 text-[11px] font-semibold text-[#62636B] tabular-nums">
               {totalRecorded > 0 ? `${rate}% of recorded` : '0 recorded'}
             </span>
           </div>
@@ -127,11 +127,11 @@ export function AttendanceTrackerDonut({
                 className="h-2 w-2 rounded-full shrink-0"
                 style={{ backgroundColor: slice.color }}
               />
-              <span className="text-slate-500 font-medium truncate">
+              <span className="text-[#62636B] font-medium truncate">
                 {slice.label}
               </span>
             </div>
-            <span className="font-semibold text-slate-800 tabular-nums pl-1">
+            <span className="font-semibold text-[#282934] tabular-nums pl-1">
               {slice.count}
             </span>
           </div>

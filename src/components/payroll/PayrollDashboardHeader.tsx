@@ -129,11 +129,10 @@ export function PayrollDashboardHeader({
           <button
             type="button"
             onClick={() => handleTabChange('overview')}
-            className={`inline-flex items-center gap-2 whitespace-nowrap border-b-2 px-3 py-2.5 text-xs sm:text-sm font-semibold transition ${
-              activeTab === 'overview'
+            className={`inline-flex items-center gap-2 whitespace-nowrap border-b-2 px-3 py-2.5 text-xs sm:text-sm font-semibold transition ${activeTab === 'overview'
                 ? 'border-slate-900 text-slate-900 font-bold'
                 : 'border-transparent text-slate-500 hover:border-slate-300 hover:text-slate-700'
-            }`}
+              }`}
           >
             <LayoutDashboard className="h-4 w-4" />
             <span>Overview</span>
@@ -142,11 +141,10 @@ export function PayrollDashboardHeader({
           <button
             type="button"
             onClick={() => handleTabChange('processing')}
-            className={`inline-flex items-center gap-2 whitespace-nowrap border-b-2 px-3 py-2.5 text-xs sm:text-sm font-semibold transition ${
-              activeTab === 'processing'
+            className={`inline-flex items-center gap-2 whitespace-nowrap border-b-2 px-3 py-2.5 text-xs sm:text-sm font-semibold transition ${activeTab === 'processing'
                 ? 'border-slate-900 text-slate-900 font-bold'
                 : 'border-transparent text-slate-500 hover:border-slate-300 hover:text-slate-700'
-            }`}
+              }`}
           >
             <SlidersHorizontal className="h-4 w-4" />
             <span>Payroll Processing</span>
@@ -160,11 +158,10 @@ export function PayrollDashboardHeader({
           <button
             type="button"
             onClick={() => handleTabChange('configuration')}
-            className={`inline-flex items-center gap-2 whitespace-nowrap border-b-2 px-3 py-2.5 text-xs sm:text-sm font-semibold transition ${
-              activeTab === 'configuration'
+            className={`inline-flex items-center gap-2 whitespace-nowrap border-b-2 px-3 py-2.5 text-xs sm:text-sm font-semibold transition ${activeTab === 'configuration'
                 ? 'border-slate-900 text-slate-900 font-bold'
                 : 'border-transparent text-slate-500 hover:border-slate-300 hover:text-slate-700'
-            }`}
+              }`}
           >
             <Settings2 className="h-4 w-4" />
             <span>Configuration & Policies</span>

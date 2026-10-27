@@ -68,11 +68,11 @@ export default async function InterviewsPage({ searchParams }: InterviewsPagePro
       },
       OR: searchQuery
         ? [
-            { applicant: { firstName: { contains: searchQuery, mode: 'insensitive' as const } } },
-            { applicant: { lastName: { contains: searchQuery, mode: 'insensitive' as const } } },
-            { applicant: { email: { contains: searchQuery, mode: 'insensitive' as const } } },
-            { job: { title: { contains: searchQuery, mode: 'insensitive' as const } } },
-          ]
+          { applicant: { firstName: { contains: searchQuery, mode: 'insensitive' as const } } },
+          { applicant: { lastName: { contains: searchQuery, mode: 'insensitive' as const } } },
+          { applicant: { email: { contains: searchQuery, mode: 'insensitive' as const } } },
+          { job: { title: { contains: searchQuery, mode: 'insensitive' as const } } },
+        ]
         : undefined,
     },
     interviewerId: interviewerIdFilter || undefined,

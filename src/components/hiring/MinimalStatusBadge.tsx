@@ -10,9 +10,9 @@ export function MinimalStatusBadge({ status, label, className = '' }: MinimalSta
   const normalized = status.toUpperCase();
   const displayLabel = label || status.replace(/_/g, ' ');
 
-  // Semantic color classification with low saturation (less color!)
-  let colorStyles = 'bg-slate-100 text-slate-700 border-slate-200/80';
-  let dotColor = 'bg-slate-400';
+  // Semantic color classification with WorkPulse universal soft tints
+  let colorStyles = 'bg-[#EEEDF1] text-[#282934]';
+  let dotColor = 'bg-[#282934]';
 
   if (
     normalized.includes('HIRED') ||
@@ -22,22 +22,26 @@ export function MinimalStatusBadge({ status, label, className = '' }: MinimalSta
     normalized.includes('VERIFIED') ||
     normalized.includes('READY')
   ) {
-    colorStyles = 'bg-emerald-50 text-emerald-700 border-emerald-200/80';
-    dotColor = 'bg-emerald-500';
+    colorStyles = 'bg-[#E5F5EC] text-[#18794E]';
+    dotColor = 'bg-[#18794E]';
   } else if (
-    normalized.includes('PENDING') ||
-    normalized.includes('REVIEW') ||
-    normalized.includes('SCHEDULED') ||
-    normalized.includes('SUBMITTED') ||
     normalized.includes('PROGRESS') ||
     normalized.includes('INTERVIEW') ||
     normalized.includes('ASSESSMENT') ||
     normalized.includes('SHORTLISTED') ||
     normalized.includes('SCREENING') ||
+    normalized.includes('SUBMITTED')
+  ) {
+    colorStyles = 'bg-[#E8EDF9] text-[#245B9E]';
+    dotColor = 'bg-[#245B9E]';
+  } else if (
+    normalized.includes('PENDING') ||
+    normalized.includes('REVIEW') ||
+    normalized.includes('SCHEDULED') ||
     normalized.includes('DRAFT')
   ) {
-    colorStyles = 'bg-amber-50 text-amber-700 border-amber-200/80';
-    dotColor = 'bg-amber-500';
+    colorStyles = 'bg-[#FFF0D9] text-[#9A6700]';
+    dotColor = 'bg-[#9A6700]';
   } else if (
     normalized.includes('REJECTED') ||
     normalized.includes('FAILED') ||
@@ -45,15 +49,15 @@ export function MinimalStatusBadge({ status, label, className = '' }: MinimalSta
     normalized.includes('CANCELLED') ||
     normalized.includes('NO_SHOW')
   ) {
-    colorStyles = 'bg-rose-50 text-rose-700 border-rose-200/80';
-    dotColor = 'bg-rose-500';
+    colorStyles = 'bg-[#FCE8E9] text-[#B42318]';
+    dotColor = 'bg-[#B42318]';
   }
 
   return (
     <span
-      className={`inline-flex items-center gap-1.5 rounded-full border px-2.5 py-0.5 text-[11px] font-semibold tracking-tight transition ${colorStyles} ${className}`}
+      className={`inline-flex items-center gap-1.5 rounded-[6px] border-none px-2 py-[3px] text-[11px] font-semibold tracking-tight transition-colors ${colorStyles} ${className}`}
     >
-      <span className={`h-1.5 w-1.5 rounded-full ${dotColor}`} aria-hidden="true" />
+      <span className={`h-1.5 w-1.5 rounded-full shrink-0 ${dotColor}`} aria-hidden="true" />
       <span>{displayLabel}</span>
     </span>
   );

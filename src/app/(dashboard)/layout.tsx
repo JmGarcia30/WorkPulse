@@ -1,4 +1,5 @@
 import './workspace.css';
+import { poppins } from '@/lib/fonts';
 import { redirect } from 'next/navigation';
 import { LogOut } from 'lucide-react';
 import { Role } from '@prisma/client';
@@ -31,7 +32,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
 
   return (
     <TenantTheme branding={brand}>
-      <div className="wp-workspace wp-tenant-shell flex h-screen h-[100dvh] overflow-hidden text-[var(--wp-text)] bg-white">
+      <div className={`wp-workspace wp-tenant-shell ${poppins.variable} ${poppins.className} flex h-screen h-[100dvh] overflow-hidden text-[var(--wp-text)] bg-[#282934]`}>
         <a
           href="#workspace-content"
           className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50 wp-button-primary"
@@ -41,33 +42,34 @@ export default async function DashboardLayout({ children }: { children: React.Re
 
         {/* Existing sidebar outside the container */}
         <aside className="wp-tenant-sidebar sticky top-0 z-30 hidden h-full w-60 shrink-0 flex-col bg-transparent md:flex">
-          <div className="px-3 pt-5 pb-3">
-            <div className="flex items-center gap-3">
+          <div className="pl-[26px] pr-3 pt-5 pb-1">
+            <div className="flex items-center gap-2.5">
               <TenantLogo
                 branding={brand}
-                size={40}
-                className="h-10 w-10 rounded-lg bg-white object-contain"
-                fallbackClassName="flex h-10 w-10 items-center justify-center rounded-lg bg-[var(--tenant-primary)] text-sm font-black text-[var(--tenant-primary-foreground)]"
+                size={34}
+                className="h-[34px] w-[34px] rounded-lg bg-white object-contain shrink-0"
+                fallbackClassName="flex h-[34px] w-[34px] shrink-0 items-center justify-center rounded-lg bg-[var(--tenant-primary)] text-xs font-bold text-[var(--tenant-primary-foreground)]"
               />
               <div className="min-w-0">
-                <p className="truncate text-sm font-bold">{brand.displayName}</p>
-                <p className="text-sm font-semibold uppercase tracking-wider text-[var(--tenant-accent)]">
+                <p className="truncate text-[13px] font-semibold text-white leading-tight">{brand.displayName}</p>
+                <p className="text-[11.5px] font-medium text-[#C7A759] leading-tight mt-0.5">
                   WorkPulse HR
                 </p>
               </div>
             </div>
           </div>
+          <div className="wp-sidebar-divider mx-6 my-3.5" aria-hidden="true" />
           <div className="flex-1 overflow-y-auto">
             <DashboardSidebarNav orgSlug={brand.slug} role={user.role} />
           </div>
-          <div className="p-3 pb-8">
-            <div className="flex items-center gap-3">
-              <span className="flex h-9 w-9 items-center justify-center rounded-full bg-[var(--tenant-tint-strong)] text-sm font-bold text-[var(--tenant-primary)]">
+          <div className="pl-[26px] pr-3 pb-7">
+            <div className="flex items-center gap-2.5">
+              <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[var(--tenant-tint-strong)] text-xs font-bold text-[var(--tenant-primary)]">
                 {initials}
               </span>
               <div className="min-w-0 flex-1">
-                <p className="truncate text-sm font-bold">{user.name}</p>
-                <p className="truncate text-sm text-[var(--wp-text-muted)]">
+                <p className="truncate text-[13px] font-medium text-white leading-tight">{user.name}</p>
+                <p className="truncate text-[11.5px] font-normal text-[#B4B5C0] leading-tight mt-0.5">
                   {formatStatusLabel(user.role)}
                 </p>
               </div>
@@ -76,7 +78,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
                   type="submit"
                   aria-label="Sign out"
                   title="Sign out"
-                  className="flex h-9 w-9 items-center justify-center rounded-lg text-[var(--wp-text-muted)] hover:bg-red-50 hover:text-[var(--wp-danger)]"
+                  className="flex h-8 w-8 items-center justify-center rounded-lg text-[#B4B5C0] hover:bg-white/10 hover:text-white transition-colors duration-150"
                 >
                   <LogOut className="h-4 w-4" />
                 </button>

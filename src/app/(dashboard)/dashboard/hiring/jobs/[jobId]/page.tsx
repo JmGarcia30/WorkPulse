@@ -80,13 +80,12 @@ export default async function JobDetailPage({ params }: JobDetailPageProps) {
         }
         badge={
           <span
-            className={`rounded-md px-2 py-0.5 text-xs font-bold ${
-              job.status === JobStatus.PUBLISHED
+            className={`rounded-md px-2 py-0.5 text-xs font-bold ${job.status === JobStatus.PUBLISHED
                 ? 'bg-emerald-50 text-emerald-700 '
                 : job.status === JobStatus.DRAFT
-                ? 'bg-amber-50 text-amber-700 '
-                : 'bg-slate-100 text-slate-600 '
-            }`}
+                  ? 'bg-amber-50 text-amber-700 '
+                  : 'bg-slate-100 text-slate-600 '
+              }`}
           >
             {job.status}
           </span>
@@ -194,11 +193,10 @@ export default async function JobDetailPage({ params }: JobDetailPageProps) {
                       {req.type}
                     </span>
                     <span
-                      className={`rounded-md px-1.5 py-0.5 text-[9px] font-medium ${
-                        req.isRequired
+                      className={`rounded-md px-1.5 py-0.5 text-[9px] font-medium ${req.isRequired
                           ? 'bg-rose-50 text-rose-700 '
                           : 'bg-slate-200 text-slate-700 '
-                      }`}
+                        }`}
                     >
                       {req.isRequired ? 'Required' : 'Preferred'}
                     </span>

@@ -137,11 +137,11 @@ export function CandidateOffersSection({
                           {payFreqConfig.suffix}
                         </span>
                       </span>
-                      <span className="rounded-md bg-slate-100 px-2 py-0.5 text-xs font-semibold text-slate-700">
+                      <span className="rounded-[6px] bg-[#EEEDF1] px-2 py-[3px] text-xs font-semibold text-[#282934]">
                         {offer.employmentType}
                       </span>
                       {isActive && (
-                        <span className="rounded-full bg-emerald-100 px-2 py-0.5 text-[9px] font-bold text-emerald-800">
+                        <span className="rounded-[6px] bg-[#E5F5EC] px-2 py-[3px] text-[10px] font-semibold text-[#18794E]">
                           Active Offer
                         </span>
                       )}
@@ -150,7 +150,7 @@ export function CandidateOffersSection({
 
                   <div className="flex items-center gap-2 shrink-0">
                     <span
-                      className={`rounded-md px-2.5 py-1 text-sm font-bold ${statusConfig.badgeBg} ${statusConfig.badgeText}`}
+                      className={`rounded-[6px] px-2 py-[3px] text-xs font-semibold ${statusConfig.badgeBg} ${statusConfig.badgeText}`}
                     >
                       {statusConfig.label}
                     </span>

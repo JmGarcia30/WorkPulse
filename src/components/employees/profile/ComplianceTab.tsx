@@ -197,13 +197,12 @@ export function ComplianceTab({
                     </td>
                     <td className="px-3 py-3 whitespace-nowrap">
                       <span
-                        className={`rounded-full px-2 py-0.5 text-[10px] font-bold ${
-                          task.status === 'VERIFIED'
+                        className={`rounded-full px-2 py-0.5 text-[10px] font-bold ${task.status === 'VERIFIED'
                             ? 'bg-emerald-50 text-emerald-700 border border-emerald-200/60'
                             : task.status === 'WAIVED'
-                            ? 'bg-slate-100 text-slate-600'
-                            : 'bg-amber-50 text-amber-800 border border-amber-200/60'
-                        }`}
+                              ? 'bg-slate-100 text-slate-600'
+                              : 'bg-amber-50 text-amber-800 border border-amber-200/60'
+                          }`}
                       >
                         {formatStatusLabel(task.status)}
                       </span>

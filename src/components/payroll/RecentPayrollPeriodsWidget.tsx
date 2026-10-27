@@ -56,24 +56,22 @@ export function RecentPayrollPeriodsWidget({ periods }: RecentPayrollPeriodsWidg
               key={period.id}
               type="button"
               onClick={() => handleSelectPeriod(period.id)}
-              className={`w-full text-left rounded-xl p-3 border transition-all flex items-center justify-between group ${
-                period.isCurrent
+              className={`w-full text-left rounded-xl p-3 border transition-all flex items-center justify-between group ${period.isCurrent
                   ? 'border-[var(--tenant-primary,#0f766e)] bg-[var(--tenant-tint,#f0fdfa)]/30 ring-1 ring-[var(--tenant-primary,#0f766e)]/20'
                   : 'border-slate-100 hover:border-slate-200 hover:bg-slate-50/70'
-              }`}
+                }`}
             >
               <div className="space-y-1 min-w-0 pr-2">
                 <div className="flex items-center gap-2">
                   <span className="text-xs font-bold text-slate-900 truncate">
                     {period.name}
                   </span>
-                  <span className={`rounded-full px-1.5 py-0.2 text-[9px] font-bold ${
-                    period.status === 'FINALIZED'
+                  <span className={`rounded-full px-1.5 py-0.2 text-[9px] font-bold ${period.status === 'FINALIZED'
                       ? 'bg-emerald-100 text-emerald-800'
                       : period.status === 'REVIEW'
-                      ? 'bg-blue-100 text-blue-800'
-                      : 'bg-slate-100 text-slate-700'
-                  }`}>
+                        ? 'bg-blue-100 text-blue-800'
+                        : 'bg-slate-100 text-slate-700'
+                    }`}>
                     {formatStatusLabel(period.status)}
                   </span>
                 </div>
@@ -93,11 +91,10 @@ export function RecentPayrollPeriodsWidget({ periods }: RecentPayrollPeriodsWidg
                 </div>
               </div>
 
-              <ChevronRight className={`h-4 w-4 shrink-0 transition ${
-                period.isCurrent
+              <ChevronRight className={`h-4 w-4 shrink-0 transition ${period.isCurrent
                   ? 'text-[var(--tenant-primary,#0f766e)]'
                   : 'text-slate-300 group-hover:text-slate-500'
-              }`} />
+                }`} />
             </button>
           ))
         )}

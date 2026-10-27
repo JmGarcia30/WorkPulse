@@ -292,7 +292,7 @@ export default async function OffersPage({ searchParams }: OffersPageProps) {
           </div>
         }
         badge={
-          <span className="flex h-5 items-center justify-center rounded-full bg-slate-100 px-2 text-[11px] font-bold text-slate-700 border border-slate-200/80 tabular-nums">
+          <span className="flex h-5 items-center justify-center rounded-[6px] border-none bg-[#EEEDF1] px-2 text-[11px] font-semibold text-[#282934] tabular-nums">
             {totalCount} Total
           </span>
         }

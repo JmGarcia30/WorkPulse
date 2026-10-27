@@ -3,14 +3,15 @@
 import React from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { 
-  CalendarCheck2, 
-  FileText, 
-  Clock, 
-  CheckCircle2, 
-  Sun, 
-  Moon, 
-  Sunset 
+import {
+  CalendarCheck2,
+  FileText,
+  Clock,
+  CheckCircle2,
+  AlertCircle,
+  Sun,
+  Moon,
+  Sunset,
 } from 'lucide-react';
 
 export interface EssHeroBannerAction {
@@ -39,11 +40,14 @@ export interface EssHeroBannerProps {
   mascotSrc?: string;
   /** Alt text for the mascot illustration */
   mascotAlt?: string;
-  /** Whether to render subtle floating workplace accent badges */
+  /** Whether to render subtle status indicators */
   showFloatingBadges?: boolean;
-  /** Floating badge text overrides */
+  showStatusBadges?: boolean;
+  /** Status indicator badge text overrides */
   floatingScheduleBadge?: string;
   floatingStatusBadge?: string;
+  scheduleBadge?: string;
+  statusBadge?: string;
   /** Additional container CSS classes */
   className?: string;
 }
@@ -83,8 +87,11 @@ export function EssHeroBanner({
   mascotSrc = '/branding/workpulse-mascot-half.png',
   mascotAlt = 'WorkPulse Assistant',
   showFloatingBadges = true,
-  floatingScheduleBadge = 'Schedule Active',
-  floatingStatusBadge = 'Attendance On Track',
+  showStatusBadges,
+  floatingScheduleBadge,
+  floatingStatusBadge,
+  scheduleBadge,
+  statusBadge,
   className = '',
 }: EssHeroBannerProps) {
   const dynamicGreeting = getTimeBasedGreeting();
@@ -97,9 +104,38 @@ export function EssHeroBanner({
     'You are scheduled today',
     'Leave requests up to date',
   ];
-  const effectiveSummaryItems = summaryItems && summaryItems.length > 0 
-    ? summaryItems 
+  const effectiveSummaryItems = summaryItems && summaryItems.length > 0
+    ? summaryItems
     : (supportingText ? [supportingText] : defaultSummaryItems);
+
+  // Status indicators (Shift Scheduled & Attendance Ready)
+  const shouldShowBadges = showStatusBadges ?? showFloatingBadges ?? true;
+  const effectiveScheduleBadge = scheduleBadge ?? floatingScheduleBadge ?? 'Shift Scheduled';
+  const effectiveStatusBadge = statusBadge ?? floatingStatusBadge ?? 'Attendance Ready';
+
+  // Semantic styles for schedule indicator
+  const isRestDay = /rest\s*day/i.test(effectiveScheduleBadge) || /off/i.test(effectiveScheduleBadge);
+  const scheduleBadgeClasses = isRestDay
+    ? 'bg-slate-100 text-slate-700'
+    : 'bg-[#C7A759]/15 text-[#282934]';
+  const scheduleIconColor = isRestDay ? 'text-slate-500' : 'text-[#C7A759]';
+
+  // Semantic styles for attendance readiness / status indicator
+  const isAbsent = /absent/i.test(effectiveStatusBadge) || /error/i.test(effectiveStatusBadge);
+  const isIncomplete =
+    /incomplete/i.test(effectiveStatusBadge) ||
+    /late/i.test(effectiveStatusBadge) ||
+    /warning/i.test(effectiveStatusBadge);
+  const statusBadgeClasses = isAbsent
+    ? 'bg-red-50 text-red-700'
+    : isIncomplete
+    ? 'bg-amber-50 text-amber-800'
+    : 'bg-emerald-50 text-emerald-800';
+  const statusIconColor = isAbsent
+    ? 'text-red-600'
+    : isIncomplete
+    ? 'text-amber-600'
+    : 'text-emerald-600';
 
   return (
     <section
@@ -107,13 +143,13 @@ export function EssHeroBanner({
       className={`relative overflow-hidden rounded-2xl bg-white p-5 sm:p-6 lg:p-7 shadow-[0_3px_16px_rgba(30,35,40,0.06)] ${className}`}
     >
       {/* Background ambient accents */}
-      <div 
-        aria-hidden="true" 
+      <div
+        aria-hidden="true"
         className="pointer-events-none absolute -right-12 -top-12 h-64 w-64 rounded-full bg-teal-100/30 blur-3xl"
       />
 
       <div className="relative z-10 flex flex-col items-center justify-between gap-6 md:flex-row">
-        {/* Left column: Text content, daily summary, and action buttons */}
+        {/* Left column: Text content, daily summary, status indicators, and action buttons */}
         <div className="w-full flex-1 space-y-3.5 text-left min-w-0">
           {/* Eyebrow badge */}
           <div className="inline-flex items-center gap-2 rounded-full border border-slate-200/80 bg-white/95 px-3 py-1 shadow-2xs">
@@ -123,12 +159,12 @@ export function EssHeroBanner({
             </span>
           </div>
 
-          {/* Main welcome headline */}
+          {/* 1. Main welcome headline */}
           <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold tracking-tight text-slate-900 break-words">
             {effectiveHeadline}
           </h1>
 
-          {/* Supporting summary items */}
+          {/* 2. Welcome description or supporting summary text */}
           <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-xs sm:text-sm font-medium text-slate-600">
             {effectiveSummaryItems.map((item, index) => (
               <React.Fragment key={index}>
@@ -142,8 +178,35 @@ export function EssHeroBanner({
             ))}
           </div>
 
+          {/* 3. Shift Scheduled and Attendance Ready indicators, displayed together in a compact horizontal row */}
+          {shouldShowBadges && (effectiveScheduleBadge || effectiveStatusBadge) && (
+            <div className="flex flex-wrap items-center gap-2 sm:gap-2.5 pt-0.5">
+              {effectiveScheduleBadge && (
+                <div
+                  className={`inline-flex items-center gap-1.5 rounded-[7px] px-2.5 py-1 text-[11px] sm:text-[12px] font-medium leading-none ${scheduleBadgeClasses}`}
+                >
+                  <Clock className={`h-3.5 w-3.5 ${scheduleIconColor} shrink-0`} />
+                  <span>{effectiveScheduleBadge}</span>
+                </div>
+              )}
+
+              {effectiveStatusBadge && (
+                <div
+                  className={`inline-flex items-center gap-1.5 rounded-[7px] px-2.5 py-1 text-[11px] sm:text-[12px] font-medium leading-none ${statusBadgeClasses}`}
+                >
+                  {isAbsent ? (
+                    <AlertCircle className={`h-3.5 w-3.5 ${statusIconColor} shrink-0`} />
+                  ) : (
+                    <CheckCircle2 className={`h-3.5 w-3.5 ${statusIconColor} shrink-0`} />
+                  )}
+                  <span>{effectiveStatusBadge}</span>
+                </div>
+              )}
+            </div>
+          )}
+
           {/* Action buttons */}
-          <div className="flex flex-wrap items-center gap-3 pt-2">
+          <div className="flex flex-wrap items-center gap-3 pt-1">
             {primaryAction?.href ? (
               <Link
                 href={primaryAction.href}
@@ -186,27 +249,6 @@ export function EssHeroBanner({
 
         {/* Right column: Upper-half mascot illustration with proportional scaling */}
         <div className="relative flex shrink-0 items-end justify-center self-center md:self-end pt-2">
-          {/* Subtle floating workplace badge: Schedule */}
-          {showFloatingBadges && (
-            <div 
-              className="absolute -left-4 top-4 z-20 hidden lg:inline-flex items-center gap-2 rounded-full border border-slate-200/90 bg-white/95 px-3 py-1 shadow-sm backdrop-blur-xs"
-            >
-              <span className="flex h-2 w-2 rounded-full bg-teal-500 animate-pulse" />
-              <Clock className="h-3.5 w-3.5 text-teal-700" />
-              <span className="text-xs font-semibold text-slate-700">{floatingScheduleBadge}</span>
-            </div>
-          )}
-
-          {/* Subtle floating workplace badge: Attendance Status */}
-          {showFloatingBadges && (
-            <div 
-              className="absolute -right-2 top-0 z-20 hidden xl:inline-flex items-center gap-1.5 rounded-full border border-slate-200/90 bg-white/95 px-3 py-1 shadow-sm backdrop-blur-xs"
-            >
-              <CheckCircle2 className="h-3.5 w-3.5 text-emerald-600" />
-              <span className="text-xs font-semibold text-slate-700">{floatingStatusBadge}</span>
-            </div>
-          )}
-
           {/* Mascot image container */}
           <div className="relative z-10 overflow-hidden">
             <Image

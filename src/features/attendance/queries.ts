@@ -149,4 +149,31 @@ export function getScheduleAssignmentOptions(organizationId: string) {
   });
 }
 
+export function getScheduleAssignments(organizationId: string) {
+  return prisma.employeeScheduleAssignment.findMany({
+    where: { organizationId },
+    include: {
+      employee: {
+        select: { id: true, employeeNumber: true, firstName: true, lastName: true },
+      },
+      scheduleVersion: {
+        select: {
+          id: true,
+          version: true,
+          displayName: true,
+          scheduleGroup: { select: { id: true, name: true, scheduleKey: true, isArchived: true } },
+        },
+      },
+      _count: {
+        select: {
+          dailyAttendanceRecords: true,
+          leaveRequestDays: true,
+        },
+      },
+    },
+    orderBy: [{ effectiveFrom: 'desc' }, { createdAt: 'desc' }],
+  });
+}
+
 export type AttendancePeriodRow = Prisma.PromiseReturnType<typeof getAttendancePeriod>[number];
+

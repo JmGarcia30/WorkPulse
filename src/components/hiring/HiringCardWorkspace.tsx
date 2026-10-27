@@ -15,6 +15,7 @@ export interface HiringCardWorkspaceProps {
   emptyMessage?: string;
   pagination?: React.ReactNode;
   renderPanelAction?: (candidate: WorkspaceCandidateItem) => React.ReactNode;
+  showDivider?: boolean;
 }
 
 export function HiringCardWorkspace({
@@ -22,6 +23,7 @@ export function HiringCardWorkspace({
   emptyMessage = 'No candidates found matching the selected criteria.',
   pagination,
   renderPanelAction,
+  showDivider = false,
 }: HiringCardWorkspaceProps) {
   // Select first candidate by default if candidates exist
   const [selectedId, setSelectedId] = useState<string | null>(
@@ -57,9 +59,17 @@ export function HiringCardWorkspace({
   return (
     <div className="space-y-6">
       {/* Workspace Split Layout: Grid on Left, Sticky Panel on Right */}
-      <div className="flex flex-col lg:flex-row items-start gap-6">
+      <div
+        className={`flex flex-col lg:flex-row ${
+          showDivider ? 'items-stretch gap-6 lg:gap-0' : 'items-start gap-6'
+        }`}
+      >
         {/* Left Side: Candidate Card Grid */}
-        <div className="flex-1 w-full min-w-0">
+        <div
+          className={`flex-1 w-full min-w-0 ${
+            showDivider && selectedCandidate ? 'lg:pr-6' : ''
+          }`}
+        >
           <div
             className={`grid gap-4 sm:grid-cols-2 ${
               selectedCandidate ? 'xl:grid-cols-2 2xl:grid-cols-3' : 'lg:grid-cols-3'
@@ -90,14 +100,28 @@ export function HiringCardWorkspace({
           {pagination && <div className="mt-6">{pagination}</div>}
         </div>
 
+        {/* Desktop Vertical Divider */}
+        {showDivider && selectedCandidate && (
+          <div
+            className="hidden lg:block w-px self-stretch bg-[#E2E1DF] shrink-0"
+            aria-hidden="true"
+          />
+        )}
+
         {/* Right Side: Desktop Candidate Detail Panel */}
         {selectedCandidate && (
-          <div className="hidden lg:block w-[360px] xl:w-[400px] shrink-0 sticky top-20">
-            <CandidateDetailPanel
-              candidate={selectedCandidate}
-              onClose={handleClosePanel}
-              actionSlot={renderPanelAction ? renderPanelAction(selectedCandidate) : undefined}
-            />
+          <div
+            className={`hidden lg:block w-[360px] xl:w-[400px] shrink-0 ${
+              showDivider ? 'lg:pl-6' : 'sticky top-20'
+            }`}
+          >
+            <div className={showDivider ? 'sticky top-20' : ''}>
+              <CandidateDetailPanel
+                candidate={selectedCandidate}
+                onClose={handleClosePanel}
+                actionSlot={renderPanelAction ? renderPanelAction(selectedCandidate) : undefined}
+              />
+            </div>
           </div>
         )}
       </div>

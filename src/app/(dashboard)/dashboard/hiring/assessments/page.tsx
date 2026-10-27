@@ -66,11 +66,11 @@ export default async function AssessmentsPage({ searchParams }: AssessmentsPageP
       },
       OR: searchQuery
         ? [
-            { applicant: { firstName: { contains: searchQuery, mode: 'insensitive' as const } } },
-            { applicant: { lastName: { contains: searchQuery, mode: 'insensitive' as const } } },
-            { applicant: { email: { contains: searchQuery, mode: 'insensitive' as const } } },
-            { job: { title: { contains: searchQuery, mode: 'insensitive' as const } } },
-          ]
+          { applicant: { firstName: { contains: searchQuery, mode: 'insensitive' as const } } },
+          { applicant: { lastName: { contains: searchQuery, mode: 'insensitive' as const } } },
+          { applicant: { email: { contains: searchQuery, mode: 'insensitive' as const } } },
+          { job: { title: { contains: searchQuery, mode: 'insensitive' as const } } },
+        ]
         : undefined,
     },
     title: searchQuery && !searchQuery.includes('@') ? { contains: searchQuery, mode: 'insensitive' as const } : undefined,
@@ -219,8 +219,8 @@ export default async function AssessmentsPage({ searchParams }: AssessmentsPageP
           ass.status === AssessmentStatus.PASSED
             ? 'Candidate Passed'
             : ass.status === AssessmentStatus.FAILED
-            ? 'Candidate Below Threshold'
-            : 'Pending final review',
+              ? 'Candidate Below Threshold'
+              : 'Pending final review',
         isComplete: ass.status === AssessmentStatus.PASSED,
       },
     ];

@@ -99,7 +99,7 @@ export function ApplicationCard({ application, canEditStatus }: ApplicationCardP
         <div className="flex flex-wrap items-center gap-1.5 pt-0.5">
           {/* Subtle Stage Badge */}
           <span
-            className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[11px] font-semibold ${config.badgeBg} ${config.badgeText}`}
+            className={`inline-flex items-center gap-1 rounded-[6px] border-none px-2 py-[3px] text-[11px] font-semibold ${config.badgeBg} ${config.badgeText}`}
           >
             <span className={`h-1.5 w-1.5 rounded-full ${config.dotColor}`} />
             <span>{config.label}</span>
@@ -107,8 +107,8 @@ export function ApplicationCard({ application, canEditStatus }: ApplicationCardP
 
           {/* Department badge if available */}
           {application.job.department && (
-            <span className="inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[11px] font-medium bg-slate-50 text-slate-600 border border-slate-200/60 truncate max-w-[130px]">
-              <Briefcase className="h-2.5 w-2.5 text-slate-400 shrink-0" />
+            <span className="inline-flex items-center gap-1 rounded-[6px] border-none px-2 py-[3px] text-[11px] font-medium bg-[#EEEDF1] text-[#282934] truncate max-w-[130px]">
+              <Briefcase className="h-2.5 w-2.5 text-slate-500 shrink-0" />
               <span className="truncate">{application.job.department}</span>
             </span>
           )}

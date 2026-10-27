@@ -4,14 +4,14 @@ import { revalidatePath } from 'next/cache';
 import { requireBackOfficeContext } from '@/lib/auth/guards';
 import { canManagePayroll } from '@/lib/permissions/rbac';
 import { PayrollError } from './domain';
-import { createEmployeeCompensation, createPayrollPeriod, generatePayroll } from './service';
+import { createEmployeeCompensation, createPayrollPeriod, generatePayroll, deletePayrollPeriod } from './service';
 import { createPayrollPolicy } from './policy';
 import { finalizePayrollPeriod, movePayrollPeriodToReview } from './review';
 import { savePayrollStatutoryInput, savePayrollTaxOpening } from './statutory-inputs';
 import { statutoryPayloadFromForm, openingBalancesFromForm } from './setup-form';
 
 export type PayrollActionState = { error?: string; success?: string; setupErrors?: Array<{ employeeNumber: string; employeeName: string; message: string }> };
-const failure = (error: unknown): PayrollActionState => ({ error: error instanceof PayrollError ? `${error.code === 'SETUP_REQUIRED' ? 'SETUP_REQUIRED: ' : ''}${error.message}` : 'The payroll setup could not be saved.' });
+const failure = (error: unknown): PayrollActionState => ({ error: error instanceof PayrollError ? `${error.code === 'SETUP_REQUIRED' ? 'SETUP_REQUIRED: ' : ''}${error.message}` : error instanceof Error ? error.message : 'The payroll action could not be completed.' });
 
 export async function saveStatutorySetupAction(_state: PayrollActionState, form: FormData): Promise<PayrollActionState> {
   const user = await requireBackOfficeContext();
@@ -114,3 +114,35 @@ export async function finalizePayrollAction(_state: PayrollActionState, formData
     return { success: 'Payroll finalized and locked.' };
   } catch (error) { return failure(error); }
 }
+
+export async function deletePayrollPeriodAction(_state: PayrollActionState, formData: FormData): Promise<PayrollActionState> {
+  const user = await requireBackOfficeContext();
+  if (!canManagePayroll(user)) return { error: 'Unauthorized to delete payroll periods.' };
+  try {
+    const payrollPeriodId = String(formData.get('payrollPeriodId') ?? '');
+    await deletePayrollPeriod({
+      organizationId: user.organizationId,
+      actorUserId: user.userId,
+      payrollPeriodId,
+    });
+    revalidatePath('/dashboard/payroll');
+    return { success: 'Payroll period deleted successfully.' };
+  } catch (error) { return failure(error); }
+}
+
+export async function deletePayrollPeriodDirectAction(payrollPeriodId: string): Promise<{ success?: string; error?: string }> {
+  const user = await requireBackOfficeContext();
+  if (!canManagePayroll(user)) return { error: 'Unauthorized to delete payroll periods.' };
+  try {
+    await deletePayrollPeriod({
+      organizationId: user.organizationId,
+      actorUserId: user.userId,
+      payrollPeriodId,
+    });
+    revalidatePath('/dashboard/payroll');
+    return { success: 'Payroll period deleted successfully.' };
+  } catch (error) {
+    return { error: error instanceof PayrollError ? error.message : error instanceof Error ? error.message : 'The payroll period could not be deleted.' };
+  }
+}
+

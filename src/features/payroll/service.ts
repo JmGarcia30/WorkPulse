@@ -338,3 +338,74 @@ async function generateInTransaction(input: GeneratePayrollInput, db: Prisma.Tra
 
   return { createdCount, existingCount: existing.length, setupErrors: errors };
 }
+
+export interface DeletePayrollPeriodInput {
+  organizationId: string;
+  actorUserId: string;
+  payrollPeriodId: string;
+}
+
+export async function deletePayrollPeriod(
+  input: DeletePayrollPeriodInput,
+  db: PayrollDb = prisma
+) {
+  return payrollTransaction(db, async (tx) => {
+    await requirePayrollAdmin(tx, input.organizationId, input.actorUserId);
+    await lockPayrollPeriod(tx, input.organizationId, input.payrollPeriodId);
+
+    const period = await tx.payrollPeriod.findFirst({
+      where: {
+        id: input.payrollPeriodId,
+        organizationId: input.organizationId,
+      },
+      include: {
+        _count: {
+          select: {
+            payrollEntries: true,
+            statutoryInputs: true,
+          },
+        },
+      },
+    });
+
+    if (!period) {
+      throw new PayrollError('NOT_FOUND', 'Payroll period not found or does not belong to this organization.');
+    }
+
+    if (period.status !== PayrollPeriodStatus.DRAFT) {
+      throw new PayrollError(
+        'NOT_ELIGIBLE_FOR_DELETION',
+        `Cannot delete payroll period "${period.name}" because it is in ${period.status} status. Only DRAFT periods can be deleted.`
+      );
+    }
+
+    if (period._count.payrollEntries > 0) {
+      throw new PayrollError(
+        'HAS_ENTRIES',
+        `Cannot delete payroll period "${period.name}" because it has ${period._count.payrollEntries} generated payroll ${
+          period._count.payrollEntries === 1 ? 'entry' : 'entries'
+        }. Finalized or calculated payroll periods cannot be deleted.`
+      );
+    }
+
+    if (period._count.statutoryInputs > 0) {
+      throw new PayrollError(
+        'HAS_STATUTORY_INPUTS',
+        `Cannot delete payroll period "${period.name}" because it has ${period._count.statutoryInputs} statutory ${
+          period._count.statutoryInputs === 1 ? 'record' : 'records'
+        } attached to it.`
+      );
+    }
+
+    await tx.payrollPeriod.delete({
+      where: { id: period.id },
+    });
+
+    return {
+      id: period.id,
+      name: period.name,
+      periodStart: period.periodStart,
+      periodEnd: period.periodEnd,
+    };
+  });
+}

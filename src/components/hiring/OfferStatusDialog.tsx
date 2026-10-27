@@ -129,11 +129,10 @@ export function OfferStatusDialog({
                   return (
                     <label
                       key={st}
-                      className={`flex items-center justify-between rounded-md border p-3 cursor-pointer transition ${
-                        selectedStatus === st
+                      className={`flex items-center justify-between rounded-md border p-3 cursor-pointer transition ${selectedStatus === st
                           ? 'border-[#181A1C] bg-[var(--wp-surface-subtle)] '
                           : 'border-[var(--wp-border)] hover:bg-[#F8F9FA] '
-                      }`}
+                        }`}
                     >
                       <div className="flex items-center gap-2.5">
                         <input

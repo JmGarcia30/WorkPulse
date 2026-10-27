@@ -65,7 +65,14 @@ html { scroll-behavior: smooth; }
 .wp-alert-danger { border-left: 3px solid var(--wp-danger); background: color-mix(in srgb, var(--wp-danger) 7%, white); padding: .75rem; color: var(--wp-danger); font-size: .85rem; }
 .wp-panel { border: 1px solid var(--wp-border); background: var(--wp-surface); }
 .wp-divider-list > * + * { border-top: 1px solid var(--wp-border); }
-.wp-status { display: inline-flex; align-items: center; border-radius: 999px; padding: .2rem .55rem; font-size: .72rem; font-weight: 700; }
+.wp-status { display: inline-flex; align-items: center; justify-content: center; border-radius: 6px; border: none; padding: 3px 8px; font-size: 11px; font-weight: 550; line-height: 1.2; font-family: var(--wp-font-poppins, 'Poppins', sans-serif); }
+.wp-badge { display: inline-flex; align-items: center; justify-content: center; gap: 0.375rem; border-radius: 6px; border: none; padding: 3px 8px; font-size: 11px; font-weight: 550; line-height: 1.2; font-family: var(--wp-font-poppins, 'Poppins', sans-serif); white-space: nowrap; }
+.wp-badge-count { display: inline-flex; align-items: center; justify-content: center; border-radius: 6px; border: none; padding: 2px 6px; font-size: 11px; font-weight: 600; line-height: 1; font-family: var(--wp-font-poppins, 'Poppins', sans-serif); }
+.wp-badge-success { background-color: #E5F5EC; color: #18794E; }
+.wp-badge-warning { background-color: #FFF0D9; color: #9A6700; }
+.wp-badge-danger { background-color: #FCE8E9; color: #B42318; }
+.wp-badge-info { background-color: #E8EDF9; color: #245B9E; }
+.wp-badge-neutral { background-color: #EEEDF1; color: #282934; }
 .wp-tenant-shell { background: var(--tenant-tint); }
 .wp-tenant-sidebar { border-color: var(--tenant-border); background: color-mix(in srgb, var(--tenant-primary) 2%, white); }
 .wp-tenant-rule { border-color: var(--tenant-border); }

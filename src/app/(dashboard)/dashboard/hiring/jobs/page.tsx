@@ -47,14 +47,14 @@ export default async function JobsPage({ searchParams }: JobsPageProps) {
         actions={
           canEdit ? (
             <div className="flex flex-wrap gap-2">
-            <Link href="/dashboard/hiring/settings" className="wp-button-secondary text-xs">Document requirements</Link>
-            <Link
-              href="/dashboard/hiring/jobs/new"
-              className="inline-flex w-full justify-center sm:w-auto items-center gap-2 rounded-xl bg-[var(--tenant-primary)] px-4 py-2 text-xs sm:text-sm font-bold text-[var(--tenant-primary-foreground)] hover:brightness-95 transition shadow-2xs"
-            >
-              <Plus className="h-4 w-4" />
-              <span>Create Job Posting</span>
-            </Link>
+              <Link href="/dashboard/hiring/settings" className="wp-button-secondary text-xs">Document requirements</Link>
+              <Link
+                href="/dashboard/hiring/jobs/new"
+                className="inline-flex w-full justify-center sm:w-auto items-center gap-2 rounded-xl bg-[var(--tenant-primary)] px-4 py-2 text-xs sm:text-sm font-bold text-[var(--tenant-primary-foreground)] hover:brightness-95 transition shadow-2xs"
+              >
+                <Plus className="h-4 w-4" />
+                <span>Create Job Posting</span>
+              </Link>
             </div>
           ) : undefined
         }
@@ -93,11 +93,10 @@ export default async function JobsPage({ searchParams }: JobsPageProps) {
                   ...(searchQuery ? { search: searchQuery } : {}),
                   status: st,
                 }).toString()}`}
-                className={`rounded-md px-3 py-2 text-xs sm:text-sm font-bold transition-colors ${
-                  isActive
+                className={`rounded-md px-3 py-2 text-xs sm:text-sm font-bold transition-colors ${isActive
                     ? 'bg-[var(--tenant-primary)] text-[var(--tenant-primary-foreground)] '
                     : 'bg-[var(--wp-surface-subtle)] text-[var(--wp-text-muted)] hover:text-[var(--wp-text)] hover:bg-slate-100'
-                }`}
+                  }`}
               >
                 {st}
               </Link>
@@ -167,13 +166,12 @@ export default async function JobsPage({ searchParams }: JobsPageProps) {
                     </td>
                     <td className="px-5 py-4">
                       <span
-                        className={`inline-block rounded-md px-3 py-1 text-xs font-semibold ${
-                          job.status === JobStatus.PUBLISHED
+                        className={`inline-block rounded-md px-3 py-1 text-xs font-semibold ${job.status === JobStatus.PUBLISHED
                             ? 'bg-emerald-100 text-emerald-800'
                             : job.status === JobStatus.DRAFT
-                            ? 'bg-amber-100 text-amber-800'
-                            : 'bg-slate-100 text-slate-700'
-                        }`}
+                              ? 'bg-amber-100 text-amber-800'
+                              : 'bg-slate-100 text-slate-700'
+                          }`}
                       >
                         {job.status}
                       </span>

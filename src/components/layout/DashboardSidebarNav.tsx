@@ -137,7 +137,7 @@ export function DashboardSidebarNav({
   };
 
   return (
-    <nav aria-label="Main navigation" className="space-y-1 pl-4 pr-2 py-2">
+    <nav aria-label="Main navigation" className="space-y-1 pl-[26px] pr-3 py-2">
       {sections.map((section) => {
         const Icon = section.icon;
         const sectionActive = isSectionActive(section.href, pathname, section.sectionPrefix);
@@ -156,31 +156,43 @@ export function DashboardSidebarNav({
                 onClick={() => toggleSection(section.label, sectionActive)}
                 aria-expanded={isExpanded}
                 aria-controls={subMenuId}
-                className={`group relative flex w-full min-h-10 items-center justify-between rounded-lg px-3 py-2 text-sm transition-colors ${sectionActive
-                    ? 'bg-[var(--tenant-tint)] font-semibold text-[var(--tenant-primary)]'
-                    : 'font-medium text-[var(--wp-text-muted)] hover:bg-[var(--tenant-tint)] hover:text-[var(--wp-text)]'
+                className={`group relative flex w-full min-h-10 items-center justify-between rounded-lg px-1.5 py-1 text-[13px] font-medium leading-normal transition-colors duration-150 ${sectionActive
+                    ? 'text-[#C7A759]'
+                    : 'text-white'
                   }`}
               >
                 {sectionActive ? (
                   <span
-                    className="pointer-events-none absolute left-1 md:-left-4 top-1/2 h-5 w-[3px] -translate-y-1/2 rounded-full md:rounded-r-full bg-[var(--tenant-primary)]"
+                    className="pointer-events-none absolute left-1 md:-left-[26px] top-1/2 h-5 w-[3px] -translate-y-1/2 rounded-full md:rounded-r-full bg-[#C7A759]"
                     aria-hidden="true"
                   />
-                ) : null}
-                <span className="flex min-w-0 items-center gap-3">
-                  <Icon
-                    className={`h-4 w-4 shrink-0 transition-colors ${sectionActive
-                        ? 'text-[var(--tenant-primary)]'
-                        : 'text-[var(--wp-text-muted)] group-hover:text-[var(--wp-text)]'
+                ) : (
+                  <span
+                    className="pointer-events-none absolute left-1 md:-left-[26px] top-1/2 h-5 w-[3px] -translate-y-1/2 rounded-full md:rounded-r-full bg-white opacity-0 group-hover:opacity-100 transition-opacity duration-150"
+                    aria-hidden="true"
+                  />
+                )}
+                <span className="flex min-w-0 items-center gap-3.5">
+                  <span
+                    className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-[8px] transition-colors duration-150 ${sectionActive
+                        ? 'bg-[#383A40]'
+                        : 'bg-transparent group-hover:bg-white/[0.06]'
                       }`}
-                    aria-hidden="true"
-                  />
+                  >
+                    <Icon
+                      className={`h-[17px] w-[17px] shrink-0 transition-colors duration-150 ${sectionActive
+                          ? 'text-[#C7A759]'
+                          : 'text-[#B4B5C0] group-hover:text-white'
+                        }`}
+                      aria-hidden="true"
+                    />
+                  </span>
                   <span className="truncate">{section.label}</span>
                 </span>
                 <ChevronDown
-                  className={`h-4 w-4 shrink-0 transition-transform duration-200 ${sectionActive
-                      ? 'text-[var(--tenant-primary)]'
-                      : 'text-[var(--wp-text-muted)] group-hover:text-[var(--wp-text)]'
+                  className={`mr-1.5 h-3.5 w-3.5 shrink-0 transition-transform duration-200 ${sectionActive
+                      ? 'text-[#C7A759]'
+                      : 'text-[#B4B5C0] group-hover:text-white'
                     } ${isExpanded ? 'rotate-180' : ''}`}
                   aria-hidden="true"
                 />
@@ -190,24 +202,36 @@ export function DashboardSidebarNav({
                 href={resolveTenantHref(section.href, pathname)}
                 onClick={onNavigate}
                 aria-current={sectionActive ? 'page' : undefined}
-                className={`group relative flex min-h-10 items-center gap-3 rounded-lg px-3 py-2 text-sm transition-colors ${sectionActive
-                    ? 'bg-[var(--tenant-tint)] font-semibold text-[var(--tenant-primary)]'
-                    : 'font-medium text-[var(--wp-text-muted)] hover:bg-[var(--tenant-tint)] hover:text-[var(--wp-text)]'
+                className={`group relative flex min-h-10 items-center gap-3.5 rounded-lg px-1.5 py-1 text-[13px] font-medium leading-normal transition-colors duration-150 ${sectionActive
+                    ? 'text-[#C7A759]'
+                    : 'text-white'
                   }`}
               >
                 {sectionActive ? (
                   <span
-                    className="pointer-events-none absolute left-1 md:-left-4 top-1/2 h-5 w-[3px] -translate-y-1/2 rounded-full md:rounded-r-full bg-[var(--tenant-primary)]"
+                    className="pointer-events-none absolute left-1 md:-left-[26px] top-1/2 h-5 w-[3px] -translate-y-1/2 rounded-full md:rounded-r-full bg-[#C7A759]"
                     aria-hidden="true"
                   />
-                ) : null}
-                <Icon
-                  className={`h-4 w-4 shrink-0 transition-colors ${sectionActive
-                      ? 'text-[var(--tenant-primary)]'
-                      : 'text-[var(--wp-text-muted)] group-hover:text-[var(--wp-text)]'
+                ) : (
+                  <span
+                    className="pointer-events-none absolute left-1 md:-left-[26px] top-1/2 h-5 w-[3px] -translate-y-1/2 rounded-full md:rounded-r-full bg-white opacity-0 group-hover:opacity-100 transition-opacity duration-150"
+                    aria-hidden="true"
+                  />
+                )}
+                <span
+                  className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-[8px] transition-colors duration-150 ${sectionActive
+                      ? 'bg-[#383A40]'
+                      : 'bg-transparent group-hover:bg-white/[0.06]'
                     }`}
-                  aria-hidden="true"
-                />
+                >
+                  <Icon
+                    className={`h-[17px] w-[17px] shrink-0 transition-colors duration-150 ${sectionActive
+                        ? 'text-[#C7A759]'
+                        : 'text-[#B4B5C0] group-hover:text-white'
+                      }`}
+                    aria-hidden="true"
+                  />
+                </span>
                 <span className="truncate">{section.label}</span>
               </Link>
             )}
@@ -217,7 +241,7 @@ export function DashboardSidebarNav({
                 id={subMenuId}
                 role="region"
                 aria-label={`${section.label} sub-navigation`}
-                className="ml-5 mt-1 space-y-0.5 border-l border-[var(--tenant-border)] pl-2.5"
+                className="ml-5 mt-1 space-y-0.5 border-l border-white/10 pl-2.5"
               >
                 {section.children!.map((child) => {
                   const childActive = isChildRouteActive(
@@ -231,9 +255,9 @@ export function DashboardSidebarNav({
                       href={resolveTenantHref(child.href, pathname)}
                       onClick={onNavigate}
                       aria-current={childActive ? 'page' : undefined}
-                      className={`group relative flex min-h-9 items-center rounded-lg px-3 py-1.5 text-sm transition-colors ${childActive
-                          ? 'bg-[var(--tenant-tint)] font-semibold text-[var(--tenant-primary)]'
-                          : 'font-medium text-[var(--wp-text-muted)] hover:bg-[var(--tenant-tint)] hover:text-[var(--wp-text)]'
+                      className={`group relative flex min-h-8 items-center rounded-lg px-3 py-1 text-[12.5px] leading-normal transition-colors duration-150 ${childActive
+                          ? 'bg-[rgba(199,167,89,0.10)] font-medium text-[#C7A759] hover:bg-[rgba(199,167,89,0.14)]'
+                          : 'font-normal text-[#A9AAB5] hover:bg-white/[0.06] hover:text-white'
                         }`}
                     >
                       <span className="truncate">{child.label}</span>
@@ -247,20 +271,27 @@ export function DashboardSidebarNav({
       })}
 
       {orgSlug ? (
-        <div className="mt-3 border-t border-[var(--tenant-border)] pt-3">
+        <div className="pt-1">
+          <div className="wp-sidebar-divider -ml-[2px] mr-3 my-3" aria-hidden="true" />
           <Link
             href={`/careers/${orgSlug}`}
             target="_blank"
             onClick={onNavigate}
-            className="group relative flex min-h-10 items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium text-[var(--wp-text-muted)] hover:bg-[var(--tenant-tint)] hover:text-[var(--wp-text)] transition-colors"
+            className="group relative flex min-h-10 items-center gap-3.5 rounded-lg px-1.5 py-1 text-[13px] font-medium leading-normal text-white transition-colors duration-150"
           >
-            <Building2
-              className="h-4 w-4 shrink-0 text-[var(--wp-text-muted)] group-hover:text-[var(--wp-text)] transition-colors"
+            <span
+              className="pointer-events-none absolute left-1 md:-left-[26px] top-1/2 h-5 w-[3px] -translate-y-1/2 rounded-full md:rounded-r-full bg-white opacity-0 group-hover:opacity-100 transition-opacity duration-150"
               aria-hidden="true"
             />
+            <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-[8px] bg-transparent group-hover:bg-white/[0.06] transition-colors duration-150">
+              <Building2
+                className="h-[17px] w-[17px] shrink-0 text-[#B4B5C0] group-hover:text-white transition-colors duration-150"
+                aria-hidden="true"
+              />
+            </span>
             <span className="truncate">Public Career Site</span>
             <ExternalLink
-              className="ml-auto h-3.5 w-3.5 shrink-0 text-[var(--wp-text-muted)] group-hover:text-[var(--wp-text)] transition-colors"
+              className="ml-auto mr-1.5 h-3.5 w-3.5 shrink-0 text-[#B4B5C0] group-hover:text-white transition-colors duration-150"
               aria-hidden="true"
             />
           </Link>

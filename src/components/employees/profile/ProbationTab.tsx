@@ -9,7 +9,8 @@ import { formatStatusLabel } from '@/lib/ui/format-status';
 import type { EmploymentCategory, ProbationDecision, ProbationStatus } from '@prisma/client';
 import type { ProbationReviewSummary } from '@/features/employees/domain';
 
-interface ProbationTabProps { isSagaOrganization?: boolean;
+interface ProbationTabProps {
+  isSagaOrganization?: boolean;
   employeeId: string;
   employeeName: string;
   category: EmploymentCategory;
@@ -83,11 +84,10 @@ export function ProbationTab({ isSagaOrganization = false,
           </div>
           {probation && (
             <span
-              className={`rounded-full px-2.5 py-0.5 text-xs font-semibold ${
-                probation.probationStatus === 'ACTIVE'
+              className={`rounded-full px-2.5 py-0.5 text-xs font-semibold ${probation.probationStatus === 'ACTIVE'
                   ? 'bg-amber-50 text-amber-800 border border-amber-200/70'
                   : 'bg-slate-100 text-slate-600 border border-slate-200/60'
-              }`}
+                }`}
             >
               {formatStatusLabel(probation.probationStatus)}
             </span>
@@ -112,19 +112,18 @@ export function ProbationTab({ isSagaOrganization = false,
               <div>
                 <dt className="text-slate-400 font-medium">Time to Review</dt>
                 <dd
-                  className={`mt-0.5 font-bold ${
-                    review.daysRemaining < 0
+                  className={`mt-0.5 font-bold ${review.daysRemaining < 0
                       ? 'text-rose-600'
                       : review.daysRemaining === 0
-                      ? 'text-amber-600'
-                      : 'text-slate-800'
-                  }`}
+                        ? 'text-amber-600'
+                        : 'text-slate-800'
+                    }`}
                 >
                   {review.daysRemaining < 0
                     ? `${Math.abs(review.daysRemaining)} days overdue`
                     : review.daysRemaining === 0
-                    ? 'Review due today'
-                    : `${review.daysRemaining} days remaining`}
+                      ? 'Review due today'
+                      : `${review.daysRemaining} days remaining`}
                 </dd>
               </div>
               <div>

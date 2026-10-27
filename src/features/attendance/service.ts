@@ -26,7 +26,12 @@ export type AttendanceErrorCode =
   | 'INVALID_INPUT'
   | 'OVERLAPPING_ASSIGNMENT'
   | 'IDEMPOTENCY_CONFLICT'
-  | 'CONCURRENT_UPDATE';
+  | 'CONCURRENT_UPDATE'
+  | 'SCHEDULE_ASSIGNED'
+  | 'IMMUTABLE_TRIGGER'
+  | 'ACTIVE_ASSIGNMENT'
+  | 'HAS_ATTENDANCE'
+  | 'HAS_LEAVE';
 
 export class AttendanceError extends Error {
   constructor(public readonly code: AttendanceErrorCode, message: string) {
@@ -485,3 +490,206 @@ export async function correctAttendance(input: {
     return { dailyAttendanceRecordId: record.id, revision };
   });
 }
+
+export async function archiveScheduleGroup(input: {
+  organizationId: string;
+  actorUserId: string;
+  scheduleGroupId: string;
+  isArchived: boolean;
+}) {
+  return prisma.$transaction(async (tx) => {
+    await assertActor(tx, input.organizationId, input.actorUserId);
+    const group = await tx.workScheduleGroup.findFirst({
+      where: { id: input.scheduleGroupId, organizationId: input.organizationId },
+    });
+    if (!group) {
+      throw new AttendanceError('NOT_FOUND', 'Work schedule not found or access denied.');
+    }
+    const updated = await tx.workScheduleGroup.update({
+      where: { id: group.id },
+      data: { isArchived: input.isArchived },
+    });
+    return { id: updated.id, name: updated.name, isArchived: updated.isArchived };
+  }, { isolationLevel: Prisma.TransactionIsolationLevel.Serializable });
+}
+
+export async function deleteScheduleVersion(input: {
+  organizationId: string;
+  actorUserId: string;
+  scheduleVersionId: string;
+}) {
+  return prisma.$transaction(async (tx) => {
+    await assertActor(tx, input.organizationId, input.actorUserId);
+    const version = await tx.workScheduleVersion.findFirst({
+      where: {
+        id: input.scheduleVersionId,
+        scheduleGroup: { organizationId: input.organizationId },
+      },
+      include: {
+        scheduleGroup: true,
+        _count: {
+          select: {
+            assignments: true,
+          },
+        },
+      },
+    });
+
+    if (!version) {
+      throw new AttendanceError('NOT_FOUND', 'Schedule version not found or access denied.');
+    }
+
+    if (version._count.assignments > 0) {
+      throw new AttendanceError(
+        'SCHEDULE_ASSIGNED',
+        `Cannot delete version ${version.version} of "${version.displayName}" because it has ${version._count.assignments} employee assignment(s). Schedule versions that have been used must be archived rather than deleted.`
+      );
+    }
+
+    try {
+      await tx.workScheduleVersion.delete({
+        where: { id: version.id },
+      });
+      return { id: version.id, version: version.version, displayName: version.displayName };
+    } catch (error) {
+      const message = error instanceof Error ? error.message : '';
+      if (
+        message.includes('immutable') ||
+        (error instanceof Prisma.PrismaClientKnownRequestError && (error.code === 'P2010' || error.code === 'P2034'))
+      ) {
+        throw new AttendanceError(
+          'IMMUTABLE_TRIGGER',
+          `Cannot delete schedule version ${version.version} because schedule versions are protected by immutable database triggers. Please archive the schedule group instead to deactivate it safely without affecting historical records.`
+        );
+      }
+      throw error;
+    }
+  }, { isolationLevel: Prisma.TransactionIsolationLevel.Serializable });
+}
+
+export async function deleteScheduleGroup(input: {
+  organizationId: string;
+  actorUserId: string;
+  scheduleGroupId: string;
+}) {
+  return prisma.$transaction(async (tx) => {
+    await assertActor(tx, input.organizationId, input.actorUserId);
+    const group = await tx.workScheduleGroup.findFirst({
+      where: { id: input.scheduleGroupId, organizationId: input.organizationId },
+      include: {
+        versions: {
+          include: {
+            _count: {
+              select: { assignments: true },
+            },
+          },
+        },
+      },
+    });
+
+    if (!group) {
+      throw new AttendanceError('NOT_FOUND', 'Schedule group not found or access denied.');
+    }
+
+    const totalAssignments = group.versions.reduce((sum, v) => sum + v._count.assignments, 0);
+    if (totalAssignments > 0) {
+      throw new AttendanceError(
+        'SCHEDULE_ASSIGNED',
+        `Cannot delete schedule "${group.name}" because it has ${totalAssignments} employee assignment(s) across its versions. Please archive the schedule instead.`
+      );
+    }
+
+    try {
+      for (const v of group.versions) {
+        await tx.workScheduleVersion.delete({ where: { id: v.id } });
+      }
+      await tx.workScheduleGroup.delete({ where: { id: group.id } });
+      return { id: group.id, name: group.name };
+    } catch (error) {
+      const message = error instanceof Error ? error.message : '';
+      if (
+        message.includes('immutable') ||
+        (error instanceof Prisma.PrismaClientKnownRequestError && (error.code === 'P2010' || error.code === 'P2034'))
+      ) {
+        throw new AttendanceError(
+          'IMMUTABLE_TRIGGER',
+          `Cannot delete schedule "${group.name}" because schedule versions are protected by immutable database triggers. Please archive the schedule group instead to safely hide it from future assignments.`
+        );
+      }
+      throw error;
+    }
+  }, { isolationLevel: Prisma.TransactionIsolationLevel.Serializable });
+}
+
+export async function removeScheduleAssignment(input: {
+  organizationId: string;
+  actorUserId: string;
+  assignmentId: string;
+}) {
+  return prisma.$transaction(async (tx) => {
+    await assertActor(tx, input.organizationId, input.actorUserId);
+    const org = await tx.organization.findUnique({
+      where: { id: input.organizationId },
+      select: { timeZone: true },
+    });
+    if (!org) {
+      throw new AttendanceError('NOT_FOUND', 'Organization not found.');
+    }
+
+    const assignment = await tx.employeeScheduleAssignment.findFirst({
+      where: {
+        id: input.assignmentId,
+        organizationId: input.organizationId,
+      },
+      include: {
+        employee: { select: { id: true, firstName: true, lastName: true, employeeNumber: true } },
+        scheduleVersion: { select: { displayName: true, version: true } },
+        _count: {
+          select: {
+            dailyAttendanceRecords: true,
+            leaveRequestDays: true,
+          },
+        },
+      },
+    });
+
+    if (!assignment) {
+      throw new AttendanceError('NOT_FOUND', 'Schedule assignment not found or access denied.');
+    }
+
+    const todayStr = attendanceDateForInstant(new Date(), org.timeZone);
+    const todayDb = attendanceDateToDb(todayStr);
+
+    if (assignment.effectiveFrom <= todayDb) {
+      throw new AttendanceError(
+        'ACTIVE_ASSIGNMENT',
+        `Cannot delete this schedule assignment because it is already active or in the past (effective from ${assignment.effectiveFrom.toISOString().slice(0, 10)}). Active or historical assignments must be ended or replaced using effective dates to protect attendance calculations.`
+      );
+    }
+
+    if (assignment._count.dailyAttendanceRecords > 0) {
+      throw new AttendanceError(
+        'HAS_ATTENDANCE',
+        `Cannot delete this schedule assignment because it has ${assignment._count.dailyAttendanceRecords} dependent attendance record(s).`
+      );
+    }
+
+    if (assignment._count.leaveRequestDays > 0) {
+      throw new AttendanceError(
+        'HAS_LEAVE',
+        `Cannot delete this schedule assignment because it has ${assignment._count.leaveRequestDays} dependent leave request day(s).`
+      );
+    }
+
+    await tx.employeeScheduleAssignment.delete({
+      where: { id: assignment.id },
+    });
+
+    return {
+      id: assignment.id,
+      employeeName: `${assignment.employee.firstName} ${assignment.employee.lastName}`,
+      effectiveFrom: assignment.effectiveFrom,
+    };
+  }, { isolationLevel: Prisma.TransactionIsolationLevel.Serializable });
+}
+

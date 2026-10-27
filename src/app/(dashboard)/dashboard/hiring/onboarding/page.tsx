@@ -64,11 +64,11 @@ export default async function OnboardingManagementPage({
       },
       OR: search
         ? [
-            { applicant: { firstName: { contains: search, mode: 'insensitive' as const } } },
-            { applicant: { lastName: { contains: search, mode: 'insensitive' as const } } },
-            { applicant: { email: { contains: search, mode: 'insensitive' as const } } },
-            { job: { title: { contains: search, mode: 'insensitive' as const } } },
-          ]
+          { applicant: { firstName: { contains: search, mode: 'insensitive' as const } } },
+          { applicant: { lastName: { contains: search, mode: 'insensitive' as const } } },
+          { applicant: { email: { contains: search, mode: 'insensitive' as const } } },
+          { job: { title: { contains: search, mode: 'insensitive' as const } } },
+        ]
         : undefined,
     },
     status:

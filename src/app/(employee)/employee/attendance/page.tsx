@@ -35,10 +35,10 @@ const shiftMonth = (month: string, amount: number) => {
 const formatClockTime = (value: Date | null, zone: string) =>
   value
     ? new Intl.DateTimeFormat('en-PH', {
-        timeZone: zone,
-        hour: 'numeric',
-        minute: '2-digit',
-      }).format(value)
+      timeZone: zone,
+      hour: 'numeric',
+      minute: '2-digit',
+    }).format(value)
     : '—';
 
 export default async function MyAttendancePage({
@@ -417,7 +417,7 @@ export default async function MyAttendancePage({
                           {(row.lateSeconds ?? 0) > 0
                             ? `${durationLabel(row.lateSeconds)} late`
                             : row.leaveTypeName ??
-                              (row.corrected ? 'Corrected' : 'Standard')}
+                            (row.corrected ? 'Corrected' : 'Standard')}
                         </div>
                       </div>
                     </td>

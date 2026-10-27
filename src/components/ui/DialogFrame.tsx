@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useRef, type ReactNode } from 'react';
+import { poppins } from '@/lib/fonts';
 
 /** Native modal semantics provide focus containment, Escape, and focus restoration. */
 export function DialogFrame({ children, label, onClose, busy = false, className = '' }: {
@@ -27,5 +28,5 @@ export function DialogFrame({ children, label, onClose, busy = false, className 
   }, []);
   return <dialog ref={ref} tabIndex={-1} aria-label={label} aria-busy={busy}
     onCancel={event => { event.preventDefault(); if (!busy) onClose(); }}
-    className={`wp-dialog ${className}`}>{children}</dialog>;
+    className={`wp-dialog ${poppins.variable} ${poppins.className} ${className}`}>{children}</dialog>;
 }

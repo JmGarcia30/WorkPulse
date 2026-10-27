@@ -1,6 +1,7 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import {
   PayrollPeriodForm,
   PayrollGenerationForm,
@@ -8,7 +9,9 @@ import {
 } from './PayrollSetupForms';
 import { formatStatusLabel } from '@/lib/ui/format-status';
 import { formatPayrollDate } from '@/features/payroll/formatters';
-import { Calendar, Sparkles, CheckCircle2, ShieldAlert } from 'lucide-react';
+import { Calendar, Sparkles, CheckCircle2, ShieldAlert, Trash2, AlertCircle } from 'lucide-react';
+import { ConfirmationDialog } from '@/components/ui/ConfirmationDialog';
+import { deletePayrollPeriodDirectAction } from '@/features/payroll/actions';
 
 interface PeriodItem {
   id: string;
@@ -17,6 +20,10 @@ interface PeriodItem {
   periodEnd: Date;
   payDate: Date;
   status: string;
+  _count?: {
+    payrollEntries: number;
+    statutoryInputs: number;
+  };
 }
 
 interface ReviewIssue {
@@ -57,9 +64,34 @@ export function PayrollProcessingTab({
   selectedPeriod,
   review,
 }: PayrollProcessingTabProps) {
+  const router = useRouter();
+  const [periodToDelete, setPeriodToDelete] = useState<PeriodItem | null>(null);
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [feedback, setFeedback] = useState<{ error?: string; success?: string } | null>(null);
+
   const periodLabel = selectedPeriod
     ? `${formatPayrollDate(selectedPeriod.periodStart)} – ${formatPayrollDate(selectedPeriod.periodEnd)}`
     : '';
+
+  const handleDeleteConfirm = async () => {
+    if (!periodToDelete || isDeleting) return;
+    setIsDeleting(true);
+    setFeedback(null);
+    try {
+      const res = await deletePayrollPeriodDirectAction(periodToDelete.id);
+      if (res.error) {
+        setFeedback({ error: res.error });
+      } else {
+        setFeedback({ success: res.success || `Payroll period "${periodToDelete.name}" was successfully deleted.` });
+        setPeriodToDelete(null);
+        router.refresh();
+      }
+    } catch (err) {
+      setFeedback({ error: err instanceof Error ? err.message : 'An unexpected error occurred while deleting the payroll period.' });
+    } finally {
+      setIsDeleting(false);
+    }
+  };
 
   return (
     <div className="space-y-6">
@@ -82,18 +114,16 @@ export function PayrollProcessingTab({
           return (
             <li
               key={step}
-              className={`flex items-center gap-2 rounded-lg px-2.5 py-2 font-semibold transition ${
-                isComplete
+              className={`flex items-center gap-2 rounded-lg px-2.5 py-2 font-semibold transition ${isComplete
                   ? 'bg-emerald-50 text-emerald-800 border border-emerald-200/60'
                   : 'bg-white text-slate-600 border border-slate-200/60'
-              }`}
+                }`}
             >
               <span
-                className={`flex h-5 w-5 shrink-0 items-center justify-center rounded-full text-[11px] font-bold ${
-                  isComplete
+                className={`flex h-5 w-5 shrink-0 items-center justify-center rounded-full text-[11px] font-bold ${isComplete
                     ? 'bg-emerald-600 text-white'
                     : 'bg-slate-200 text-slate-700'
-                }`}
+                  }`}
               >
                 {index + 1}
               </span>
@@ -121,10 +151,27 @@ export function PayrollProcessingTab({
         <PayrollPeriodForm />
 
         {/* Existing Periods Table */}
-        <div className="mt-4 pt-4 border-t border-slate-100">
-          <h3 className="text-xs font-bold text-slate-700 mb-2">
-            Scheduled Periods ({periods.length})
-          </h3>
+        <div className="mt-4 pt-4 border-t border-slate-100 space-y-3">
+          <div className="flex items-center justify-between">
+            <h3 className="text-xs font-bold text-slate-700">
+              Scheduled Periods ({periods.length})
+            </h3>
+          </div>
+
+          {feedback?.error && (
+            <div role="alert" className="flex items-center gap-2 rounded-[6px] bg-red-50 px-3.5 py-2 text-xs font-medium text-red-800">
+              <AlertCircle className="h-4 w-4 shrink-0 text-red-600" />
+              <span>{feedback.error}</span>
+            </div>
+          )}
+
+          {feedback?.success && (
+            <div role="status" className="flex items-center gap-2 rounded-[6px] bg-emerald-50 px-3.5 py-2 text-xs font-medium text-emerald-800">
+              <CheckCircle2 className="h-4 w-4 shrink-0 text-emerald-600" />
+              <span>{feedback.success}</span>
+            </div>
+          )}
+
           <div className="overflow-x-auto">
             {periods.length === 0 ? (
               <p className="py-6 text-center text-xs text-slate-400">
@@ -138,38 +185,109 @@ export function PayrollProcessingTab({
                     <th className="px-3 py-2.5">Coverage Dates</th>
                     <th className="px-3 py-2.5">Pay Date</th>
                     <th className="px-3.5 py-2.5 text-center">Status</th>
+                    <th className="px-3.5 py-2.5 text-right">Actions</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-100">
-                  {periods.map((p) => (
-                    <tr key={p.id} className="hover:bg-slate-50/60 transition">
-                      <td className="px-3.5 py-2.5 font-bold text-slate-900">
-                        {p.name}
-                      </td>
-                      <td className="px-3 py-2.5 text-slate-600">
-                        {formatPayrollDate(p.periodStart)} – {formatPayrollDate(p.periodEnd)}
-                      </td>
-                      <td className="px-3 py-2.5 text-slate-600">
-                        {formatPayrollDate(p.payDate)}
-                      </td>
-                      <td className="px-3.5 py-2.5 text-center">
-                        <span className={`inline-flex rounded-full px-2 py-0.5 text-[10px] font-bold ${
-                          p.status === 'FINALIZED'
-                            ? 'bg-emerald-50 text-emerald-700 border border-emerald-200'
-                            : p.status === 'REVIEW'
-                            ? 'bg-blue-50 text-blue-700 border border-blue-200'
-                            : 'bg-slate-100 text-slate-600'
-                        }`}>
-                          {formatStatusLabel(p.status)}
-                        </span>
-                      </td>
-                    </tr>
-                  ))}
+                  {periods.map((p) => {
+                    const isDraft = p.status === 'DRAFT';
+                    const entriesCount = p._count?.payrollEntries ?? 0;
+                    const statutoryCount = p._count?.statutoryInputs ?? 0;
+                    const isEligible = isDraft && entriesCount === 0 && statutoryCount === 0;
+
+                    let ineligibleReason = '';
+                    if (!isDraft) {
+                      ineligibleReason = `Cannot delete: period is ${formatStatusLabel(p.status).toLowerCase()}. Only DRAFT periods can be deleted.`;
+                    } else if (entriesCount > 0) {
+                      ineligibleReason = `Cannot delete: period contains ${entriesCount} generated payroll ${entriesCount === 1 ? 'entry' : 'entries'}.`;
+                    } else if (statutoryCount > 0) {
+                      ineligibleReason = `Cannot delete: period has ${statutoryCount} statutory input ${statutoryCount === 1 ? 'record' : 'records'}.`;
+                    }
+
+                    return (
+                      <tr key={p.id} className="hover:bg-slate-50/60 transition">
+                        <td className="px-3.5 py-2.5 font-bold text-slate-900">
+                          {p.name}
+                        </td>
+                        <td className="px-3 py-2.5 text-slate-600">
+                          {formatPayrollDate(p.periodStart)} – {formatPayrollDate(p.periodEnd)}
+                        </td>
+                        <td className="px-3 py-2.5 text-slate-600">
+                          {formatPayrollDate(p.payDate)}
+                        </td>
+                        <td className="px-3.5 py-2.5 text-center">
+                          <span className={`inline-flex rounded-[6px] px-2 py-0.5 text-[10px] font-semibold ${p.status === 'FINALIZED'
+                              ? 'bg-emerald-50 text-emerald-700'
+                              : p.status === 'REVIEW'
+                                ? 'bg-blue-50 text-blue-700'
+                                : 'bg-slate-100 text-slate-600'
+                            }`}>
+                            {formatStatusLabel(p.status)}
+                          </span>
+                        </td>
+                        <td className="px-3.5 py-2.5 text-right">
+                          {isEligible ? (
+                            <button
+                              type="button"
+                              onClick={() => {
+                                setFeedback(null);
+                                setPeriodToDelete(p);
+                              }}
+                              title="Delete payroll period"
+                              aria-label={`Delete payroll period ${p.name}`}
+                              className="inline-flex items-center justify-center rounded-[6px] p-1.5 text-red-600 hover:bg-red-50 hover:text-red-700 transition focus:outline-none focus:ring-2 focus:ring-red-500/20"
+                            >
+                              <Trash2 className="h-4 w-4" />
+                            </button>
+                          ) : (
+                            <button
+                              type="button"
+                              disabled
+                              title={ineligibleReason}
+                              aria-label={`Cannot delete ${p.name}: ${ineligibleReason}`}
+                              className="inline-flex items-center justify-center rounded-[6px] p-1.5 text-slate-300 cursor-not-allowed transition"
+                            >
+                              <Trash2 className="h-4 w-4" />
+                            </button>
+                          )}
+                        </td>
+                      </tr>
+                    );
+                  })}
                 </tbody>
               </table>
             )}
           </div>
         </div>
+
+        {/* Confirmation Modal */}
+        <ConfirmationDialog
+          isOpen={periodToDelete !== null}
+          onClose={() => {
+            if (!isDeleting) {
+              setPeriodToDelete(null);
+            }
+          }}
+          onConfirm={handleDeleteConfirm}
+          title="Delete Payroll Period?"
+          description="Are you sure you want to delete this payroll period? This action cannot be undone."
+          recordSummary={[
+            { label: 'Payroll Period', value: periodToDelete?.name || '' },
+            {
+              label: 'Coverage Dates',
+              value: periodToDelete
+                ? `${formatPayrollDate(periodToDelete.periodStart)} – ${formatPayrollDate(periodToDelete.periodEnd)}`
+                : '',
+            },
+            {
+              label: 'Scheduled Pay Date',
+              value: periodToDelete ? formatPayrollDate(periodToDelete.payDate) : '',
+            },
+          ]}
+          confirmLabel="Delete Period"
+          confirmVariant="danger"
+          isLoading={isDeleting}
+        />
       </div>
 
       {/* Step 2: Generate / Recalculate Payroll */}
@@ -274,10 +392,10 @@ export function PayrollProcessingTab({
                   Finalized by {review.period.finalizedBy?.name ?? 'HR/Admin'} on{' '}
                   {review.period.finalizedAt
                     ? new Intl.DateTimeFormat('en-PH', {
-                        dateStyle: 'medium',
-                        timeStyle: 'short',
-                        timeZone: 'Asia/Manila',
-                      }).format(review.period.finalizedAt)
+                      dateStyle: 'medium',
+                      timeStyle: 'short',
+                      timeZone: 'Asia/Manila',
+                    }).format(review.period.finalizedAt)
                     : 'an official date'}
                   . Payslips are locked and viewable in ESS.
                 </p>

@@ -136,11 +136,11 @@ export function CandidatePortalClient({
           prev.map((d) =>
             d.id === documentId
               ? {
-                  ...d,
-                  status: RecruitmentDocumentStatus.SUBMITTED,
-                  fileName: file.name,
-                  fileSize: file.size,
-                }
+                ...d,
+                status: RecruitmentDocumentStatus.SUBMITTED,
+                fileName: file.name,
+                fileSize: file.size,
+              }
               : d
           )
         );
@@ -181,11 +181,11 @@ export function CandidatePortalClient({
           prev.map((t) =>
             t.id === taskId
               ? {
-                  ...t,
-                  status: OnboardingTaskStatus.SUBMITTED,
-                  fileName: file.name,
-                  fileSize: file.size,
-                }
+                ...t,
+                status: OnboardingTaskStatus.SUBMITTED,
+                fileName: file.name,
+                fileSize: file.size,
+              }
               : t
           )
         );
@@ -225,11 +225,10 @@ export function CandidatePortalClient({
           <button
             type="button"
             onClick={() => setActiveTab('onboarding')}
-            className={`inline-flex items-center gap-2 px-4 py-2 text-xs font-bold rounded-xl transition ${
-              activeTab === 'onboarding'
+            className={`inline-flex items-center gap-2 px-4 py-2 text-xs font-bold rounded-xl transition ${activeTab === 'onboarding'
                 ? 'bg-indigo-600 text-white shadow-xs'
                 : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100 dark:text-slate-400 dark:hover:bg-slate-800'
-            }`}
+              }`}
           >
             <ShieldCheck className="h-4 w-4" />
             <span>Pre-Employment & Onboarding Checklist</span>
@@ -241,11 +240,10 @@ export function CandidatePortalClient({
           <button
             type="button"
             onClick={() => setActiveTab('recruitment')}
-            className={`inline-flex items-center gap-2 px-4 py-2 text-xs font-bold rounded-xl transition ${
-              activeTab === 'recruitment'
+            className={`inline-flex items-center gap-2 px-4 py-2 text-xs font-bold rounded-xl transition ${activeTab === 'recruitment'
                 ? 'bg-indigo-600 text-white shadow-xs'
                 : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100 dark:text-slate-400 dark:hover:bg-slate-800'
-            }`}
+              }`}
           >
             <FileText className="h-4 w-4" />
             <span>Recruitment Documents (Step 1)</span>
@@ -299,167 +297,165 @@ export function CandidatePortalClient({
           )}
 
           {documents.length > 0 && (<>
-          {/* Guidelines Box */}
-          <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-2xs dark:border-slate-800 dark:bg-slate-900 space-y-2">
-            <div className="flex items-center gap-2 text-xs font-bold text-slate-800 dark:text-slate-200">
-              <Sparkles className="h-4 w-4 text-amber-500" />
-              <span>{isSaga ? 'SAGA Document Clarity & Authentication Guidelines' : 'Organization Document Clarity & Authentication Guidelines'}</span>
-            </div>
-            <ul className="text-[11px] text-slate-600 dark:text-slate-400 space-y-1 list-disc list-inside">
-              <li>Ensure all scanned pages are complete, straight, and high-resolution (300 DPI recommended).</li>
-              {isSaga && <li>Official Transcript of Records (TOR) must show the school dry seal or official registrar signature.</li>}
-              {isSaga && <li>LET Board Licensure must clearly show the PRC license number and expiration date.</li>}
-            </ul>
-          </div>
-
-          {/* Interactive Document Checklist */}
-          <div className="space-y-4">
-            <div className="flex items-center justify-between pb-1 border-b border-slate-100 dark:border-slate-800">
-              <h3 className="text-xs font-bold uppercase tracking-wider text-slate-800 dark:text-slate-200">
-                {isSaga ? 'Required SAGA Document Checklist' : 'Required Organization Document Checklist'}
-              </h3>
-              <span className="text-[11px] text-slate-500 dark:text-slate-400">
-                {verifiedDocs.length} of {documents.length} verified
-              </span>
+            {/* Guidelines Box */}
+            <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-2xs dark:border-slate-800 dark:bg-slate-900 space-y-2">
+              <div className="flex items-center gap-2 text-xs font-bold text-slate-800 dark:text-slate-200">
+                <Sparkles className="h-4 w-4 text-amber-500" />
+                <span>{isSaga ? 'SAGA Document Clarity & Authentication Guidelines' : 'Organization Document Clarity & Authentication Guidelines'}</span>
+              </div>
+              <ul className="text-[11px] text-slate-600 dark:text-slate-400 space-y-1 list-disc list-inside">
+                <li>Ensure all scanned pages are complete, straight, and high-resolution (300 DPI recommended).</li>
+                {isSaga && <li>Official Transcript of Records (TOR) must show the school dry seal or official registrar signature.</li>}
+                {isSaga && <li>LET Board Licensure must clearly show the PRC license number and expiration date.</li>}
+              </ul>
             </div>
 
-            <div className="space-y-3">
-              {documents.map((doc) => {
-                const isVerified = doc.status === RecruitmentDocumentStatus.VERIFIED;
-                const isSubmitted = doc.status === RecruitmentDocumentStatus.SUBMITTED;
-                const isRejected = doc.status === RecruitmentDocumentStatus.REJECTED;
-                const isPendingDoc = doc.status === RecruitmentDocumentStatus.PENDING;
-                const isNA = doc.status === RecruitmentDocumentStatus.NOT_APPLICABLE;
+            {/* Interactive Document Checklist */}
+            <div className="space-y-4">
+              <div className="flex items-center justify-between pb-1 border-b border-slate-100 dark:border-slate-800">
+                <h3 className="text-xs font-bold uppercase tracking-wider text-slate-800 dark:text-slate-200">
+                  {isSaga ? 'Required SAGA Document Checklist' : 'Required Organization Document Checklist'}
+                </h3>
+                <span className="text-[11px] text-slate-500 dark:text-slate-400">
+                  {verifiedDocs.length} of {documents.length} verified
+                </span>
+              </div>
 
-                return (
-                  <div
-                    key={doc.id}
-                    className={`rounded-2xl border p-5 transition-all shadow-xs ${
-                      isRejected
-                        ? 'border-rose-300 bg-rose-50/40 dark:border-rose-800 dark:bg-rose-950/20 ring-1 ring-rose-500/20'
-                        : isVerified
-                        ? 'border-emerald-200 bg-emerald-50/20 dark:border-emerald-900/60 dark:bg-emerald-950/10'
-                        : isSubmitted
-                        ? 'border-blue-200 bg-blue-50/20 dark:border-blue-900/60 dark:bg-blue-950/10'
-                        : 'border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-900'
-                    }`}
-                  >
-                    <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
-                      <div className="space-y-2 max-w-xl">
-                        <div className="flex items-center gap-2 flex-wrap">
-                          <FileText className="h-4 w-4 text-slate-600 dark:text-slate-400" />
-                          <h4 className="text-xs font-bold text-slate-900 dark:text-slate-100">
-                            {doc.title}
-                          </h4>
+              <div className="space-y-3">
+                {documents.map((doc) => {
+                  const isVerified = doc.status === RecruitmentDocumentStatus.VERIFIED;
+                  const isSubmitted = doc.status === RecruitmentDocumentStatus.SUBMITTED;
+                  const isRejected = doc.status === RecruitmentDocumentStatus.REJECTED;
+                  const isPendingDoc = doc.status === RecruitmentDocumentStatus.PENDING;
+                  const isNA = doc.status === RecruitmentDocumentStatus.NOT_APPLICABLE;
 
-                          {doc.isRequired && !doc.isConditional ? (
-                            <span className="rounded-md bg-rose-50 px-2 py-0.5 text-[10px] font-bold text-rose-700 dark:bg-rose-950/60 dark:text-rose-300">
-                              MANDATORY
-                            </span>
-                          ) : (
-                            <span className="rounded-md bg-slate-100 px-2 py-0.5 text-[10px] font-semibold text-slate-600 dark:bg-slate-800 dark:text-slate-400">
-                              CONDITIONAL
-                            </span>
+                  return (
+                    <div
+                      key={doc.id}
+                      className={`rounded-2xl border p-5 transition-all shadow-xs ${isRejected
+                          ? 'border-rose-300 bg-rose-50/40 dark:border-rose-800 dark:bg-rose-950/20 ring-1 ring-rose-500/20'
+                          : isVerified
+                            ? 'border-emerald-200 bg-emerald-50/20 dark:border-emerald-900/60 dark:bg-emerald-950/10'
+                            : isSubmitted
+                              ? 'border-blue-200 bg-blue-50/20 dark:border-blue-900/60 dark:bg-blue-950/10'
+                              : 'border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-900'
+                        }`}
+                    >
+                      <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
+                        <div className="space-y-2 max-w-xl">
+                          <div className="flex items-center gap-2 flex-wrap">
+                            <FileText className="h-4 w-4 text-slate-600 dark:text-slate-400" />
+                            <h4 className="text-xs font-bold text-slate-900 dark:text-slate-100">
+                              {doc.title}
+                            </h4>
+
+                            {doc.isRequired && !doc.isConditional ? (
+                              <span className="rounded-md bg-rose-50 px-2 py-0.5 text-[10px] font-bold text-rose-700 dark:bg-rose-950/60 dark:text-rose-300">
+                                MANDATORY
+                              </span>
+                            ) : (
+                              <span className="rounded-md bg-slate-100 px-2 py-0.5 text-[10px] font-semibold text-slate-600 dark:bg-slate-800 dark:text-slate-400">
+                                CONDITIONAL
+                              </span>
+                            )}
+
+                            {isVerified && (
+                              <span className="inline-flex items-center gap-1 rounded-full bg-emerald-100 px-2.5 py-0.5 text-[10px] font-bold text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300">
+                                <CheckCircle2 className="h-3 w-3" /> VERIFIED
+                              </span>
+                            )}
+                            {isSubmitted && (
+                              <span className="inline-flex items-center gap-1 rounded-full bg-blue-100 px-2.5 py-0.5 text-[10px] font-bold text-blue-800 dark:bg-blue-950 dark:text-blue-300">
+                                <Clock className="h-3 w-3" /> UNDER REVIEW
+                              </span>
+                            )}
+                            {isRejected && (
+                              <span className="inline-flex items-center gap-1 rounded-full bg-rose-100 px-2.5 py-0.5 text-[10px] font-extrabold text-rose-800 dark:bg-rose-950 dark:text-rose-300 animate-pulse">
+                                <AlertTriangle className="h-3 w-3" /> RE-UPLOAD REQUESTED
+                              </span>
+                            )}
+                            {isPendingDoc && (
+                              <span className="inline-flex items-center gap-1 rounded-full bg-amber-50 px-2.5 py-0.5 text-[10px] font-semibold text-amber-700 dark:bg-amber-950 dark:text-amber-300">
+                                AWAITING UPLOAD
+                              </span>
+                            )}
+                            {isNA && (
+                              <span className="inline-flex items-center gap-1 rounded-full bg-slate-100 px-2.5 py-0.5 text-[10px] font-semibold text-slate-500 dark:bg-slate-800">
+                                NOT APPLICABLE / WAIVED
+                              </span>
+                            )}
+                          </div>
+
+                          {isRejected && doc.notes && (
+                            <div className="rounded-xl border border-rose-300 bg-rose-100/70 p-3 text-xs text-rose-900 dark:border-rose-800 dark:bg-rose-950/60 dark:text-rose-200 space-y-1">
+                              <div className="font-bold flex items-center gap-1.5 text-rose-950 dark:text-rose-100">
+                                <AlertCircle className="h-3.5 w-3.5 text-rose-600 shrink-0" />
+                                <span>Reviewer Feedback / Rejection Note:</span>
+                              </div>
+                              <p className="text-[11px] leading-relaxed italic">&ldquo;{doc.notes}&rdquo;</p>
+                            </div>
                           )}
 
-                          {isVerified && (
-                            <span className="inline-flex items-center gap-1 rounded-full bg-emerald-100 px-2.5 py-0.5 text-[10px] font-bold text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300">
-                              <CheckCircle2 className="h-3 w-3" /> VERIFIED
-                            </span>
+                          {!isRejected && doc.notes && (
+                            <p className="text-[11px] text-slate-500 dark:text-slate-400">{doc.notes}</p>
                           )}
-                          {isSubmitted && (
-                            <span className="inline-flex items-center gap-1 rounded-full bg-blue-100 px-2.5 py-0.5 text-[10px] font-bold text-blue-800 dark:bg-blue-950 dark:text-blue-300">
-                              <Clock className="h-3 w-3" /> UNDER REVIEW
-                            </span>
-                          )}
-                          {isRejected && (
-                            <span className="inline-flex items-center gap-1 rounded-full bg-rose-100 px-2.5 py-0.5 text-[10px] font-extrabold text-rose-800 dark:bg-rose-950 dark:text-rose-300 animate-pulse">
-                              <AlertTriangle className="h-3 w-3" /> RE-UPLOAD REQUESTED
-                            </span>
-                          )}
-                          {isPendingDoc && (
-                            <span className="inline-flex items-center gap-1 rounded-full bg-amber-50 px-2.5 py-0.5 text-[10px] font-semibold text-amber-700 dark:bg-amber-950 dark:text-amber-300">
-                              AWAITING UPLOAD
-                            </span>
-                          )}
-                          {isNA && (
-                            <span className="inline-flex items-center gap-1 rounded-full bg-slate-100 px-2.5 py-0.5 text-[10px] font-semibold text-slate-500 dark:bg-slate-800">
-                              NOT APPLICABLE / WAIVED
-                            </span>
+
+                          {doc.fileName && (
+                            <div className="flex items-center gap-2 flex-wrap text-[11px] text-slate-700 dark:text-slate-300 font-medium pt-1">
+                              <FileCheck2 className="h-3.5 w-3.5 text-slate-400" />
+                              <span className="truncate max-w-[260px]">Uploaded: {doc.fileName}</span>
+                              {doc.fileSize && (
+                                <span className="text-slate-400">({(doc.fileSize / 1024).toFixed(1)} KB)</span>
+                              )}
+                              <a
+                                href={`/api/recruitment-documents/${doc.id}?appId=${applicationId}`}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="inline-flex items-center gap-1 text-indigo-600 hover:text-indigo-700 dark:text-indigo-400 font-semibold underline underline-offset-2 ml-1"
+                              >
+                                <Eye className="h-3 w-3" />
+                                <span>View / Download</span>
+                              </a>
+                            </div>
                           )}
                         </div>
 
-                        {isRejected && doc.notes && (
-                          <div className="rounded-xl border border-rose-300 bg-rose-100/70 p-3 text-xs text-rose-900 dark:border-rose-800 dark:bg-rose-950/60 dark:text-rose-200 space-y-1">
-                            <div className="font-bold flex items-center gap-1.5 text-rose-950 dark:text-rose-100">
-                              <AlertCircle className="h-3.5 w-3.5 text-rose-600 shrink-0" />
-                              <span>Reviewer Feedback / Rejection Note:</span>
-                            </div>
-                            <p className="text-[11px] leading-relaxed italic">&ldquo;{doc.notes}&rdquo;</p>
-                          </div>
-                        )}
-
-                        {!isRejected && doc.notes && (
-                          <p className="text-[11px] text-slate-500 dark:text-slate-400">{doc.notes}</p>
-                        )}
-
-                        {doc.fileName && (
-                          <div className="flex items-center gap-2 flex-wrap text-[11px] text-slate-700 dark:text-slate-300 font-medium pt-1">
-                            <FileCheck2 className="h-3.5 w-3.5 text-slate-400" />
-                            <span className="truncate max-w-[260px]">Uploaded: {doc.fileName}</span>
-                            {doc.fileSize && (
-                              <span className="text-slate-400">({(doc.fileSize / 1024).toFixed(1)} KB)</span>
-                            )}
-                            <a
-                              href={`/api/recruitment-documents/${doc.id}?appId=${applicationId}`}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="inline-flex items-center gap-1 text-indigo-600 hover:text-indigo-700 dark:text-indigo-400 font-semibold underline underline-offset-2 ml-1"
+                        <div className="shrink-0 flex items-center">
+                          {!isVerified && !isNA && (
+                            <label
+                              className={`cursor-pointer inline-flex items-center gap-1.5 rounded-xl px-3.5 py-2 text-xs font-bold transition shadow-xs ${isRejected
+                                  ? 'bg-rose-600 text-white hover:bg-rose-700 ring-2 ring-rose-500/50'
+                                  : isSubmitted
+                                    ? 'border border-slate-200 bg-white text-slate-700 hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200'
+                                    : 'bg-indigo-600 text-white hover:bg-indigo-500'
+                                } ${uploadingDocId === doc.id || isPending ? 'opacity-60 pointer-events-none' : ''}`}
                             >
-                              <Eye className="h-3 w-3" />
-                              <span>View / Download</span>
-                            </a>
-                          </div>
-                        )}
-                      </div>
-
-                      <div className="shrink-0 flex items-center">
-                        {!isVerified && !isNA && (
-                          <label
-                            className={`cursor-pointer inline-flex items-center gap-1.5 rounded-xl px-3.5 py-2 text-xs font-bold transition shadow-xs ${
-                              isRejected
-                                ? 'bg-rose-600 text-white hover:bg-rose-700 ring-2 ring-rose-500/50'
-                                : isSubmitted
-                                ? 'border border-slate-200 bg-white text-slate-700 hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200'
-                                : 'bg-indigo-600 text-white hover:bg-indigo-500'
-                            } ${uploadingDocId === doc.id || isPending ? 'opacity-60 pointer-events-none' : ''}`}
-                          >
-                            <Upload className="h-3.5 w-3.5" />
-                            <span>
-                              {uploadingDocId === doc.id
-                                ? 'Uploading...'
-                                : isRejected
-                                ? 'Re-upload Document'
-                                : isSubmitted
-                                ? 'Replace File'
-                                : 'Upload Document'}
-                            </span>
-                            <input
-                              type="file"
-                              accept=".pdf,.png,.jpg,.jpeg,.webp,.doc,.docx"
-                              className="hidden"
-                              onChange={(e) => handleRecruitmentUpload(doc.id, e)}
-                              disabled={uploadingDocId === doc.id || isPending}
-                            />
-                          </label>
-                        )}
+                              <Upload className="h-3.5 w-3.5" />
+                              <span>
+                                {uploadingDocId === doc.id
+                                  ? 'Uploading...'
+                                  : isRejected
+                                    ? 'Re-upload Document'
+                                    : isSubmitted
+                                      ? 'Replace File'
+                                      : 'Upload Document'}
+                              </span>
+                              <input
+                                type="file"
+                                accept=".pdf,.png,.jpg,.jpeg,.webp,.doc,.docx"
+                                className="hidden"
+                                onChange={(e) => handleRecruitmentUpload(doc.id, e)}
+                                disabled={uploadingDocId === doc.id || isPending}
+                              />
+                            </label>
+                          )}
+                        </div>
                       </div>
                     </div>
-                  </div>
-                );
-              })}
+                  );
+                })}
+              </div>
             </div>
-          </div>
           </>)}
         </div>
       )}
@@ -500,15 +496,14 @@ export function CandidatePortalClient({
                 return (
                   <div
                     key={task.id}
-                    className={`rounded-2xl border p-5 transition-all shadow-xs ${
-                      isRejected
+                    className={`rounded-2xl border p-5 transition-all shadow-xs ${isRejected
                         ? 'border-rose-300 bg-rose-50/40 dark:border-rose-800 dark:bg-rose-950/20 ring-1 ring-rose-500/20'
                         : isVerified
-                        ? 'border-emerald-200 bg-emerald-50/20 dark:border-emerald-900/60 dark:bg-emerald-950/10'
-                        : isSubmitted
-                        ? 'border-blue-200 bg-blue-50/20 dark:border-blue-900/60 dark:bg-blue-950/10'
-                        : 'border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-900'
-                    }`}
+                          ? 'border-emerald-200 bg-emerald-50/20 dark:border-emerald-900/60 dark:bg-emerald-950/10'
+                          : isSubmitted
+                            ? 'border-blue-200 bg-blue-50/20 dark:border-blue-900/60 dark:bg-blue-950/10'
+                            : 'border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-900'
+                      }`}
                   >
                     <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
                       <div className="space-y-2 max-w-xl">
@@ -600,23 +595,22 @@ export function CandidatePortalClient({
                       <div className="shrink-0 flex items-center">
                         {isDocumentTask && !isVerified && !isWaived ? (
                           <label
-                            className={`cursor-pointer inline-flex items-center gap-1.5 rounded-xl px-3.5 py-2 text-xs font-bold transition shadow-xs ${
-                              isRejected
+                            className={`cursor-pointer inline-flex items-center gap-1.5 rounded-xl px-3.5 py-2 text-xs font-bold transition shadow-xs ${isRejected
                                 ? 'bg-rose-600 text-white hover:bg-rose-700 ring-2 ring-rose-500/50'
                                 : isSubmitted
-                                ? 'border border-slate-200 bg-white text-slate-700 hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200'
-                                : 'bg-indigo-600 text-white hover:bg-indigo-500'
-                            } ${uploadingDocId === task.id || isPending ? 'opacity-60 pointer-events-none' : ''}`}
+                                  ? 'border border-slate-200 bg-white text-slate-700 hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200'
+                                  : 'bg-indigo-600 text-white hover:bg-indigo-500'
+                              } ${uploadingDocId === task.id || isPending ? 'opacity-60 pointer-events-none' : ''}`}
                           >
                             <Upload className="h-3.5 w-3.5" />
                             <span>
                               {uploadingDocId === task.id
                                 ? 'Uploading...'
                                 : isRejected
-                                ? 'Re-upload Document'
-                                : isSubmitted
-                                ? 'Replace File'
-                                : 'Upload Document'}
+                                  ? 'Re-upload Document'
+                                  : isSubmitted
+                                    ? 'Replace File'
+                                    : 'Upload Document'}
                             </span>
                             <input
                               type="file"

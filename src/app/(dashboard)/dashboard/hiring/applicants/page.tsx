@@ -54,11 +54,11 @@ export default async function ApplicantsPage({ searchParams }: ApplicantsPagePro
       statusFilter && statusFilter !== 'ALL' ? (statusFilter as ApplicationStatus) : undefined,
     OR: searchQuery
       ? [
-          { applicant: { firstName: { contains: searchQuery, mode: 'insensitive' as const } } },
-          { applicant: { lastName: { contains: searchQuery, mode: 'insensitive' as const } } },
-          { applicant: { email: { contains: searchQuery, mode: 'insensitive' as const } } },
-          { job: { title: { contains: searchQuery, mode: 'insensitive' as const } } },
-        ]
+        { applicant: { firstName: { contains: searchQuery, mode: 'insensitive' as const } } },
+        { applicant: { lastName: { contains: searchQuery, mode: 'insensitive' as const } } },
+        { applicant: { email: { contains: searchQuery, mode: 'insensitive' as const } } },
+        { job: { title: { contains: searchQuery, mode: 'insensitive' as const } } },
+      ]
       : undefined,
   };
 
@@ -244,6 +244,7 @@ export default async function ApplicantsPage({ searchParams }: ApplicantsPagePro
       {/* Responsive Card Grid with Candidate Detail Panel and Server Pagination */}
       <HiringCardWorkspace
         candidates={candidateItems}
+        showDivider
         emptyMessage="No candidate applicants found matching your search and filter criteria."
         pagination={
           <HiringPagination

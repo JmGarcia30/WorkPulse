@@ -148,7 +148,7 @@ export function ApplicationPipeline({
             <Layers className="h-3.5 w-3.5" />
             <span>Active Pipeline</span>
             <span
-              className={`rounded-full px-1.5 py-0.2 text-[10px] font-bold ${
+              className={`rounded-[6px] px-1.5 py-[2px] text-[10px] font-bold leading-none ${
                 activeTab === 'ACTIVE'
                   ? 'bg-slate-900 text-white'
                   : 'bg-slate-200 text-slate-600'
@@ -171,7 +171,7 @@ export function ApplicationPipeline({
             <Archive className="h-3.5 w-3.5" />
             <span>Other Applications</span>
             <span
-              className={`rounded-full px-1.5 py-0.2 text-[10px] font-bold ${
+              className={`rounded-[6px] px-1.5 py-[2px] text-[10px] font-bold leading-none ${
                 activeTab === 'TERMINAL'
                   ? 'bg-slate-900 text-white'
                   : 'bg-slate-200 text-slate-600'

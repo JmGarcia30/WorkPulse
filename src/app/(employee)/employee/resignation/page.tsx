@@ -61,8 +61,8 @@ export default async function ResignationPage({
     value.noticeCalendarMonths !== null
       ? `${value.noticeCalendarMonths} calendar month(s)`
       : value.noticeCalendarDays != null
-      ? `${value.noticeCalendarDays} calendar day(s)`
-      : 'Policy not yet configured';
+        ? `${value.noticeCalendarDays} calendar day(s)`
+        : 'Policy not yet configured';
 
   return (
     <div className="max-w-4xl space-y-6">

@@ -27,14 +27,14 @@ export function HiringProgressTracker(props: HiringLifecycleState) {
           <span className="text-sm font-bold text-slate-800">
             Hiring Progress
           </span>
-          <span className="inline-flex items-center rounded-lg bg-slate-100 px-2 py-0.5 text-xs font-semibold text-slate-600">
+          <span className="inline-flex items-center rounded-[6px] bg-[#EEEDF1] px-2 py-[3px] text-xs font-semibold text-[#282934]">
             Stage {activeIndex + 1} of {steps.length}
           </span>
         </div>
 
         <div className="flex items-center gap-2 text-xs">
           <span className="text-slate-400 font-medium">Current Stage:</span>
-          <span className="inline-flex items-center rounded-full bg-slate-800 px-2.5 py-0.5 font-bold text-white shadow-xs">
+          <span className="inline-flex items-center rounded-[6px] bg-[#282934] px-2.5 py-[3px] text-xs font-semibold text-white shadow-xs">
             {currentStageLabel}
           </span>
         </div>

@@ -56,19 +56,17 @@ export function HiringFilterToolbar({
             <Link
               key={pill.value}
               href={pill.href}
-              className={`inline-flex items-center gap-2 rounded-xl px-3.5 py-1.5 text-xs font-bold transition shadow-2xs whitespace-nowrap ${
-                pill.isActive
+              className={`inline-flex items-center gap-2 rounded-xl px-3.5 py-1.5 text-xs font-bold transition shadow-2xs whitespace-nowrap ${pill.isActive
                   ? 'bg-[var(--tenant-primary)] text-[var(--tenant-primary-foreground)]'
                   : 'bg-white border border-slate-200/90 text-slate-700 hover:bg-slate-50 hover:border-slate-300'
-              }`}
+                }`}
             >
               <span>{pill.label}</span>
               <span
-                className={`flex h-4 min-w-4 items-center justify-center rounded-full px-1 text-[10px] font-bold tabular-nums ${
-                  pill.isActive
+                className={`flex h-4 min-w-4 items-center justify-center rounded-full px-1 text-[10px] font-bold tabular-nums ${pill.isActive
                     ? 'bg-white/20 text-white'
                     : 'bg-slate-100 text-slate-600'
-                }`}
+                  }`}
               >
                 {pill.count}
               </span>

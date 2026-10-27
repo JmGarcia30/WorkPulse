@@ -72,9 +72,9 @@ export default async function OrganizationCareersPage({
       status: JobStatus.PUBLISHED,
       OR: searchQuery
         ? [
-            { title: { contains: searchQuery, mode: 'insensitive' } },
-            { department: { contains: searchQuery, mode: 'insensitive' } },
-          ]
+          { title: { contains: searchQuery, mode: 'insensitive' } },
+          { department: { contains: searchQuery, mode: 'insensitive' } },
+        ]
         : undefined,
     },
     orderBy: { publishedAt: 'desc' },

@@ -39,15 +39,15 @@ export function RequiresAttentionWidget({ items }: RequiresAttentionWidgetProps)
   const getStatusBadge = (status: string, variant: AttentionItemDetail['statusVariant']) => {
     switch (variant) {
       case 'danger':
-        return 'bg-rose-50 text-rose-700 border-rose-200';
+        return 'bg-rose-50 text-rose-700';
       case 'warning':
-        return 'bg-amber-50 text-amber-800 border-amber-200';
+        return 'bg-amber-50 text-amber-800';
       case 'info':
-        return 'bg-blue-50 text-blue-700 border-blue-200';
+        return 'bg-blue-50 text-blue-700';
       case 'pending':
-        return 'bg-purple-50 text-purple-700 border-purple-200';
+        return 'bg-purple-50 text-purple-700';
       default:
-        return 'bg-slate-100 text-slate-700 border-slate-200';
+        return 'bg-slate-100 text-[#282934]';
     }
   };
 
@@ -67,14 +67,14 @@ export function RequiresAttentionWidget({ items }: RequiresAttentionWidgetProps)
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between pb-4">
           <div className="space-y-0.5">
             <div className="flex items-center gap-2">
-              <h2 className="text-base font-bold text-slate-900 tracking-tight">
+              <h2 className="text-base font-bold text-[#282934] tracking-tight">
                 Requires Attention
               </h2>
-              <span className="flex h-5 items-center justify-center rounded-full bg-rose-50 px-2 text-[11px] font-bold text-rose-700 border border-rose-200/60 tabular-nums">
+              <span className="inline-flex items-center justify-center rounded-[6px] bg-rose-50 px-[7px] py-[3px] text-[11px] font-bold text-rose-700 tabular-nums leading-none">
                 {items.length}
               </span>
             </div>
-            <p className="text-xs text-slate-400 font-medium">
+            <p className="text-xs text-[#777882] font-medium">
               Outstanding leave approvals, probation reviews, and hiring actions
             </p>
           </div>
@@ -82,13 +82,13 @@ export function RequiresAttentionWidget({ items }: RequiresAttentionWidgetProps)
           {/* Search bar and Category filter */}
           <div className="flex items-center gap-2">
             <div className="relative">
-              <Search className="absolute left-2.5 top-2.5 h-3.5 w-3.5 text-slate-400" />
+              <Search className="absolute left-2.5 top-2.5 h-3.5 w-3.5 text-[#C7A759]" />
               <input
                 type="text"
                 placeholder="Search..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="h-8 w-36 sm:w-48 rounded-xl border border-slate-200 bg-slate-50/50 pl-8 pr-3 text-xs text-slate-800 placeholder-slate-400 focus:bg-white focus:border-slate-400 focus:outline-none transition-colors"
+                className="h-8 w-36 sm:w-48 rounded-xl border border-slate-200 bg-slate-50/50 pl-8 pr-3 text-xs text-[#282934] placeholder-[#777882] focus:bg-white focus:border-[#C7A759] focus:outline-none transition-colors"
               />
             </div>
 
@@ -97,7 +97,7 @@ export function RequiresAttentionWidget({ items }: RequiresAttentionWidgetProps)
                 aria-label="Filter items by category"
                 value={selectedCategory}
                 onChange={(e) => setSelectedCategory(e.target.value)}
-                className="h-8 rounded-xl border border-slate-200 bg-slate-50/50 px-2.5 text-xs font-medium text-slate-700 focus:bg-white focus:outline-none cursor-pointer"
+                className="h-8 rounded-xl border border-slate-200 bg-slate-50/50 px-2.5 text-xs font-medium text-[#282934] focus:bg-white focus:border-[#C7A759] focus:outline-none cursor-pointer"
               >
                 {categories.map((c) => (
                   <option key={c} value={c}>
@@ -113,7 +113,7 @@ export function RequiresAttentionWidget({ items }: RequiresAttentionWidgetProps)
         <div className="overflow-x-auto -mx-5 px-5">
           <table className="w-full text-left text-xs">
             <thead>
-              <tr className="border-b border-slate-100 text-slate-400 font-semibold uppercase tracking-wider text-[10px]">
+              <tr className="border-b border-slate-100 text-[#777882] font-semibold uppercase tracking-wider text-[10px]">
                 <th className="py-2.5 pr-2 w-8">SL.</th>
                 <th className="py-2.5 px-3">Employee / Candidate</th>
                 <th className="py-2.5 px-3">Action Required</th>
@@ -126,12 +126,12 @@ export function RequiresAttentionWidget({ items }: RequiresAttentionWidgetProps)
             <tbody className="divide-y divide-slate-100">
               {filteredItems.length === 0 ? (
                 <tr>
-                  <td colSpan={7} className="py-12 text-center text-slate-400">
+                  <td colSpan={7} className="py-12 text-center text-[#777882]">
                     <CheckCircle2 className="mx-auto h-7 w-7 text-emerald-500 mb-1.5" />
-                    <p className="text-sm font-semibold text-slate-700">
+                    <p className="text-sm font-semibold text-[#282934]">
                       No items require attention
                     </p>
-                    <p className="text-xs text-slate-400 mt-0.5">
+                    <p className="text-xs text-[#777882] mt-0.5">
                       {searchQuery
                         ? 'No actions matched your search criteria.'
                         : 'All queues are up to date and cleared.'}
@@ -150,22 +150,22 @@ export function RequiresAttentionWidget({ items }: RequiresAttentionWidgetProps)
                       className="group hover:bg-slate-50/60 transition-colors"
                     >
                       {/* SL. */}
-                      <td className="py-3 pr-2 font-mono text-[11px] text-slate-400">
+                      <td className="py-3 pr-2 font-mono text-[11px] text-[#777882]">
                         {sl}
                       </td>
 
                       {/* Employee / Candidate with Avatar Badge */}
                       <td className="py-3 px-3">
                         <div className="flex items-center gap-2.5">
-                          <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-slate-100 text-[11px] font-bold text-slate-700 group-hover:bg-slate-200 transition-colors">
+                          <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-slate-100 text-[11px] font-bold text-[#282934] group-hover:bg-slate-200 transition-colors">
                             {initials}
                           </span>
                           <div className="min-w-0">
-                            <div className="font-bold text-slate-800 truncate">
+                            <div className="font-bold text-[#282934] truncate">
                               {item.employeeOrCandidate}
                             </div>
                             {item.departmentOrRole && (
-                              <div className="text-[11px] text-slate-400 truncate">
+                              <div className="text-[11px] text-[#777882] truncate">
                                 {item.departmentOrRole}
                               </div>
                             )}
@@ -175,27 +175,27 @@ export function RequiresAttentionWidget({ items }: RequiresAttentionWidgetProps)
 
                       {/* Action Required */}
                       <td className="py-3 px-3">
-                        <span className="font-medium text-slate-700 line-clamp-1">
+                        <span className="font-medium text-[#282934] line-clamp-1">
                           {item.actionRequired}
                         </span>
                       </td>
 
                       {/* Category */}
                       <td className="py-3 px-3">
-                        <span className="inline-block rounded-md bg-slate-100 px-2 py-0.5 text-[11px] font-semibold text-slate-600">
+                        <span className="inline-flex items-center justify-center rounded-[6px] bg-[#E8E5DF]/60 px-[7px] py-[3px] text-[11px] font-semibold text-[#62636B] leading-none">
                           {item.category}
                         </span>
                       </td>
 
                       {/* Due Date */}
-                      <td className="py-3 px-3 whitespace-nowrap text-slate-500 tabular-nums">
+                      <td className="py-3 px-3 whitespace-nowrap text-[#62636B] tabular-nums">
                         {item.dueDate}
                       </td>
 
                       {/* Status */}
                       <td className="py-3 px-3 whitespace-nowrap">
                         <span
-                          className={`inline-block rounded-full px-2 py-0.5 text-[10px] font-semibold border ${badgeClass}`}
+                          className={`inline-flex items-center justify-center rounded-[6px] px-[7px] py-[3px] text-[10px] font-semibold leading-none ${badgeClass}`}
                         >
                           {item.status}
                         </span>
@@ -205,10 +205,10 @@ export function RequiresAttentionWidget({ items }: RequiresAttentionWidgetProps)
                       <td className="py-3 pl-3 text-right whitespace-nowrap">
                         <Link
                           href={item.href}
-                          className="inline-flex items-center gap-1 font-semibold text-[var(--tenant-primary,#0f766e)] hover:underline"
+                          className="inline-flex items-center gap-1 font-semibold text-[#282934] hover:text-[#C7A759] hover:underline"
                         >
                           Review
-                          <ArrowRight className="h-3 w-3" />
+                          <ArrowRight className="h-3 w-3 text-[#C7A759]" />
                         </Link>
                       </td>
                     </tr>
@@ -222,11 +222,11 @@ export function RequiresAttentionWidget({ items }: RequiresAttentionWidgetProps)
 
       {/* Footer link to full queue */}
       {filteredItems.length > 10 && (
-        <div className="pt-3 border-t border-slate-100 flex items-center justify-between text-xs text-slate-500">
+        <div className="pt-3 border-t border-slate-100 flex items-center justify-between text-xs text-[#62636B]">
           <span>Showing 10 of {filteredItems.length} pending items</span>
           <Link
             href="/dashboard/employees?needsReview=1"
-            className="font-semibold text-slate-700 hover:text-slate-950"
+            className="font-semibold text-[#282934] hover:text-[#C7A759]"
           >
             View All Reviews →
           </Link>

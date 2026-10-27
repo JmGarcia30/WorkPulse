@@ -291,13 +291,12 @@ export function EmployeePayrollEntriesTable({
 
                     {/* Entry Status */}
                     <td className="px-3 py-3 text-center whitespace-nowrap">
-                      <span className={`inline-flex rounded-full px-2 py-0.5 text-[10px] font-bold ${
-                        entry.status === 'FINALIZED'
+                      <span className={`inline-flex rounded-full px-2 py-0.5 text-[10px] font-bold ${entry.status === 'FINALIZED'
                           ? 'bg-emerald-50 text-emerald-700 border border-emerald-200'
                           : entry.status === 'REVIEW'
-                          ? 'bg-blue-50 text-blue-700 border border-blue-200'
-                          : 'bg-slate-100 text-slate-600'
-                      }`}>
+                            ? 'bg-blue-50 text-blue-700 border border-blue-200'
+                            : 'bg-slate-100 text-slate-600'
+                        }`}>
                         {formatStatusLabel(entry.status)}
                       </span>
                     </td>
@@ -312,11 +311,10 @@ export function EmployeePayrollEntriesTable({
                       ) : (
                         <span
                           title={entry.issueMessage ?? 'Attention needed'}
-                          className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-bold ${
-                            entry.reviewState === 'SETUP_REQUIRED'
+                          className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-bold ${entry.reviewState === 'SETUP_REQUIRED'
                               ? 'bg-amber-100 text-amber-800'
                               : 'bg-red-100 text-red-800'
-                          }`}
+                            }`}
                         >
                           <AlertTriangle className="h-3 w-3" />
                           {formatStatusLabel(entry.reviewState)}
@@ -374,11 +372,10 @@ export function EmployeePayrollEntriesTable({
                 key={page}
                 type="button"
                 onClick={() => handlePageChange(page)}
-                className={`inline-flex h-7 w-7 items-center justify-center rounded-lg text-xs font-semibold transition ${
-                  currentPage === page
+                className={`inline-flex h-7 w-7 items-center justify-center rounded-lg text-xs font-semibold transition ${currentPage === page
                     ? 'bg-slate-900 text-white font-bold'
                     : 'border border-slate-200 bg-white text-slate-600 hover:bg-slate-50'
-                }`}
+                  }`}
               >
                 {page}
               </button>

@@ -92,26 +92,26 @@ export function DashboardHeader({ orgName, orgSlug, role }: { orgName: string; o
       </header>
       {mobileOpen ? (
         <DialogFrame label="WorkPulse navigation" onClose={() => setMobileOpen(false)} className="wp-mobile-nav">
-          <div className="flex min-h-full flex-col bg-white">
-            <div className="flex min-h-16 items-center justify-between gap-3 border-b px-4">
+          <div className="flex min-h-full flex-col bg-[#282934] text-white">
+            <div className="flex min-h-16 items-center justify-between gap-3 border-b border-white/10 px-4">
               <div className="min-w-0">
-                <p className="truncate text-sm font-semibold">{orgName}</p>
-                <p className="text-sm text-[var(--wp-text-muted)]">WorkPulse</p>
+                <p className="truncate text-sm font-semibold text-white">{orgName}</p>
+                <p className="text-xs font-semibold text-[#C7A759]">WorkPulse HR</p>
               </div>
               <button
                 type="button"
                 onClick={() => setMobileOpen(false)}
-                className="flex h-11 w-11 shrink-0 items-center justify-center rounded-md border"
+                className="flex h-11 w-11 shrink-0 items-center justify-center rounded-md border border-white/20 text-[#B4B5C0] hover:text-white hover:bg-white/10"
                 aria-label="Close navigation"
               >
                 <X className="h-5 w-5" />
               </button>
             </div>
-            <div className="flex-1">
+            <div className="flex-1 overflow-y-auto">
               <DashboardSidebarNav orgSlug={orgSlug} role={role} onNavigate={() => setMobileOpen(false)} />
             </div>
-            <form action={logoutAction} className="border-t p-4">
-              <button type="submit" className="wp-button-secondary w-full">
+            <form action={logoutAction} className="border-t border-white/10 p-4">
+              <button type="submit" className="wp-button-secondary w-full border-white/20 bg-transparent text-[#B4B5C0] hover:text-white hover:bg-white/10">
                 <LogOut className="h-4 w-4" />
                 Sign out
               </button>

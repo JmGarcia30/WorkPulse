@@ -253,11 +253,10 @@ export function ApplicationForm({
               onDragLeave={handleDragLeave}
               onDrop={handleDrop}
               onClick={() => fileInputRef.current?.click()}
-              className={`cursor-pointer flex flex-col items-center justify-center rounded-2xl border-2 border-dashed p-8 text-center transition-all ${
-                isDragging
+              className={`cursor-pointer flex flex-col items-center justify-center rounded-2xl border-2 border-dashed p-8 text-center transition-all ${isDragging
                   ? 'border-[#D9A928] bg-[#FAF8F2] ring-4 ring-[#D9A928]/10'
                   : 'border-[#E8E2D6] hover:border-[#D9A928] hover:bg-[#FAF8F2]'
-              }`}
+                }`}
             >
               <div className="flex h-12 w-12 items-center justify-center rounded-full bg-[#FAF8F2] border border-[rgba(217,169,40,0.3)] text-[#9A7415] mb-3">
                 <Upload className="h-6 w-6 text-[#D9A928]" />

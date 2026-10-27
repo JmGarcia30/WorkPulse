@@ -10,20 +10,20 @@
 .dayCell:nth-child(7n), .emptyCell:nth-child(7n) { border-right: 0; }
 .dayTop { display: flex; align-items: center; justify-content: space-between; gap: .4rem; }
 .dayTop time { display: grid; width: 1.65rem; height: 1.65rem; place-items: center; border-radius: 50%; font-size: .78rem; font-weight: 800; }
-.badge { display: inline-flex; border-radius: 999px; padding: .22rem .48rem; font-size: .6rem; font-weight: 750; }
+.badge { display: inline-flex; align-items: center; justify-content: center; border-radius: 6px; border: none; padding: 3px 6px; font-size: .625rem; font-weight: 600; line-height: 1; }
 .cellTimes { display: flex; align-items: center; gap: .35rem; margin-top: 1.3rem; color: var(--wp-text); font-size: .68rem; font-weight: 650; }
 .cellTimes b { color: var(--wp-text-muted); font-weight: 400; }
 .dayCell small { display: block; overflow: hidden; margin-top: .45rem; color: var(--wp-text-muted); font-size: .6rem; text-overflow: ellipsis; white-space: nowrap; }
 .legend { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: .55rem 1rem; margin: 0; padding: 0; list-style: none; color: var(--wp-text-muted); font-size: .68rem; font-weight: 650; }
 .legend li { display: flex; align-items: center; gap: .35rem; }
 .legend i { width: .55rem; height: .55rem; border: 0; border-radius: 50%; }
-.present { border-color: #cde9d8; background: #edf8f1; color: #17653d; }
-.late { border-color: #eadba7; background: #fbf6df; color: #765c08; }
-.absent { border-color: #efcccc; background: #fbeeee; color: #9b3232; }
-.leave { border-color: #d8d4ee; background: #f1effa; color: #625297; }
-.restday { border-color: #e2e5e8; background: #f3f4f5; color: #6d747c; }
-.noschedule, .open, .incomplete { border-color: #d8e1e8; background: #f0f5f8; color: #536778; }
-.upcoming, .norecord { border-color: #e8e5df; background: #faf9f6; color: #8a867f; }
+.present { background: #edf8f1; color: #17653d; border: none; }
+.late { background: #fbf6df; color: #765c08; border: none; }
+.absent { background: #fbeeee; color: #9b3232; border: none; }
+.leave { background: #f1effa; color: #625297; border: none; }
+.restday { background: #f3f4f5; color: #6d747c; border: none; }
+.noschedule, .open, .incomplete { background: #f0f5f8; color: #536778; border: none; }
+.upcoming, .norecord { background: #faf9f6; color: #8a867f; border: none; }
 .emptyCell { background: color-mix(in srgb, var(--tenant-tint) 50%, white); }
 .muted { opacity: .34; filter: saturate(.35); }
 @media (max-width: 800px) { .legend { justify-content: flex-start; } }

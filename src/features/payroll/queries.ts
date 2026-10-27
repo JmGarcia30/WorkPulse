@@ -14,7 +14,7 @@ export async function getPayrollFoundation(
   const [employees, compensations, periods, policies, leaveTypes] = await Promise.all([
     db.employee.findMany({ where: { organizationId, employeeStatus: 'ACTIVE' }, select: { id: true, employeeNumber: true, firstName: true, lastName: true }, orderBy: [{ lastName: 'asc' }, { firstName: 'asc' }] }),
     db.employeeCompensation.findMany({ where: { organizationId }, include: { employee: { select: { employeeNumber: true, firstName: true, lastName: true } } }, orderBy: [{ effectiveFrom: 'desc' }, { createdAt: 'desc' }] }),
-    db.payrollPeriod.findMany({ where: { organizationId }, orderBy: [{ periodStart: 'desc' }, { createdAt: 'desc' }] }),
+    db.payrollPeriod.findMany({ where: { organizationId }, include: { _count: { select: { payrollEntries: true, statutoryInputs: true } } }, orderBy: [{ periodStart: 'desc' }, { createdAt: 'desc' }] }),
     db.organizationPayrollPolicy.findMany({ where: { organizationId }, include: { createdBy: { select: { name: true } }, leaveTreatments: { include: { leaveType: { select: { code: true, name: true } } } } }, orderBy: { version: 'desc' } }),
     db.leaveType.findMany({ where: { organizationId, isActive: true }, select: { id: true, code: true, name: true, isPaid: true }, orderBy: { name: 'asc' } }),
   ]);

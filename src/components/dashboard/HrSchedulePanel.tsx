@@ -84,10 +84,10 @@ export function HrSchedulePanel({
       <div>
         <div className="flex items-center justify-between pb-3">
           <div className="flex items-center gap-2">
-            <h2 className="text-base font-bold text-slate-900 tracking-tight">
+            <h2 className="text-base font-bold text-[#282934] tracking-tight">
               Schedule
             </h2>
-            <span className="text-xs font-semibold text-slate-400">
+            <span className="text-xs font-semibold text-[#777882]">
               ({events.length} upcoming)
             </span>
           </div>
@@ -96,8 +96,8 @@ export function HrSchedulePanel({
             type="button"
             onClick={() => setShowAllWeek(!showAllWeek)}
             className={`text-xs font-semibold px-2 py-1 rounded-lg transition-colors ${showAllWeek
-                ? 'bg-slate-900 text-white'
-                : 'text-slate-500 hover:text-slate-900 hover:bg-slate-100'
+                ? 'bg-[#C7A759] text-[#282934]'
+                : 'text-[#62636B] hover:text-[#282934] hover:bg-slate-100'
               }`}
           >
             {showAllWeek ? 'Show Selected Day' : 'View All Week'}
@@ -106,10 +106,10 @@ export function HrSchedulePanel({
 
         {/* Date Title and Day Navigation Strip */}
         <div className="flex items-center justify-between pt-1 pb-3">
-          <span className="text-sm font-bold text-slate-800">
+          <span className="text-sm font-bold text-[#282934]">
             {headerDateLabel}
           </span>
-          <div className="flex items-center gap-1 text-slate-400">
+          <div className="flex items-center gap-1 text-[#C7A759]">
             <Calendar className="h-4 w-4" />
           </div>
         </div>
@@ -129,21 +129,21 @@ export function HrSchedulePanel({
                   setShowAllWeek(false);
                 }}
                 className={`group relative flex flex-col items-center justify-center py-2 px-1 rounded-xl transition-all ${isSelected
-                    ? 'bg-slate-900 text-white shadow-sm'
-                    : 'text-slate-500 hover:text-slate-900 hover:bg-slate-50'
+                    ? 'bg-[#C7A759] text-[#282934] shadow-sm font-semibold'
+                    : 'text-[#62636B] hover:text-[#282934] hover:bg-slate-50'
                   }`}
               >
-                <span className="text-[11px] font-medium tracking-tight">
+                <span className={`text-[11px] font-medium tracking-tight ${isSelected ? 'text-[#282934]' : ''}`}>
                   {shortName}
                 </span>
-                <span className={`text-xs font-bold ${isSelected ? 'text-white' : 'text-slate-800'}`}>
+                <span className={`text-xs font-bold ${isSelected ? 'text-[#282934]' : 'text-[#282934]'}`}>
                   {d.dayNumber}
                 </span>
 
                 {/* Event count indicator dot */}
                 {d.eventCount > 0 && (
                   <span
-                    className={`mt-1 h-1 w-1 rounded-full ${isSelected ? 'bg-emerald-400' : 'bg-emerald-600'
+                    className={`mt-1 h-1 w-1 rounded-full ${isSelected ? 'bg-emerald-700' : 'bg-emerald-600'
                       }`}
                   />
                 )}
@@ -156,12 +156,12 @@ export function HrSchedulePanel({
       {/* Timeline Event List (matching reference image timeline cards) */}
       <div className="flex-1 my-4 space-y-4 overflow-y-auto max-h-[380px] pr-1">
         {filteredEvents.length === 0 ? (
-          <div className="flex flex-col items-center justify-center py-12 text-center text-slate-400">
-            <Clock className="h-8 w-8 stroke-1 text-slate-300 mb-2" />
-            <p className="text-sm font-semibold text-slate-600">
+          <div className="flex flex-col items-center justify-center py-12 text-center text-[#777882]">
+            <Clock className="h-8 w-8 stroke-1 text-[#C7A759] mb-2" />
+            <p className="text-sm font-semibold text-[#282934]">
               No scheduled HR activities
             </p>
-            <p className="text-xs text-slate-400 mt-0.5">
+            <p className="text-xs text-[#777882] mt-0.5">
               {showAllWeek ? 'No events found for this week.' : 'No items for this date.'}
             </p>
           </div>
@@ -185,21 +185,21 @@ export function HrSchedulePanel({
                     <div className="flex items-center justify-between gap-2">
                       <div className="flex items-center gap-2">
                         {/* Time or Date Label */}
-                        <span className="text-[11px] font-bold text-slate-700 tabular-nums">
+                        <span className="text-[11px] font-bold text-[#282934] tabular-nums">
                           {evt.timeStr ? evt.timeStr : evt.dateStr}
                         </span>
-                        <span className={`text-[10px] font-semibold px-1.5 py-0.5 rounded ${style.typeBadge}`}>
+                        <span className={`inline-flex items-center justify-center rounded-[6px] px-[7px] py-[3px] text-[10px] font-semibold leading-none ${style.typeBadge}`}>
                           {evt.typeLabel}
                         </span>
                       </div>
-                      <ExternalLink className="h-3 w-3 text-slate-400 opacity-0 group-hover:opacity-100 transition-opacity" />
+                      <ExternalLink className="h-3 w-3 text-[#C7A759] opacity-0 group-hover:opacity-100 transition-opacity" />
                     </div>
 
                     <div className="mt-1">
-                      <div className="text-xs font-bold text-slate-900 group-hover:text-slate-950">
+                      <div className="text-xs font-bold text-[#282934] group-hover:text-black">
                         {evt.title}
                       </div>
-                      <div className="text-[11px] text-slate-500 line-clamp-1 mt-0.5">
+                      <div className="text-[11px] text-[#62636B] line-clamp-1 mt-0.5">
                         {evt.subtitle}
                         {evt.departmentOrInfo ? ` • ${evt.departmentOrInfo}` : ''}
                       </div>
@@ -214,15 +214,15 @@ export function HrSchedulePanel({
 
       {/* Footer link to schedule management */}
       <div className="pt-3 border-t border-slate-100 flex items-center justify-between text-xs">
-        <span className="text-slate-400 font-medium">
+        <span className="text-[#777882] font-medium">
           HR Calendar Timeline
         </span>
         <Link
           href="/dashboard/hiring/interviews"
-          className="font-semibold text-slate-700 hover:text-slate-950 inline-flex items-center gap-1 transition-colors"
+          className="font-semibold text-[#282934] hover:text-[#C7A759] inline-flex items-center gap-1 transition-colors"
         >
           View Interviews
-          <ArrowRight className="h-3 w-3" />
+          <ArrowRight className="h-3 w-3 text-[#C7A759]" />
         </Link>
       </div>
     </div>

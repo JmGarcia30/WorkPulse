@@ -107,19 +107,17 @@ export function EmployeeProfileTabs({
             <TenantLink
               key={tab.id}
               href={`/dashboard/employees/${employeeId}?tab=${tab.id}`}
-              className={`group inline-flex items-center gap-2 whitespace-nowrap border-b-2 px-3 sm:px-4 py-2.5 text-xs sm:text-sm font-semibold transition ${
-                isActive
+              className={`group inline-flex items-center gap-2 whitespace-nowrap border-b-2 px-3 sm:px-4 py-2.5 text-xs sm:text-sm font-semibold transition ${isActive
                   ? 'border-[var(--tenant-primary)] text-[var(--tenant-primary)] bg-slate-50/50'
                   : 'border-transparent text-slate-500 hover:border-slate-300 hover:text-slate-800 hover:bg-slate-50/30'
-              }`}
+                }`}
               aria-current={isActive ? 'page' : undefined}
             >
               <Icon
-                className={`h-4 w-4 shrink-0 transition ${
-                  isActive
+                className={`h-4 w-4 shrink-0 transition ${isActive
                     ? 'text-[var(--tenant-primary)]'
                     : 'text-slate-400 group-hover:text-slate-600'
-                }`}
+                  }`}
               />
               <span>{tab.label}</span>
               {tab.badge}

@@ -21,14 +21,6 @@ export function DashboardSummaryCards({
   const cards = hasHrAccess
     ? [
       {
-        title: 'Total Employees',
-        supportingLabel: 'Active Staff',
-        value: totalEmployees,
-        icon: Users,
-        href: '/dashboard/employees',
-        badgeColor: 'text-[var(--tenant-primary)] bg-[var(--tenant-tint)]',
-      },
-      {
         title: 'Present Today',
         supportingLabel: 'Employees Checked In',
         value: presentToday,
@@ -37,12 +29,20 @@ export function DashboardSummaryCards({
         badgeColor: 'text-emerald-700 bg-emerald-50',
       },
       {
+        title: 'Total Employees',
+        supportingLabel: 'Active Staff',
+        value: totalEmployees,
+        icon: Users,
+        href: '/dashboard/employees',
+        badgeColor: 'text-[#C7A759] bg-[rgba(199,167,89,0.12)]',
+      },
+      {
         title: 'Open Positions',
         supportingLabel: 'Active Job Openings',
         value: openPositions,
         icon: Briefcase,
         href: '/dashboard/hiring/jobs',
-        badgeColor: 'text-indigo-700 bg-indigo-50',
+        badgeColor: 'text-[#C7A759] bg-[rgba(199,167,89,0.12)]',
       },
     ]
     : [
@@ -52,7 +52,7 @@ export function DashboardSummaryCards({
         value: openPositions,
         icon: Briefcase,
         href: '/dashboard/hiring/jobs',
-        badgeColor: 'text-indigo-700 bg-indigo-50',
+        badgeColor: 'text-[#C7A759] bg-[rgba(199,167,89,0.12)]',
       },
       {
         title: 'Active Candidates',
@@ -60,7 +60,7 @@ export function DashboardSummaryCards({
         value: totalCandidates,
         icon: Users,
         href: '/dashboard/hiring/applicants',
-        badgeColor: 'text-purple-700 bg-purple-50',
+        badgeColor: 'text-[#C7A759] bg-[rgba(199,167,89,0.12)]',
       },
       {
         title: 'Scheduled Interviews',
@@ -89,17 +89,17 @@ export function DashboardSummaryCards({
               >
                 <Icon className="h-4 w-4" />
               </span>
-              <span className="text-sm font-semibold text-slate-800">
+              <span className="text-sm font-semibold text-[#282934]">
                 {card.title}
               </span>
             </div>
 
             {/* Bottom area: Supporting label and Large numerical statistic */}
             <div className="mt-5 space-y-1">
-              <div className="text-xs font-medium text-slate-400">
+              <div className="text-xs font-medium text-[#777882]">
                 {card.supportingLabel}
               </div>
-              <div className="text-2xl sm:text-3xl font-bold tracking-tight text-slate-900 tabular-nums">
+              <div className="text-2xl sm:text-3xl font-bold tracking-tight text-[#282934] tabular-nums">
                 {card.value.toLocaleString()}
               </div>
             </div>

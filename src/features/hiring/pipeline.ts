@@ -79,7 +79,7 @@ export interface StageStyleConfig {
 export const STAGE_CONFIG: Record<ApplicationStatus, StageStyleConfig> = {
   [ApplicationStatus.APPLIED]: {
     label: 'Applied',
-    badgeBg: 'bg-slate-100 border border-slate-200/80',
+    badgeBg: 'bg-slate-100',
     badgeText: 'text-slate-700',
     borderColor: 'border-slate-300',
     headerPillBg: 'bg-slate-600',
@@ -90,7 +90,7 @@ export const STAGE_CONFIG: Record<ApplicationStatus, StageStyleConfig> = {
   },
   [ApplicationStatus.SCREENING]: {
     label: 'Screening',
-    badgeBg: 'bg-amber-50 border border-amber-200/80',
+    badgeBg: 'bg-amber-50',
     badgeText: 'text-amber-800',
     borderColor: 'border-amber-300',
     headerPillBg: 'bg-amber-600',
@@ -101,7 +101,7 @@ export const STAGE_CONFIG: Record<ApplicationStatus, StageStyleConfig> = {
   },
   [ApplicationStatus.SHORTLISTED]: {
     label: 'Shortlisted',
-    badgeBg: 'bg-teal-50 border border-teal-200/80',
+    badgeBg: 'bg-teal-50',
     badgeText: 'text-teal-800',
     borderColor: 'border-teal-300',
     headerPillBg: 'bg-teal-600',
@@ -112,7 +112,7 @@ export const STAGE_CONFIG: Record<ApplicationStatus, StageStyleConfig> = {
   },
   [ApplicationStatus.INTERVIEW]: {
     label: 'Interview',
-    badgeBg: 'bg-purple-50 border border-purple-200/80',
+    badgeBg: 'bg-purple-50',
     badgeText: 'text-purple-700',
     borderColor: 'border-purple-300',
     headerPillBg: 'bg-purple-600',
@@ -123,7 +123,7 @@ export const STAGE_CONFIG: Record<ApplicationStatus, StageStyleConfig> = {
   },
   [ApplicationStatus.ASSESSMENT]: {
     label: 'Assessment',
-    badgeBg: 'bg-blue-50 border border-blue-200/80',
+    badgeBg: 'bg-blue-50',
     badgeText: 'text-blue-700',
     borderColor: 'border-blue-300',
     headerPillBg: 'bg-blue-600',
@@ -134,7 +134,7 @@ export const STAGE_CONFIG: Record<ApplicationStatus, StageStyleConfig> = {
   },
   [ApplicationStatus.OFFER]: {
     label: 'Offer',
-    badgeBg: 'bg-amber-50 border border-amber-200/80',
+    badgeBg: 'bg-amber-50',
     badgeText: 'text-amber-800',
     borderColor: 'border-amber-300',
     headerPillBg: 'bg-amber-500',
@@ -145,7 +145,7 @@ export const STAGE_CONFIG: Record<ApplicationStatus, StageStyleConfig> = {
   },
   [ApplicationStatus.HIRED]: {
     label: 'Hired',
-    badgeBg: 'bg-emerald-50 border border-emerald-200/80',
+    badgeBg: 'bg-emerald-50',
     badgeText: 'text-emerald-800',
     borderColor: 'border-emerald-300',
     headerPillBg: 'bg-emerald-600',
@@ -156,7 +156,7 @@ export const STAGE_CONFIG: Record<ApplicationStatus, StageStyleConfig> = {
   },
   [ApplicationStatus.REJECTED]: {
     label: 'Rejected',
-    badgeBg: 'bg-rose-50 border border-rose-200/80',
+    badgeBg: 'bg-rose-50',
     badgeText: 'text-rose-700',
     borderColor: 'border-rose-300',
     headerPillBg: 'bg-rose-600',
@@ -167,7 +167,7 @@ export const STAGE_CONFIG: Record<ApplicationStatus, StageStyleConfig> = {
   },
   [ApplicationStatus.WITHDRAWN]: {
     label: 'Withdrawn',
-    badgeBg: 'bg-slate-100 border border-slate-200/80',
+    badgeBg: 'bg-slate-100',
     badgeText: 'text-slate-600',
     borderColor: 'border-slate-300',
     headerPillBg: 'bg-slate-500',

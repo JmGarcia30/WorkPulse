@@ -119,7 +119,7 @@ export function ApplicantProfileTabs({
 
               {tab.badge !== undefined && tab.badge !== null && (
                 <span
-                  className={`inline-flex items-center justify-center rounded-full px-1.5 py-0.2 text-[10px] font-bold ${
+                  className={`inline-flex items-center justify-center rounded-[6px] px-1.5 py-[2px] text-[10px] font-bold leading-none ${
                     isActive
                       ? 'bg-slate-900 text-white'
                       : 'bg-slate-100 text-slate-500 group-hover:bg-slate-200'

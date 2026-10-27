@@ -248,11 +248,10 @@ export function LeaveSettingsPanel({ types, organizationName, isSagaOrganization
       {/* Global Feedback Banner */}
       {feedback && (
         <div
-          className={`flex items-start gap-3 rounded-xl p-4 text-xs font-medium border ${
-            feedback.type === 'success'
+          className={`flex items-start gap-3 rounded-xl p-4 text-xs font-medium border ${feedback.type === 'success'
               ? 'bg-emerald-50 text-emerald-800 border-emerald-200'
               : 'bg-rose-50 text-rose-800 border-rose-200'
-          }`}
+            }`}
         >
           {feedback.type === 'success' ? (
             <CheckCircle2 className="h-4 w-4 shrink-0 text-emerald-600 mt-0.5" />
@@ -600,11 +599,10 @@ export function LeaveSettingsPanel({ types, organizationName, isSagaOrganization
                         type="button"
                         disabled={pending}
                         onClick={() => handleToggleActive(type)}
-                        className={`rounded-lg border px-2.5 py-1.5 text-xs font-semibold transition ${
-                          type.isActive
+                        className={`rounded-lg border px-2.5 py-1.5 text-xs font-semibold transition ${type.isActive
                             ? 'border-slate-200 text-rose-600 hover:bg-rose-50'
                             : 'border-slate-200 text-emerald-600 hover:bg-emerald-50'
-                        }`}
+                          }`}
                       >
                         {type.isActive ? 'Deactivate' : 'Activate'}
                       </button>

@@ -14,11 +14,11 @@ import { getMyProfile } from '@/features/employee-self-service/queries';
 const formatDate = (value: Date | null | undefined) =>
   value
     ? new Intl.DateTimeFormat('en-PH', {
-        year: 'numeric',
-        month: 'short',
-        day: 'numeric',
-        timeZone: 'UTC',
-      }).format(value)
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric',
+      timeZone: 'UTC',
+    }).format(value)
     : 'Not available';
 
 export default async function MyEmploymentPage() {

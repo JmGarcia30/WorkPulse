@@ -262,8 +262,8 @@ export function LeaveDashboardView({ data }: LeaveDashboardViewProps) {
               {summary.approvedDiff > 0
                 ? `+${summary.approvedDiff} from last month`
                 : summary.approvedDiff < 0
-                ? `${summary.approvedDiff} from last month`
-                : 'Current cycle'}
+                  ? `${summary.approvedDiff} from last month`
+                  : 'Current cycle'}
             </p>
           </div>
         </div>
@@ -387,9 +387,8 @@ export function LeaveDashboardView({ data }: LeaveDashboardViewProps) {
                           {d.approved > 0 && (
                             <div
                               style={{ height: `${approvedHeightPct}%` }}
-                              className={`w-full bg-amber-600 transition-all hover:bg-amber-700 ${
-                                d.pending === 0 ? 'rounded-t-sm' : ''
-                              }`}
+                              className={`w-full bg-amber-600 transition-all hover:bg-amber-700 ${d.pending === 0 ? 'rounded-t-sm' : ''
+                                }`}
                             />
                           )}
                           {totalVal === 0 && (
@@ -621,9 +620,8 @@ export function LeaveDashboardView({ data }: LeaveDashboardViewProps) {
                   return (
                     <tr
                       key={req.id}
-                      className={`transition hover:bg-slate-50/70 ${
-                        isSelected ? 'bg-amber-50/30' : ''
-                      }`}
+                      className={`transition hover:bg-slate-50/70 ${isSelected ? 'bg-amber-50/30' : ''
+                        }`}
                     >
                       <td className="p-3">
                         <input
@@ -715,11 +713,10 @@ export function LeaveDashboardView({ data }: LeaveDashboardViewProps) {
                   key={num}
                   type="button"
                   onClick={() => setPendingPage(num)}
-                  className={`flex h-8 w-8 items-center justify-center rounded-lg border text-xs font-semibold ${
-                    num === currentPendingPage
+                  className={`flex h-8 w-8 items-center justify-center rounded-lg border text-xs font-semibold ${num === currentPendingPage
                       ? 'border-amber-600 bg-amber-600 text-white'
                       : 'border-slate-200 bg-white text-slate-700 hover:bg-slate-50'
-                  }`}
+                    }`}
                 >
                   {num}
                 </button>
@@ -812,21 +809,21 @@ export function LeaveDashboardView({ data }: LeaveDashboardViewProps) {
               historyStatusFilter !== 'ALL' ||
               historyTypeFilter ||
               historyDateFilter !== 'ALL') && (
-              <button
-                type="button"
-                onClick={() => {
-                  setHistorySearch('');
-                  setHistoryStatusFilter('ALL');
-                  setHistoryTypeFilter('');
-                  setHistoryDateFilter('ALL');
-                  setHistoryPage(1);
-                }}
-                className="inline-flex h-9 items-center gap-1.5 rounded-lg border border-slate-200 px-3 text-xs font-semibold text-slate-600 hover:bg-slate-50"
-              >
-                <Filter className="h-3 w-3" />
-                <span>Reset</span>
-              </button>
-            )}
+                <button
+                  type="button"
+                  onClick={() => {
+                    setHistorySearch('');
+                    setHistoryStatusFilter('ALL');
+                    setHistoryTypeFilter('');
+                    setHistoryDateFilter('ALL');
+                    setHistoryPage(1);
+                  }}
+                  className="inline-flex h-9 items-center gap-1.5 rounded-lg border border-slate-200 px-3 text-xs font-semibold text-slate-600 hover:bg-slate-50"
+                >
+                  <Filter className="h-3 w-3" />
+                  <span>Reset</span>
+                </button>
+              )}
           </div>
         </div>
 
@@ -870,9 +867,8 @@ export function LeaveDashboardView({ data }: LeaveDashboardViewProps) {
                   return (
                     <tr
                       key={req.id}
-                      className={`transition hover:bg-slate-50/70 ${
-                        isSelected ? 'bg-amber-50/30' : ''
-                      }`}
+                      className={`transition hover:bg-slate-50/70 ${isSelected ? 'bg-amber-50/30' : ''
+                        }`}
                     >
                       <td className="p-3">
                         <input
@@ -987,11 +983,10 @@ export function LeaveDashboardView({ data }: LeaveDashboardViewProps) {
                   key={num}
                   type="button"
                   onClick={() => setHistoryPage(num)}
-                  className={`flex h-8 w-8 items-center justify-center rounded-lg border text-xs font-semibold ${
-                    num === currentHistoryPage
+                  className={`flex h-8 w-8 items-center justify-center rounded-lg border text-xs font-semibold ${num === currentHistoryPage
                       ? 'border-slate-900 bg-slate-900 text-white'
                       : 'border-slate-200 bg-white text-slate-700 hover:bg-slate-50'
-                  }`}
+                    }`}
                 >
                   {num}
                 </button>

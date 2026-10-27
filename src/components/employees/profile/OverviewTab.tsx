@@ -67,8 +67,8 @@ export function OverviewTab({
               {probationReview.daysRemaining < 0
                 ? `This employee's probation evaluation is overdue by ${Math.abs(probationReview.daysRemaining)} days (due ${formatDate(probationExpectedEndAt)}). Please review the Probation tab to record an employment decision.`
                 : probationReview.daysRemaining === 0
-                ? `This employee's probation evaluation is due today (${formatDate(probationExpectedEndAt)}). Navigate to the Probation tab to evaluate.`
-                : `This employee's probation period is ending soon (${probationReview.daysRemaining} days remaining until ${formatDate(probationExpectedEndAt)}).`}
+                  ? `This employee's probation evaluation is due today (${formatDate(probationExpectedEndAt)}). Navigate to the Probation tab to evaluate.`
+                  : `This employee's probation period is ending soon (${probationReview.daysRemaining} days remaining until ${formatDate(probationExpectedEndAt)}).`}
             </p>
           </div>
         </div>
