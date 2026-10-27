@@ -123,7 +123,32 @@ export async function sendEmail({ to, subject, html, text, sensitive = false, se
       else console.log(`[WorkPulse Emailer (SMTP)] Dispatched to ${to} | Subject: "${subject}"`);
       return { success: true, mode: 'smtp', id };
     } catch (error) {
-      console.warn('[WorkPulse Emailer] SMTP delivery failed:', smtpFailureDiagnostic(error));
+      console.warn('[WorkPulse Emailer] SMTP primary delivery failed:', smtpFailureDiagnostic(error));
+      const details = error && typeof error === 'object' ? error as { code?: unknown; command?: unknown; responseCode?: unknown } : {};
+      const connectionFailure = !process.env.SMTP_HOST && Boolean(process.env.GMAIL_USER) && !details.responseCode &&
+        (['ECONNREFUSED', 'ENOTFOUND', 'EHOSTUNREACH'].includes(String(details.code ?? '')) ||
+        (details.command === 'CONN' && ['ETIMEDOUT', 'ESOCKET', 'ECONNECTION'].includes(String(details.code ?? ''))));
+      if (connectionFailure) {
+        try {
+          const { user, pass } = configuredSmtpCredentials();
+          const fallback = nodemailer.createTransport({
+            host: 'smtp.gmail.com', port: 587, secure: false, requireTLS: true,
+            auth: { user, pass }, connectionTimeout: 12000, greetingTimeout: 12000, socketTimeout: 20000,
+          });
+          const fromAddress = unquoteEmailEnv(process.env.EMAIL_FROM || process.env.GMAIL_USER);
+          if (requireConfiguredSender && !/^[^\s@<>]+@[^\s@<>]+\.[^\s@<>]+$/.test(fromAddress)) throw new Error('CONFIGURED_SENDER_REQUIRED');
+          await fallback.sendMail({
+            from: '"' + (senderName || 'WorkPulse') + '" <' + fromAddress + '>',
+            to, subject, text: plainText, html,
+            attachments: inlineLogo ? [{ filename: 'organization-logo', content: inlineLogo.content, contentType: inlineLogo.contentType, cid: inlineLogo.cid, contentDisposition: 'inline' }] : undefined,
+          });
+          if (!sensitive) emailLogQueue.push({ id, to, subject, text: plainText, html, sentAt: new Date(), mode: 'smtp' });
+          console.log('[WorkPulse Emailer] SMTP STARTTLS fallback accepted email.');
+          return { success: true, mode: 'smtp', id };
+        } catch (retryError) {
+          console.warn('[WorkPulse Emailer] SMTP STARTTLS fallback failed:', smtpFailureDiagnostic(retryError));
+        }
+      }
     }
   }
 
