@@ -59,10 +59,19 @@ export default async function EmployeesPage({ searchParams }: EmployeesPageProps
     params.search || category || status || needsReview
   );
 
+  const exportQuery = new URLSearchParams({
+    ...(params.search ? { search: params.search } : {}),
+    ...(category ? { category } : {}),
+    ...(status ? { status } : {}),
+    ...(needsReview ? { needsReview: '1' } : {}),
+  });
+
   return (
     <div className="space-y-5">
       {/* Page Header */}
       <EmployeeDirectoryHeader totalEmployees={totalOrganizationEmployees} />{canManageEmploymentLifecycle(user) && <Link href="/dashboard/employees/probation-settings" className="inline-block text-sm font-semibold underline">Probation policy settings</Link>}
+
+      <div><Link href={`/api/reports/employees?${exportQuery}`} className="wp-button-secondary" prefetch={false}>Export employee CSV</Link></div>
 
       {/* Search & Filter Toolbar */}
       <EmployeeDirectoryFilters
