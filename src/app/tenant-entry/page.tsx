@@ -32,17 +32,52 @@ export default async function TenantEntryPage() {
     redirect(landingPathForRole(session.role));
   }
 
-  // New workspaces must not display the institution-specific SAGA landing page.
+  // Shared public landing for all non-SAGA tenants. Content and colors are
+  // organization-scoped; SAGA retains its established institutional page.
   if (tenant.slug !== 'st-aloysius') return <TenantTheme branding={tenant}>
-    <main className="mx-auto flex min-h-screen max-w-xl flex-col items-start justify-center gap-6 px-6 py-12">
-      <TenantLogo branding={tenant} size={88} />
-      <p className="wp-eyebrow">Organization workspace</p>
-      <h1 className="wp-page-title">{tenant.displayName}</h1>
-      <p className="text-[var(--wp-text-muted)]">Secure people operations and employee services for {tenant.displayName}.</p>
-      <Link className="wp-button-primary" href="/login">Sign in to your workspace</Link>
-      {tenant.careersEnabled && <Link className="wp-button-secondary" href={`/careers/${tenant.slug}`}>View career opportunities</Link>}
-      <p className="text-sm text-[var(--wp-text-muted)]">Powered by WorkPulse</p>
-    </main>
+    <div className="min-h-screen bg-[var(--tenant-tint)] text-[var(--wp-text)]">
+      <header className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-4 px-6 py-7">
+        <Link href={`/w/${tenant.slug}`} className="flex items-center gap-3 font-bold">
+          <TenantLogo branding={tenant} size={52} />
+          <span>{tenant.displayName}</span>
+        </Link>
+        <nav aria-label="Organization navigation" className="flex flex-wrap items-center gap-5 text-sm">
+          <a href="#about">About</a>
+          {tenant.careersEnabled && <Link href={`/careers/${tenant.slug}`}>Careers</Link>}
+          <Link href="/login" className="wp-button-primary">Staff sign in</Link>
+        </nav>
+      </header>
+      <main>
+        <section className="mx-auto grid max-w-6xl gap-10 px-6 py-20 md:grid-cols-[minmax(0,1fr)_20rem] md:items-center md:py-32">
+          <div className="space-y-6">
+            <p className="wp-eyebrow">Official organization workspace</p>
+            <h1 className="max-w-3xl text-5xl font-bold leading-tight tracking-tight md:text-6xl">{tenant.displayName}</h1>
+            <p className="max-w-xl text-lg leading-relaxed text-[var(--wp-text-muted)]">
+              {tenant.tagline || `Welcome to the official HR and employee portal of ${tenant.displayName}.`}
+            </p>
+            <div className="flex flex-wrap gap-3">
+              <Link href="/login" className="wp-button-primary">Access your workspace <ArrowRight size={16} /></Link>
+              {tenant.careersEnabled && <Link href={`/careers/${tenant.slug}`} className="wp-button-secondary">Explore career opportunities</Link>}
+            </div>
+          </div>
+          <div className="flex min-h-72 items-center justify-center rounded-3xl border bg-white p-10 shadow-sm">
+            <TenantLogo branding={tenant} size={164} fallbackClassName="flex items-center justify-center rounded-2xl bg-[var(--tenant-primary)] text-5xl font-bold text-[var(--tenant-primary-foreground)]" />
+          </div>
+        </section>
+        <section id="about" className="border-t bg-white">
+          <div className="mx-auto grid max-w-6xl gap-8 px-6 py-16 md:grid-cols-2">
+            <div><p className="wp-eyebrow">About our organization</p><h2 className="mt-3 text-3xl font-bold">{tenant.displayName}</h2></div>
+            <div className="space-y-3 text-sm leading-7 text-[var(--wp-text-muted)]">
+              {tenant.address && <p><strong>Address:</strong> {tenant.address}</p>}
+              {tenant.contactEmail && <p><strong>Email:</strong> {tenant.contactEmail}</p>}
+              {tenant.contactPhone && <p><strong>Phone:</strong> {tenant.contactPhone}</p>}
+              <p>Secure employee services and workforce management, powered by WorkPulse.</p>
+            </div>
+          </div>
+        </section>
+      </main>
+      <footer className="border-t bg-white px-6 py-6 text-center text-xs text-[var(--wp-text-muted)]">{tenant.displayName} · Powered by WorkPulse</footer>
+    </div>
   </TenantTheme>;
 
   const content = getPublicTenantContent(tenant.slug);
