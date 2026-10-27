@@ -56,6 +56,23 @@ function getTransporter() {
   return null;
 }
 
+// Only log non-sensitive SMTP failure classifications. Never log provider
+// messages, stack traces, headers, credentials, recipients, or activation URLs.
+function smtpFailureDiagnostic(error: unknown): { category: string; smtpStatus?: number; stage?: string } {
+  const details = error && typeof error === 'object' ? error as { code?: unknown; responseCode?: unknown; command?: unknown } : {};
+  const code = typeof details.code === 'string' ? details.code : '';
+  const status = typeof details.responseCode === 'number' && Number.isInteger(details.responseCode) &&
+    details.responseCode >= 400 && details.responseCode <= 599 ? details.responseCode : undefined;
+  const category = status === 535 || status === 534 || code === 'EAUTH' ? 'AUTHENTICATION'
+    : status === 550 || status === 553 || code === 'EENVELOPE' ? 'SENDER_OR_RECIPIENT'
+    : status === 421 || status === 450 || status === 451 || status === 452 ? 'PROVIDER_TEMPORARY'
+    : code === 'ETIMEDOUT' ? 'TIMEOUT'
+    : ['ESOCKET', 'ECONNECTION', 'ECONNREFUSED', 'ENOTFOUND', 'EHOSTUNREACH'].includes(code) ? 'CONNECTION'
+    : 'OTHER';
+  const stage = typeof details.command === 'string' && /^(AUTH|CONN|MAIL|RCPT|DATA)$/.test(details.command) ? details.command : undefined;
+  return { category, ...(status === undefined ? {} : { smtpStatus: status }), ...(stage ? { stage } : {}) };
+}
+
 interface SendEmailParams {
   to: string;
   subject: string;
@@ -89,10 +106,11 @@ export async function sendEmail({ to, subject, html, text, sensitive = false, se
         const entry: EmailLogEntry = { id, to, subject, text: plainText, html, sentAt: new Date(), mode: 'smtp' };
         emailLogQueue.push(entry);
       }
-      console.log(`[WorkPulse Emailer (SMTP)] Dispatched to ${to} | Subject: "${subject}"`);
+      if (sensitive) console.log('[WorkPulse Emailer (SMTP)] Sensitive transactional email accepted by SMTP provider.');
+      else console.log(`[WorkPulse Emailer (SMTP)] Dispatched to ${to} | Subject: "${subject}"`);
       return { success: true, mode: 'smtp', id };
-    } catch {
-      console.warn('[WorkPulse Emailer] SMTP delivery failed.');
+    } catch (error) {
+      console.warn('[WorkPulse Emailer] SMTP delivery failed:', smtpFailureDiagnostic(error));
     }
   }
 
