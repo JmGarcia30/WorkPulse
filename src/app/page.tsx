@@ -174,8 +174,8 @@ function Hero({ workspaceUrl }: { workspaceUrl: string }) {
           From hiring and employee records to attendance, leave, and self-service, WorkPulse keeps workforce operations connected.
         </p>
         <div className={styles.heroActions}>
-          <Link href="/request-demo" className={styles.primaryCtaBtn}>
-            Request a demo <ArrowRight size={15} />
+          <Link href="/register" className={styles.primaryCtaBtn}>
+            Create your workspace <ArrowRight size={15} />
           </Link>
           <a href={workspaceUrl} className={styles.secondaryCtaBtn}>
             Find your workspace <ArrowRight size={14} />
