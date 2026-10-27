@@ -44,7 +44,7 @@ export async function resendCompanyVerificationAction(_state: RegistrationState,
 export async function verifyCompanyRegistrationAction(_state: RegistrationState, form: FormData): Promise<RegistrationState> {
   await requireRegistrationHost();
   let loginUrl: string;
-  try { ({ loginUrl } = await verifyCompanyRegistration(prisma, String(form.get('token') ?? ''), await browserProof(false))); }
+  try { ({ loginUrl } = await verifyCompanyRegistration(prisma, String(form.get('token') ?? ''), await browserProof(false), String(form.get('registrationPassword') ?? ''))); }
   catch (error) { return failure(error); }
   revalidatePath('/platform');
   redirect(loginUrl);
