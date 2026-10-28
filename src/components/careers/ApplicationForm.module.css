@@ -41,3 +41,29 @@ textarea.input { min-height: 150px; resize: vertical; line-height: 1.65; }
   .appearance { --application-surface: #242321; --application-soft: #302e29; --application-text: #faf8f2; --application-muted: #cec9bd; --application-border: #777064; color-scheme: dark; }
   .error { background: #451a23; color: #ffe0e3; border-color: #bd6678; }
 }
+
+/* SAGA's public recruitment pages use the institution's light visual identity even when the visitor's device prefers dark mode. */
+.appearance.sagaLight {
+  --application-surface: #ffffff;
+  --application-soft: #faf8f2;
+  --application-text: #25221e;
+  --application-muted: #625d53;
+  --application-border: #ded7c8;
+  color-scheme: light;
+  background: #ffffff;
+  color: var(--application-text);
+}
+.sagaLight .badge { border-color: #e7d6ae; color: #866015; background: #faf8f2; }
+.sagaLight .input { background: #ffffff; color: #25221e; border-color: #d7d0c3; }
+.sagaLight .input::placeholder { color: #71695d; }
+.sagaLight .dropzone, .sagaLight .preview { background: #faf8f2; color: #25221e; }
+.sagaLight .dropzone small, .sagaLight .fileName small { color: #625d53; }
+.sagaLight .form :is(input, textarea, button):focus-visible, .sagaLight .dropzone:focus-within { outline-color: #ae7c17; }
+.sagaLight .submit, .sagaLight .sagaPrimary {
+  background: #ecd18a;
+  color: #302410;
+  border: 1px solid #c79d42;
+  box-shadow: none;
+}
+.sagaLight .submit:hover, .sagaLight .sagaPrimary:hover { background: #e4bf68; filter: none; }
+.sagaLight .sagaPrimary { display: inline-flex; align-items: center; justify-content: center; gap: 8px; border-radius: 9px; padding: 12px 20px; font-weight: 700; text-decoration: none; }
