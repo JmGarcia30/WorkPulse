@@ -122,7 +122,7 @@ export default async function JobOpeningPage({ params }: JobOpeningPageProps) {
 
           <Link
             href={`/careers/${organizationSlug}/${job.slug}/apply`}
-            className="inline-flex items-center justify-center gap-2 rounded-lg bg-[#111111] hover:bg-[#282828] px-6 py-3 text-xs font-bold text-white transition shadow-sm shrink-0"
+            className={`inline-flex items-center justify-center gap-2 rounded-lg px-6 py-3 text-xs font-bold transition shadow-sm shrink-0 ${isSaga ? 'border border-[#C79D42] bg-[#ECD18A] text-[#302410] hover:bg-[#E4BF68]' : 'bg-[#111111] text-white hover:bg-[#282828]'}`}
           >
             <span>Apply for Position</span>
             <ArrowRight className="h-4 w-4 text-[#D9A928]" />
@@ -236,7 +236,7 @@ export default async function JobOpeningPage({ params }: JobOpeningPageProps) {
             </Link>
             <Link
               href={`/careers/${organizationSlug}/${job.slug}/apply`}
-              className="inline-flex items-center justify-center gap-2 rounded-lg bg-[#111111] hover:bg-[#282828] px-6 py-3 text-xs font-bold text-white transition shadow-sm flex-1 sm:flex-initial"
+              className={`inline-flex items-center justify-center gap-2 rounded-lg px-6 py-3 text-xs font-bold transition shadow-sm flex-1 sm:flex-initial ${isSaga ? 'border border-[#C79D42] bg-[#ECD18A] text-[#302410] hover:bg-[#E4BF68]' : 'bg-[#111111] text-white hover:bg-[#282828]'}`}
             >
               <span>Apply for Position</span>
               <ArrowRight className="h-4 w-4 text-[#D9A928]" />
