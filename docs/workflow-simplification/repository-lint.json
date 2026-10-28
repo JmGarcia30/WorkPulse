@@ -1,0 +1,267 @@
+{
+  "errors": 100,
+  "warnings": 61,
+  "files": [
+    {
+      "path": "scripts/batch0-recovery-environment.cjs",
+      "errors": 5,
+      "warnings": 0
+    },
+    {
+      "path": "scripts/check-batch0-compatibility.cjs",
+      "errors": 4,
+      "warnings": 0
+    },
+    {
+      "path": "scripts/demo-browser.cjs",
+      "errors": 3,
+      "warnings": 1
+    },
+    {
+      "path": "scripts/demo-stabilization.cjs",
+      "errors": 9,
+      "warnings": 0
+    },
+    {
+      "path": "scripts/execute-batch0-recovery.cjs",
+      "errors": 5,
+      "warnings": 1
+    },
+    {
+      "path": "scripts/measure-batch0-recovery.cjs",
+      "errors": 9,
+      "warnings": 0
+    },
+    {
+      "path": "scripts/performance-audit-browser.cjs",
+      "errors": 3,
+      "warnings": 1
+    },
+    {
+      "path": "scripts/performance-audit-preload.cjs",
+      "errors": 1,
+      "warnings": 0
+    },
+    {
+      "path": "scripts/performance-audit.cjs",
+      "errors": 10,
+      "warnings": 0
+    },
+    {
+      "path": "scripts/reference/final-ux-employees.ts",
+      "errors": 0,
+      "warnings": 1
+    },
+    {
+      "path": "scripts/rehearse-isolated-migrations.cjs",
+      "errors": 6,
+      "warnings": 0
+    },
+    {
+      "path": "scripts/reproduce-audit.ts",
+      "errors": 1,
+      "warnings": 1
+    },
+    {
+      "path": "scripts/seed-parsed-resume.ts",
+      "errors": 2,
+      "warnings": 0
+    },
+    {
+      "path": "scripts/summarize-batch0-recovery.cjs",
+      "errors": 3,
+      "warnings": 0
+    },
+    {
+      "path": "scripts/test-candidate-onboarding-submission.ts",
+      "errors": 1,
+      "warnings": 1
+    },
+    {
+      "path": "scripts/test-candidate-portal-and-rejection.ts",
+      "errors": 0,
+      "warnings": 2
+    },
+    {
+      "path": "scripts/test-extraction-units.ts",
+      "errors": 0,
+      "warnings": 2
+    },
+    {
+      "path": "scripts/test-pipeline-diagnostics.ts",
+      "errors": 1,
+      "warnings": 0
+    },
+    {
+      "path": "scripts/test-report-export-format.cjs",
+      "errors": 3,
+      "warnings": 0
+    },
+    {
+      "path": "scripts/test-safe-delete.ts",
+      "errors": 0,
+      "warnings": 1
+    },
+    {
+      "path": "scripts/test-saga-institutional-hiring.ts",
+      "errors": 0,
+      "warnings": 9
+    },
+    {
+      "path": "scripts/test-sprint2-1-pipeline.ts",
+      "errors": 1,
+      "warnings": 0
+    },
+    {
+      "path": "scripts/test-sprint2-2-interviews.ts",
+      "errors": 0,
+      "warnings": 2
+    },
+    {
+      "path": "scripts/test-sprint2-3-assessments-offers.ts",
+      "errors": 0,
+      "warnings": 3
+    },
+    {
+      "path": "scripts/test-sprint2-4-onboarding.ts",
+      "errors": 0,
+      "warnings": 1
+    },
+    {
+      "path": "scripts/test-vertical-slice.ts",
+      "errors": 1,
+      "warnings": 0
+    },
+    {
+      "path": "scripts/validate-batch0-build.cjs",
+      "errors": 2,
+      "warnings": 0
+    },
+    {
+      "path": "src/app/(dashboard)/dashboard/organization/setup/page.tsx",
+      "errors": 1,
+      "warnings": 0
+    },
+    {
+      "path": "src/app/product-modules-showcase.tsx",
+      "errors": 0,
+      "warnings": 2
+    },
+    {
+      "path": "src/components/careers/CandidatePortalClient.tsx",
+      "errors": 0,
+      "warnings": 10
+    },
+    {
+      "path": "src/components/employees/profile/ComplianceTab.tsx",
+      "errors": 0,
+      "warnings": 2
+    },
+    {
+      "path": "src/components/employees/profile/DecisionsAuditTab.tsx",
+      "errors": 0,
+      "warnings": 3
+    },
+    {
+      "path": "src/components/employees/profile/EmployeeProfileTabs.tsx",
+      "errors": 0,
+      "warnings": 1
+    },
+    {
+      "path": "src/components/employees/profile/EmploymentHistoryTab.tsx",
+      "errors": 0,
+      "warnings": 2
+    },
+    {
+      "path": "src/components/employees/profile/EssAccountTab.tsx",
+      "errors": 0,
+      "warnings": 3
+    },
+    {
+      "path": "src/components/employees/profile/OverviewTab.tsx",
+      "errors": 0,
+      "warnings": 3
+    },
+    {
+      "path": "src/components/hiring/ApplicationTimeline.tsx",
+      "errors": 0,
+      "warnings": 1
+    },
+    {
+      "path": "src/components/hiring/AssessmentResultModal.tsx",
+      "errors": 0,
+      "warnings": 1
+    },
+    {
+      "path": "src/components/hiring/CandidateLifecycleStepper.tsx",
+      "errors": 0,
+      "warnings": 2
+    },
+    {
+      "path": "src/components/hiring/CandidateOnboardingSection.tsx",
+      "errors": 0,
+      "warnings": 2
+    },
+    {
+      "path": "src/components/hiring/OnboardingTaskUploadModal.tsx",
+      "errors": 0,
+      "warnings": 1
+    },
+    {
+      "path": "src/components/hiring/ParsedResumeSection.tsx",
+      "errors": 0,
+      "warnings": 2
+    },
+    {
+      "path": "storage/hiring-policy/edit.cjs",
+      "errors": 1,
+      "warnings": 0
+    },
+    {
+      "path": "storage/hiring-policy/finalize.cjs",
+      "errors": 3,
+      "warnings": 0
+    },
+    {
+      "path": "storage/hiring-policy/save-progress.cjs",
+      "errors": 2,
+      "warnings": 0
+    },
+    {
+      "path": "storage/hiring-policy/test-edit.cjs",
+      "errors": 1,
+      "warnings": 0
+    },
+    {
+      "path": "storage/hiring-policy/ui-edit.cjs",
+      "errors": 1,
+      "warnings": 0
+    },
+    {
+      "path": "storage/integration-check/candidate.cjs",
+      "errors": 6,
+      "warnings": 0
+    },
+    {
+      "path": "storage/integration-check/inspect.cjs",
+      "errors": 5,
+      "warnings": 0
+    },
+    {
+      "path": "storage/integration-check/release.cjs",
+      "errors": 3,
+      "warnings": 0
+    },
+    {
+      "path": "storage/integration-check/run.cjs",
+      "errors": 3,
+      "warnings": 0
+    },
+    {
+      "path": "storage/loading-consistency/finalize.cjs",
+      "errors": 4,
+      "warnings": 0
+    }
+  ],
+  "changedFileErrors": 0
+}

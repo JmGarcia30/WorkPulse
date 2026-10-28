@@ -1,6 +1,7 @@
 'use client';
 
 import { useActionState, useState } from 'react';
+import type { PayrollStatutorySetupRow } from '@/features/payroll/setup-queries';
 import { createCompensationAction, createPayrollPeriodAction, createPayrollPolicyAction, finalizePayrollAction, generatePayrollAction, movePayrollToReviewAction, type PayrollActionState } from '@/features/payroll/actions';
 
 const initialState: PayrollActionState = {};
@@ -10,17 +11,27 @@ export function StatusMessage({ state }: { state: PayrollActionState }) {
   return <p role={state.error ? 'alert' : 'status'} className={`rounded-xl px-3 py-2 text-xs ${state.error ? 'bg-red-50 text-red-800' : 'bg-emerald-50 text-emerald-800'}`}>{state.error ?? state.success}</p>;
 }
 
-export function CompensationForm({ employees }: { employees: Array<{ id: string; employeeNumber: string; firstName: string; lastName: string }> }) {
+export function CompensationForm({ employees, profiles = [] }: { profiles?: PayrollStatutorySetupRow[]; employees: Array<{ id: string; employeeNumber: string; firstName: string; lastName: string }> }) {
   const [state, action, pending] = useActionState(createCompensationAction, initialState);
+  const [employeeId, setEmployeeId] = useState('');
+  const [payType, setPayType] = useState('MONTHLY');
+  const profile = profiles.find(row => row.id === employeeId);
+  const verified = profile?.input ?? profile?.reusable?.payload;
   return <form action={action} className="mt-5 grid gap-3 rounded-2xl bg-slate-50 p-4 md:grid-cols-2 xl:grid-cols-3">
     <div className="md:col-span-2 xl:col-span-3"><StatusMessage state={state} /></div>
-    <label className="grid gap-1 text-xs font-semibold">Employee<select name="employeeId" required className="rounded-xl border bg-white px-3 py-2.5 font-normal"><option value="">Select an employee</option>{employees.map(employee => <option key={employee.id} value={employee.id}>{employee.employeeNumber} — {employee.firstName} {employee.lastName}</option>)}</select></label>
-    <label className="grid gap-1 text-xs font-semibold">Compensation type<select name="compensationType" className="rounded-xl border bg-white px-3 py-2.5 font-normal"><option value="MONTHLY">Monthly</option><option value="DAILY">Daily</option></select></label>
-    <label className="grid gap-1 text-xs font-semibold">Base rate (full monthly salary for semi-monthly)<input name="baseRate" type="number" min="0.01" step="0.01" required className="rounded-xl border bg-white px-3 py-2.5 font-normal" /></label>
+    <label className="grid gap-1 text-xs font-semibold">Employee<select name="employeeId" value={employeeId} onChange={event => setEmployeeId(event.target.value)} required className="rounded-xl border bg-white px-3 py-2.5 font-normal"><option value="">Select an employee</option>{employees.map(employee => <option key={employee.id} value={employee.id}>{employee.employeeNumber} — {employee.firstName} {employee.lastName}</option>)}</select></label>
+    <label className="grid gap-1 text-xs font-semibold">Compensation type<select name="compensationType" value={payType} onChange={event => setPayType(event.target.value)} className="rounded-xl border bg-white px-3 py-2.5 font-normal"><option value="MONTHLY">Monthly</option><option value="DAILY">Daily</option></select></label>
+    <label className="grid gap-1 text-xs font-semibold">{payType === 'MONTHLY' ? 'Full monthly salary (PHP, before deductions)' : 'Daily rate (PHP)'}<input name="baseRate" type="number" min="0.01" step="0.01" required className="rounded-xl border bg-white px-3 py-2.5 font-normal" /></label>
     <label className="grid gap-1 text-xs font-semibold">Pay frequency<select name="payFrequency" className="rounded-xl border bg-white px-3 py-2.5 font-normal"><option value="MONTHLY">Monthly</option><option value="SEMI_MONTHLY">Semi-monthly (monthly rate)</option><option value="BIWEEKLY">Biweekly</option><option value="WEEKLY">Weekly</option><option value="ANNUAL">Annual</option></select></label>
-    <label className="grid gap-1 text-xs font-semibold">Currency<input name="currency" defaultValue="PHP" maxLength={3} required className="rounded-xl border bg-white px-3 py-2.5 font-normal uppercase" /></label>
+    <input type="hidden" name="currency" value="PHP" />
     <label className="grid gap-1 text-xs font-semibold">Effective date<input name="effectiveFrom" type="date" required className="rounded-xl border bg-white px-3 py-2.5 font-normal" /></label>
-    <button disabled={pending || employees.length === 0} className="self-end rounded-xl bg-slate-900 px-4 py-2.5 text-xs font-bold text-white disabled:opacity-50">{pending ? 'Saving…' : 'Add Compensation'}</button>
+    <div className="space-y-2 rounded-xl border bg-white p-3 text-xs md:col-span-2 xl:col-span-3">
+      <p className="font-bold">Government coverage &amp; employee tax classification</p>
+      {verified ? <p>SSS: {verified.coverage.SSS.status.toLowerCase()}; PhilHealth: {verified.coverage.PHILHEALTH.status.toLowerCase()}; Pag-IBIG: {verified.coverage.PAGIBIG.status.toLowerCase()}. Verified resident, private rank-and-file, single employer, not minimum-wage exempt. A salary change requires a new agency basis review.</p> : <p>Coverage and tax classification have not been verified for this employee in the selected period. Review SSS, PhilHealth, Pag-IBIG and BIR in Advanced Payroll Setup before running payroll. No exemption or zero history is assumed.</p>}
+      <p>The full monthly salary is reused across periods; semi-monthly pay is calculated by WorkPulse. Daily and exceptional arrangements require a supported statutory method before payroll can be generated.</p>
+      <a href="#advanced-payroll" className="font-semibold underline">Review coverage, classification and evidence</a>
+    </div>
+    <button disabled={pending || employees.length === 0} className="self-end rounded-xl bg-slate-900 px-4 py-2.5 text-xs font-bold text-white disabled:opacity-50">{pending ? 'Saving…' : 'Save compensation profile'}</button>
   </form>;
 }
 
@@ -49,12 +60,12 @@ export function PayrollGenerationForm({ periods, selectedPeriodId, disabled = fa
   </form>;
 }
 
-export function PayrollReviewControls({ periodId, periodLabel, status, canFinalize }: { periodId: string; periodLabel: string; status: string; canFinalize: boolean }) {
+export function PayrollReviewControls({ periodId, periodLabel, status, canFinalize, hasEntries = false }: { periodId: string; periodLabel: string; status: string; canFinalize: boolean; hasEntries?: boolean }) {
   const [reviewState, reviewAction, reviewPending] = useActionState(movePayrollToReviewAction, initialState);
   const [finalizeState, finalizeAction, finalizePending] = useActionState(finalizePayrollAction, initialState);
   if (status === 'FINALIZED') return null;
   return <div className="mt-4 grid gap-3 lg:grid-cols-2">
-    {status === 'DRAFT' ? <form action={reviewAction} aria-busy={reviewPending} onSubmit={event => { if (!window.confirm('Move generated payroll entries into HR review?')) event.preventDefault(); }} className="rounded-2xl border bg-slate-50 p-4"><StatusMessage state={reviewState} /><input type="hidden" name="payrollPeriodId" value={periodId} /><p className="mb-3 text-xs text-slate-600">Move generated entries into controlled HR review.</p><button disabled={reviewPending} className="rounded-xl bg-slate-900 px-4 py-2.5 text-xs font-bold text-white disabled:opacity-50">{reviewPending ? 'Moving…' : 'Move to Review'}</button></form> : null}
+    {status === 'DRAFT' ? <form action={reviewAction} aria-busy={reviewPending} onSubmit={event => { if (!window.confirm('Move generated payroll entries into HR review?')) event.preventDefault(); }} className="rounded-2xl border bg-slate-50 p-4"><StatusMessage state={reviewState} /><input type="hidden" name="payrollPeriodId" value={periodId} /><p className="mb-3 text-xs text-slate-600">Generate employee entries, then review deductions. Finalization publishes payslips to each employee in ESS / My Payroll.</p><button disabled={reviewPending || !hasEntries} className="rounded-xl bg-slate-900 px-4 py-2.5 text-xs font-bold text-white disabled:opacity-50">{reviewPending ? 'Moving…' : 'Move to Review'}</button></form> : null}
     {status === 'REVIEW' ? <form action={finalizeAction} aria-busy={finalizePending} onSubmit={event => { if (!window.confirm('Finalize payroll and permanently lock official employee payslips?')) event.preventDefault(); }} className="rounded-2xl border border-amber-200 bg-amber-50 p-4"><StatusMessage state={finalizeState} /><input type="hidden" name="payrollPeriodId" value={periodId} /><p className="text-sm font-bold">Finalize {periodLabel} payroll?</p><p className="mt-1 text-xs text-amber-900">Entries will be locked. Future policy or compensation changes will not alter this official payroll record.</p><label className="mt-3 flex items-start gap-2 text-xs font-semibold"><input type="checkbox" name="confirmation" value="FINALIZE" required className="mt-0.5" /> I understand and explicitly confirm finalization.</label><button disabled={finalizePending || !canFinalize} className="mt-3 rounded-xl bg-amber-900 px-4 py-2.5 text-xs font-bold text-white disabled:opacity-40">{finalizePending ? 'Finalizing…' : 'Finalize Payroll'}</button>{!canFinalize ? <p className="mt-2 text-xs font-semibold text-red-700">Resolve every setup and calculation issue before finalization.</p> : null}</form> : null}
   </div>;
 }

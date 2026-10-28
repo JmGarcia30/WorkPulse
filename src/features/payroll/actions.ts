@@ -9,9 +9,31 @@ import { createPayrollPolicy } from './policy';
 import { finalizePayrollPeriod, movePayrollPeriodToReview } from './review';
 import { savePayrollStatutoryInput, savePayrollTaxOpening } from './statutory-inputs';
 import { statutoryPayloadFromForm, openingBalancesFromForm } from './setup-form';
+import { reusePayrollSetup } from './reuse';
+import { saveStandardPayrollProfile } from './standard-profile';
 
 export type PayrollActionState = { error?: string; success?: string; setupErrors?: Array<{ employeeNumber: string; employeeName: string; message: string }> };
-const failure = (error: unknown): PayrollActionState => ({ error: error instanceof PayrollError ? `${error.code === 'SETUP_REQUIRED' ? 'SETUP_REQUIRED: ' : ''}${error.message}` : error instanceof Error ? error.message : 'The payroll action could not be completed.' });
+const failure = (error: unknown): PayrollActionState => ({ error: error instanceof PayrollError ? error.message : 'The payroll action could not be completed. Please try again.' });
+
+export async function saveStandardPayrollProfileAction(_state: PayrollActionState, form: FormData): Promise<PayrollActionState> {
+  const user = await requireBackOfficeContext();
+  if (!canManagePayroll(user)) return { error: 'Unauthorized to verify payroll setup.' };
+  try {
+    await saveStandardPayrollProfile({ organizationId: user.organizationId, actorUserId: user.userId, employeeId: String(form.get('employeeId') ?? ''), payrollPeriodId: String(form.get('payrollPeriodId') ?? ''), evidenceReference: String(form.get('evidenceReference') ?? ''), confirmations: form.getAll('confirmed').map(String), deductionTreatment: String(form.get('deductionTreatment') ?? ''), compensationId: String(form.get('compensationId') ?? ''), expectedBaseRate: String(form.get('expectedBaseRate') ?? '') });
+    revalidatePath('/dashboard/payroll');
+    return { success: 'Standard employee payroll profile saved. Verified opening history is still required before payroll.' };
+  } catch (error) { return failure(error); }
+}
+
+export async function reusePayrollSetupAction(_state: PayrollActionState, form: FormData): Promise<PayrollActionState> {
+  const user = await requireBackOfficeContext();
+  if (!canManagePayroll(user)) return { error: 'Unauthorized to verify payroll setup.' };
+  try {
+    await reusePayrollSetup({ organizationId: user.organizationId, actorUserId: user.userId, employeeId: String(form.get('employeeId') ?? ''), payrollPeriodId: String(form.get('payrollPeriodId') ?? ''), sourceId: String(form.get('sourceId') ?? ''), confirmed: form.get('confirmed') === 'CONFIRMED' });
+    revalidatePath('/dashboard/payroll');
+    return { success: 'Verified setup reused for this period. Payroll will check current statutory rules and history during generation.' };
+  } catch (error) { return failure(error); }
+}
 
 export async function saveStatutorySetupAction(_state: PayrollActionState, form: FormData): Promise<PayrollActionState> {
   const user = await requireBackOfficeContext();

@@ -114,8 +114,8 @@ async function rollbackCases(db: Db) {
   await setup(db, missing, m, mp.id, { ...payload(), monthlyPagIbigFundSalary: '1500.01' });
   check((await generatePayroll({ ...missing, payrollPeriodId: mp.id }, db)).setupErrors[0].message.includes('ROUNDING_UNVERIFIED'), 'unresolved Pag-IBIG fractional-centavo rounding blocks generation');
   check(await db.payrollStatutoryPosting.count({ where: { organizationId: missing.organizationId } }) === 0 && await db.payrollContributionMonth.count({ where: { organizationId: missing.organizationId } }) === 0, 'failed calculation leaves no partial reservations');
-  await movePayrollPeriodToReview({ ...missing, payrollPeriodId: mp.id }, db);
-  await rejects(() => finalizePayrollPeriod({ ...missing, payrollPeriodId: mp.id, confirmation: 'FINALIZE' }, db), 'SETUP_REQUIRED');
+  await rejects(() => movePayrollPeriodToReview({ ...missing, payrollPeriodId: mp.id }, db), 'SETUP_REQUIRED');
+  await rejects(() => finalizePayrollPeriod({ ...missing, payrollPeriodId: mp.id, confirmation: 'FINALIZE' }, db), 'NOT_IN_REVIEW');
   await rejects(() => savePayrollStatutoryInput({ ...missing, employeeId: m.id, payrollPeriodId: mp.id, payload: { ...payload(), coverage: {} }, evidenceReference: 'test' }, db), 'SETUP_REQUIRED');
   await rejects(() => savePayrollStatutoryInput({ ...missing, employeeId: m.id, payrollPeriodId: mp.id, payload: { ...payload(), profile: { ...payload().profile, minimumWageStatus: 'MWE' } }, evidenceReference: 'test' }, db), 'SETUP_REQUIRED');
 

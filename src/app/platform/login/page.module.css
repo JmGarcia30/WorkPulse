@@ -1,0 +1,12 @@
+.page { --tenant-primary: #a51a21; --tenant-primary-foreground: #fff; --tenant-accent: #a51a21; --wp-focus: #a51a21; --wp-text: #272326; --wp-text-muted: #6b6265; --wp-surface: #fff; --wp-border: #ded7d9; --wp-border-strong: #a6999c; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100dvh; padding: 40px 20px; background: radial-gradient(ellipse at 15% 5%, #a51a210b, transparent 55%), #faf8f7; color: #272326; color-scheme: light; }
+.brand { margin-bottom: 32px; }
+.logo { width: 180px; height: 60px; object-fit: contain; }
+.card { width: 100%; max-width: 440px; padding: clamp(24px, 5vw, 40px); border: 1px solid #e7dfe1; border-top: 3px solid #a51a21; border-radius: 18px; background: #fff; box-shadow: 0 16px 60px #42121c09; }
+.emblem { display: grid; place-items: center; width: 48px; height: 48px; margin-bottom: 24px; border: 1px solid #ecd7da; border-radius: 13px; background: #fcf3f4; color: #a51a21; }
+.eyebrow { color: #8a1b28; font-size: 11px; font-weight: 750; letter-spacing: .12em; text-transform: uppercase; }
+.card h1 { margin-top: 8px; font-size: 30px; line-height: 1.25; font-weight: 750; letter-spacing: -.04em; }
+.intro { margin: 10px 0 28px; color: #6b6265; font-size: 14px; line-height: 1.6; }
+.notice { display: flex; align-items: center; justify-content: center; gap: 8px; margin-top: 26px; border-top: 1px solid #eee7e9; padding-top: 20px; color: #6b6265; font-size: 11px; text-align: center; }
+.notice svg { flex-shrink: 0; }
+.footer { margin-top: 28px; color: #75696e; font-size: 11px; text-align: center; }
+.footer span { margin: 0 8px; color: #a51a21; }

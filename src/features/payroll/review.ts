@@ -201,6 +201,8 @@ async function moveToReviewInTransaction(input: { organizationId: string; actorU
   if (!period) throw new PayrollError('NOT_FOUND', 'Payroll period not found.');
   if (period.status === PayrollPeriodStatus.FINALIZED) throw new PayrollError('FINALIZED', 'Finalized payroll cannot return to review.');
   if (period.status === PayrollPeriodStatus.REVIEW) return period;
+  const entryCount = await db.payrollEntry.count({ where: { organizationId: input.organizationId, payrollPeriodId: period.id } });
+  if (entryCount === 0) throw new PayrollError('SETUP_REQUIRED', 'Generate at least one valid employee payroll entry before moving this period to Review.');
   await db.payrollEntry.updateMany({
     where: { organizationId: input.organizationId, payrollPeriodId: period.id, status: PayrollEntryStatus.DRAFT },
     data: { status: PayrollEntryStatus.REVIEW },

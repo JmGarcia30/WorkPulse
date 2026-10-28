@@ -2,6 +2,7 @@ import { Role, Prisma } from '@prisma/client';
 import { prisma } from '@/lib/db/prisma';
 import { PayrollError } from './domain';
 import { openingSchema, statutoryInputSchema } from './statutory-inputs';
+import { reusablePayrollSetup } from './reuse';
 
 export async function getPayrollStatutorySetup(input: { organizationId: string; actorUserId: string; payrollPeriodId: string }, db: Prisma.TransactionClient = prisma) {
   const actor = await db.user.findFirst({ where: { id: input.actorUserId, organizationId: input.organizationId, role: { in: [Role.HR_ADMIN, Role.ORGANIZATION_ADMIN] } }, select: { id: true } });
@@ -16,7 +17,7 @@ export async function getPayrollStatutorySetup(input: { organizationId: string; 
     db.payrollEntry.findMany({ where: { organizationId: input.organizationId, payrollPeriodId: period.id }, select: { employeeId: true } }),
     db.payrollStatutoryPosting.findMany({ where: { organizationId: input.organizationId, taxYear }, distinct: ['employeeId'], select: { employeeId: true } }),
   ]);
-  return employees.map(employee => {
+  return Promise.all(employees.map(async employee => {
     const saved = inputs.find(item => item.employeeId === employee.id), opening = openings.find(item => item.employeeId === employee.id);
     const payload = statutoryInputSchema.safeParse(saved?.payload), balances = openingSchema.safeParse(opening?.balances);
     return {
@@ -25,7 +26,9 @@ export async function getPayrollStatutorySetup(input: { organizationId: string; 
       inputLocked: period.status === 'FINALIZED' || entries.some(item => item.employeeId === employee.id),
       openingLocked: period.status === 'FINALIZED' || usedOpenings.some(item => item.employeeId === employee.id),
       inputReviewedBy: saved?.reviewedById ?? null, openingReviewedBy: opening?.reviewedById ?? null,
+      reusable: !saved && period.status !== 'FINALIZED' ? await reusablePayrollSetup(db, input.organizationId, employee.id, period) : null,
+      compensation: await db.employeeCompensation.findMany({ where: { organizationId: input.organizationId, employeeId: employee.id, status: 'ACTIVE', effectiveFrom: { lte: period.periodStart }, OR: [{ effectiveTo: null }, { effectiveTo: { gte: period.periodEnd } }] }, select: { id: true, compensationType: true, baseRate: true, currency: true, payFrequency: true } }).then(values => values.length === 1 ? { ...values[0], baseRate: values[0].baseRate.toFixed(2) } : null),
     };
-  });
+  }));
 }
 export type PayrollStatutorySetupRow = Awaited<ReturnType<typeof getPayrollStatutorySetup>>[number];

@@ -1,0 +1,29 @@
+{
+  "passedScopedChecks": true,
+  "statutoryBirUnitTests": 149,
+  "payrollIntegrationAssertions": 56,
+  "payslipPresentationAssertions": 28,
+  "standardSetupReuseAssertions": 24,
+  "platformApplicantBoundaryAssertions": 17,
+  "otpRegistrationAssertions": 61,
+  "componentBrowserAssertions": 55,
+  "authenticatedE2eChecks": 24,
+  "productionBuildPassed": true,
+  "changedFileLintPassed": true,
+  "typeScriptPassed": true,
+  "preservation": {
+    "existingDataUnchanged": true,
+    "tablesCompared": 73,
+    "fixtureOrganizationsRemaining": 0
+  },
+  "repositoryLint": {
+    "errors": 100,
+    "warnings": 61,
+    "preExistingOutsideChangedFiles": true
+  },
+  "noSchemaChanges": true,
+  "productionDatabaseMutations": false,
+  "adminRecoveryTargetConfirmed": false,
+  "birVerifiedThrough": "2026-10-22",
+  "payrollProductionReadiness": "Not claimed; supported and unsupported arrangements documented"
+}

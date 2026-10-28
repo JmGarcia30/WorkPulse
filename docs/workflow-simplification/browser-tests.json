@@ -1,0 +1,288 @@
+{
+  "passed": true,
+  "assertions": 55,
+  "checks": [
+    "application renders without overflow/errors at 320px in light",
+    "application field contrast meets WCAG AA in light at 320",
+    "platform renders without overflow/errors at 320px in light",
+    "empty renders without overflow/errors at 320px in light",
+    "standard renders without overflow/errors at 320px in light",
+    "application renders without overflow/errors at 375px in light",
+    "application field contrast meets WCAG AA in light at 375",
+    "platform renders without overflow/errors at 375px in light",
+    "empty renders without overflow/errors at 375px in light",
+    "standard renders without overflow/errors at 375px in light",
+    "application renders without overflow/errors at 768px in light",
+    "application field contrast meets WCAG AA in light at 768",
+    "platform renders without overflow/errors at 768px in light",
+    "empty renders without overflow/errors at 768px in light",
+    "standard renders without overflow/errors at 768px in light",
+    "application renders without overflow/errors at 1280px in light",
+    "application field contrast meets WCAG AA in light at 1280",
+    "platform renders without overflow/errors at 1280px in light",
+    "empty renders without overflow/errors at 1280px in light",
+    "standard renders without overflow/errors at 1280px in light",
+    "application renders without overflow/errors at 320px in dark",
+    "application field contrast meets WCAG AA in dark at 320",
+    "platform renders without overflow/errors at 320px in dark",
+    "empty renders without overflow/errors at 320px in dark",
+    "standard renders without overflow/errors at 320px in dark",
+    "application renders without overflow/errors at 375px in dark",
+    "application field contrast meets WCAG AA in dark at 375",
+    "platform renders without overflow/errors at 375px in dark",
+    "empty renders without overflow/errors at 375px in dark",
+    "standard renders without overflow/errors at 375px in dark",
+    "application renders without overflow/errors at 768px in dark",
+    "application field contrast meets WCAG AA in dark at 768",
+    "platform renders without overflow/errors at 768px in dark",
+    "empty renders without overflow/errors at 768px in dark",
+    "standard renders without overflow/errors at 768px in dark",
+    "application renders without overflow/errors at 1280px in dark",
+    "application field contrast meets WCAG AA in dark at 1280",
+    "platform renders without overflow/errors at 1280px in dark",
+    "empty renders without overflow/errors at 1280px in dark",
+    "standard renders without overflow/errors at 1280px in dark",
+    "empty draft cannot move to Review in the UI",
+    "standard profile cannot save or derive all agency bases without review",
+    "basic-only confirmation reveals the salary-derived bases for review",
+    "standard setup submits all four explicit confirmations",
+    "all applicant inputs have associated labels",
+    "resume picker is reachable by keyboard after the cover letter",
+    "invalid drop explains file types and clears submitted file",
+    "oversized drop cannot be submitted",
+    "valid PDF drop shows filename and attaches the selected file",
+    "remove clears preview and attachment",
+    "DOCX and applicant fields reach the existing form action contract",
+    "a second tenant inherits its own public primary color",
+    "platform login uses the actual WorkPulse logo and administration identity",
+    "password visibility button exposes its accessible state",
+    "login action errors remain accessible and do not reveal authentication details"
+  ],
+  "layouts": [
+    {
+      "mode": "application",
+      "appearance": "light",
+      "width": 320,
+      "scroll": 320,
+      "errors": 0
+    },
+    {
+      "mode": "platform",
+      "appearance": "light",
+      "width": 320,
+      "scroll": 320,
+      "errors": 0
+    },
+    {
+      "mode": "empty",
+      "appearance": "light",
+      "width": 320,
+      "scroll": 320,
+      "errors": 0
+    },
+    {
+      "mode": "standard",
+      "appearance": "light",
+      "width": 320,
+      "scroll": 320,
+      "errors": 0
+    },
+    {
+      "mode": "application",
+      "appearance": "light",
+      "width": 375,
+      "scroll": 375,
+      "errors": 0
+    },
+    {
+      "mode": "platform",
+      "appearance": "light",
+      "width": 375,
+      "scroll": 375,
+      "errors": 0
+    },
+    {
+      "mode": "empty",
+      "appearance": "light",
+      "width": 375,
+      "scroll": 375,
+      "errors": 0
+    },
+    {
+      "mode": "standard",
+      "appearance": "light",
+      "width": 375,
+      "scroll": 375,
+      "errors": 0
+    },
+    {
+      "mode": "application",
+      "appearance": "light",
+      "width": 768,
+      "scroll": 760,
+      "errors": 0
+    },
+    {
+      "mode": "platform",
+      "appearance": "light",
+      "width": 768,
+      "scroll": 768,
+      "errors": 0
+    },
+    {
+      "mode": "empty",
+      "appearance": "light",
+      "width": 768,
+      "scroll": 760,
+      "errors": 0
+    },
+    {
+      "mode": "standard",
+      "appearance": "light",
+      "width": 768,
+      "scroll": 768,
+      "errors": 0
+    },
+    {
+      "mode": "application",
+      "appearance": "light",
+      "width": 1280,
+      "scroll": 1272,
+      "errors": 0
+    },
+    {
+      "mode": "platform",
+      "appearance": "light",
+      "width": 1280,
+      "scroll": 1280,
+      "errors": 0
+    },
+    {
+      "mode": "empty",
+      "appearance": "light",
+      "width": 1280,
+      "scroll": 1272,
+      "errors": 0
+    },
+    {
+      "mode": "standard",
+      "appearance": "light",
+      "width": 1280,
+      "scroll": 1280,
+      "errors": 0
+    },
+    {
+      "mode": "application",
+      "appearance": "dark",
+      "width": 320,
+      "scroll": 320,
+      "errors": 0
+    },
+    {
+      "mode": "platform",
+      "appearance": "dark",
+      "width": 320,
+      "scroll": 320,
+      "errors": 0
+    },
+    {
+      "mode": "empty",
+      "appearance": "dark",
+      "width": 320,
+      "scroll": 320,
+      "errors": 0
+    },
+    {
+      "mode": "standard",
+      "appearance": "dark",
+      "width": 320,
+      "scroll": 320,
+      "errors": 0
+    },
+    {
+      "mode": "application",
+      "appearance": "dark",
+      "width": 375,
+      "scroll": 375,
+      "errors": 0
+    },
+    {
+      "mode": "platform",
+      "appearance": "dark",
+      "width": 375,
+      "scroll": 375,
+      "errors": 0
+    },
+    {
+      "mode": "empty",
+      "appearance": "dark",
+      "width": 375,
+      "scroll": 375,
+      "errors": 0
+    },
+    {
+      "mode": "standard",
+      "appearance": "dark",
+      "width": 375,
+      "scroll": 375,
+      "errors": 0
+    },
+    {
+      "mode": "application",
+      "appearance": "dark",
+      "width": 768,
+      "scroll": 760,
+      "errors": 0
+    },
+    {
+      "mode": "platform",
+      "appearance": "dark",
+      "width": 768,
+      "scroll": 768,
+      "errors": 0
+    },
+    {
+      "mode": "empty",
+      "appearance": "dark",
+      "width": 768,
+      "scroll": 760,
+      "errors": 0
+    },
+    {
+      "mode": "standard",
+      "appearance": "dark",
+      "width": 768,
+      "scroll": 768,
+      "errors": 0
+    },
+    {
+      "mode": "application",
+      "appearance": "dark",
+      "width": 1280,
+      "scroll": 1272,
+      "errors": 0
+    },
+    {
+      "mode": "platform",
+      "appearance": "dark",
+      "width": 1280,
+      "scroll": 1280,
+      "errors": 0
+    },
+    {
+      "mode": "empty",
+      "appearance": "dark",
+      "width": 1280,
+      "scroll": 1272,
+      "errors": 0
+    },
+    {
+      "mode": "standard",
+      "appearance": "dark",
+      "width": 1280,
+      "scroll": 1280,
+      "errors": 0
+    }
+  ],
+  "boundary": "Actual components; action test doubles. Database/authorization checked separately."
+}

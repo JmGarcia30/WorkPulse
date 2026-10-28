@@ -1,0 +1,25 @@
+{
+  "passed": true,
+  "assertions": 17,
+  "checks": [
+    "platform rejects an invalid password",
+    "platform rejects unknown accounts",
+    "unchanged platform login action sets its isolated secure cookie contract",
+    "platform token resolves only its synthetic administrator",
+    "only a hash of the platform session is stored",
+    "platform administrator guard denies tenant hosts",
+    "logout clears platform browser and database session",
+    "public submission preserves the recruitment lifecycle and applicant fields",
+    "real resume upload retains the document metadata",
+    "uploaded resume bytes can be read through the existing private storage provider",
+    "submission initializes email verification without granting unverified document access",
+    "unverified applicant has no candidate document access",
+    "the application-bound email verification link grants the existing candidate session",
+    "verification link remains single-use",
+    "duplicate public submission preserves applicant ownership and identity",
+    "verified candidate access is still denied on the wrong tenant host",
+    "wrong-tenant public submission cannot create an application"
+  ],
+  "fixturesRolledBack": true,
+  "outboundEmailDisabled": true
+}

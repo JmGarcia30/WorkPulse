@@ -1,6 +1,9 @@
 'use client';
 
 import React from 'react';
+import type { PayrollStatutorySetupRow } from '@/features/payroll/setup-queries';
+import { PayrollStatutorySetupPanel } from './PayrollStatutorySetupPanel';
+import { StandardPayrollProfile } from './StandardPayrollProfile';
 import {
   CompensationForm,
   PayrollPolicyForm,
@@ -61,6 +64,8 @@ interface PayrollConfigurationTabProps {
   policies: PolicyItem[];
   currentPolicy: PolicyItem | null;
   leaveTypes: LeaveTypeItem[];
+  statutorySetup?: PayrollStatutorySetupRow[] | null;
+  selectedPeriod?: { id: string; name: string; payDate: Date } | null;
 }
 
 export function PayrollConfigurationTab({
@@ -69,15 +74,17 @@ export function PayrollConfigurationTab({
   policies,
   currentPolicy,
   leaveTypes,
+  statutorySetup,
+  selectedPeriod,
 }: PayrollConfigurationTabProps) {
   return (
     <div className="space-y-6">
-      {/* 1. Employee Compensation Setup */}
+      {/* 1. Employee Pay Setup */}
       <div className="rounded-xl border border-slate-200/80 bg-white p-5 sm:p-6 shadow-2xs space-y-4">
         <div className="border-b border-slate-100 pb-3">
           <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-[var(--tenant-primary,#0f766e)]">
             <DollarSign className="h-4 w-4" />
-            <span>Personnel Base Rates</span>
+            <span>Employee Pay Setup</span>
           </div>
           <h2 className="text-base font-bold text-slate-900 mt-1">
             Employee Compensation Setup
@@ -87,7 +94,7 @@ export function PayrollConfigurationTab({
           </p>
         </div>
 
-        <CompensationForm employees={employees} />
+        <CompensationForm employees={employees} profiles={statutorySetup ?? []} />
 
         {/* Existing Compensations Table */}
         <div className="mt-4 pt-4 border-t border-slate-100">
@@ -156,6 +163,12 @@ export function PayrollConfigurationTab({
         </div>
       </div>
 
+      {statutorySetup && selectedPeriod && <StandardPayrollProfile rows={statutorySetup} periodId={selectedPeriod.id} />}
+      <section id="advanced-payroll" className="space-y-4 scroll-mt-6">
+        <h2 className="text-lg font-bold text-slate-900">Advanced Payroll Setup</h2>
+        <p className="text-sm text-slate-600">Set up verified opening history and agency bases once, then reuse unchanged information in Run Payroll. Review exceptions, contribution eligibility, earnings, tax adjustments and evidence here. Unsupported tax methods remain blocked.</p>
+        {statutorySetup && selectedPeriod ? <PayrollStatutorySetupPanel key={selectedPeriod.id} rows={statutorySetup} periodId={selectedPeriod.id} periodName={selectedPeriod.name} payDate={selectedPeriod.payDate.toISOString().slice(0, 10)} /> : <p className="text-sm text-slate-600">Select a draft payroll period in Run Payroll to review government coverage and opening history.</p>}
+      </section>
       {/* 2. Payroll Policy Configuration */}
       <div className="rounded-xl border border-slate-200/80 bg-white p-5 sm:p-6 shadow-2xs space-y-4">
         <div className="border-b border-slate-100 pb-3">

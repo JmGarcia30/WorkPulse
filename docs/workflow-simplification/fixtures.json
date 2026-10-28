@@ -1,0 +1,416 @@
+{
+  "monthly": {
+    "entryId": "cmvrfnln800b6ujgslyajhwvu",
+    "breakdown": {
+      "format": "INTEGRATED",
+      "employee": {
+        "sss": "1750.00",
+        "philHealth": "875.00",
+        "pagIbig": "200.00",
+        "bir": "1701.30",
+        "late": "0.00",
+        "absence": "0.00",
+        "undertime": "0.00",
+        "unionDues": "0",
+        "otherNetDeductions": []
+      },
+      "taxableCompensation": "32175.00",
+      "employer": [
+        {
+          "agency": "SSS",
+          "counterpart": "3500.00",
+          "employerOnly": "30.00"
+        },
+        {
+          "agency": "PHILHEALTH",
+          "counterpart": "875.00",
+          "employerOnly": "0.00"
+        },
+        {
+          "agency": "PAGIBIG",
+          "counterpart": "200.00",
+          "employerOnly": "0.00"
+        }
+      ],
+      "allocation": {
+        "frequency": "MONTHLY",
+        "slot": "MONTH",
+        "month": "2026-09"
+      }
+    },
+    "employee": {
+      "name": "Payroll monthly",
+      "employeeNumber": "UI-monthly",
+      "department": "Test",
+      "position": "UI Test"
+    },
+    "payroll": {
+      "periodId": "cmvrfnj0s00auujgs4y29e528",
+      "periodReference": "UI 2026-09-01",
+      "periodStart": "2026-09-01",
+      "periodEnd": "2026-09-30",
+      "payDate": "2026-09-30",
+      "compensationType": "MONTHLY",
+      "compensationRate": "35000.00",
+      "payFrequency": "MONTHLY",
+      "currency": "PHP",
+      "finalizedAt": "2026-10-28T01:25:47.518Z"
+    },
+    "calculation": {
+      "basePay": "35000.00",
+      "grossPay": "35000.00",
+      "totalDeductions": "4526.30",
+      "netPay": "30473.70",
+      "deductions": {
+        "late": "0.00",
+        "absence": "0.00",
+        "undertime": "0.00"
+      }
+    },
+    "attendance": {
+      "scheduledWorkdays": 0,
+      "presentDays": 0,
+      "absentDays": 0,
+      "lateOccurrences": 0,
+      "approvedLeaveDays": 0
+    },
+    "leaveTreatments": []
+  },
+  "first": {
+    "entryId": "cmvrfnpdd00bkujgsgrdp3g67",
+    "breakdown": {
+      "format": "INTEGRATED",
+      "employee": {
+        "sss": "875.00",
+        "philHealth": "437.50",
+        "pagIbig": "100.00",
+        "bir": "850.58",
+        "late": "0.00",
+        "absence": "0.00",
+        "undertime": "0.00",
+        "unionDues": "0",
+        "otherNetDeductions": []
+      },
+      "taxableCompensation": "16087.50",
+      "employer": [
+        {
+          "agency": "SSS",
+          "counterpart": "1750.00",
+          "employerOnly": "15.00"
+        },
+        {
+          "agency": "PHILHEALTH",
+          "counterpart": "437.50",
+          "employerOnly": "0.00"
+        },
+        {
+          "agency": "PAGIBIG",
+          "counterpart": "100.00",
+          "employerOnly": "0.00"
+        }
+      ],
+      "allocation": {
+        "frequency": "SEMI_MONTHLY",
+        "slot": "FIRST",
+        "month": "2026-09"
+      }
+    },
+    "employee": {
+      "name": "Payroll semi",
+      "employeeNumber": "UI-semi",
+      "department": "Test",
+      "position": "UI Test"
+    },
+    "payroll": {
+      "periodId": "cmvrfnj7500awujgs7spmjqkt",
+      "periodReference": "UI 2026-09-01",
+      "periodStart": "2026-09-01",
+      "periodEnd": "2026-09-15",
+      "payDate": "2026-09-15",
+      "compensationType": "MONTHLY",
+      "compensationRate": "35000.00",
+      "payFrequency": "SEMI_MONTHLY",
+      "currency": "PHP",
+      "finalizedAt": "2026-10-28T01:25:51.260Z"
+    },
+    "calculation": {
+      "basePay": "17500.00",
+      "grossPay": "17500.00",
+      "totalDeductions": "2263.08",
+      "netPay": "15236.92",
+      "deductions": {
+        "late": "0.00",
+        "absence": "0.00",
+        "undertime": "0.00"
+      }
+    },
+    "attendance": {
+      "scheduledWorkdays": 0,
+      "presentDays": 0,
+      "absentDays": 0,
+      "lateOccurrences": 0,
+      "approvedLeaveDays": 0
+    },
+    "leaveTreatments": []
+  },
+  "second": {
+    "entryId": "cmvrfnslc00byujgs6gksp5dk",
+    "breakdown": {
+      "format": "INTEGRATED",
+      "employee": {
+        "sss": "875.00",
+        "philHealth": "437.50",
+        "pagIbig": "100.00",
+        "bir": "850.58",
+        "late": "0.00",
+        "absence": "0.00",
+        "undertime": "0.00",
+        "unionDues": "0",
+        "otherNetDeductions": []
+      },
+      "taxableCompensation": "16087.50",
+      "employer": [
+        {
+          "agency": "SSS",
+          "counterpart": "1750.00",
+          "employerOnly": "15.00"
+        },
+        {
+          "agency": "PHILHEALTH",
+          "counterpart": "437.50",
+          "employerOnly": "0.00"
+        },
+        {
+          "agency": "PAGIBIG",
+          "counterpart": "100.00",
+          "employerOnly": "0.00"
+        }
+      ],
+      "allocation": {
+        "frequency": "SEMI_MONTHLY",
+        "slot": "SECOND",
+        "month": "2026-09"
+      }
+    },
+    "employee": {
+      "name": "Payroll semi",
+      "employeeNumber": "UI-semi",
+      "department": "Test",
+      "position": "UI Test"
+    },
+    "payroll": {
+      "periodId": "cmvrfnjbx00ayujgsng1cvze3",
+      "periodReference": "UI 2026-09-16",
+      "periodStart": "2026-09-16",
+      "periodEnd": "2026-09-30",
+      "payDate": "2026-09-30",
+      "compensationType": "MONTHLY",
+      "compensationRate": "35000.00",
+      "payFrequency": "SEMI_MONTHLY",
+      "currency": "PHP",
+      "finalizedAt": "2026-10-28T01:25:55.533Z"
+    },
+    "calculation": {
+      "basePay": "17500.00",
+      "grossPay": "17500.00",
+      "totalDeductions": "2263.08",
+      "netPay": "15236.92",
+      "deductions": {
+        "late": "0.00",
+        "absence": "0.00",
+        "undertime": "0.00"
+      }
+    },
+    "attendance": {
+      "scheduledWorkdays": 0,
+      "presentDays": 0,
+      "absentDays": 0,
+      "lateOccurrences": 0,
+      "approvedLeaveDays": 0
+    },
+    "leaveTreatments": []
+  },
+  "legacy": {
+    "entryId": "cmvrfnxgj00ceujgs0zfc7u2y",
+    "breakdown": {
+      "format": "LEGACY",
+      "employee": {
+        "sss": null,
+        "philHealth": null,
+        "pagIbig": null,
+        "bir": null,
+        "late": "10.00",
+        "absence": null,
+        "undertime": null,
+        "unionDues": null,
+        "otherNetDeductions": []
+      },
+      "taxableCompensation": null,
+      "employer": [
+        {
+          "agency": "SSS",
+          "counterpart": null,
+          "employerOnly": null
+        },
+        {
+          "agency": "PHILHEALTH",
+          "counterpart": null,
+          "employerOnly": null
+        },
+        {
+          "agency": "PAGIBIG",
+          "counterpart": null,
+          "employerOnly": null
+        }
+      ],
+      "allocation": null
+    },
+    "employee": {
+      "name": "Payroll historical",
+      "employeeNumber": "UI-legacy",
+      "department": "Test",
+      "position": "UI Test"
+    },
+    "payroll": {
+      "periodId": "cmvrfnxey00ccujgsxrd3p1g4",
+      "periodReference": "Historical August",
+      "periodStart": "2026-08-01",
+      "periodEnd": "2026-08-31",
+      "payDate": "2026-08-31",
+      "compensationType": "MONTHLY",
+      "compensationRate": "35000.00",
+      "payFrequency": "MONTHLY",
+      "currency": "PHP",
+      "finalizedAt": "2026-10-28T01:26:00.028Z"
+    },
+    "calculation": {
+      "basePay": "35000.00",
+      "grossPay": "35000.00",
+      "totalDeductions": "10.00",
+      "netPay": "34990.00",
+      "deductions": {
+        "late": "10.00",
+        "absence": null,
+        "undertime": null
+      }
+    },
+    "attendance": {
+      "scheduledWorkdays": null,
+      "presentDays": null,
+      "absentDays": null,
+      "lateOccurrences": null,
+      "approvedLeaveDays": null
+    },
+    "leaveTreatments": []
+  },
+  "setupRows": [
+    {
+      "id": "cmvrfniez00amujgs8zrge4ud",
+      "employeeNumber": "UI-missing",
+      "firstName": "Payroll",
+      "lastName": "missing",
+      "input": null,
+      "inputEvidence": "",
+      "opening": null,
+      "inputLocked": false,
+      "openingLocked": false,
+      "inputReviewedBy": null,
+      "openingReviewedBy": null,
+      "reusable": null,
+      "compensation": {
+        "compensationType": "MONTHLY",
+        "baseRate": "35000.00"
+      }
+    }
+  ],
+  "lockedRows": [
+    {
+      "id": "cmvrfngwl009iujgswjlbh881",
+      "employeeNumber": "UI-monthly",
+      "firstName": "Payroll",
+      "lastName": "monthly",
+      "input": {
+        "arrangement": "PRIVATE_EMPLOYEE_SINGLE_EMPLOYER_FULL_MONTH",
+        "earningsComplete": true,
+        "monthlySssRemuneration": "35000",
+        "monthlyPhilHealthBasic": "35000",
+        "monthlyPagIbigFundSalary": "35000",
+        "agencyBasisReference": "verified-bases",
+        "contributionHistory": "NO_UNTRACKED_CONTRIBUTIONS_FOR_MONTH",
+        "coverage": {
+          "SSS": {
+            "status": "MANDATORY"
+          },
+          "PHILHEALTH": {
+            "status": "MANDATORY"
+          },
+          "PAGIBIG": {
+            "status": "MANDATORY"
+          }
+        },
+        "profile": {
+          "residency": "RESIDENT_CITIZEN_OR_RESIDENT_ALIEN",
+          "employment": "PRIVATE_RANK_AND_FILE_SINGLE_EMPLOYER",
+          "minimumWageStatus": "NOT_MWE",
+          "previousEmployerInTaxYear": false,
+          "cumulativeMethodAlreadyRequired": false,
+          "annualizationRequired": false,
+          "finalPayment": false
+        },
+        "additionalEarnings": [],
+        "companyDeductionTreatment": {
+          "late": "NET_DEDUCTION",
+          "absence": "NET_DEDUCTION",
+          "undertime": "NET_DEDUCTION"
+        },
+        "unionDues": {
+          "amount": "0",
+          "reference": "none-verified"
+        },
+        "otherNetDeductions": []
+      },
+      "inputEvidence": "reviewed-ui-fixture",
+      "opening": {
+        "payDate": "2026-09-01",
+        "balances": {
+          "riceExemptUsedThisMonth": "0",
+          "laundryExemptUsedThisMonth": "0",
+          "clothingExemptUsedThisYear": "0",
+          "otherBenefitsGrossPaidYtd": "0",
+          "taxableCompensationYtd": "0",
+          "withholdingTaxYtd": "0"
+        },
+        "evidence": "verified-history"
+      },
+      "inputLocked": true,
+      "openingLocked": true,
+      "inputReviewedBy": "cmvrfnggo0097ujgsppmcgoi3",
+      "openingReviewedBy": "cmvrfnggo0097ujgsppmcgoi3",
+      "reusable": null,
+      "compensation": {
+        "compensationType": "MONTHLY",
+        "baseRate": "35000.00"
+      }
+    }
+  ],
+  "branding": {
+    "organizationId": "cmvrfngdi0095ujgspndckhek",
+    "slug": "payroll-ui-mvrfngdh-kqhki-monthly",
+    "canonicalName": "Payroll UI monthly",
+    "displayName": "Payroll UI monthly",
+    "tagline": null,
+    "timeZone": "UTC",
+    "careersEnabled": true,
+    "primary": "#17324D",
+    "primaryForeground": "#FFFFFF",
+    "accent": "#167D77",
+    "accentForeground": "#FFFFFF",
+    "hasLogo": false,
+    "hasLoginImage": false,
+    "legacyLogoUrl": null,
+    "address": null,
+    "contactEmail": null,
+    "contactPhone": null,
+    "updatedAt": "cmvrfngdi0095ujgspndckhek"
+  }
+}

@@ -147,7 +147,7 @@ export function PayrollDashboardHeader({
               }`}
           >
             <SlidersHorizontal className="h-4 w-4" />
-            <span>Payroll Processing</span>
+            <span>Run Payroll</span>
             {issuesCount > 0 && (
               <span className="rounded-full bg-amber-100 px-1.5 py-0.2 text-[10px] font-bold text-amber-800">
                 {issuesCount}
@@ -164,7 +164,7 @@ export function PayrollDashboardHeader({
               }`}
           >
             <Settings2 className="h-4 w-4" />
-            <span>Configuration & Policies</span>
+            <span>Employee Pay Setup</span>
           </button>
         </nav>
       </div>

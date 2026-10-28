@@ -23,12 +23,12 @@ function CoverageField({ agency, saved }: { agency: 'SSS' | 'PHILHEALTH' | 'PAGI
 
 function PeriodInputs({ row, periodId }: { row: PayrollStatutorySetupRow; periodId: string }) {
   const [state, action, pending] = useActionState(saveStatutorySetupAction, {});
-  const [earnings, setEarnings] = useState<StatutoryPayrollInput['additionalEarnings']>(row.input?.additionalEarnings ?? []);
-  const [deductions, setDeductions] = useState<StatutoryPayrollInput['otherNetDeductions']>(row.input?.otherNetDeductions ?? []);
-  const values = row.input;
+  const values = row.input ?? row.reusable?.payload;
+  const [earnings, setEarnings] = useState<StatutoryPayrollInput['additionalEarnings']>(values?.additionalEarnings ?? []);
+  const [deductions, setDeductions] = useState<StatutoryPayrollInput['otherNetDeductions']>(values?.otherNetDeductions ?? []);
   const [fields, setFields] = useState({
-    monthlySssRemuneration: values?.monthlySssRemuneration ?? '', monthlyPhilHealthBasic: values?.monthlyPhilHealthBasic ?? '', monthlyPagIbigFundSalary: values?.monthlyPagIbigFundSalary ?? '',
-    agencyBasisReference: values?.agencyBasisReference ?? '', unionDues: values?.unionDues.amount ?? '', unionReference: values?.unionDues.reference ?? '', evidenceReference: row.inputEvidence,
+    monthlySssRemuneration: values?.monthlySssRemuneration ?? '', monthlyPhilHealthBasic: values?.monthlyPhilHealthBasic ?? (row.compensation?.compensationType === 'MONTHLY' ? row.compensation.baseRate : ''), monthlyPagIbigFundSalary: values?.monthlyPagIbigFundSalary ?? '',
+    agencyBasisReference: values?.agencyBasisReference ?? '', unionDues: values?.unionDues.amount ?? '', unionReference: values?.unionDues.reference ?? '', evidenceReference: row.inputEvidence || row.reusable?.evidenceReference || '',
     late: values?.companyDeductionTreatment.late ?? '', absence: values?.companyDeductionTreatment.absence ?? '', undertime: values?.companyDeductionTreatment.undertime ?? '',
   });
   const edit = (key: keyof typeof fields, value: string) => setFields(current => ({ ...current, [key]: value }));
@@ -40,7 +40,7 @@ function PeriodInputs({ row, periodId }: { row: PayrollStatutorySetupRow; period
       <legend className="mb-3 text-sm font-bold">Reviewed period inputs</legend>
       {row.inputLocked && <p className="text-xs text-slate-600">Locked: this period already has an immutable payroll entry. Adjustment/reconciliation requires a separate reviewed workflow.</p>}
       <div className="grid gap-3 sm:grid-cols-3">{([['monthlySssRemuneration', 'SSS monthly remuneration'], ['monthlyPhilHealthBasic', 'PhilHealth full monthly basic salary'], ['monthlyPagIbigFundSalary', 'Pag-IBIG monthly Fund Salary']] as const).map(([name, label]) => <label key={name} className="grid gap-1 text-xs font-semibold">{label}<input {...amountProps} name={name} value={fields[name]} onChange={event => edit(name, event.target.value)} className={inputClass} /></label>)}</div>
-      <p className="text-xs text-slate-600">Enter reviewed full-month bases, including for semi-monthly cutoffs. PhilHealth uses basic salary before attendance deductions. SSS and Pag-IBIG require their own remuneration mapping.</p>
+      <p className="text-xs text-slate-600">Enter reviewed full-month bases, including for semi-monthly cutoffs. PhilHealth uses basic salary before attendance deductions. PhilHealth is prefilled only for fixed monthly compensation and must be reviewed. SSS and Pag-IBIG require their own remuneration mapping; they are not assumed equal to basic salary.</p>
       <label className="grid gap-1 text-xs font-semibold">Agency basis evidence reference<input name="agencyBasisReference" required value={fields.agencyBasisReference} onChange={event => edit('agencyBasisReference', event.target.value)} className={inputClass} /></label>
       <div className="grid gap-3 sm:grid-cols-3">{(['SSS', 'PHILHEALTH', 'PAGIBIG'] as const).map(agency => <CoverageField key={agency} agency={agency} saved={values?.coverage[agency]} />)}</div>
       <div className="grid gap-3 sm:grid-cols-3">{(['late', 'absence', 'undertime'] as const).map(key => <label key={key} className="grid gap-1 text-xs font-semibold capitalize">{key} deduction treatment<select name={`treatment.${key}`} required value={fields[key]} onChange={event => edit(key, event.target.value)} className={inputClass}><option value="">Review treatment</option><option value="SALARY_REDUCTION">Salary not earned (reduces taxable earnings)</option><option value="NET_DEDUCTION">Net deduction (does not reduce taxable earnings)</option></select></label>)}</div>
@@ -84,7 +84,7 @@ export function PayrollStatutorySetupPanel({ rows, periodId, periodName, payDate
   const row = rows.find(item => item.id === employeeId);
   return <section id="statutory-setup" className="min-w-0 space-y-4 rounded-xl border border-slate-200 bg-white p-5 sm:p-6">
     <div><h2 className="text-base font-bold">Statutory setup · {periodName}</h2><p className="mt-1 text-xs text-slate-600">Review period inputs and payment-year opening history before generation. Saving setup is followed by the existing calculation and finalization checks.</p></div>
-    <ul className="grid gap-2 sm:grid-cols-2">{rows.map(item => <li key={item.id}><button type="button" onClick={() => setEmployeeId(item.id)} aria-pressed={item.id === employeeId} className={`w-full rounded-xl border p-3 text-left text-xs ${item.id === employeeId ? 'border-teal-600 bg-teal-50' : 'border-slate-200'}`}><span className="block font-bold">{item.employeeNumber} · {item.firstName} {item.lastName}</span><span className="mt-1 block">{item.input ? 'Period inputs saved' : 'SETUP_REQUIRED: review period inputs'} · {item.opening ? 'Opening history saved' : 'SETUP_REQUIRED: verify opening history'}</span>{(item.inputLocked || item.openingLocked) && <span className="mt-1 block text-slate-500">Used records are read-only</span>}</button></li>)}</ul>
+    <ul className="grid gap-2 sm:grid-cols-2">{rows.map(item => <li key={item.id}><button type="button" onClick={() => setEmployeeId(item.id)} aria-pressed={item.id === employeeId} className={`w-full rounded-xl border p-3 text-left text-xs ${item.id === employeeId ? 'border-teal-600 bg-teal-50' : 'border-slate-200'}`}><span className="block font-bold">{item.employeeNumber} · {item.firstName} {item.lastName}</span><span className="mt-1 block">{item.input ? 'Period inputs saved' : 'Review government setup'} · {item.opening ? 'Opening history saved' : 'Verify opening history'}</span>{(item.inputLocked || item.openingLocked) && <span className="mt-1 block text-slate-500">Used records are read-only</span>}</button></li>)}</ul>
     {row ? <div key={`${periodId}-${row.id}`} className="space-y-6"><h3 className="text-sm font-bold">{row.employeeNumber} · {row.firstName} {row.lastName}</h3><PeriodInputs row={row} periodId={periodId} /><TaxOpening row={row} payDate={payDate} /></div> : <p className="text-xs text-slate-500">No active employees are available for setup.</p>}
   </section>;
 }

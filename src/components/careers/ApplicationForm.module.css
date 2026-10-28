@@ -1,0 +1,43 @@
+.appearance {
+  --application-surface: #fff;
+  --application-soft: #faf8f2;
+  --application-text: #24211c;
+  --application-muted: #625e55;
+  --application-border: #d4cec1;
+  color-scheme: light;
+  color: var(--application-text);
+  background: var(--application-surface);
+}
+.form { display: grid; gap: 28px; color: var(--application-text); }
+.shell { max-width: 768px; margin: 0 auto; padding: 0; border-radius: 16px; }
+.card { padding: clamp(22px, 5vw, 40px); border: 1px solid var(--application-border); border-radius: 16px; background: var(--application-surface); }
+.back { display: inline-flex; align-items: center; gap: 8px; margin: 18px; color: var(--application-text); font-size: 13px; font-weight: 650; }
+.title { margin-top: 12px; font-size: clamp(23px, 4vw, 30px); font-weight: 800; color: var(--application-text); }
+.badge { display: inline-block; border: 1px solid var(--application-border); border-radius: 20px; background: var(--application-soft); padding: 6px 12px; color: var(--application-text); font-size: 12px; font-weight: 700; }
+.section { min-width: 0; margin: 0; padding: 0; border: 0; }
+.legend { width: 100%; margin-bottom: 18px; padding-bottom: 12px; border-bottom: 1px solid var(--application-border); font-size: 16px; font-weight: 750; }
+.hint { margin: 6px 0 16px; color: var(--application-muted); font-size: 13px; line-height: 1.6; }
+.grid { display: grid; gap: 18px; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.label { display: grid; gap: 8px; color: var(--application-text); font-size: 13px; font-weight: 650; }
+.input { width: 100%; min-height: 46px; padding: 12px 14px; border: 1px solid var(--application-border); border-radius: 9px; background: var(--application-surface); color: var(--application-text); font: inherit; font-weight: 400; }
+textarea.input { min-height: 150px; resize: vertical; line-height: 1.65; }
+.input::placeholder { color: var(--application-muted); opacity: 1; }
+.form :is(input, textarea, button):focus-visible { outline: 3px solid var(--tenant-accent, #a51a21); outline-offset: 3px; }
+.dropzone { position: relative; display: grid; justify-items: center; gap: 12px; width: 100%; padding: 28px 18px; border: 2px dashed var(--application-border); border-radius: 12px; background: var(--application-soft); color: var(--application-text); text-align: center; font-size: 14px; line-height: 1.5; cursor: pointer; }
+.dropzone:focus-within, .dragging { border-color: var(--tenant-accent, #a51a21); outline: 3px solid var(--tenant-accent, #a51a21); outline-offset: 3px; }
+.fileInput { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer; }
+.uploadIcon { display: grid; place-items: center; width: 48px; height: 48px; border: 1px solid var(--application-border); border-radius: 12px; background: var(--application-surface); color: var(--application-text); }
+.dropzone small { color: var(--application-muted); font-size: 12px; }
+.preview { display: flex; align-items: center; gap: 12px; padding: 16px; border: 1px solid var(--application-border); border-radius: 12px; background: var(--application-soft); }
+.fileName { min-width: 0; flex: 1; overflow-wrap: anywhere; font-size: 13px; }
+.fileName small { display: block; margin-top: 4px; color: var(--application-muted); }
+.remove { flex-shrink: 0; display: grid; place-items: center; min-width: 44px; min-height: 44px; border: 1px solid var(--application-border); border-radius: 8px; background: var(--application-surface); color: var(--application-text); cursor: pointer; }
+.error { padding: 12px 14px; border: 1px solid #f0a3a3; border-radius: 9px; background: #fff1f2; color: #991b1b; font-size: 13px; line-height: 1.6; }
+.submit { display: inline-flex; align-items: center; justify-content: center; gap: 10px; min-height: 48px; width: 100%; border: 0; border-radius: 9px; background: var(--tenant-primary, #a51a21); color: var(--tenant-primary-foreground, #fff); padding: 14px 24px; font-size: 14px; font-weight: 750; cursor: pointer; }
+.submit:hover { filter: brightness(.93); }
+.submit:disabled { opacity: .6; cursor: wait; }
+@media (max-width: 540px) { .grid { grid-template-columns: 1fr; } .form { gap: 24px; } }
+@media (prefers-color-scheme: dark) {
+  .appearance { --application-surface: #242321; --application-soft: #302e29; --application-text: #faf8f2; --application-muted: #cec9bd; --application-border: #777064; color-scheme: dark; }
+  .error { background: #451a23; color: #ffe0e3; border-color: #bd6678; }
+}

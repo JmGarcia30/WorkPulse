@@ -18,8 +18,8 @@ function PasswordInput({ name, label, autoComplete, minLength }: { name: string;
 
 export function PlatformLoginForm() {
   const [state, action, pending] = useActionState(platformLoginAction, {});
-  return <form action={action} className="space-y-5">
-    <label className="wp-label">Email<input className="wp-input mt-2" type="email" name="email" autoComplete="username" required maxLength={254} /></label>
+  return <form action={action} className="space-y-5" aria-busy={pending}>
+    <label className="wp-label">Email address<input className="wp-input mt-2" type="email" name="email" autoComplete="username" placeholder="admin@example.com" required maxLength={254} autoCapitalize="none" spellCheck={false} /></label>
     <PasswordInput name="password" label="Password" autoComplete="current-password" />
     {state.error && <p role="alert" className="wp-alert-danger">{state.error}</p>}
     <button className="wp-button-primary w-full" disabled={pending}>{pending ? 'Signing in…' : 'Sign in to platform administration'}</button>

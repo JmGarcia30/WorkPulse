@@ -1,0 +1,14 @@
+import { createRoot } from 'react-dom/client';
+import { ApplicationForm } from '../src/components/careers/ApplicationForm';
+import applicationStyles from '../src/components/careers/ApplicationForm.module.css';
+import PlatformLoginPage from '../src/app/platform/login/page';
+import { PayrollProcessingTab } from '../src/components/payroll/PayrollProcessingTab';
+import { StandardPayrollProfile } from '../src/components/payroll/StandardPayrollProfile';
+import type { PayrollStatutorySetupRow } from '../src/features/payroll/setup-queries';
+
+declare global { interface Window { __submissions: Array<Record<string, unknown>> } }
+const mode = new URLSearchParams(location.search).get('mode');
+const brand = new URLSearchParams(location.search).get('brand') === 'other' ? '#126273' : '#9a7415';
+const standard: PayrollStatutorySetupRow = { id: 'synthetic-employee', employeeNumber: 'TEST-1', firstName: 'Synthetic', lastName: 'Employee', input: null, inputEvidence: '', opening: null, inputLocked: false, openingLocked: false, inputReviewedBy: null, openingReviewedBy: null, reusable: null, compensation: { id: 'synthetic-compensation', compensationType: 'MONTHLY', currency: 'PHP', baseRate: '35000.00', payFrequency: 'SEMI_MONTHLY' } };
+const content = mode === 'platform' ? <PlatformLoginPage /> : mode === 'empty' ? <PayrollProcessingTab periods={[{ id: 'empty', name: 'Empty draft', periodStart: new Date('2026-10-01Z'), periodEnd: new Date('2026-10-31Z'), payDate: new Date('2026-10-31Z'), status: 'DRAFT' }]} selectedPeriod={{ id: 'empty', name: 'Empty draft', periodStart: new Date('2026-10-01Z'), periodEnd: new Date('2026-10-31Z'), payDate: new Date('2026-10-31Z'), status: 'DRAFT' }} review={{ period: { id: 'empty', name: 'Empty draft', periodStart: new Date(), periodEnd: new Date(), payDate: new Date(), status: 'DRAFT' }, summary: { totalEmployees: 0, ready: 0, setupRequired: 0, errors: 0 }, totals: { employeeCount: 0, gross: '0', deductions: '0', net: '0' }, issues: [], canFinalize: false }} /> : <div className={applicationStyles.appearance + ' ' + applicationStyles.shell} style={{ '--tenant-primary': brand, '--tenant-primary-foreground': '#fff', '--tenant-accent': brand } as React.CSSProperties}><div className={applicationStyles.card}><h1 className={applicationStyles.title}>Apply for Test Position</h1><ApplicationForm job={{ id: 'fixture-job', slug: 'fixture', title: 'Test Position' }} org={{ slug: 'fixture', name: 'Synthetic Institution' }} action={async form => { window.__submissions.push(Object.fromEntries([...form].map(([key, value]) => [key, value instanceof File ? { name: value.name, size: value.size } : value]))); }} /></div></div>;
+createRoot(document.getElementById('root')!).render(mode === 'standard' ? <StandardPayrollProfile rows={[standard]} periodId="synthetic-period" /> : content);

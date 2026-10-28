@@ -35,6 +35,7 @@ interface ReviewIssue {
 }
 
 interface PayrollProcessingTabProps {
+  readiness?: React.ReactNode;
   periods: PeriodItem[];
   selectedPeriod: PeriodItem | null;
   review: {
@@ -63,6 +64,7 @@ export function PayrollProcessingTab({
   periods,
   selectedPeriod,
   review,
+  readiness,
 }: PayrollProcessingTabProps) {
   const router = useRouter();
   const [periodToDelete, setPeriodToDelete] = useState<PeriodItem | null>(null);
@@ -98,15 +100,16 @@ export function PayrollProcessingTab({
       {/* Workflow Step Tracker */}
       <ol aria-label="Payroll workflow steps" className="grid gap-2 rounded-xl bg-slate-50/80 border border-slate-200/70 p-3 sm:grid-cols-3 xl:grid-cols-6 text-xs">
         {[
-          '1. Set Up Pay',
-          '2. Create Period',
-          '3. Generate',
-          '4. Review',
+          '1. Select Period',
+          '2. Check Readiness',
+          '3. Generate Payroll',
+          '4. Review Deductions',
           '5. Finalize',
-          '6. Payslips',
+          '6. Publish Payslips',
         ].map((step, index) => {
           const isComplete =
-            (index === 1 && periods.length > 0) ||
+            (index === 0 && selectedPeriod !== null)
+            || (index === 1 && (review?.summary.ready ?? 0) > 0 && review?.summary.ready === review?.summary.totalEmployees) ||
             (index === 2 && (review?.totals.employeeCount ?? 0) > 0) ||
             (index === 3 && selectedPeriod?.status === 'REVIEW') ||
             (index >= 4 && selectedPeriod?.status === 'FINALIZED');
@@ -291,6 +294,7 @@ export function PayrollProcessingTab({
       </div>
 
       {/* Step 2: Generate / Recalculate Payroll */}
+      {readiness}
       <div className="rounded-xl border border-slate-200/80 bg-white p-5 sm:p-6 shadow-2xs space-y-4">
         <div className="border-b border-slate-100 pb-3">
           <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-[var(--tenant-primary,#0f766e)]">
@@ -359,7 +363,7 @@ export function PayrollProcessingTab({
           {/* Review Issues Alert */}
           {review.issues.length > 0 && (
             <div role="alert" className="rounded-xl border border-red-200 bg-red-50/60 p-4 text-xs text-red-900 space-y-2">
-              <a href="#statutory-setup" className="inline-block font-bold underline">Review statutory inputs and opening history</a>
+              <a href={'/dashboard/payroll?tab=configuration&period=' + selectedPeriod.id + '#advanced-payroll'} className="inline-block font-bold underline">Review statutory inputs and opening history</a>
               <div className="flex items-center gap-2 font-bold text-red-950">
                 <ShieldAlert className="h-4 w-4 text-red-600" />
                 <span>What needs to be resolved before finalization ({review.issues.length}):</span>
@@ -407,6 +411,7 @@ export function PayrollProcessingTab({
               periodLabel={periodLabel}
               status={review.period.status}
               canFinalize={review.canFinalize}
+                hasEntries={review.totals.employeeCount > 0}
             />
           )}
         </div>
