@@ -11,6 +11,7 @@ import { landingPathForRole } from '@/lib/auth/routing';
 import { prisma } from '@/lib/db/prisma';
 import { requireRequestTenant } from '@/lib/tenant/server';
 import { getPublicTenantContent } from '@/lib/tenant/public-content';
+import { tenantOrigin } from '@/lib/tenant/host';
 import { TenantTheme } from '@/components/layout/TenantTheme';
 import { TenantLogo } from '@/components/layout/TenantLogo';
 import { TenantNavigation } from './TenantNavigation';
@@ -403,7 +404,7 @@ export default async function TenantEntryPage() {
                           </div>
                           <div className={styles.jobAction}>
                             <Link
-                              href={`/careers/${job.slug}`}
+                              href={`${tenantOrigin(tenant.slug)}/careers/${job.slug}`}
                               className={styles.jobApplyLink}
                               aria-label={`View position and apply for ${job.title}`}
                             >
