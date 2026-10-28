@@ -81,6 +81,7 @@ export default async function ApplyPage({ params, searchParams }: ApplyPageProps
   const isSaga = organizationSlug === 'saga' || organizationSlug === 'st-aloysius';
   const requestHeaders = await headers();
   const parsed = classifyRequestHost(requestHeaders);
+  const appearanceClass = [styles.appearance, styles.shell, isSaga ? styles.sagaLight : ''].filter(Boolean).join(' ');
   const openingsHref = isSaga
     ? (parsed.kind === 'tenant' ? '/#careers' : '/saga#careers')
     : `/careers/${organizationSlug}`;
@@ -88,7 +89,7 @@ export default async function ApplyPage({ params, searchParams }: ApplyPageProps
   // If application submitted successfully
   if (success === 'true') {
     return (
-      <TenantTheme branding={branding} className={styles.appearance + ' ' + styles.shell}>
+      <TenantTheme branding={branding} className={appearanceClass}>
       <div className={styles.card + ' text-center space-y-6'}>
         <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full border text-[var(--tenant-accent)]">
           <CheckCircle2 className="h-10 w-10" />
@@ -117,7 +118,7 @@ export default async function ApplyPage({ params, searchParams }: ApplyPageProps
           {appId && (
             <Link
               href={`/careers/${organizationSlug}/portal/${appId}`}
-              className="wp-button-primary"
+              className={isSaga ? styles.sagaPrimary : 'wp-button-primary'}
             >
               <span>Access Candidate Document Portal</span>
               <ArrowRight className="h-3.5 w-3.5" />
@@ -136,7 +137,7 @@ export default async function ApplyPage({ params, searchParams }: ApplyPageProps
   }
 
   return (
-    <TenantTheme branding={branding} className={styles.appearance + ' ' + styles.shell}>
+    <TenantTheme branding={branding} className={appearanceClass}>
       {/* Back Link */}
       <Link
         href={`/careers/${organizationSlug}/${job.slug}`}
