@@ -1,0 +1,21 @@
+# WorkPulse final-defense production release
+
+## Migration and recovery completed — 2026-11-02
+
+Production runtime was verified on a schema-compatible diagnostic baseline before migration: project `work-pulse` / `prj_O3lYRwFRzfShyGDhCzek5v0gW4pr`, deployment `dpl_GEyVH15HCeu243vUbeohkTy6AFcR`, canonical domain `work-pulse-omega.vercel.app`, Neon project `late-block-61364102`, branch `br-hidden-violet-azjl3vam`, endpoint `ep-weathered-mouse-azpx765h`, database `neondb`. The original deployment `dpl_G2xJzwCrDAxQaLPynEmLucZKDHTZ` remains retained. This establishes the adopted diagnostic baseline's actual runtime, not the replaced deployment's historical secret value.
+
+Named snapshot creation was rejected because the account snapshot quota was full. No existing backup was removed. A fresh supported branch recovery point was created: `br-withered-forest-azrnxfkw`, pinned to production LSN `0/167645B8`, timestamp `2026-11-02T15:01:30Z`. Independent recovery branch `br-ancient-field-azlcd2u0` reconstructed that checkpoint. Read-only checks verified 38-migration history and all original-column fingerprints for all 73 tables on both recovery branches. Both are retained without expiration and must not be reset/deleted before separately approved cleanup.
+
+Exact rehearsed migrations 39 and 40 were applied sequentially with Prisma 6.19.3, with stage-specific checks. **40/40 successful; zero unresolved migrations; repeat deploy is a no-op.** All 73 original public tables retained exact original-column counts and fingerprints after each stage. Full schema matches the rehearsal: 891 columns, 963 constraints, 288 indexes, 55 non-internal triggers; security-event immutability function verified. New security/reset tables began empty. No production reset, seed, historical employee modification, attendance change or real payroll generation occurred. The known unattached legacy helper was retained after the documented no-current-effect review.
+
+The schema-compatible diagnostic baseline's canonical login still returns HTTP 200 after migration. Production-only non-secret identity pins were added earlier; production credentials remained unchanged. Effective project freeze was read back through authenticated CLI as `exit 0`, Git/main, no deploy hooks. The canceled review-branch deployment remains supporting evidence. The repository Git deployment flag is retained false until release health is confirmed; restoring normal Git behavior requires handling both controls after that point.
+
+## Release candidate verification
+
+Completed Batch 1–3 and IT Evaluation code is preserved. The only new application adjustment in this operational release is support for the **exact provider-assigned hostname of the current Production deployment** so a staged build can be tested before domain assignment. It preserves canonical routing, rejects unrelated Vercel hosts, conflicting forwarded headers, nested hosts and ports, and leaves Preview behavior unchanged. It does not introduce wildcard tenant trust or bypass application sessions.
+
+Validation: 45 focused environment/transport/startup/host checks; existing 64 tenant/auth/security assertions on an isolated schema of the rehearsal clone; TypeScript; targeted ESLint; local production build. Earlier 67 account-security, 26 browser and broader Batch regression results remain preserved evidence. These are not claimed as new live authenticated tests.
+
+This document initially accompanies the reviewed release candidate. A Git push alone is not release success. The required remaining operations are exact-commit push under freeze, staged Production deployment, runtime/HTTP/browser verification, promotion, live checks, and healthy-release restoration of normal Git behavior. Results must be recorded after those operations.
+
+Approved controlled account credentials and external receiving-inbox access have not been supplied. Never use real employee identities for destructive/password/lockout tests, manufacture account verification, or seed production to obtain a test identity. Report authenticated/live email checks as unverified if that access remains unavailable. Existing November payroll statutory-verification limits remain unchanged; do not generate actual November payroll or extend legal verification dates for the defense.

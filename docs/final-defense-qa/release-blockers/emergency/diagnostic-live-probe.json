@@ -1,0 +1,14 @@
+{
+  "capturedAt": "2026-11-02T14:59:50.843Z",
+  "deployment": "dpl_GEyVH15HCeu243vUbeohkTy6AFcR",
+  "target": "production",
+  "state": "READY",
+  "probeOrigin": "https://work-pulse-omega.vercel.app",
+  "httpStatus": 200,
+  "loginForm": true,
+  "automaticAliases": [
+    "work-pulse-jose-miguel-garcias-projects.vercel.app"
+  ],
+  "aliasAssigned": true,
+  "productionDomainAssigned": false
+}

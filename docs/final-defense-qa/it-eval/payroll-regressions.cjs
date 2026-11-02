@@ -1,0 +1,9 @@
+const fs=require('node:fs'),path=require('node:path'),Module=require('node:module'),assert=require('node:assert/strict');
+const {PrismaClient}=require('@prisma/client');assert.match(new URL(process.env.DATABASE_URL).searchParams.get('schema'),/^batch3_test_[a-f0-9]{24}$/);
+require('tsx/cjs');const db=new PrismaClient({log:[]}),load=Module._load,write=fs.writeFileSync.bind(fs);
+Module._load=function(name,parent,main){if(name==='server-only')return {};if(name==='@/lib/db/prisma')return {prisma:db};if(name.startsWith('@/'))return load.call(this,path.resolve('src',name.slice(2)),parent,main);return load.call(this,name,parent,main);};
+fs.writeFileSync=(file,...args)=>write(String(file).replaceAll('\\','/')==='docs/payroll-phase-3/unpaid-leave-probe.json'?path.join(__dirname,'evidence/unpaid-leave-probe.json'):file,...args);
+async function main(){const results=[];for(const [id,file,fn]of [
+ ['integration','../../../scripts/test-payroll-integration.ts','runPayrollIntegration'],['workflow','../../../scripts/test-payroll-workflow.ts','runPayrollWorkflow'],['presentation','../../../scripts/test-payroll-presentation.ts','runPayrollPresentation'],['phase3','../../../scripts/test-payroll-phase3.ts','runPayrollPhase3'],['readiness','../batch-3-followup/readiness-tests.cjs','run']
+]){try{const r=await require(file)[fn](db);delete r.fixtures;delete r.sagaReadOnly;write(path.join(__dirname,'evidence/payroll-'+id+'.json'),JSON.stringify({status:'PASS',...r},null,2));results.push({id,status:'PASS',assertions:r.assertions});}catch(e){results.push({id,status:'FAIL',message:e.message});process.exitCode=1;}console.log(JSON.stringify(results.at(-1)));}write(path.join(__dirname,'evidence/payroll-summary.json'),JSON.stringify(results,null,2));}
+main().catch(e=>{console.error(e.message);process.exitCode=1;}).finally(async()=>{Module._load=load;fs.writeFileSync=write;await db.$disconnect();});

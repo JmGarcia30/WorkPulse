@@ -4,6 +4,7 @@ import { compare } from 'bcryptjs';
 import { EmployeeAccountStatus, EmployeeStatus, Prisma, PrismaClient, Role } from '@prisma/client';
 import { consumeAuthenticationAttempt } from '@/features/platform-admin/service';
 import type { UserSessionPayload } from './session';
+import { notifyLoginLockout } from '@/features/account-security/notifications';
 
 export const staffTokenHash = (token: string) => createHash('sha256').update(token).digest('hex');
 const dummyHash = '$2b$12$R9h/cIPz0gi.URNNX3kh2OPST9/PgBkqquzi.Ss7KIUgO2t0jWMUW';
@@ -21,21 +22,38 @@ export function staffAccountAvailable(user: StaffUser) {
     && account.employee.organizationId === user.organizationId && account.employee.employeeStatus === EmployeeStatus.ACTIVE;
 }
 
-export async function authenticateStaff(db: PrismaClient, organizationId: string, emailInput: unknown, password: unknown) {
+export async function authenticateStaff(db: PrismaClient, organizationId: string, emailInput: unknown, password: unknown, schedule: (work: () => Promise<void>) => Promise<void> = work => work()) {
   if (typeof emailInput !== 'string' || typeof password !== 'string') return null;
   const email = emailInput.trim().toLowerCase();
   if (!email || email.length > 254 || !password || Buffer.byteLength(password, 'utf8') > 72) return null;
   // Commit budgets independently of credential validation/session issuance. Unknown
   // identities share the tenant cap, preventing unbounded random-identity rows.
-  const allowed = await db.$transaction(async tx => {
-    if (!await consumeAuthenticationAttempt(tx, `staff-login-tenant:${organizationId}`, 200)) return false;
-    return consumeAuthenticationAttempt(tx, `staff-login-identity:${organizationId}:${email}`, 5);
-  }, transactionOptions);
+  const allowed = await db.$transaction(tx => consumeAuthenticationAttempt(tx, `staff-login-tenant:${organizationId}`, 200), transactionOptions);
   if (!allowed) return null;
-  const user = await db.user.findFirst({ where: { email, organizationId }, select: { ...staffUserSelection, passwordHash: true } });
-  const valid = await compare(password, user?.passwordHash ?? dummyHash);
-  if (!valid || !user?.passwordHash || !staffAccountAvailable(user)) return null;
-  return { ...user, passwordHash: user.passwordHash };
+  const result = await db.$transaction(async tx => {
+    // The same lock used by session issuance/password changes prevents stale comparisons.
+    await tx.$queryRaw`SELECT id FROM "User" WHERE email=${email} AND "organizationId"=${organizationId} FOR UPDATE`;
+    const user = await tx.user.findFirst({ where: { email, organizationId }, select: { ...staffUserSelection, passwordHash: true } });
+    const valid = await compare(password, user?.passwordHash ?? dummyHash);
+    if (!user?.passwordHash || !staffAccountAvailable(user)) return { user: null, event: null };
+    const key = staffTokenHash(`staff-login-identity:${organizationId}:${email}`), now = new Date();
+    const prior = await tx.platformAuthenticationAttempt.findUnique({ where: { key } });
+    const active = prior && now.getTime() - prior.windowStart.getTime() < 15 * 60 * 1000;
+    if (active && prior.attempts >= 5) return { user: null, event: null };
+    if (valid) {
+      await tx.platformAuthenticationAttempt.deleteMany({ where: { key } });
+      return { user: { ...user, passwordHash: user.passwordHash }, event: null };
+    }
+    const attempts = active ? prior.attempts + 1 : 1;
+    const windowStart = attempts === 5 || !active ? now : prior.windowStart;
+    await tx.platformAuthenticationAttempt.upsert({ where: { key }, create: { key, attempts, windowStart }, update: { attempts, windowStart } });
+    const event = attempts === 5 ? await tx.accountSecurityEvent.create({ data: { organizationId, subjectIdentifier: user.id, action: 'LOGIN_LOCKOUT', success: false, operationKey: `lockout:${user.id}:${now.toISOString()}` } }) : null;
+    return { user: null, event };
+  }, transactionOptions);
+  // Delivery is post-commit. A durable claim prevents repeated/parallel alerts.
+  const event = result.event;
+  if (event) await schedule(async () => { try { await notifyLoginLockout(db, event); } catch { /* Lockout remains durable if notification infrastructure is unavailable. */ } });
+  return result.user;
 }
 
 export class StaffCredentialsChanged extends Error {

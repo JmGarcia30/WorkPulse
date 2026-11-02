@@ -1,0 +1,37 @@
+{
+  "capturedAt": "2026-11-02T15:04:06.740Z",
+  "status": "PASS",
+  "method": "Pinned Neon branch checkpoint and independent child recovery reconstruction; named snapshot quota was full",
+  "sourceProject": "late-block-61364102",
+  "sourceBranch": "br-hidden-violet-azjl3vam",
+  "checkpointBranch": "br-withered-forest-azrnxfkw",
+  "sourceLsn": "0/167645B8",
+  "sourceTimestamp": "2026-11-02T15:01:30Z",
+  "restoredBranch": "br-ancient-field-azlcd2u0",
+  "originalRecordsVerified": true,
+  "checks": [
+    {
+      "identity": {
+        "database": "neondb",
+        "branch_id": "br-withered-forest-azrnxfkw",
+        "endpoint_id": "ep-proud-rice-azbxmnah"
+      },
+      "successfulMigrations": 38,
+      "originalTablesVerified": 73,
+      "allOriginalColumnsFingerprintsMatch": true
+    },
+    {
+      "identity": {
+        "database": "neondb",
+        "branch_id": "br-ancient-field-azlcd2u0",
+        "endpoint_id": "ep-royal-queen-azk8ib0w"
+      },
+      "successfulMigrations": 38,
+      "originalTablesVerified": 73,
+      "allOriginalColumnsFingerprintsMatch": true
+    }
+  ],
+  "productionBusinessWrites": 0,
+  "existingBackupsDeleted": 0,
+  "retention": "Branches retained without expiration; do not reset/delete until separately approved after defense"
+}

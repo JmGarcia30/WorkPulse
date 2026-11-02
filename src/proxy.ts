@@ -86,6 +86,7 @@ export async function proxy(request: NextRequest) {
       if (!org) return new NextResponse('Workspace not found.', { status: 404 });
       if (suffix === '/') return pathTenantResponse(request, '/tenant-entry', tenantSlug, org, 'shared-path');
       if (suffix === '/login') return pathTenantResponse(request, '/login', tenantSlug, org, 'shared-path');
+      if (suffix === '/forgot-password' || suffix === '/reset-password') return pathTenantResponse(request, suffix, tenantSlug, org, 'shared-path');
       if (suffix === '/activate/organization-admin') return pathTenantResponse(request, suffix, tenantSlug, org, 'shared-path');
       if (suffix.startsWith('/dashboard') || suffix.startsWith('/employee')) {
         if (!hasSession) {
@@ -103,7 +104,7 @@ export async function proxy(request: NextRequest) {
     // or other public pages. Only resolve a remembered tenant for actual
     // tenant-only entry points, never for '/'.
     const sharedApiPath = pathname.startsWith('/api/') && !pathname.startsWith('/api/email-integration/google/');
-    const sharedEntryPath = pathname === '/login' || pathname.startsWith('/dashboard') || pathname.startsWith('/employee');
+    const sharedEntryPath = pathname === '/login' || pathname === '/forgot-password' || pathname === '/reset-password' || pathname.startsWith('/dashboard') || pathname.startsWith('/employee');
     if (remembered && remembered !== 'saga' && /^[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?$/.test(remembered) && (sharedApiPath || sharedEntryPath)) {
       const org = await prisma.organization.findUnique({ where: { slug: remembered }, select: { id: true, slug: true } });
       if (!org) {
@@ -161,6 +162,7 @@ export async function proxy(request: NextRequest) {
       const suffix = pathname.slice('/saga'.length) || '/';
       if (suffix === '/') return pathTenantResponse(request, '/tenant-entry', 'saga', organization);
       if (suffix === '/login') return pathTenantResponse(request, '/login', 'saga', organization);
+      if (suffix === '/forgot-password' || suffix === '/reset-password') return pathTenantResponse(request, suffix, 'saga', organization);
       // Kiosk authentication is independent of the HR session cookie.
       if (suffix === '/attendance-kiosk' || suffix.startsWith('/api/attendance/rfid/')) {
         return pathTenantResponse(request, suffix, 'saga', organization);

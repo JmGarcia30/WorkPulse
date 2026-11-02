@@ -1,0 +1,120 @@
+{
+  "capturedAt": "2026-11-02T14:25:33.329Z",
+  "status": "BLOCKED_BEFORE_PRODUCTION_MIGRATIONS",
+  "authorization": "Emergency release, additive migrations, commit/push, staging/promotion and healthy release unfreeze authorized by user subject to mandatory preflight checks",
+  "project": {
+    "id": "prj_O3lYRwFRzfShyGDhCzek5v0gW4pr",
+    "team": "team_UJrtsVOW9iHGOJYrMtflRVU2",
+    "name": "work-pulse",
+    "liveUrl": "https://work-pulse-omega.vercel.app"
+  },
+  "activeProduction": {
+    "deployment": "dpl_G2xJzwCrDAxQaLPynEmLucZKDHTZ",
+    "state": "READY",
+    "commit": "b24616ba92294018da82341b2f3e8d3a35c69f32",
+    "changed": false
+  },
+  "freezeSmoke": {
+    "deployment": "dpl_HDYQwemwJXAR52dPFjJUQGePGuCf",
+    "state": "CANCELED",
+    "branch": "review/release-freeze-smoke-20261102",
+    "commit": "dea272ea75b6f4bf81b69980ae84a9fe14f02a96",
+    "errorLink": "https://vercel.com/docs/project-configuration/git-settings#ignored-build-step",
+    "effectiveProjectSettingReadback": "Not exposed by connector; CLI authentication pending"
+  },
+  "providerDatabase": {
+    "project": "late-block-61364102",
+    "branch": "br-hidden-violet-azjl3vam",
+    "endpoint": "ep-weathered-mouse-azpx765h",
+    "database": "neondb",
+    "applied": 38,
+    "unresolved": 0,
+    "method": "Read-only SQL via Neon provider; NOT proof of active Vercel binding"
+  },
+  "migrationChecksums": {
+    "migration39": "03544310cff45c2014a32aeaf2874239f1f3c00c1a744c4307b6cd29cfa133c9",
+    "migration40": "8274df43cf0f6af94c39f77aaae7193b60cb6d3ac0f66bd5d4729b98f9be1c23",
+    "matchPriorRehearsal": true
+  },
+  "scopes": {
+    "productionOnly": [
+      "DATABASE_URL",
+      "SESSION_SECRET",
+      "GMAIL_USER",
+      "GMAIL_APP_PASSWORD",
+      "EMAIL_FROM",
+      "GOOGLE_AI_API_KEY"
+    ],
+    "blob": [
+      "production",
+      "development"
+    ],
+    "previewDatabaseOverrideOnly": "employee-ui-design",
+    "changedByThisTask": false
+  },
+  "productionConfigurationAdded": [
+    {
+      "key": "WORKPULSE_DB_PROJECT_ID",
+      "value": "late-block-61364102",
+      "target": [
+        "production"
+      ],
+      "id": "bRWLTnFZ1ZjKQ0Gc"
+    },
+    {
+      "key": "WORKPULSE_DB_BRANCH_ID",
+      "value": "br-hidden-violet-azjl3vam",
+      "target": [
+        "production"
+      ],
+      "id": "4CChISqqp1ojdmko"
+    },
+    {
+      "key": "WORKPULSE_DB_ENDPOINT_ID",
+      "value": "ep-weathered-mouse-azpx765h",
+      "target": [
+        "production"
+      ],
+      "id": "QxXNn0dzc4cYdnsr"
+    },
+    {
+      "key": "WORKPULSE_DB_DATABASE",
+      "value": "neondb",
+      "target": [
+        "production"
+      ],
+      "id": "wBFiVKdB49PnoMNO"
+    }
+  ],
+  "backup": {
+    "existingSnapshot": "snap-wandering-block-az759oda",
+    "createdAt": "2026-10-25T13:46:47Z",
+    "newRecoveryPointCreated": false,
+    "restoreValidated": false,
+    "reason": "Actual runtime binding remains unverified; old snapshot not substituted for fresh pre-migration recovery"
+  },
+  "cli": {
+    "version": "65.9.0",
+    "installation": "node_modules/.cache/workpulse-release/vercel-cli",
+    "whoami": {
+      "loggedIn": false,
+      "linkedProject": null
+    },
+    "authentication": "Device flow pending; do not publish or store credentials"
+  },
+  "checks": {
+    "localEnvironmentAssertions": 35,
+    "localPrismaSingletonAssertions": 13,
+    "preservation": "2195/2200 baseline files byte-identical; 5 previously intentional changes; no unexpected changes",
+    "remoteMain": "b24616ba92294018da82341b2f3e8d3a35c69f32",
+    "liveBrowserBaseline": "Chrome existing login form PASS; no authentication attempts"
+  },
+  "productionBusinessWrites": 0,
+  "migrationsExecuted": 0,
+  "commitsCreated": 0,
+  "pushes": 0,
+  "deploymentsCreated": 0,
+  "promotions": 0,
+  "externalEmailAttempts": 0,
+  "releaseRecommendation": "NO-GO"
+}

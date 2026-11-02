@@ -1,0 +1,12 @@
+{
+  "capturedAt": "2026-11-02T14:22:53.648Z",
+  "status": "PASS",
+  "check": "Chrome unauthenticated existing production login form only",
+  "url": "https://work-pulse-omega.vercel.app/saga/login",
+  "passwordInputRendered": true,
+  "browserExitCode": 0,
+  "newReleaseFeaturesVerified": false,
+  "authenticationAttempts": 0,
+  "productionBusinessWrites": 0,
+  "externalMessages": 0
+}

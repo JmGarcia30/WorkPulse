@@ -1,0 +1,20 @@
+const fs = require('node:fs'), path = require('node:path');
+const { profiles } = require('../qa-runner.cjs');
+const root = __dirname, report = path.resolve(root, '../FIX-BATCH-3-FOLLOWUP.md');
+const links = [...fs.readFileSync(report, 'utf8').matchAll(/\]\(([^)]+)\)/g)].map(m => m[1]);
+const expectedGenerated = ['batch-3-followup/evidence/final-summary.json', 'batch-3-followup/validation.json'];
+const missing = links.filter(link => !/^https?:\/\//.test(link) && !expectedGenerated.includes(link) && !fs.existsSync(path.resolve(path.dirname(report), link.replace(/:\d+$/, ''))));
+const secrets = Object.values(profiles).flatMap(profile => Object.entries(profile).filter(([key, value]) => /SECRET|TOKEN|PASSWORD|KEY|GMAIL_USER|EMAIL_FROM|DATABASE_URL/.test(key) && value.length >= 12).map(([,value]) => value));
+const files = [report];
+function walk(dir) { for (const e of fs.readdirSync(dir, { withFileTypes: true })) { const file = path.join(dir, e.name); if (e.isDirectory()) walk(file); else if (/\.(json|log|txt|md|cjs)$/.test(file)) files.push(file); } }
+walk(root);
+const leaks = files.filter(file => { const data = fs.readFileSync(file, 'utf8'); return secrets.some(secret => data.includes(secret)); });
+const resultFor = name => JSON.parse(fs.readFileSync(path.join(root, 'evidence', name + '.json'), 'utf8'));
+const results = ['typescript','lint','build','statutory','bir','integration','workflow','presentation','phase3','readiness','browser-run'].map(id => { const r = resultFor(id); return { id, status: r.status, assertions: r.assertions, exitCode: r.exitCode }; });
+const browserChecks = resultFor('browser/browser-checks');
+const summary = { capturedAt: new Date().toISOString(), status: results.every(r => r.status === 'PASS') && browserChecks.every(c => c.passed) ? 'PASS' : 'FAIL', statutoryTestCases: 93, birTestCases: 56, databaseAssertions: results.reduce((sum,r) => sum + (r.assertions || 0), 0), browserChecks: browserChecks.length, results, limitations: ['September 2026 fictional scenarios only; verification dates unchanged.', 'Browser uses real production build/actions and SQL inside a rollback transaction; independent service suite tests ordinary concurrent transactions.'] };
+fs.writeFileSync(path.join(root, 'evidence/final-summary.json'), JSON.stringify(summary, null, 2));
+const validation = { capturedAt: new Date().toISOString(), status: missing.length || leaks.length ? 'FAIL' : 'PASS', missingEvidenceLinks: missing, configuredSecretLeaks: leaks, textFilesInspected: files.length };
+fs.writeFileSync(path.join(root, 'validation.json'), JSON.stringify(validation, null, 2));
+console.log(JSON.stringify(validation)); console.log(JSON.stringify(summary));
+if (validation.status !== 'PASS' || summary.status !== 'PASS') process.exitCode = 1;

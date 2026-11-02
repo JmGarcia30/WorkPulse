@@ -36,7 +36,17 @@ export function requestAuthority(requestHeaders: Pick<Headers, 'get'>): string |
 export function classifyRequestHost(requestHeaders: Pick<Headers, 'get'>): PlatformHost {
   const authority = requestAuthority(requestHeaders);
   const configured = process.env.PLATFORM_ROOT_DOMAIN || (process.env.NODE_ENV === 'production' ? '' : rootDomain());
+  // A staged Production deployment must be testable before domain promotion.
+  // Trust only this deployment's exact provider-assigned hostname, never a wildcard.
+  if (configured && authority && isOwnProductionDeployment(authority)) return { kind: 'public', hostname: normalizeHostname(authority) };
   return authority ? parsePlatformHost(authority, configured) : { kind: 'invalid', hostname: '' };
+}
+
+function isOwnProductionDeployment(authority: string) {
+  const deployment = process.env.VERCEL_URL;
+  return process.env.VERCEL === '1' && process.env.VERCEL_ENV === 'production' &&
+    !!deployment && normalizeAuthority(deployment) === deployment &&
+    deployment.endsWith('.vercel.app') && authority === deployment;
 }
 
 export function parsePlatformHost(value: string, configuredRoot = rootDomain()): PlatformHost {
@@ -68,6 +78,7 @@ export function publicOrigin() {
 }
 
 export function usesTemporaryPathTenancy(host: string) {
+  if (isOwnProductionDeployment(host)) return true;
   try {
     const publicHost = normalizeHostname(new URL(publicOrigin()).host);
     return publicHost.endsWith('.vercel.app') && normalizeHostname(host) === publicHost;

@@ -1,4 +1,5 @@
 'use server';
+import { after } from 'next/server';
 
 import { redirect } from 'next/navigation';
 import { prisma } from '@/lib/db/prisma';
@@ -16,7 +17,7 @@ export async function loginAction(formData: FormData) {
     return { error: 'Please enter both email and password.' };
   }
 
-  const user = await authenticateStaff(prisma, tenant.organizationId, email, password);
+  const user = await authenticateStaff(prisma, tenant.organizationId, email, password, async work => { after(work); });
   if (!user) return { error: 'Invalid email or password, or too many attempts. Try again in 15 minutes if you have made several attempts.' };
 
   try { await createSession({

@@ -1,0 +1,16 @@
+{
+  "capturedAt": "2026-11-02T15:08:18.890Z",
+  "status": "PASS",
+  "identity": {
+    "database": "neondb",
+    "branch_id": "br-hidden-violet-azjl3vam",
+    "endpoint_id": "ep-weathered-mouse-azpx765h"
+  },
+  "reference": "Previously rehearsed after.json schema",
+  "columns": 891,
+  "constraints": 963,
+  "indexes": 288,
+  "triggers": 55,
+  "immutabilityFunctionVerified": true,
+  "scope": "Complete public columns/constraints/indexes/non-internal triggers match the rehearsed schema40; known unattached legacy helper retained"
+}

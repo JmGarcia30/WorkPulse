@@ -1,0 +1,14 @@
+const fs=require('node:fs'),path=require('node:path'),assert=require('node:assert/strict'),{PrismaClient}=require('@prisma/client'),qa=require('../../qa-runner.cjs');
+const expected=JSON.parse(fs.readFileSync(path.join(__dirname,'../evidence/after.json'))).schema;
+const db=new PrismaClient({datasources:{db:{url:qa.profiles['.env'].DATABASE_URL}},log:[]});
+async function main(){const [identity]=await db.$queryRawUnsafe("SELECT current_database() AS database,current_setting('neon.branch_id',true) AS branch_id,current_setting('neon.endpoint_id',true) AS endpoint_id");assert.equal(identity.branch_id,'br-hidden-violet-azjl3vam');assert.equal(identity.endpoint_id,'ep-weathered-mouse-azpx765h');assert.equal(identity.database,'neondb');const actual={
+columns:await db.$queryRawUnsafe("SELECT table_name,column_name,data_type,udt_name,is_nullable,column_default FROM information_schema.columns WHERE table_schema='public' ORDER BY table_name,ordinal_position"),
+constraints:await db.$queryRawUnsafe("SELECT c.relname AS table_name,k.conname,k.contype,pg_get_constraintdef(k.oid) AS definition FROM pg_constraint k JOIN pg_class c ON c.oid=k.conrelid JOIN pg_namespace n ON n.oid=c.relnamespace WHERE n.nspname='public' ORDER BY c.relname,k.conname"),
+indexes:await db.$queryRawUnsafe("SELECT tablename,indexname,indexdef FROM pg_indexes WHERE schemaname='public' ORDER BY tablename,indexname"),
+triggers:await db.$queryRawUnsafe("SELECT c.relname AS table_name,t.tgname,pg_get_triggerdef(t.oid) AS definition FROM pg_trigger t JOIN pg_class c ON c.oid=t.tgrelid JOIN pg_namespace n ON n.oid=c.relnamespace WHERE n.nspname='public' AND NOT t.tgisinternal ORDER BY c.relname,t.tgname")};
+for(const key of Object.keys(actual))assert.deepEqual(actual[key],expected[key],'SCHEMA_MISMATCH:'+key);
+const [{prosrc}]=await db.$queryRawUnsafe("SELECT p.prosrc FROM pg_proc p JOIN pg_namespace n ON n.oid=p.pronamespace WHERE n.nspname='public' AND p.proname='it_eval_immutable_security_event'");
+assert.equal(prosrc.replace(/\r\n/g,'\n').trim(),"BEGIN\n  RAISE EXCEPTION 'Account security events are immutable';\nEND;");
+const result={capturedAt:new Date().toISOString(),status:'PASS',identity,reference:'Previously rehearsed after.json schema',columns:actual.columns.length,constraints:actual.constraints.length,indexes:actual.indexes.length,triggers:actual.triggers.length,immutabilityFunctionVerified:true,scope:'Complete public columns/constraints/indexes/non-internal triggers match the rehearsed schema40; known unattached legacy helper retained'};
+fs.writeFileSync(path.join(__dirname,'production-catalog.json'),JSON.stringify(result,null,2));console.log(JSON.stringify(result));}
+main().catch(error=>{console.error(JSON.stringify({status:'FAIL',code:error.code||error.name,message:qa.scrub(error.message)}));process.exitCode=1;}).finally(()=>db.$disconnect());

@@ -1,0 +1,17 @@
+{
+  "capturedAt": "2026-11-02T15:01:41.523Z",
+  "status": "PASS",
+  "deployment": "dpl_GEyVH15HCeu243vUbeohkTy6AFcR",
+  "liveAlias": "work-pulse-omega.vercel.app",
+  "aliasResolvesToDeployment": true,
+  "scope": "New schema-compatible diagnostic baseline adopted before migration; not a retroactive claim about the replaced old deployment",
+  "databaseIdentity": {
+    "database": "neondb",
+    "branch_id": "br-hidden-violet-azjl3vam",
+    "endpoint_id": "ep-weathered-mouse-azpx765h"
+  },
+  "project": "late-block-61364102",
+  "projectMembershipVerifiedSeparatelyByNeon": true,
+  "runtimeLogTimestamp": "2026-11-02T14:59:49.791Z",
+  "runtimeRequestId": "wf6hg-1793631588553-fd37f5a43e3e"
+}

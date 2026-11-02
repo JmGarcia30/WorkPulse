@@ -1,0 +1,15 @@
+{
+  "sourceSha": "b24616ba92294018da82341b2f3e8d3a35c69f32",
+  "scope": "Exact active application with only read-only runtime identity hook and validation; no IT schema-dependent features",
+  "added": [
+    {
+      "file": "src/instrumentation.ts",
+      "sha256": "b2207dced1f7963fb49447138bc9999f8d254c58fcff1a287d5c0b1a1262e5d6"
+    },
+    {
+      "file": "src/lib/db/environment-safety.ts",
+      "sha256": "915194b88d544f1ee8ca0721a24a6c2ed9b1db7bb2ed21e98021335a7845a27e"
+    }
+  ],
+  "schemaSha256": "b5b4db88f9fbb6a1c0a69fb5a1cbe62b3ed7754459df809699749e2d5b213762"
+}

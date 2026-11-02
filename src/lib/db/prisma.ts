@@ -1,4 +1,8 @@
 import { PrismaClient } from '@prisma/client';
+import { databaseTarget } from './environment-safety';
+
+// Also validate before build-time database access, which precedes server startup.
+databaseTarget();
 
 const globalForPrisma = globalThis as unknown as {
   prisma: PrismaClient | undefined;

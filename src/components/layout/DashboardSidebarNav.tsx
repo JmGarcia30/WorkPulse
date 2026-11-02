@@ -48,6 +48,7 @@ export function DashboardSidebarNav({
   const sections = useMemo<SectionItem[]>(
     () => [
       { href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
+      ...(hrAccess ? [{ href: '/dashboard/profile', label: 'My Profile', icon: Users }] : []),
       {
         href: '/dashboard/hiring/pipeline',
         sectionPrefix: '/dashboard/hiring',

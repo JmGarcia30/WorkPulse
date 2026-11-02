@@ -60,6 +60,7 @@ export const googleProvider: GmailProvider = {
     return { accessToken: token.access_token, refreshToken: token.refresh_token, expiresAt: Date.now() + token.expires_in * 1000 };
   },
   async send(accessToken, raw) {
+    if (process.env.VERCEL_ENV === 'preview') throw new EmailIntegrationError('SEND_FAILED');
     const response = await request('https://gmail.googleapis.com/gmail/v1/users/me/messages/send', { method: 'POST', headers: { Authorization: 'Bearer ' + accessToken, 'Content-Type': 'application/json' }, body: JSON.stringify({ raw }) });
     if (response.ok) return;
     const data = await response.json().catch(() => ({}));

@@ -41,6 +41,7 @@ export default async function LoginPage() {
             <h2>Welcome back</h2>
             <p className={styles.formIntro}>Sign in to your organization workspace.</p>
             <TenantLoginForm />
+            <Link href={await requestWorkspacePath('/forgot-password')} className={styles.backLink}>Forgot password?</Link>
             <Link href={backToWorkspaceHref} className={styles.backLink}>{tenant.slug === 'st-aloysius' ? 'Back to SAGA workspace' : `Back to ${tenant.displayName} workspace`}</Link>
           </div>
         </section>

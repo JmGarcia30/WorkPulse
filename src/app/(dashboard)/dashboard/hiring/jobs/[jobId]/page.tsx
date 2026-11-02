@@ -15,6 +15,7 @@ import {
 } from 'lucide-react';
 import { publishJobAction, closeJobAction } from '@/features/hiring/actions';
 import { HiringPageHeader } from '@/components/hiring/HiringPageHeader';
+import { DraftJobDeleteForm } from '@/features/account-security/draft-job-form';
 
 interface JobDetailPageProps {
   params: Promise<{ jobId: string }>;
@@ -210,6 +211,8 @@ export default async function JobDetailPage({ params }: JobDetailPageProps) {
           </div>
         )}
       </div>
+
+      {canEdit && job.status === JobStatus.DRAFT && !job.publishedAt && <DraftJobDeleteForm jobId={job.id} />}
 
       {/* Description & Responsibilities */}
       <div className="rounded-md border border-slate-200 bg-white p-6 space-y-6">

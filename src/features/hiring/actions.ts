@@ -15,6 +15,7 @@ import { getAvailableNextStatuses } from './pipeline';
 import { transitionApplicationStatus, transitionInclude, transitionSource } from './status-transition';
 import { getStageTransitionBlockers } from './stage-prerequisites';
 import { z } from 'zod';
+import { auditedJobMutation } from '@/features/account-security/job-audit';
 
 function slugify(text: string): string {
   return text
@@ -90,7 +91,7 @@ export async function createJobAction(formData: FormData): Promise<void> {
       ? EmploymentCategory.TEACHING
       : EmploymentCategory.NON_TEACHING;
 
-  const job = await prisma.job.create({
+  const job = await auditedJobMutation(prisma, user, 'JOB_CREATED', tx => tx.job.create({
     data: {
       organizationId: user.organizationId,
       title,
@@ -115,7 +116,7 @@ export async function createJobAction(formData: FormData): Promise<void> {
         })),
       },
     },
-  });
+  }));
 
   revalidatePath('/dashboard/hiring/jobs');
   redirect(`/dashboard/hiring/jobs/${job.id}`);
@@ -175,7 +176,7 @@ export async function updateJobAction(jobId: string, formData: FormData): Promis
 
   const categoryRaw = (formData.get('category') as string)?.trim();
 
-  await prisma.job.update({
+  await auditedJobMutation(prisma, user, 'JOB_UPDATED', tx => tx.job.update({
     where: { id: jobId, organizationId: user.organizationId },
     data: {
       title,
@@ -206,7 +207,7 @@ export async function updateJobAction(jobId: string, formData: FormData): Promis
         })),
       },
     },
-  });
+  }));
 
   revalidatePath('/dashboard/hiring/jobs');
   revalidatePath(`/dashboard/hiring/jobs/${jobId}`);
@@ -227,13 +228,13 @@ export async function publishJobAction(jobId: string) {
     return { error: 'Job posting not found.' };
   }
 
-  await prisma.job.update({
-    where: { id: jobId },
+  await auditedJobMutation(prisma, user, 'JOB_PUBLISHED', tx => tx.job.update({
+    where: { id: jobId, organizationId: user.organizationId },
     data: {
       status: JobStatus.PUBLISHED,
       publishedAt: new Date(),
     },
-  });
+  }));
 
   revalidatePath('/dashboard/hiring/jobs');
   revalidatePath(`/dashboard/hiring/jobs/${jobId}`);
@@ -255,12 +256,12 @@ export async function closeJobAction(jobId: string) {
     return { error: 'Job posting not found.' };
   }
 
-  await prisma.job.update({
-    where: { id: jobId },
+  await auditedJobMutation(prisma, user, 'JOB_CLOSED', tx => tx.job.update({
+    where: { id: jobId, organizationId: user.organizationId },
     data: {
       status: JobStatus.CLOSED,
     },
-  });
+  }));
 
   revalidatePath('/dashboard/hiring/jobs');
   revalidatePath(`/dashboard/hiring/jobs/${jobId}`);

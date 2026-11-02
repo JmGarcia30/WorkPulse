@@ -24,6 +24,14 @@ async function main() {
     loaded.paths = Module._nodeModulePaths(path.dirname(filename));
     loaded.require = function(name) {
       if (name === '@prisma/client') return { PrismaClient: TrackedClient };
+      if (name === './environment-safety') {
+        const safetyFile = path.resolve('src/lib/db/environment-safety.ts');
+        const safety = new Module(safetyFile, loaded);
+        safety._compile(ts.transpileModule(fs.readFileSync(safetyFile, 'utf8'), {
+          compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2017 },
+        }).outputText, safetyFile);
+        return safety.exports;
+      }
       return Module.prototype.require.call(this, name);
     };
     loaded._compile(compiled, filename);

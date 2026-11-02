@@ -561,6 +561,35 @@ model PlatformAuthenticationAttempt {
   windowStart DateTime
 }
 
+// Fixed security metadata only. Database triggers forbid updates/deletes.
+model AccountSecurityEvent {
+  id               String @id @default(cuid())
+  organizationId   String
+  actorIdentifier  String?
+  subjectIdentifier String
+  action           String
+  success          Boolean
+  operationKey     String? @unique
+  createdAt        DateTime @default(now())
+  organization     Organization @relation(fields: [organizationId], references: [id], onDelete: Restrict)
+
+  @@index([organizationId, createdAt, id])
+  @@index([createdAt, id])
+}
+
+model StaffPasswordReset {
+  tokenHash       String @id
+  userId          String
+  organizationId  String
+  expiresAt       DateTime
+  consumedAt      DateTime?
+  createdAt       DateTime @default(now())
+  user            User @relation(fields: [userId, organizationId], references: [id, organizationId], onDelete: Restrict)
+
+  @@index([userId, createdAt])
+  @@index([expiresAt])
+}
+
 model OrganizationEmailIntegration {
   organizationId String @id
   email String?
@@ -672,6 +701,7 @@ model PlatformOrganizationAudit {
 }
 
 model Organization {
+  accountSecurityEvents AccountSecurityEvent[]
   staffSessions StaffSession[]
   rfidCards RfidCard[]
   rfidKiosks RfidKioskSession[]
@@ -733,6 +763,7 @@ model Organization {
 }
 
 model User {
+  passwordResets StaffPasswordReset[]
   staffSessions StaffSession[]
   rfidKiosks RfidKioskSession[]
   rfidAudits RfidAudit[]

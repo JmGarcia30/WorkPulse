@@ -107,6 +107,8 @@ interface SendEmailParams {
 }
 
 export async function sendEmail({ to, subject, html, text, sensitive = false, senderName, requireConfiguredSender = false, inlineLogo }: SendEmailParams): Promise<{ success: boolean; mode: 'smtp' | 'preview_log'; id: string }> {
+  // Preview never sends or retains message bodies, even with inherited SMTP credentials.
+  if (process.env.VERCEL_ENV === 'preview') return { success: false, mode: 'preview_log', id: 'preview_delivery_disabled' };
   const plainText = text || html.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim();
   const id = `email_${Date.now()}_${Math.random().toString(36).substring(2, 8)}`;
   const transporter = getTransporter();
