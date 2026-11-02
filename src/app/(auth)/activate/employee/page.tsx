@@ -1,5 +1,7 @@
 import type { Metadata } from 'next';
 import { ActivationForm } from '@/components/employee-self-service/ActivationForm';
+import { TenantAccountAccessShell } from '@/components/auth/TenantAccountAccessShell';
+import { requireRequestTenant, requestWorkspacePath } from '@/lib/tenant/server';
 
 export const metadata: Metadata = {
   title: 'Activate WorkPulse Account',
@@ -7,6 +9,17 @@ export const metadata: Metadata = {
   robots: { index: false, follow: false },
 };
 
-export default function EmployeeActivationPage() {
-  return <main className="flex min-h-screen items-center justify-center bg-slate-100 p-4"><section className="w-full max-w-md rounded-3xl border bg-white p-8 shadow-xl"><div className="mb-6"><p className="text-xs font-bold uppercase tracking-wider text-slate-500">WorkPulse Employee Portal</p><h1 className="mt-2 text-2xl font-black">Activate your account</h1><p className="mt-2 text-sm text-slate-500">Create your password to access your employment and attendance information.</p></div><ActivationForm /></section></main>;
+export default async function EmployeeActivationPage() {
+  const tenant = await requireRequestTenant();
+  return (
+    <TenantAccountAccessShell
+      tenant={tenant}
+      title="Activate your account"
+      description="Create your password to access employment and attendance information."
+      eyebrow="Employee account activation"
+      backHref={await requestWorkspacePath('/login')}
+    >
+      <ActivationForm />
+    </TenantAccountAccessShell>
+  );
 }

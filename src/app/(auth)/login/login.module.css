@@ -37,3 +37,12 @@
   .formPanel h2 { font-size: 35px; }
   .mobileIdentity { margin-bottom: 30px; }
 }
+
+/* Account access screens share the login shell without double card borders. */
+.accessForm { margin-top: 24px; }
+.accessForm :global(.wp-card) { border: 0; border-radius: 0; padding: 0; box-shadow: none; background: transparent; }
+.accessForm :global(.wp-label) { color: #252b29; }
+.accessForm :global(.wp-input) { min-height: 46px; border-color: #cfcac1; }
+.accessForm :global(.wp-input:focus) { border-color: var(--tenant-accent); outline-color: color-mix(in srgb, var(--tenant-accent) 30%, transparent); }
+.accessForm :global(.wp-button-primary) { width: 100%; min-height: 46px; }
+.accessForm :global(form p) { font-size: 13px; line-height: 1.5; }
