@@ -1,0 +1,11 @@
+{
+  "capturedAt": "2026-11-02T15:55:20.885Z",
+  "status": "STAGED_BUILD_PENDING",
+  "commit": "947a14547c3863f0058750c946271d1118fc29fd",
+  "deployment": "dpl_5P4nncE8EsMb79aKPGNjaexXF4Hm",
+  "url": "https://work-pulse-6jmgokyfn-jose-miguel-garcias-projects.vercel.app",
+  "target": "production",
+  "noDomainAssignmentRequested": true,
+  "applicationBuildsThisFix": 1,
+  "archiveSha256": "e1bb73fb5aafb99f7f38e534e650b15642c35215d999da7acedf05751e526e46"
+}

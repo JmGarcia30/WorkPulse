@@ -1,0 +1,13 @@
+{
+  "capturedAt": "2026-11-02T16:01:56.138Z",
+  "status": "PASS",
+  "deployment": "dpl_5P4nncE8EsMb79aKPGNjaexXF4Hm",
+  "commit": "947a14547c3863f0058750c946271d1118fc29fd",
+  "liveUrl": "https://work-pulse-omega.vercel.app",
+  "canonicalAliasVerified": true,
+  "rollbackDeployment": "dpl_GEyVH15HCeu243vUbeohkTy6AFcR",
+  "rollbackRetained": true,
+  "applicationBuilds": 1,
+  "stagedRuntimePassed": true,
+  "stagedBrowserChecks": 11
+}

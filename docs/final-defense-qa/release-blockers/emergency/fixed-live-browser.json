@@ -1,0 +1,77 @@
+{
+  "capturedAt": "2026-11-02T16:03:14.773Z",
+  "status": "PASS",
+  "origin": "https://work-pulse-omega.vercel.app",
+  "checks": [
+    {
+      "check": "login and new recovery link render",
+      "status": "PASS",
+      "httpStatus": 200,
+      "finalPath": "/saga/login"
+    },
+    {
+      "check": "HR and employee recovery form renders",
+      "status": "PASS",
+      "httpStatus": 200,
+      "finalPath": "/saga/forgot-password"
+    },
+    {
+      "check": "reset form refuses absent bearer token",
+      "status": "PASS",
+      "httpStatus": 200,
+      "finalPath": "/saga/reset-password"
+    },
+    {
+      "check": "profile requires staff authentication",
+      "status": "PASS",
+      "httpStatus": 200,
+      "finalPath": "/saga/login"
+    },
+    {
+      "check": "recruitment requires staff authentication",
+      "status": "PASS",
+      "httpStatus": 200,
+      "finalPath": "/saga/login"
+    },
+    {
+      "check": "ESS requires staff authentication",
+      "status": "PASS",
+      "httpStatus": 200,
+      "finalPath": "/saga/login"
+    },
+    {
+      "check": "attendance requires staff authentication",
+      "status": "PASS",
+      "httpStatus": 200,
+      "finalPath": "/saga/login"
+    },
+    {
+      "check": "payroll requires staff authentication",
+      "status": "PASS",
+      "httpStatus": 200,
+      "finalPath": "/saga/login"
+    },
+    {
+      "check": "audit viewer requires separate platform authentication",
+      "status": "PASS",
+      "httpStatus": 200,
+      "finalPath": "/platform/login"
+    },
+    {
+      "check": "unknown workspace is rejected",
+      "status": "PASS",
+      "httpStatus": 404,
+      "finalPath": "/w/wp-release-nonexistent-20261102/login"
+    },
+    {
+      "check": "mobile recovery form renders",
+      "status": "PASS",
+      "httpStatus": 200,
+      "finalPath": "/saga/forgot-password"
+    }
+  ],
+  "authenticatedFeatureTests": "UNVERIFIED: approved controlled credentials unavailable",
+  "externalEmail": "BLOCKED: controlled inbox unavailable",
+  "productionBusinessWrites": 0,
+  "formSubmissions": 0
+}

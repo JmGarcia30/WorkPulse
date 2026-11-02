@@ -1,5 +1,17 @@
 # IT Evaluation release blockers
 
+## Resolved and promoted — 2026-11-03 Asia/Singapore
+
+**The session-key blocker is resolved and the completed release is live.** Protected runtime diagnosis established the exact cause: Production used the public template value. Authorized rotation replaced the session-signing key while retaining the exact old value separately for RFID; both existing active card assignments and their complete-row fingerprint are unchanged. Application commit `947a14547c3863f0058750c946271d1118fc29fd` is serving from `dpl_5P4nncE8EsMb79aKPGNjaexXF4Hm` after one application build, successful runtime checks and 11/11 staged plus 11/11 live Chrome smoke checks. Production remains 40/40 and the prior working deployment is retained. [Completed fix, evidence scopes and remaining test-access limitations](release-blockers/session-key-fix/RESULT.md) supersede the historical failed checkpoints below. Authenticated account mutations, physical card scans and external inbox delivery are not claimed as verified.
+
+## Latest final checkpoint — staged session-key failure
+
+**Production is 40/40 and main was pushed at `93a1718d774c9bb32661df04dd3ae52abc45efad`, but the new release was NOT promoted.** Staged Production deployment `dpl_27wDq5pqiuxptSRigZZamkaghYTS` built successfully but returns HTTP 500 with `WORKPULSE_SESSION_SECRET_REJECTED`. This is a concrete authentication configuration failure; no safety check was bypassed. The live domain retains healthy schema-compatible diagnostic baseline `dpl_GEyVH15HCeu243vUbeohkTy6AFcR`. Full migration preservation/recovery checks passed. Both deployment freezes remain; no production secret was rotated. New authenticated/live email tests remain unverified. [Exact results and owner action](release-blockers/emergency/RELEASE-STATUS.md) supersede the earlier checkpoints below. **NO-GO for promotion pending an authorized safe Production session key and successful staged verification.**
+
+## Resumed operational release — 2026-11-02
+
+Vercel authentication is now verified. The adopted schema-compatible diagnostic baseline's **active live runtime binding is proven**, a fresh branch recovery checkpoint and independent reconstruction passed full 73-table preservation checks, and **production migrations 39/40 completed successfully (40/40, zero unresolved, repeat deploy no-op)**. The full schema matches the rehearsal and the live old-application login remains healthy. See [current release status](release-blockers/emergency/RELEASE-STATUS.md). The earlier blocked-at-authentication records below are historical. Final candidate push, staged deployment, runtime security checks and promotion still need their actual results recorded; do not infer release success from the migration result.
+
 ## Latest emergency release attempt — 2026-11-02
 
 **Operational release authorized but BLOCKED in Phase 1.** [Attempt, concrete safety blocker, completed preparation and continuation steps](release-blockers/emergency/RELEASE-ATTEMPT.md). Fresh provider checks confirm Production credentials are separated from general Preview access, the review freeze-smoke deployment is CANCELED, and the live domain still serves the existing READY deployment. The old shared-scope findings below are historical.

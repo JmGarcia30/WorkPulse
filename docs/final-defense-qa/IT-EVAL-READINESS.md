@@ -1,5 +1,9 @@
 # IT evaluation readiness
 
+Current live result, 2026-11-03 Asia/Singapore: the session-key configuration failure is resolved, both RFID assignments are preserved, and application commit `947a14547c3863f0058750c946271d1118fc29fd` is promoted as deployment `dpl_5P4nncE8EsMb79aKPGNjaexXF4Hm`. Runtime and 11 staged/11 live browser smoke checks passed. See [the completed release result and precise verification limits](release-blockers/session-key-fix/RESULT.md). Earlier blocked-release statements below are historical; November statutory-verification restrictions remain unchanged.
+
+Latest operational result: production migrations **40/40** and GitHub main `93a1718d774c9bb32661df04dd3ae52abc45efad` are verified. The exact-commit staged release failed its hosted session-key safety check (`WORKPULSE_SESSION_SECRET_REJECTED`, HTTP 500) and was **not promoted**. The previous working diagnostic baseline remains live. See [current release result and required credential action](release-blockers/emergency/RELEASE-STATUS.md). The original readiness assessment below remains historical test evidence, not a claim that new features are now live.
+
 Date: **2026-11-02, Asia/Singapore**. Repository: `main`, `b24616ba92294018da82341b2f3e8d3a35c69f32`; remote `origin/main` matched at inspection. All work remains local and uncommitted.
 
 **Assessment: CONDITIONAL GO for an isolated final-defense demonstration. Production release is not authorized or demonstrated.** The new account-security migration must be reviewed and applied to an approved demonstration environment before running this code there. Existing Batch 2 release gates and Batch 3 statutory restrictions remain in force.

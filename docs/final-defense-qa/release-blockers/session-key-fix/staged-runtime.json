@@ -1,0 +1,25 @@
+{
+  "capturedAt": "2026-11-02T15:59:42.806Z",
+  "status": "PASS",
+  "deployment": "dpl_5P4nncE8EsMb79aKPGNjaexXF4Hm",
+  "commit": "947a14547c3863f0058750c946271d1118fc29fd",
+  "loginHttpStatus": 200,
+  "hostedSessionSecretAccepted": true,
+  "rfidAndSessionKeysCaptured": true,
+  "invalidStaffSessionDenied": true,
+  "separatePlatformAuthenticationRequired": true,
+  "databaseIdentity": {
+    "environment": "production",
+    "deployment": "dpl_5P4nncE8EsMb79aKPGNjaexXF4Hm",
+    "commit": "947a14547c3863f0058750c946271d1118fc29fd",
+    "project": "late-block-61364102",
+    "branch": "br-hidden-violet-azjl3vam",
+    "endpoint": "ep-weathered-mouse-azpx765h",
+    "database": "neondb",
+    "projectVerification": "requires-provider-mapping"
+  },
+  "liveRollbackDeploymentPreserved": true,
+  "productionBusinessWrites": 0,
+  "realEmployeeLoginAttempts": 0,
+  "positivePasswordLogin": "UNVERIFIED: controlled credentials unavailable"
+}

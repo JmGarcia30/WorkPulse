@@ -55,7 +55,8 @@ async function main() {
     await assert.rejects(verifyDatabaseIdentity(clone, async () => rows), { message: 'WORKPULSE_DATABASE_IDENTITY_REJECTED' }); checks++;
   }
   await assert.rejects(verifyDatabaseIdentity(clone, async () => { throw new Error('provider-error-with-secret'); }), { message: 'WORKPULSE_DATABASE_IDENTITY_REJECTED' }); checks++;
-  assert.equal(JSON.parse(fs.readFileSync('vercel.json', 'utf8')).git.deploymentEnabled, false); checks++;
+  // Normal Git deployments are restored only after the release passed live checks.
+  assert.equal(JSON.parse(fs.readFileSync('vercel.json', 'utf8')).git.deploymentEnabled, true); checks++;
   const originalEnv = { ...process.env }, priorFetch = global.fetch;
   let transports = 0, deliveries = 0, requests = 0;
   const smtp = { createTransport() { transports++; return { async sendMail() { deliveries++; } }; } };
