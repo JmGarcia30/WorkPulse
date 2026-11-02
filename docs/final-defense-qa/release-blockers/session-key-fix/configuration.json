@@ -1,0 +1,28 @@
+{
+  "capturedAt": "2026-11-02T15:51:56.285Z",
+  "status": "PASS",
+  "exactCause": "Protected Production runtime diagnostic confirmed PUBLIC_TEMPLATE before changes",
+  "diagnosticDeployment": "dpl_3y5YkyCHxmPDxwaCg52177UJGfnM",
+  "session": {
+    "id": "8F5np2Zrvpz5QZSw",
+    "key": "SESSION_SECRET",
+    "target": [
+      "production"
+    ],
+    "type": "sensitive",
+    "generatedEntropyBytes": 64
+  },
+  "rfid": {
+    "id": "hyBIhdx3GG7rqh6r",
+    "key": "RFID_CARD_SECRET",
+    "target": [
+      "production"
+    ],
+    "type": "sensitive",
+    "valueIdenticalToRuntimeVerifiedOriginal": true,
+    "cardDigestAlgorithmUnchanged": true
+  },
+  "providerRenameRejectedWithoutMutation": true,
+  "liveBefore": "dpl_GEyVH15HCeu243vUbeohkTy6AFcR",
+  "liveAfter": "dpl_GEyVH15HCeu243vUbeohkTy6AFcR"
+}

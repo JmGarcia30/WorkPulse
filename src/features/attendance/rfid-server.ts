@@ -6,7 +6,9 @@ import { resolveRequestTenant } from '@/lib/tenant/server';
 import { createRfidService, isRfidAdministrator, RfidError } from './rfid-service';
 
 export const RFID_COOKIE = process.env.NODE_ENV === 'production' ? '__Host-workpulse_rfid_kiosk' : 'workpulse_rfid_kiosk';
-export const rfidService = () => createRfidService(prisma, process.env.SESSION_SECRET ?? '');
+// Keep card digests stable when the session-signing key is rotated.
+// Existing installations retain the fallback until their RFID key is separated.
+export const rfidService = () => createRfidService(prisma, process.env.RFID_CARD_SECRET ?? process.env.SESSION_SECRET ?? '');
 
 export async function rfidHRContext() {
   const user = await getSession();
