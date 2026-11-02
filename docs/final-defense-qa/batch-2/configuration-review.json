@@ -1,0 +1,41 @@
+{
+  "capturedAt": "2026-11-01T17:47:14.959Z",
+  "secretValuesPrintedOrSaved": false,
+  "localProfileChecks": [
+    {
+      "file": ".env",
+      "authoritativeForActiveVercelDeployment": false,
+      "sessionSecretPresent": true,
+      "sessionSecretAtLeast32": true,
+      "dedicatedOtpSecretPresent": false,
+      "dedicatedOtpSecretValidIfPresent": true,
+      "smtpCredentialsPresent": true,
+      "smtpUserEmailFormat": true,
+      "smtpTransportChoice": "Gmail service",
+      "genericSmtpAndGmailBothConfigured": false,
+      "smtpAuthenticationExecuted": false,
+      "smtpMailSent": false,
+      "platformRootConfigured": false,
+      "platformPublicOriginConfigured": false
+    },
+    {
+      "file": ".env.recovery.local",
+      "authoritativeForActiveVercelDeployment": false,
+      "sessionSecretPresent": true,
+      "sessionSecretAtLeast32": true,
+      "dedicatedOtpSecretPresent": false,
+      "dedicatedOtpSecretValidIfPresent": true,
+      "smtpCredentialsPresent": false,
+      "smtpUserEmailFormat": false,
+      "smtpTransportChoice": "unconfigured",
+      "genericSmtpAndGmailBothConfigured": false,
+      "smtpAuthenticationExecuted": false,
+      "smtpMailSent": false,
+      "platformRootConfigured": false,
+      "platformPublicOriginConfigured": false
+    }
+  ],
+  "activeProductionValues": "UNVERIFIED; metadata presence only",
+  "productionOtpKeyBehavior": "COMPANY_REGISTRATION_OTP_SECRET when nonempty; otherwise SESSION_SECRET; at least 32 characters",
+  "important": "Local credentials were not used to authenticate to real SMTP; no actual recipient was contacted."
+}

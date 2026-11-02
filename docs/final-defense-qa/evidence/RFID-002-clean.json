@@ -1,0 +1,10 @@
+{
+  "id": "RFID-002-clean",
+  "command": "node --require tsx/cjs --require ./docs/final-defense-qa/preload.cjs scripts/test-rfid-attendance.ts",
+  "capturedAt": "2026-11-01T16:28:20.920Z",
+  "durationMs": 89266,
+  "exitCode": 0,
+  "status": "PASS",
+  "schema": "batch3_test_60b9242693877e9e8f65ae47",
+  "isolatedPerSuite": true
+}

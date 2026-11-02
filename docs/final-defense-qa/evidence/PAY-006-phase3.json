@@ -1,0 +1,10 @@
+{
+  "id": "PAY-006-phase3",
+  "command": "node docs/final-defense-qa/exported-suites.cjs test-payroll-phase3.ts runPayrollPhase3",
+  "capturedAt": "2026-11-01T16:31:15.441Z",
+  "durationMs": 28581,
+  "exitCode": 0,
+  "status": "PASS",
+  "schema": "batch3_test_cf0f687e6358b9900d2ba734",
+  "isolatedPerSuite": true
+}

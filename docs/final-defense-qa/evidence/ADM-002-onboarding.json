@@ -1,0 +1,9 @@
+{
+  "id": "ADM-002-onboarding",
+  "command": "node docs/final-defense-qa/exported-suites.cjs test-platform-onboarding.cjs",
+  "capturedAt": "2026-11-01T16:24:42.755Z",
+  "durationMs": 36250,
+  "exitCode": 0,
+  "status": "PASS",
+  "schema": "batch3_test_a72cf5b77a14345888c5f2ca"
+}

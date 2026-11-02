@@ -1,0 +1,19 @@
+{
+  "capturedAt": "2026-11-01T17:52:03.428Z",
+  "status": "PASS",
+  "identity": {
+    "branch_id": "br-damp-fog-azmmxhga",
+    "endpoint_id": "ep-wild-mud-az8yzifu"
+  },
+  "onlyBatch2ManifestSchemas": true,
+  "productionEndpointExcluded": true,
+  "removed": [
+    "batch2_otp_e4c2af80a69a6178075f490c",
+    "batch3_test_77a8925ff044d95df16c0467",
+    "batch3_test_4d18ceae1e4fbd00de490479",
+    "staff_auth_test_1f7179de4880868a66a46945",
+    "batch3_test_5619b01d8d43281b808f5b97",
+    "batch3_test_a0c9a6d8547f76eed3e4b1b0",
+    "batch3_test_833f65aec3ddff7a9f3455a3"
+  ]
+}

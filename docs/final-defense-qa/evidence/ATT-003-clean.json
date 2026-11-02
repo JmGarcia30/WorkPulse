@@ -1,0 +1,10 @@
+{
+  "id": "ATT-003-clean",
+  "command": "node --require tsx/cjs --require ./docs/final-defense-qa/preload.cjs scripts/test-h3-attendance.ts",
+  "capturedAt": "2026-11-01T16:26:24.597Z",
+  "durationMs": 20032,
+  "exitCode": 0,
+  "status": "PASS",
+  "schema": "batch3_test_78e5cfd178d11bc46aae1a92",
+  "isolatedPerSuite": true
+}

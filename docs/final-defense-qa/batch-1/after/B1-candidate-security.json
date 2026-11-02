@@ -1,0 +1,10 @@
+{
+  "id": "B1-candidate-security",
+  "command": "node docs/final-defense-qa/offline-adapter.cjs test-hiring-candidate-security.cjs",
+  "capturedAt": "2026-11-01T17:23:09.904Z",
+  "durationMs": 603,
+  "exitCode": 0,
+  "signal": null,
+  "status": "PASS",
+  "log": "B1-candidate-security.log"
+}

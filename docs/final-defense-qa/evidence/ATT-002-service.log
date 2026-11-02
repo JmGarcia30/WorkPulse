@@ -1,0 +1,24 @@
+prisma:error 
+Invalid `prisma.employeeScheduleAssignment.create()` invocation in
+G:\CAPSTONE\WorkPulse\scripts\test-h3-attendance.ts:95:49
+
+  92 const context = { organizationId: organization.id, actorUserId: actor.id };
+  93 await assignSchedule({ ...context, employeeId: employees[0].id, scheduleVersionId: version.id, effectiveFrom: '2026-01-01' });
+  94 let overlap = false;
+→ 95 try { await prisma.employeeScheduleAssignment.create(
+Error occurred during query execution:
+ConnectorError(ConnectorError { user_facing_error: None, kind: QueryError(PostgresError { code: "23P01", message: "conflicting key value violates exclusion constraint \"EmployeeScheduleAssignment_no_overlap\"", severity: "ERROR", detail: Some("Key (\"employeeId\", daterange(\"effectiveFrom\", \"effectiveTo\", '[)'::text))=(cmvy1i2u5000aujh4jz0bnv31, [2026-06-01,)) conflicts with existing key (\"employeeId\", daterange(\"effectiveFrom\", \"effectiveTo\", '[)'::text))=(cmvy1i2u5000aujh4jz0bnv31, [2026-01-01,))."), column: None, hint: None }), transient: false })
+prisma:error 
+Invalid `tx.attendanceEvent.createMany()` invocation in
+G:\CAPSTONE\WorkPulse\src\features\attendance\service.ts:419:47
+
+  416 await lockAttendanceEmployee(tx, input.organizationId, input.employeeId);
+  417 const employee = await tx.employee.findFirst({ where: { id: input.employeeId, organizationId: input.organizationId }, select: { id: true } });
+  418 if (!employee) throw new AttendanceError('NOT_FOUND', 'Employee not found or access denied.');
+→ 419 const inserted = await tx.attendanceEvent.createMany(
+Transaction failed due to a write conflict or a deadlock. Please retry your transaction
+H3_FAILURE {"recognizedMessages":[]}
+Error: ASSERTION FAILED: conflicting reference rolls back without replacing evidence
+    at assert (G:\CAPSTONE\WorkPulse\scripts\test-h3-attendance.ts:27:25)
+    at ok (G:\CAPSTONE\WorkPulse\scripts\test-h3-attendance.ts:34:57)
+    at main (G:\CAPSTONE\WorkPulse\scripts\test-h3-attendance.ts:102:3)

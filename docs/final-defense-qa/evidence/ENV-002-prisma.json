@@ -1,0 +1,10 @@
+{
+  "id": "ENV-002-prisma",
+  "command": "node node_modules/prisma/build/index.js validate",
+  "capturedAt": "2026-11-01T16:19:15.305Z",
+  "durationMs": 23385,
+  "exitCode": 0,
+  "signal": null,
+  "status": "PASS",
+  "log": "ENV-002-prisma.log"
+}

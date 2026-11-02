@@ -1,0 +1,9 @@
+PASS 1: child uses recovery URLs and local session, disables integrations, and preserves CLI arguments
+PASS 2: unverified recovery configuration cannot launch or fall back to production
+PASS 3: unverified recovery configuration cannot launch or fall back to production
+PASS 4: unverified recovery configuration cannot launch or fall back to production
+PASS 5: unverified recovery configuration cannot launch or fall back to production
+PASS 6: unverified recovery configuration cannot launch or fall back to production
+PASS 7: unverified recovery configuration cannot launch or fall back to production
+PASS 8: unverified recovery configuration cannot launch or fall back to production
+PASS 9: missing recovery profile fails closed

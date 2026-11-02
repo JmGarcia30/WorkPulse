@@ -94,5 +94,13 @@ export async function destroySession(): Promise<void> {
     if (!tenant) throw new Error('Staff sign-out requires its workspace.');
     await prisma.staffSession.deleteMany({ where: { tokenHash: staffTokenHash(token), organizationId: tenant.organizationId } });
   }
-  cookieStore.delete(COOKIE_NAME);
+  // __Host- cookies require Secure even on the response that expires them.
+  cookieStore.set(COOKIE_NAME, '', {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: 'lax',
+    path: '/',
+    maxAge: 0,
+    expires: new Date(0),
+  });
 }

@@ -1,0 +1,6 @@
+✓ Running next.config.ts took 111ms
+⨯ Error: The destination stream closed early.
+    at ignore-listed frames {
+  digest: '3122515128'
+}
+{"status":"FAIL","code":"NORMAL_LOGIN_TIMEOUT","locations":["    at error (G:\\CAPSTONE\\WorkPulse\\scripts\\batch0-recovery-browser.cjs:10:35)","    at browser (G:\\CAPSTONE\\WorkPulse\\scripts\\batch0-recovery-browser.cjs:30:24)","    at async ctx.db.$transaction.isolationLevel (G:\\CAPSTONE\\WorkPulse\\scripts\\test-hiring-browser-final.cjs:47:17)","    at async Proxy._transactionWithCallback (G:\\CAPSTONE\\WorkPulse\\node_modules\\@prisma\\client\\runtime\\library.js:130:8120)"]}

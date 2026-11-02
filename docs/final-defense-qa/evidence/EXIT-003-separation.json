@@ -1,0 +1,10 @@
+{
+  "id": "EXIT-003-separation",
+  "command": "node --require tsx/cjs --require ./docs/final-defense-qa/preload.cjs scripts/test-h10-2-separation.ts",
+  "capturedAt": "2026-11-01T16:31:26.410Z",
+  "durationMs": 66013,
+  "exitCode": 1,
+  "status": "FAIL",
+  "schema": "batch3_test_fcd6c3ec68365bedb6c13a04",
+  "isolatedPerSuite": true
+}

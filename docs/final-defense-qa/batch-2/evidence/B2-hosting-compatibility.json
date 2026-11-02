@@ -1,0 +1,10 @@
+{
+  "id": "B2-hosting-compatibility",
+  "command": "node docs/final-defense-qa/exported-suites.cjs ../docs/final-defense-qa/batch-2/hosting-compatibility.cjs",
+  "capturedAt": "2026-11-01T17:50:03.981Z",
+  "durationMs": 5427,
+  "exitCode": 0,
+  "status": "PASS",
+  "schema": "batch3_test_833f65aec3ddff7a9f3455a3",
+  "isolatedPerSuite": true
+}

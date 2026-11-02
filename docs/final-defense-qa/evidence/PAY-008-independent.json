@@ -1,0 +1,10 @@
+{
+  "id": "PAY-008-independent",
+  "command": "node docs/final-defense-qa/statutory-check.cjs",
+  "capturedAt": "2026-11-01T16:31:02.684Z",
+  "durationMs": 334,
+  "exitCode": 0,
+  "signal": null,
+  "status": "PASS",
+  "log": "PAY-008-independent.log"
+}

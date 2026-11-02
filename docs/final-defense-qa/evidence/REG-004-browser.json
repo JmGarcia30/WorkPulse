@@ -1,0 +1,10 @@
+{
+  "id": "REG-004-browser",
+  "command": "node docs/final-defense-qa/adapt-legacy.cjs company-registration-browser.cjs",
+  "capturedAt": "2026-11-01T16:36:23.458Z",
+  "durationMs": 144711,
+  "exitCode": 0,
+  "status": "PASS",
+  "schema": "batch3_test_cc58603e0ad0faa440395329",
+  "isolatedPerSuite": true
+}

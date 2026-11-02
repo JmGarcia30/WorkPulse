@@ -1,0 +1,9 @@
+{
+  "id": "ESS-001-service",
+  "command": "node --require ./docs/final-defense-qa/preload.cjs node_modules/tsx/dist/cli.mjs scripts/test-h4-employee-self-service.ts",
+  "capturedAt": "2026-11-01T16:24:20.375Z",
+  "durationMs": 24609,
+  "exitCode": 0,
+  "status": "PASS",
+  "schema": "batch3_test_a72cf5b77a14345888c5f2ca"
+}

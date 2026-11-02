@@ -1,0 +1,15 @@
+✓ Running next.config.ts took 47ms
+RFID PASS 1: real HR search and scanned-card enrollment succeed
+RFID PASS 2: real replacement UI deactivates the old card
+RFID PASS 3: real HR deactivation and fresh enrollment succeed
+failed to get redirect response [TypeError: fetch failed] {
+  [cause]: Error: self-signed certificate; if the root CA is installed locally, try running Node.js with --use-system-ca
+      at ignore-listed frames {
+    code: 'DEPTH_ZERO_SELF_SIGNED_CERT'
+  }
+}
+⨯ Error: The destination stream closed early.
+    at ignore-listed frames {
+  digest: '3122515128'
+}
+RFID BROWSER FAILURE ERR_ASSERTION

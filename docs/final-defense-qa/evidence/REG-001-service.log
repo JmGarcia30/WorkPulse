@@ -1,0 +1,47 @@
+PASS: Generated slug validates for SAGA
+PASS: Generated slug validates for www
+PASS: Generated slug validates for ab
+PASS: Generated slug validates for École & Sons
+PASS: Generated slug validates for 世界
+PASS: Generated slug validates for aaaaaaaaaaaaaaaaaa
+PASS: Short passwords cannot register
+PASS: Invalid email cannot register
+PASS: Passwords exceeding bcrypt byte limit are rejected
+PASS: Unsupported tenant hosting cannot accept registration
+PASS: Unverified registration creates neither tenant nor login user
+PASS: Pending password is hashed with existing bcrypt policy
+PASS: Only keyed OTP verifier and browser proof hash are stored
+PASS: SMTP receives a six-digit code with ten-minute expiry and a public verification URL
+PASS: Public registration response contains no secret or password
+PASS: Duplicate submission cannot overwrite pending company details or password
+PASS: Email link alone cannot activate an attacker-prepared password
+PASS: Unknown tokens cannot activate a workspace
+PASS: Verification resend enforces its cooldown
+PASS: Another browser must know the registration password to resend
+PASS: Another browser cannot resend or invalidate a pending registration
+PASS: Resending immediately invalidates the old token
+PASS: Verification consumes the token and removes the pending password hash
+PASS: Verified registrant becomes only its own initial HR administrator
+PASS: Neutral organization starts in UTC with careers disabled and no SAGA configuration
+PASS: No employee, payroll, hiring, leave, schedule or branding data is inherited
+PASS: Verified registration redirects to its validated tenant login
+PASS: Verified creation is audited without a platform operator
+PASS: Organization is immediately visible to existing platform queries
+PASS: Consumed verification cannot create a second organization
+PASS: Registered email cannot create duplicate users or send registration email
+[WorkPulse timing] branding read: 127.2ms
+[WorkPulse timing] tenant resolution: 127.7ms
+[WorkPulse timing] branding read: 61.5ms
+[WorkPulse timing] tenant resolution: 61.7ms
+[WorkPulse timing] session validation: 308.6ms
+PASS: Verified administrator signs in through existing tenant authentication
+[WorkPulse timing] branding read: 60.6ms
+[WorkPulse timing] tenant resolution: 60.7ms
+[WorkPulse timing] branding read: 63.0ms
+[WorkPulse timing] tenant resolution: 63.2ms
+Error: NOT_FOUND
+    at notFound (G:\CAPSTONE\WorkPulse\docs\final-defense-qa\exported-suites.cjs:13:105)
+    at requireRequestTenant (G:\CAPSTONE\WorkPulse\src\lib\tenant\server.ts:36:16)
+    at async Object.loginAction (G:\CAPSTONE\WorkPulse\src\lib\auth\actions.ts:11:18)
+    at async test (G:\CAPSTONE\WorkPulse\scripts\test-company-registration.cjs:82:50)
+    at async main (G:\CAPSTONE\WorkPulse\docs\final-defense-qa\exported-suites.cjs:24:16)

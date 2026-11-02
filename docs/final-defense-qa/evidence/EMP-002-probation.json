@@ -1,0 +1,9 @@
+{
+  "id": "EMP-002-probation",
+  "command": "node node_modules/tsx/dist/cli.mjs scripts/test-h2-employment-probation.ts",
+  "capturedAt": "2026-11-01T16:22:25.733Z",
+  "durationMs": 7487,
+  "exitCode": 1,
+  "status": "FAIL",
+  "schema": "batch3_test_a72cf5b77a14345888c5f2ca"
+}

@@ -1,0 +1,55 @@
+[
+  {
+    "file": "sss-table.jpg",
+    "url": "https://www.sss.gov.ph/wp-content/uploads/2024/12/Cir-2024-006-Employers-scaled.jpg",
+    "capturedAt": "2026-11-02T04:57:27.262Z",
+    "status": "FETCHED",
+    "bytes": 1153604,
+    "sha256": "40d94c495166faea45196c151c838ec4f6263d32d77128421edab95e611014b0"
+  },
+  {
+    "file": "sss-circular.pdf",
+    "url": "https://www.sss.gov.ph/wp-content/uploads/2024/12/CI-2024-006-Publication.pdf",
+    "capturedAt": "2026-11-02T04:57:29.635Z",
+    "status": "FETCHED",
+    "bytes": 879092,
+    "sha256": "5edda2ad4cc3c745b9d4e68a40c2309df531a95f032a9966a22877ceea454855",
+    "textCharacters": 6
+  },
+  {
+    "file": "pagibig-460.pdf",
+    "url": "https://naro.law.upd.edu.ph/storage/01JQWKTTA92H57M9EWV31W8F1D.pdf",
+    "capturedAt": "2026-11-02T04:57:30.811Z",
+    "status": "FETCHED",
+    "bytes": 5761470,
+    "sha256": "3bf3e9f09933f99e8bd220822980104dfa63b5ab779eac13b11d4763fb314f59",
+    "textCharacters": 10
+  },
+  {
+    "file": "bir-annex-e.pdf",
+    "url": "https://bir-cdn.bir.gov.ph/local/pdf/Annex%20E%20RR%2011-2018.pdf",
+    "capturedAt": "2026-11-02T04:57:31.211Z",
+    "status": "FETCHED",
+    "bytes": 357734,
+    "sha256": "ed7543231b936e5a87263f4382b8da6409169e0dc7d943ed04a3d1bdea380eb3",
+    "textCharacters": 1518
+  },
+  {
+    "file": "bir-29-2025.pdf",
+    "url": "https://bir-cdn.bir.gov.ph/BIR/pdf/RR%20No.%2029-2025.pdf",
+    "capturedAt": "2026-11-02T04:57:31.277Z",
+    "status": "FETCHED",
+    "bytes": 409714,
+    "sha256": "b35cc25bcac4206469385a4dab89a5cc942aab73a55b6637ef323d601a552315",
+    "textCharacters": 4
+  },
+  {
+    "file": "philhealth-2026-0042.pdf",
+    "url": "https://www.philhealth.gov.ph/advisories/2026/PA2026-0042.pdf",
+    "capturedAt": "2026-11-02T04:57:31.685Z",
+    "status": "FETCHED",
+    "bytes": 149857,
+    "sha256": "e67dc44c884f2b94d7f2c3ca5bec1f2c6db3d8c5abf1dac5e7b29c6ae7ab5212",
+    "textCharacters": 2983
+  }
+]

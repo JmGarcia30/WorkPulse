@@ -1,0 +1,18 @@
+{
+  "eventId": "cmvy3r1k4000vujicdluf0h53",
+  "employeeId": "cmvy3qeni000aujicjsgjlknl",
+  "employeeName": "Synthetic Scanner",
+  "source": "RFID",
+  "sourceReference": "rfid:d2cc21f3-fe1a-4ae8-8afc-7cbc15933635",
+  "direction": "TIME_IN",
+  "occurredAt": "2026-11-01T17:26:52.366Z",
+  "timeZone": "Asia/Manila",
+  "attendanceDate": "2026-11-02",
+  "displayedTime": "1:26:52 AM",
+  "committedBeforeLostResponse": true,
+  "sameRequestIdRetried": true,
+  "hrAttendanceVisible": true,
+  "recentRfidActivityVisible": true,
+  "employeeAttendanceVisible": true,
+  "databaseScope": "New disposable development schema; no existing records changed"
+}

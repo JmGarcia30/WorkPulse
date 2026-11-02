@@ -1,0 +1,70 @@
+PASS: Generated slug validates for SAGA
+PASS: Generated slug validates for www
+PASS: Generated slug validates for ab
+PASS: Generated slug validates for École & Sons
+PASS: Generated slug validates for 世界
+PASS: Generated slug validates for aaaaaaaaaaaaaaaaaa
+PASS: Short passwords cannot register
+PASS: Invalid email cannot register
+PASS: Passwords exceeding bcrypt byte limit are rejected
+PASS: Unsupported tenant hosting cannot accept registration
+PASS: Unverified registration creates neither tenant nor login user
+PASS: Pending password is hashed with existing bcrypt policy
+PASS: Only keyed OTP verifier and browser proof hash are stored
+PASS: SMTP receives a six-digit code with ten-minute expiry and a public verification URL
+PASS: Public registration response contains no secret or password
+PASS: Duplicate submission cannot overwrite pending company details or password
+PASS: Email link alone cannot activate an attacker-prepared password
+PASS: Unknown tokens cannot activate a workspace
+PASS: Verification resend enforces its cooldown
+PASS: Another browser must know the registration password to resend
+PASS: Another browser cannot resend or invalidate a pending registration
+PASS: Resending immediately invalidates the old token
+PASS: Verification consumes the token and removes the pending password hash
+PASS: Verified registrant becomes only its own initial HR administrator
+PASS: Neutral organization starts in UTC with careers disabled and no SAGA configuration
+PASS: No employee, payroll, hiring, leave, schedule or branding data is inherited
+PASS: Verified registration redirects to its validated tenant login
+PASS: Verified creation is audited without a platform operator
+PASS: Organization is immediately visible to existing platform queries
+PASS: Consumed verification cannot create a second organization
+PASS: Registered email cannot create duplicate users or send registration email
+[WorkPulse timing] branding read: 122.9ms
+[WorkPulse timing] tenant resolution: 123.4ms
+[WorkPulse timing] branding read: 59.9ms
+[WorkPulse timing] tenant resolution: 60.2ms
+[WorkPulse timing] session validation: 301.8ms
+PASS: Verified administrator signs in through existing tenant authentication
+[WorkPulse timing] branding read: 60.9ms
+[WorkPulse timing] tenant resolution: 61.1ms
+[WorkPulse timing] branding read: 59.6ms
+[WorkPulse timing] tenant resolution: 59.9ms
+PASS: Valid new-company credentials and session cannot access SAGA
+PASS: Registration page is inaccessible on tenant hosts
+PASS: Verification page is inaccessible on discovery host
+PASS: Verification Server Action independently rejects tenant-host invocation
+PASS: Companies with identical names receive unique validated slugs
+PASS: Expired verification cannot create a tenant
+PASS: Expired pending registration can be restarted without reusing prior proofs
+PASS: SMTP failure returns actionable feedback
+PASS: Failed delivery leaves only a pending registration, never an active user
+PASS: Verification messages never leak to development email previews
+[WorkPulse Emailer] Sensitive email email_1793550589944_ia4djo was not delivered; content was discarded.
+PrismaClientKnownRequestError: 
+Invalid `prisma.$executeRawUnsafe()` invocation:
+
+
+Raw query failed. Code: `25P01`. Message: `ERROR: SAVEPOINT can only be used in transaction blocks`
+    at ei.handleRequestError (G:\CAPSTONE\WorkPulse\node_modules\@prisma\client\src\runtime\RequestHandler.ts:228:13)
+    at ei.handleAndLogRequestError (G:\CAPSTONE\WorkPulse\node_modules\@prisma\client\src\runtime\RequestHandler.ts:174:12)
+    at ei.request (G:\CAPSTONE\WorkPulse\node_modules\@prisma\client\src\runtime\RequestHandler.ts:143:12)
+    at async a (G:\CAPSTONE\WorkPulse\node_modules\@prisma\client\src\runtime\getPrismaClient.ts:833:24)
+    at async test (G:\CAPSTONE\WorkPulse\scripts\test-company-registration.cjs:109:3)
+    at async main (G:\CAPSTONE\WorkPulse\docs\final-defense-qa\exported-suites.cjs:24:16) {
+  code: 'P2010',
+  meta: {
+    code: '25P01',
+    message: 'ERROR: SAVEPOINT can only be used in transaction blocks'
+  },
+  clientVersion: '6.19.3'
+}

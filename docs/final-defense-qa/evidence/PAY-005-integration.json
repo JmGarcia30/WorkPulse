@@ -1,0 +1,10 @@
+{
+  "id": "PAY-005-integration",
+  "command": "node docs/final-defense-qa/exported-suites.cjs test-payroll-integration.ts runPayrollIntegration",
+  "capturedAt": "2026-11-01T16:28:19.480Z",
+  "durationMs": 60834,
+  "exitCode": 0,
+  "status": "PASS",
+  "schema": "batch3_test_f6abec9046f064c2d91ee70e",
+  "isolatedPerSuite": true
+}

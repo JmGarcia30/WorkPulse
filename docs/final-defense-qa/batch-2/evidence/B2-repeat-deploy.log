@@ -1,0 +1,11 @@
+Prisma schema loaded from docs\final-defense-qa\batch-2\migration-bundle\schema.prisma
+Datasource "db": PostgreSQL database "neondb", schema "batch2_otp_e4c2af80a69a6178075f490c" at "ep-wild-mud-az8yzifu.c-3.ap-southeast-1.aws.neon.tech"
+
+39 migrations found in prisma/migrations
+
+
+No pending migrations to apply.
+warn The configuration property `package.json#prisma` is deprecated and will be removed in Prisma 7. Please migrate to a Prisma config file (e.g., `prisma.config.ts`).
+For more information, see: https://pris.ly/prisma-config
+
+Environment variables loaded from .env

@@ -1,0 +1,52 @@
+{
+  "status": "PASS",
+  "capturedAt": "2026-11-01T17:44:40.903Z",
+  "schema": "batch2_otp_e4c2af80a69a6178075f490c",
+  "identity": {
+    "database": "neondb",
+    "branch_id": "br-damp-fog-azmmxhga",
+    "endpoint_id": "ep-wild-mud-az8yzifu",
+    "read_only": "on"
+  },
+  "migration": "20261027000100_company_registration_otp",
+  "migrationSha256": "03544310cff45c2014a32aeaf2874239f1f3c00c1a744c4307b6cd29cfa133c9",
+  "legacyRowsPreserved": 4,
+  "addedColumns": [
+    {
+      "column_name": "otpHash",
+      "data_type": "text",
+      "is_nullable": "YES",
+      "column_default": null
+    },
+    {
+      "column_name": "otpNonce",
+      "data_type": "text",
+      "is_nullable": "YES",
+      "column_default": null
+    },
+    {
+      "column_name": "otpAttempts",
+      "data_type": "integer",
+      "is_nullable": "NO",
+      "column_default": "0"
+    }
+  ],
+  "assertions": 13,
+  "checks": [
+    "B2-M01 isolated baseline has 38 migrations and no OTP columns",
+    "B2-M02 existing column definitions unchanged; exactly three additive columns",
+    "B2-M03 pending, expired, verified and failed legacy rows preserve every original field",
+    "B2-M04 existing rows receive nullable OTP fields and zero attempt default",
+    "B2-M05 39 successful migration records after upgrade",
+    "B2-M06 repeat Prisma deploy is a no-op",
+    "B2-M07 pre-migration pending legacy link verifies cross-device after upgrade",
+    "B2-M08 pre-migration expired legacy link stays expired",
+    "B2-M09 six-digit OTP issuance creates no tenant user before verification",
+    "B2-M10 cross-device resend invalidates the previous OTP",
+    "B2-M11 expired OTP cannot activate an organization",
+    "B2-M12 verified cross-device OTP creates exactly its own HR tenant",
+    "B2-M13 used OTP cannot create another tenant"
+  ],
+  "emails": "in-memory synthetic-only sender; real SMTP tested separately",
+  "productionModified": false
+}

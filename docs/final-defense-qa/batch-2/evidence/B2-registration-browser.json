@@ -1,0 +1,10 @@
+{
+  "id": "B2-registration-browser",
+  "command": "node docs/final-defense-qa/adapt-legacy.cjs company-registration-browser.cjs",
+  "capturedAt": "2026-11-01T17:48:36.714Z",
+  "durationMs": 139933,
+  "exitCode": 0,
+  "status": "PASS",
+  "schema": "batch3_test_4d18ceae1e4fbd00de490479",
+  "isolatedPerSuite": true
+}

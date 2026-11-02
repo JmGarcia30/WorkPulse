@@ -1,0 +1,10 @@
+{
+  "id": "PAY-004-workflow",
+  "command": "node docs/final-defense-qa/exported-suites.cjs test-payroll-workflow.ts runPayrollWorkflow",
+  "capturedAt": "2026-11-01T16:26:49.390Z",
+  "durationMs": 23407,
+  "exitCode": 0,
+  "status": "PASS",
+  "schema": "batch3_test_6f9f12b5cc0048ebe9ec336d",
+  "isolatedPerSuite": true
+}

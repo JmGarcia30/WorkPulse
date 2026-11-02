@@ -1,0 +1,10 @@
+{
+  "id": "B1-hiring-functional",
+  "command": "node docs/final-defense-qa/offline-adapter.cjs test-hiring-functional-fixes.cjs",
+  "capturedAt": "2026-11-01T17:23:09.200Z",
+  "durationMs": 547,
+  "exitCode": 0,
+  "signal": null,
+  "status": "PASS",
+  "log": "B1-hiring-functional.log"
+}

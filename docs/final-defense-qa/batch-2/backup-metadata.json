@@ -1,0 +1,17 @@
+{
+  "capturedAt": "2026-11-01T17:44:55.465Z",
+  "projectId": "late-block-61364102",
+  "branchId": "br-hidden-violet-azjl3vam",
+  "configuredHistoryRetentionSeconds": 21600,
+  "snapshots": [
+    {
+      "id": "snap-wandering-block-az759oda",
+      "source_branch_id": "br-hidden-violet-azjl3vam",
+      "created_at": "2026-10-25T13:46:47Z"
+    }
+  ],
+  "totalProjectSnapshots": 1,
+  "schedule": {
+    "schedule": []
+  }
+}

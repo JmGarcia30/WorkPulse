@@ -1,0 +1,34 @@
+✓ Running next.config.ts took 130ms
+PASS: Public website exposes company registration
+PASS: Registration fits a mobile viewport
+PASS: Registration password visibility can be toggled
+[WorkPulse Emailer (SMTP)] Sensitive transactional email accepted by SMTP provider.
+PASS: Real registration action sends loopback SMTP verification without creating a user
+PASS: Browser proof cookie is host-only, HttpOnly and Secure
+PASS: Verification clears email fragment and shows resend cooldown
+PASS: Six OTP boxes fit mobile viewport
+PASS: OTP verification fits a narrow 320px mobile viewport
+[WorkPulse Emailer (SMTP)] Sensitive transactional email accepted by SMTP provider.
+PASS: Cross-browser Resend Code sends a replacement through existing SMTP
+PASS: Pasting full code fills all six boxes and advances focus
+PASS: Typing a digit moves focus to the next box
+PASS: Real verification creates the tenant and redirects to its own login
+PASS: First HR login continues to existing organization branding setup
+PASS: Branding setup saves only the newly verified organization
+PASS: Existing HR login opens the new organization dashboard
+PASS: Dashboard refresh preserves tenant authentication
+PASS: Actual HTTP rejects a new-company session copied onto SAGA
+PASS: Tenant host cannot serve public registration
+PASS: Verification HTTP response disables caching and referrers
+PASS: Self-registered organization automatically appears in platform dashboard
+PASS: Platform details display verified self-service onboarding metadata
+PASS: Manual System Administrator organization creation remains available
+PASS: Existing SAGA public workspace remains accessible
+PASS: Concurrent duplicate submissions create one pending registration and email
+PASS: Concurrent incorrect attempts commit exactly five failures for one issued code
+PASS: A fresh browser cannot bypass exhausted code attempts
+PASS: Concurrent verification consumes one proof and creates one company/account
+⨯ Error: The destination stream closed early.
+    at ignore-listed frames {
+  digest: '3122515128'
+}

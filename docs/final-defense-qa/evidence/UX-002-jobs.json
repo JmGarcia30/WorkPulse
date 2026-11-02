@@ -1,0 +1,10 @@
+{
+  "id": "UX-002-jobs",
+  "command": "node scripts/test-ui-batch1-jobs.cjs",
+  "capturedAt": "2026-11-01T16:28:21.130Z",
+  "durationMs": 559,
+  "exitCode": 0,
+  "signal": null,
+  "status": "PASS",
+  "log": "UX-002-jobs.log"
+}

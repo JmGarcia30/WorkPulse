@@ -1,0 +1,10 @@
+{
+  "id": "B2-job-preservation",
+  "command": "node docs/final-defense-qa/exported-suites.cjs ../docs/final-defense-qa/batch-1/job-regression.cjs",
+  "capturedAt": "2026-11-01T17:49:21.449Z",
+  "durationMs": 15640,
+  "exitCode": 0,
+  "status": "PASS",
+  "schema": "batch3_test_5619b01d8d43281b808f5b97",
+  "isolatedPerSuite": true
+}

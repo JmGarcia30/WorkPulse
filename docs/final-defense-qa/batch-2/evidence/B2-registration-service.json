@@ -1,0 +1,10 @@
+{
+  "id": "B2-registration-service",
+  "command": "node docs/final-defense-qa/exported-suites.cjs test-company-registration.cjs",
+  "capturedAt": "2026-11-01T17:45:49.468Z",
+  "durationMs": 41805,
+  "exitCode": 0,
+  "status": "PASS",
+  "schema": "batch3_test_77a8925ff044d95df16c0467",
+  "isolatedPerSuite": true
+}

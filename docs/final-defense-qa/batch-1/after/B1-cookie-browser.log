@@ -1,0 +1,15 @@
+G:\CAPSTONE\WorkPulse\scripts\test-rfid-browser.cjs:173
+    await evaluate('document.querySelector('header button[aria-haspopup="dialog"]').click();true');
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^
+
+SyntaxError: missing ) after argument list
+    at wrapSafe (node:internal/modules/cjs/loader:1804:18)
+    at Module._compile (node:internal/modules/cjs/loader:1845:20)
+    at launch (G:\CAPSTONE\WorkPulse\docs\final-defense-qa\adapt-legacy.cjs:77:139)
+    at Object.<anonymous> (G:\CAPSTONE\WorkPulse\docs\final-defense-qa\adapt-legacy.cjs:80:1)
+    at Module._compile (node:internal/modules/cjs/loader:1871:14)
+    at Object..js (node:internal/modules/cjs/loader:2002:10)
+    at Module.load (node:internal/modules/cjs/loader:1594:32)
+    at Module.<anonymous> (node:internal/modules/cjs/loader:1396:12)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:255:19)
+    at Module.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:154:5)

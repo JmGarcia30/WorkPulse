@@ -1,0 +1,49 @@
+{
+  "capturedAt": "2026-11-02T05:03:15.154Z",
+  "status": "PASS",
+  "statutoryTestCases": 93,
+  "birTestCases": 56,
+  "databaseSuiteAssertions": 169,
+  "results": [
+    {
+      "id": "statutory",
+      "status": "PASS",
+      "exitCode": 0
+    },
+    {
+      "id": "bir",
+      "status": "PASS",
+      "exitCode": 0
+    },
+    {
+      "id": "integration",
+      "status": "PASS",
+      "assertions": 56
+    },
+    {
+      "id": "workflow",
+      "status": "PASS",
+      "assertions": 24
+    },
+    {
+      "id": "presentation",
+      "status": "PASS",
+      "assertions": 28
+    },
+    {
+      "id": "phase3",
+      "status": "PASS",
+      "assertions": 15
+    },
+    {
+      "id": "probes",
+      "status": "PASS",
+      "assertions": 46
+    }
+  ],
+  "limitations": [
+    "Safety-guard passes do not establish November calculation compliance.",
+    "Readiness mismatch is a reproduced P2 product finding.",
+    "See original failure and rerun evidence for harness attempt history."
+  ]
+}

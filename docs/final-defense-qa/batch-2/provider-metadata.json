@@ -1,0 +1,188 @@
+{
+  "capturedAt": "2026-11-01T17:42:39.496Z",
+  "vercel": {
+    "teamId": "team_UJrtsVOW9iHGOJYrMtflRVU2",
+    "projectId": "prj_O3lYRwFRzfShyGDhCzek5v0gW4pr",
+    "projectName": "work-pulse",
+    "deploymentId": "dpl_ERChyxVGShH7Sf81ykMzih25qxvb",
+    "deploymentUrl": "work-pulse-ouvmcqa5a-jose-miguel-garcias-projects.vercel.app",
+    "productionAlias": "work-pulse-omega.vercel.app",
+    "target": "production",
+    "readyState": "READY",
+    "gitSha": "c820c5207d66399fd8d5bd2cef4c19332d87935b",
+    "gitRef": "main"
+  },
+  "environmentMetadata": {
+    "decryptedValuesRequested": false,
+    "hiddenProductionEnvCount": 0,
+    "variables": [
+      {
+        "key": "GOOGLE_EMAIL_CLIENT_ID",
+        "type": "sensitive",
+        "target": [
+          "production"
+        ],
+        "updatedAt": 1792953239075,
+        "hasIntegrationBinding": false
+      },
+      {
+        "key": "GOOGLE_EMAIL_CLIENT_SECRET",
+        "type": "sensitive",
+        "target": [
+          "production"
+        ],
+        "updatedAt": 1792953239075,
+        "hasIntegrationBinding": false
+      },
+      {
+        "key": "EMAIL_OAUTH_ENCRYPTION_KEY",
+        "type": "sensitive",
+        "target": [
+          "production"
+        ],
+        "updatedAt": 1792953239075,
+        "hasIntegrationBinding": false
+      },
+      {
+        "key": "BLOB_READ_WRITE_TOKEN",
+        "type": "encrypted",
+        "target": [
+          "production",
+          "preview",
+          "development"
+        ],
+        "updatedAt": 1792947245317,
+        "hasIntegrationBinding": false
+      },
+      {
+        "key": "PLATFORM_PUBLIC_ORIGIN",
+        "type": "encrypted",
+        "target": [
+          "preview"
+        ],
+        "updatedAt": 1792944259105,
+        "hasIntegrationBinding": false
+      },
+      {
+        "key": "PLATFORM_ROOT_DOMAIN",
+        "type": "encrypted",
+        "target": [
+          "preview"
+        ],
+        "updatedAt": 1792944256808,
+        "hasIntegrationBinding": false
+      },
+      {
+        "key": "SESSION_SECRET",
+        "type": "sensitive",
+        "target": [
+          "preview"
+        ],
+        "updatedAt": 1792933613955,
+        "hasIntegrationBinding": false
+      },
+      {
+        "key": "DATABASE_URL",
+        "type": "sensitive",
+        "target": [
+          "preview"
+        ],
+        "updatedAt": 1792933381429,
+        "hasIntegrationBinding": false
+      },
+      {
+        "key": "PLATFORM_ROOT_DOMAIN",
+        "type": "sensitive",
+        "target": [
+          "production"
+        ],
+        "updatedAt": 1790270049612,
+        "hasIntegrationBinding": false
+      },
+      {
+        "key": "PLATFORM_PUBLIC_ORIGIN",
+        "type": "sensitive",
+        "target": [
+          "production"
+        ],
+        "updatedAt": 1790270049612,
+        "hasIntegrationBinding": false
+      },
+      {
+        "key": "DATABASE_URL",
+        "type": "sensitive",
+        "target": [
+          "production",
+          "preview"
+        ],
+        "updatedAt": 1790268420818,
+        "hasIntegrationBinding": false
+      },
+      {
+        "key": "SESSION_SECRET",
+        "type": "sensitive",
+        "target": [
+          "production",
+          "preview"
+        ],
+        "updatedAt": 1790268420818,
+        "hasIntegrationBinding": false
+      },
+      {
+        "key": "GOOGLE_AI_API_KEY",
+        "type": "sensitive",
+        "target": [
+          "production",
+          "preview"
+        ],
+        "updatedAt": 1790268420818,
+        "hasIntegrationBinding": false
+      },
+      {
+        "key": "GMAIL_USER",
+        "type": "sensitive",
+        "target": [
+          "production",
+          "preview"
+        ],
+        "updatedAt": 1793103533154,
+        "hasIntegrationBinding": false
+      },
+      {
+        "key": "GMAIL_APP_PASSWORD",
+        "type": "sensitive",
+        "target": [
+          "production",
+          "preview"
+        ],
+        "updatedAt": 1793105743782,
+        "hasIntegrationBinding": false
+      },
+      {
+        "key": "EMAIL_FROM",
+        "type": "sensitive",
+        "target": [
+          "production",
+          "preview"
+        ],
+        "updatedAt": 1793103553101,
+        "hasIntegrationBinding": false
+      }
+    ]
+  },
+  "neon": {
+    "projectId": "late-block-61364102",
+    "name": "WorkPulse",
+    "region": "aws-ap-southeast-1",
+    "postgresVersion": 18,
+    "configuredHistoryRetentionSeconds": 21600,
+    "branchId": "br-hidden-violet-azjl3vam",
+    "branchName": "production",
+    "primary": true,
+    "default": true,
+    "providerProtected": false,
+    "endpointId": "ep-weathered-mouse-azpx765h"
+  },
+  "activeDeploymentDatabaseBinding": "UNVERIFIED",
+  "reason": "Production DATABASE_URL is non-readable sensitive; no Neon integration configuration or project connector returned. Local URL matches Neon production-named endpoint but active deployment effective secret binding is not proven."
+}

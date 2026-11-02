@@ -1,0 +1,10 @@
+{
+  "id": "RFID-008-cookie-and-scans",
+  "command": "node docs/final-defense-qa/adapt-legacy.cjs test-rfid-browser.cjs",
+  "capturedAt": "2026-11-01T16:51:34.258Z",
+  "durationMs": 78315,
+  "exitCode": 1,
+  "status": "FAIL",
+  "schema": "batch3_test_bd813917cb3e1a6729b7d83d",
+  "isolatedPerSuite": true
+}

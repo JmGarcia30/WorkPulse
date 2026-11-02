@@ -1,0 +1,107 @@
+diff --git a/scripts/test-staff-session-security.cjs b/scripts/test-staff-session-security.cjs
+index bdec06c..f52ac64 100644
+--- a/scripts/test-staff-session-security.cjs
++++ b/scripts/test-staff-session-security.cjs
+@@ -12,7 +12,7 @@ const original=Module._load;
+ const sensitive=new Set([process.env.DATABASE_URL,process.env.SESSION_SECRET,new URL(process.env.DATABASE_URL).password]);
+ Module._load=function(name,parent,main){
+  if(name==='server-only')return {};
+- if(name==='next/headers')return {headers:async()=>context.headers,cookies:async()=>({get:key=>jar.get(key),has:key=>jar.has(key),set:(key,value,options)=>jar.set(key,{value,...options}),delete:key=>jar.delete(key)})};
++ if(name==='next/headers')return {headers:async()=>context.headers,cookies:async()=>({get:key=>jar.get(key),has:key=>jar.has(key),set:(key,value,options)=>{if(options?.maxAge===0||(options?.expires&&options.expires<=new Date()))jar.delete(key);else jar.set(key,{value,...options});},delete:key=>jar.delete(key)})};
+  if(name==='next/navigation')return {redirect:url=>{throw Error('REDIRECT:'+url);},notFound:()=>{throw Error('NOT_FOUND');}};
+  if(name==='next/cache')return {revalidatePath:()=>{}};
+  if(name==='@/lib/db/prisma')return {prisma:db};
+diff --git a/src/features/hiring/actions.ts b/src/features/hiring/actions.ts
+index c159ac2..b05a0b1 100644
+--- a/src/features/hiring/actions.ts
++++ b/src/features/hiring/actions.ts
+@@ -14,6 +14,7 @@ import {
+ import { getAvailableNextStatuses } from './pipeline';
+ import { transitionApplicationStatus, transitionInclude, transitionSource } from './status-transition';
+ import { getStageTransitionBlockers } from './stage-prerequisites';
++import { z } from 'zod';
+ 
+ function slugify(text: string): string {
+   return text
+@@ -149,29 +150,33 @@ export async function updateJobAction(jobId: string, formData: FormData): Promis
+     redirect(`/dashboard/hiring/jobs/${jobId}/edit?error=missing_fields`);
+   }
+ 
+-  let structuredReqsData: Array<{
+-    id?: string;
+-    name: string;
+-    type: RequirementType;
+-    description?: string;
+-    isRequired: boolean;
+-  }> = [];
+-
+-  if (reqsJson) {
+-    try {
+-      structuredReqsData = JSON.parse(reqsJson);
+-    } catch {
+-      // fallback
+-    }
++  const closingDate = closingDateRaw ? new Date(closingDateRaw) : null;
++  if (closingDate && (!/^\d{4}-\d{2}-\d{2}$/.test(closingDateRaw)
++    || Number.isNaN(closingDate.getTime()) || closingDate.toISOString().slice(0, 10) !== closingDateRaw)) {
++    redirect(`/dashboard/hiring/jobs/${jobId}/edit?error=invalid_fields`);
+   }
+ 
+-  // Re-create structured requirements cleanly
+-  await prisma.jobRequirement.deleteMany({ where: { jobId } });
++  let rawRequirements: unknown = [];
++  try {
++    if (reqsJson) rawRequirements = JSON.parse(reqsJson);
++  } catch {
++    redirect(`/dashboard/hiring/jobs/${jobId}/edit?error=invalid_fields`);
++  }
++  const parsedRequirements = z.array(z.object({
++    name: z.string(),
++    type: z.enum(RequirementType).or(z.literal('')).nullish().transform(value => value || RequirementType.SKILL),
++    description: z.string().nullish().transform(value => value || ''),
++    isRequired: z.boolean().nullish().transform(value => value ?? true),
++  })).safeParse(rawRequirements);
++  if (!parsedRequirements.success) {
++    redirect(`/dashboard/hiring/jobs/${jobId}/edit?error=invalid_fields`);
++  }
++  const structuredReqsData = parsedRequirements.data;
+ 
+   const categoryRaw = (formData.get('category') as string)?.trim();
+ 
+   await prisma.job.update({
+-    where: { id: jobId },
++    where: { id: jobId, organizationId: user.organizationId },
+     data: {
+       title,
+       department,
+@@ -189,8 +194,10 @@ export async function updateJobAction(jobId: string, formData: FormData): Promis
+       responsibilities: responsibilities || description,
+       qualifications: qualifications || description,
+       requirements: structuredReqsData.map((r) => r.name).join(', ') || title,
+-      closingDate: closingDateRaw ? new Date(closingDateRaw) : null,
++      closingDate,
+       structuredReqs: {
++        // A nested write atomically replaces requirements with the job update.
++        deleteMany: {},
+         create: structuredReqsData.map((r) => ({
+           name: r.name,
+           type: r.type || RequirementType.SKILL,
+diff --git a/src/lib/auth/session.ts b/src/lib/auth/session.ts
+index 1637052..4cabc31 100644
+--- a/src/lib/auth/session.ts
++++ b/src/lib/auth/session.ts
+@@ -94,5 +94,13 @@ export async function destroySession(): Promise<void> {
+     if (!tenant) throw new Error('Staff sign-out requires its workspace.');
+     await prisma.staffSession.deleteMany({ where: { tokenHash: staffTokenHash(token), organizationId: tenant.organizationId } });
+   }
+-  cookieStore.delete(COOKIE_NAME);
++  // __Host- cookies require Secure even on the response that expires them.
++  cookieStore.set(COOKIE_NAME, '', {
++    httpOnly: true,
++    secure: process.env.NODE_ENV === 'production',
++    sameSite: 'lax',
++    path: '/',
++    maxAge: 0,
++    expires: new Date(0),
++  });
+ }

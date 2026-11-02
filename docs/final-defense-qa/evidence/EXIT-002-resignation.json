@@ -1,0 +1,10 @@
+{
+  "id": "EXIT-002-resignation",
+  "command": "node docs/final-defense-qa/adapt-legacy.cjs test-ess-resignation.cjs",
+  "capturedAt": "2026-11-01T16:37:30.771Z",
+  "durationMs": 94605,
+  "exitCode": 0,
+  "status": "PASS",
+  "schema": "batch3_test_0a6e3a343e7ae8ba5d6efbb1",
+  "isolatedPerSuite": true
+}

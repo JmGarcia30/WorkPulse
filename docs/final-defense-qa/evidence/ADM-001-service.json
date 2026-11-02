@@ -1,0 +1,9 @@
+{
+  "id": "ADM-001-service",
+  "command": "node docs/final-defense-qa/exported-suites.cjs test-platform-admin.cjs",
+  "capturedAt": "2026-11-01T16:24:05.741Z",
+  "durationMs": 9974,
+  "exitCode": 1,
+  "status": "FAIL",
+  "schema": "batch3_test_a72cf5b77a14345888c5f2ca"
+}

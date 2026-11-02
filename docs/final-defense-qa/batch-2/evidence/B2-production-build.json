@@ -1,0 +1,10 @@
+{
+  "id": "B2-production-build",
+  "command": "node node_modules/next/dist/bin/next build --webpack",
+  "capturedAt": "2026-11-01T17:43:39.008Z",
+  "durationMs": 54779,
+  "exitCode": 0,
+  "signal": null,
+  "status": "PASS",
+  "log": "B2-production-build.log"
+}

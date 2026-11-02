@@ -1,0 +1,10 @@
+{
+  "id": "EXIT-001-final-pay",
+  "command": "node docs/final-defense-qa/adapt-legacy.cjs test-final-pay.cjs",
+  "capturedAt": "2026-11-01T16:35:09.111Z",
+  "durationMs": 133568,
+  "exitCode": 0,
+  "status": "PASS",
+  "schema": "batch3_test_db01535abcc74df4e714bc62",
+  "isolatedPerSuite": true
+}

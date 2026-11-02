@@ -1,0 +1,10 @@
+{
+  "id": "UX-001-payroll",
+  "command": "node scripts/test-final-ux-payroll-state.cjs",
+  "capturedAt": "2026-11-01T16:21:28.237Z",
+  "durationMs": 686,
+  "exitCode": 0,
+  "signal": null,
+  "status": "PASS",
+  "log": "UX-001-payroll.log"
+}

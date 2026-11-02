@@ -1,0 +1,10 @@
+{
+  "id": "ADM-003-clean",
+  "command": "node docs/final-defense-qa/exported-suites.cjs test-platform-admin.cjs",
+  "capturedAt": "2026-11-01T16:28:56.549Z",
+  "durationMs": 12371,
+  "exitCode": 1,
+  "status": "FAIL",
+  "schema": "batch3_test_e26066b8cb5662a0176bc729",
+  "isolatedPerSuite": true
+}

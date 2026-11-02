@@ -1,0 +1,10 @@
+{
+  "id": "LEA-002-clean",
+  "command": "node --require tsx/cjs --require ./docs/final-defense-qa/preload.cjs scripts/test-h5-leave-management.ts",
+  "capturedAt": "2026-11-01T16:32:28.548Z",
+  "durationMs": 79947,
+  "exitCode": 0,
+  "status": "PASS",
+  "schema": "batch3_test_92af0058ae5c1f3bfe36cbab",
+  "isolatedPerSuite": true
+}

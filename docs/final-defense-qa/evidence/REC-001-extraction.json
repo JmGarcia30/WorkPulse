@@ -1,0 +1,10 @@
+{
+  "id": "REC-001-extraction",
+  "command": "node node_modules/tsx/dist/cli.mjs scripts/test-extraction-units.ts",
+  "capturedAt": "2026-11-01T16:21:31.443Z",
+  "durationMs": 3089,
+  "exitCode": 0,
+  "signal": null,
+  "status": "PASS",
+  "log": "REC-001-extraction.log"
+}

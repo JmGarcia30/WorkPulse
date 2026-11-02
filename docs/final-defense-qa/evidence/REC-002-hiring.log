@@ -1,0 +1,62 @@
+PASS custom tenant TEACHING: incomplete COMPLETED checklist blocks readiness
+PASS custom tenant TEACHING: premature conversion creates no employee
+PASS custom tenant TEACHING: subsequent task verification succeeds
+PASS custom tenant TEACHING: verification preserves historical completion metadata
+PASS custom tenant TEACHING: manual completion cannot bypass missing policy items
+PASS custom tenant TEACHING: reopening without a reason is denied
+PASS custom tenant TEACHING: explicit authorized reopening succeeds
+PASS custom tenant TEACHING: reopening audit retains original completion and verification
+PASS custom tenant TEACHING: re-completion preserves original timestamp
+PASS custom tenant TEACHING: complete verified/waived checklist passes
+PASS custom tenant TEACHING: conversion and retry retain one employee and consistent audit
+PASS custom tenant NON_TEACHING: incomplete COMPLETED checklist blocks readiness
+PASS custom tenant NON_TEACHING: premature conversion creates no employee
+PASS custom tenant NON_TEACHING: subsequent task verification succeeds
+PASS custom tenant NON_TEACHING: verification preserves historical completion metadata
+PASS custom tenant NON_TEACHING: manual completion cannot bypass missing policy items
+PASS custom tenant NON_TEACHING: reopening without a reason is denied
+PASS custom tenant NON_TEACHING: explicit authorized reopening succeeds
+PASS custom tenant NON_TEACHING: reopening audit retains original completion and verification
+PASS custom tenant NON_TEACHING: re-completion preserves original timestamp
+PASS custom tenant NON_TEACHING: complete verified/waived checklist passes
+PASS custom tenant NON_TEACHING: conversion and retry retain one employee and consistent audit
+PASS SAGA TEACHING: incomplete COMPLETED checklist blocks readiness
+PASS SAGA TEACHING: premature conversion creates no employee
+PASS SAGA TEACHING: subsequent task verification succeeds
+PASS SAGA TEACHING: verification preserves historical completion metadata
+PASS SAGA TEACHING: manual completion cannot bypass missing policy items
+PASS SAGA TEACHING: reopening without a reason is denied
+PASS SAGA TEACHING: explicit authorized reopening succeeds
+PASS SAGA TEACHING: reopening audit retains original completion and verification
+PASS SAGA TEACHING: re-completion preserves original timestamp
+PASS SAGA TEACHING: complete verified/waived checklist passes
+PASS SAGA TEACHING: conversion and retry retain one employee and consistent audit
+PASS SAGA NON_TEACHING: incomplete COMPLETED checklist blocks readiness
+PASS SAGA NON_TEACHING: premature conversion creates no employee
+PASS SAGA NON_TEACHING: subsequent task verification succeeds
+PASS SAGA NON_TEACHING: verification preserves historical completion metadata
+PASS SAGA NON_TEACHING: manual completion cannot bypass missing policy items
+PASS SAGA NON_TEACHING: reopening without a reason is denied
+PASS SAGA NON_TEACHING: explicit authorized reopening succeeds
+PASS SAGA NON_TEACHING: reopening audit retains original completion and verification
+PASS SAGA NON_TEACHING: re-completion preserves original timestamp
+PASS SAGA NON_TEACHING: complete verified/waived checklist passes
+PASS SAGA NON_TEACHING: conversion and retry retain one employee and consistent audit
+PASS PostgreSQL: scheduled initial screening blocks advancement
+PASS PostgreSQL: approved initial screening permits assessment entry
+PASS PostgreSQL: failed examination blocks OFFER
+PASS PostgreSQL: valid institutional progression succeeds
+PASS PostgreSQL: invalid stage skipping/backtracking denied
+PASS PostgreSQL: persisted unauthorized role cannot change stage
+PASS PostgreSQL: unauthorized employee conversion denied
+PASS PostgreSQL: foreign tenant cannot change owned application
+PASS PostgreSQL: legacy HIRED incomplete checklist remains ineligible
+PASS PostgreSQL: legacy employee-record recovery blocked before writes
+PASS Real concurrent duplicate stage updates: one commit, one conflict, consistent history
+PASS Repeated successful stage submission adds no audit duplicate
+PASS Real concurrent different stage updates: one commit, one conflict, consistent history
+PASS Repeated successful stage submission adds no audit duplicate
+PASS Real duplicate conversion: one linked employee/employment/probation and one HIRED audit
+PASS Real rejection/conversion contention cannot leave OFFER/HIRED history mismatch or partial employee
+PASS Real concurrent task reopening preserves completion timestamp and one atomic audit without lost evidence
+{"status":"PASS","checks":61,"actualPostgresConcurrency":true,"existingDataPreserved":true}

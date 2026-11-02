@@ -1,0 +1,13 @@
+{
+  "id": "RFID-008-cookie",
+  "status": "FAIL",
+  "expected": "No HR session cookie after kiosk authorization",
+  "residualCookies": [
+    {
+      "name": "__Host-workpulse_session",
+      "domain": "saga.localhost",
+      "secure": true,
+      "httpOnly": true
+    }
+  ]
+}

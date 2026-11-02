@@ -1,0 +1,57 @@
+✓ Running next.config.ts took 57ms
+RFID PASS 1: real HR search and scanned-card enrollment succeed
+RFID PASS 2: real replacement UI deactivates the old card
+RFID PASS 3: real HR deactivation and fresh enrollment succeed
+RFID PASS 4: kiosk authorization issues its HttpOnly Strict cookie
+{"id":"RFID-008-cookie","status":"FAIL","expected":"No HR session cookie after kiosk authorization","residualCookies":[{"name":"__Host-workpulse_session","domain":"saga.localhost","secure":true,"httpOnly":true}]}
+⨯ Error: The destination stream closed early.
+    at ignore-listed frames {
+  digest: '3122515128'
+}
+RFID BROWSER FAILURE 
+Invalid `prisma.staffSession.findUnique()` invocation:
+
+{
+  where: {
+    tokenHash: "d4eb15ba8faaca1a52e825a0f89de90580138a1a051205b88f43f873876e7ab9"
+  },
+  select: {
+    id: true,
+    ~~
+?   tokenHash?: true,
+?   organizationId?: true,
+?   userId?: true,
+?   createdAt?: true,
+?   expiresAt?: true,
+?   organization?: true,
+?   user?: true
+  }
+}
+
+Unknown field `id` for select statement on model `StaffSession`. Available options are marked with ?. PrismaClientValidationError: 
+Invalid `prisma.staffSession.findUnique()` invocation:
+
+{
+  where: {
+    tokenHash: "d4eb15ba8faaca1a52e825a0f89de90580138a1a051205b88f43f873876e7ab9"
+  },
+  select: {
+    id: true,
+    ~~
+?   tokenHash?: true,
+?   organizationId?: true,
+?   userId?: true,
+?   createdAt?: true,
+?   expiresAt?: true,
+?   organization?: true,
+?   user?: true
+  }
+}
+
+Unknown field `id` for select statement on model `StaffSession`. Available options are marked with ?.
+    at Nn (G:\CAPSTONE\WorkPulse\node_modules\@prisma\client\runtime\library.js:29:1363)
+    at ei.handleRequestError (G:\CAPSTONE\WorkPulse\node_modules\@prisma\client\runtime\library.js:121:6911)
+    at ei.handleAndLogRequestError (G:\CAPSTONE\WorkPulse\node_modules\@prisma\client\runtime\library.js:121:6593)
+    at ei.request (G:\CAPSTONE\WorkPulse\node_modules\@prisma\client\runtime\library.js:121:6300)
+    at async a (G:\CAPSTONE\WorkPulse\node_modules\@prisma\client\runtime\library.js:130:9551)
+    at async main (G:\CAPSTONE\WorkPulse\scripts\test-rfid-browser.cjs:77:25)

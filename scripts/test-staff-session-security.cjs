@@ -12,7 +12,7 @@ const original=Module._load;
 const sensitive=new Set([process.env.DATABASE_URL,process.env.SESSION_SECRET,new URL(process.env.DATABASE_URL).password]);
 Module._load=function(name,parent,main){
  if(name==='server-only')return {};
- if(name==='next/headers')return {headers:async()=>context.headers,cookies:async()=>({get:key=>jar.get(key),has:key=>jar.has(key),set:(key,value,options)=>jar.set(key,{value,...options}),delete:key=>jar.delete(key)})};
+ if(name==='next/headers')return {headers:async()=>context.headers,cookies:async()=>({get:key=>jar.get(key),has:key=>jar.has(key),set:(key,value,options)=>{if(options?.maxAge===0||(options?.expires&&options.expires<=new Date()))jar.delete(key);else jar.set(key,{value,...options});},delete:key=>jar.delete(key)})};
  if(name==='next/navigation')return {redirect:url=>{throw Error('REDIRECT:'+url);},notFound:()=>{throw Error('NOT_FOUND');}};
  if(name==='next/cache')return {revalidatePath:()=>{}};
  if(name==='@/lib/db/prisma')return {prisma:db};

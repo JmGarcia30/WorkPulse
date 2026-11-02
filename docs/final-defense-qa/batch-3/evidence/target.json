@@ -1,0 +1,387 @@
+{
+  "capturedAt": "2026-11-02T04:55:35.676Z",
+  "identity": {
+    "database": "neondb",
+    "schema": "public",
+    "read_only": "on",
+    "branch_id": "br-damp-fog-azmmxhga",
+    "endpoint_id": "ep-wild-mud-az8yzifu"
+  },
+  "existingRecoveryBranch": true,
+  "productionExcluded": true,
+  "migrationsVerified": 39,
+  "migrationsExecuted": 0,
+  "providerMapping": {
+    "project": "late-block-61364102",
+    "branch": "workpulse-ess-design",
+    "primary": false,
+    "default": false
+  },
+  "before": [
+    {
+      "table": "Applicant",
+      "count": 27,
+      "fingerprint": "f6cf28b6431188de6ce39c66927480bd"
+    },
+    {
+      "table": "Application",
+      "count": 24,
+      "fingerprint": "b0f8b37f84453c59c1886c803db77a1d"
+    },
+    {
+      "table": "ApplicationStatusHistory",
+      "count": 33,
+      "fingerprint": "0c0b81542248455bc48b0b5fec688967"
+    },
+    {
+      "table": "Assessment",
+      "count": 11,
+      "fingerprint": "9aa52e1ac53c007299ce230ddf3abd1b"
+    },
+    {
+      "table": "AttendanceCorrection",
+      "count": 0,
+      "fingerprint": "d41d8cd98f00b204e9800998ecf8427e"
+    },
+    {
+      "table": "AttendanceEvent",
+      "count": 3,
+      "fingerprint": "682a758774d2bf8cbebc84d77c7a1e67"
+    },
+    {
+      "table": "CandidateAccess",
+      "count": 3,
+      "fingerprint": "b2cf2e6f5f640dcafe1bfd840181d868"
+    },
+    {
+      "table": "CandidateEvaluation",
+      "count": 14,
+      "fingerprint": "5fa754829dbcbfb3969178a4c6132ae0"
+    },
+    {
+      "table": "CompanyRegistration",
+      "count": 0,
+      "fingerprint": "d41d8cd98f00b204e9800998ecf8427e"
+    },
+    {
+      "table": "DailyAttendanceRecord",
+      "count": 80,
+      "fingerprint": "b29bf9c66b4438483c9217db5fd36bdd"
+    },
+    {
+      "table": "Document",
+      "count": 13,
+      "fingerprint": "54a37e54b5645e9a87c2c98ebe747a0d"
+    },
+    {
+      "table": "Employee",
+      "count": 9,
+      "fingerprint": "4c01fed3b13b8540c8542c9b3d31d4e8"
+    },
+    {
+      "table": "EmployeeAccount",
+      "count": 5,
+      "fingerprint": "5a2cb7d268f894d56581fbee122d155d"
+    },
+    {
+      "table": "EmployeeAccountAudit",
+      "count": 31,
+      "fingerprint": "89ab97631c9a67b9abcc569688035f02"
+    },
+    {
+      "table": "EmployeeClearanceItem",
+      "count": 10,
+      "fingerprint": "b37abfb26dd09888788145ac1542a528"
+    },
+    {
+      "table": "EmployeeCompensation",
+      "count": 0,
+      "fingerprint": "d41d8cd98f00b204e9800998ecf8427e"
+    },
+    {
+      "table": "EmployeeFinalPay",
+      "count": 0,
+      "fingerprint": "d41d8cd98f00b204e9800998ecf8427e"
+    },
+    {
+      "table": "EmployeeFinalPayAudit",
+      "count": 0,
+      "fingerprint": "d41d8cd98f00b204e9800998ecf8427e"
+    },
+    {
+      "table": "EmployeeFinalPayPayment",
+      "count": 0,
+      "fingerprint": "d41d8cd98f00b204e9800998ecf8427e"
+    },
+    {
+      "table": "EmployeeNumberSequence",
+      "count": 1,
+      "fingerprint": "57deeb3a2014d60e7f2f11bed57bb1d8"
+    },
+    {
+      "table": "EmployeeScheduleAssignment",
+      "count": 5,
+      "fingerprint": "bbb2d36382323940c939aa6da687df13"
+    },
+    {
+      "table": "EmployeeSeparationAudit",
+      "count": 34,
+      "fingerprint": "efc9eecd3ce4d9d4f18557345af568f0"
+    },
+    {
+      "table": "EmployeeSeparationCase",
+      "count": 2,
+      "fingerprint": "aad0afe02cd729a982244873402acc63"
+    },
+    {
+      "table": "EmployeeSeparationReview",
+      "count": 4,
+      "fingerprint": "6cb64665a96731d15520168ca7e768f6"
+    },
+    {
+      "table": "EmployeeStatusHistory",
+      "count": 8,
+      "fingerprint": "0b39059f0794cf8237bf4347205681d8"
+    },
+    {
+      "table": "EmploymentDecisionHistory",
+      "count": 5,
+      "fingerprint": "905ace741fd6802b138b3634edca4e3a"
+    },
+    {
+      "table": "EmploymentRecord",
+      "count": 13,
+      "fingerprint": "ce3178d24e74ee8561de4c4decb5e062"
+    },
+    {
+      "table": "HrEmailDelivery",
+      "count": 0,
+      "fingerprint": "d41d8cd98f00b204e9800998ecf8427e"
+    },
+    {
+      "table": "Interview",
+      "count": 18,
+      "fingerprint": "136e92f5a0813816fbb5389347d8c3b5"
+    },
+    {
+      "table": "Job",
+      "count": 7,
+      "fingerprint": "2055d4fb773a6ec43794926226c3b3c2"
+    },
+    {
+      "table": "JobRequirement",
+      "count": 11,
+      "fingerprint": "64696280e11013d3036737894b4cd6f8"
+    },
+    {
+      "table": "LeaveCycle",
+      "count": 2,
+      "fingerprint": "6b302135175cdb0481c712a52a23f18a"
+    },
+    {
+      "table": "LeaveDocument",
+      "count": 0,
+      "fingerprint": "d41d8cd98f00b204e9800998ecf8427e"
+    },
+    {
+      "table": "LeaveLedgerEntry",
+      "count": 2,
+      "fingerprint": "7f64668f7dbad9c61efcc4d7ffa27713"
+    },
+    {
+      "table": "LeaveRequest",
+      "count": 2,
+      "fingerprint": "c9b1d34eed7ebf79821a633147650a0c"
+    },
+    {
+      "table": "LeaveRequestAudit",
+      "count": 12,
+      "fingerprint": "e46602af680bf3a04f946e688d082a5c"
+    },
+    {
+      "table": "LeaveRequestDay",
+      "count": 2,
+      "fingerprint": "de67a6db7deffc039d99a18afd9e7efe"
+    },
+    {
+      "table": "LeaveType",
+      "count": 6,
+      "fingerprint": "57131786030627710ace19ecd8a3eb7e"
+    },
+    {
+      "table": "Offer",
+      "count": 11,
+      "fingerprint": "ddbfce997a1385b8de6e881a92a05a06"
+    },
+    {
+      "table": "OnboardingProcess",
+      "count": 6,
+      "fingerprint": "2bb8c3b5455447ab20892812d24a0372"
+    },
+    {
+      "table": "OnboardingTask",
+      "count": 30,
+      "fingerprint": "2b929c393ed2c40dae8f4b70ef9bda19"
+    },
+    {
+      "table": "Organization",
+      "count": 3,
+      "fingerprint": "d1c1fc63e405014ef1b05aee45fe7ff8"
+    },
+    {
+      "table": "OrganizationAdministratorInvitation",
+      "count": 0,
+      "fingerprint": "d41d8cd98f00b204e9800998ecf8427e"
+    },
+    {
+      "table": "OrganizationBranding",
+      "count": 1,
+      "fingerprint": "87cbbe104182a64af64f10c5e0f24a78"
+    },
+    {
+      "table": "OrganizationBrandingAudit",
+      "count": 0,
+      "fingerprint": "d41d8cd98f00b204e9800998ecf8427e"
+    },
+    {
+      "table": "OrganizationEmailIntegration",
+      "count": 0,
+      "fingerprint": "d41d8cd98f00b204e9800998ecf8427e"
+    },
+    {
+      "table": "OrganizationEmailOAuthAttempt",
+      "count": 0,
+      "fingerprint": "d41d8cd98f00b204e9800998ecf8427e"
+    },
+    {
+      "table": "OrganizationPayrollPolicy",
+      "count": 0,
+      "fingerprint": "d41d8cd98f00b204e9800998ecf8427e"
+    },
+    {
+      "table": "ParsedResume",
+      "count": 3,
+      "fingerprint": "bc48ff509376f5e817f17d4238b96b73"
+    },
+    {
+      "table": "PayrollContributionAllocation",
+      "count": 0,
+      "fingerprint": "d41d8cd98f00b204e9800998ecf8427e"
+    },
+    {
+      "table": "PayrollContributionMonth",
+      "count": 0,
+      "fingerprint": "d41d8cd98f00b204e9800998ecf8427e"
+    },
+    {
+      "table": "PayrollEntry",
+      "count": 0,
+      "fingerprint": "d41d8cd98f00b204e9800998ecf8427e"
+    },
+    {
+      "table": "PayrollPeriod",
+      "count": 0,
+      "fingerprint": "d41d8cd98f00b204e9800998ecf8427e"
+    },
+    {
+      "table": "PayrollPolicyLeaveTreatment",
+      "count": 0,
+      "fingerprint": "d41d8cd98f00b204e9800998ecf8427e"
+    },
+    {
+      "table": "PayrollStatutoryInput",
+      "count": 0,
+      "fingerprint": "d41d8cd98f00b204e9800998ecf8427e"
+    },
+    {
+      "table": "PayrollStatutoryPosting",
+      "count": 0,
+      "fingerprint": "d41d8cd98f00b204e9800998ecf8427e"
+    },
+    {
+      "table": "PayrollTaxOpening",
+      "count": 0,
+      "fingerprint": "d41d8cd98f00b204e9800998ecf8427e"
+    },
+    {
+      "table": "PlatformAdministrator",
+      "count": 0,
+      "fingerprint": "d41d8cd98f00b204e9800998ecf8427e"
+    },
+    {
+      "table": "PlatformAdministratorSession",
+      "count": 0,
+      "fingerprint": "d41d8cd98f00b204e9800998ecf8427e"
+    },
+    {
+      "table": "PlatformAuthenticationAttempt",
+      "count": 7,
+      "fingerprint": "96f11e8673d7940b845a5ee302fdd60e"
+    },
+    {
+      "table": "PlatformOrganizationAudit",
+      "count": 0,
+      "fingerprint": "d41d8cd98f00b204e9800998ecf8427e"
+    },
+    {
+      "table": "ProbationRecord",
+      "count": 9,
+      "fingerprint": "464e701666220731365331a9f17dbc25"
+    },
+    {
+      "table": "RecruitmentDocument",
+      "count": 171,
+      "fingerprint": "295558a1976224995b2623943ca1bf7d"
+    },
+    {
+      "table": "RfidAudit",
+      "count": 13,
+      "fingerprint": "e48bdead0d84c9e5c71a27442a7cc484"
+    },
+    {
+      "table": "RfidCard",
+      "count": 2,
+      "fingerprint": "f8772874916f15fa05cb6a1f13c32b29"
+    },
+    {
+      "table": "RfidKioskSession",
+      "count": 4,
+      "fingerprint": "e5bfde7b2f03ec3a59372375207b331b"
+    },
+    {
+      "table": "RfidRequestBudget",
+      "count": 6,
+      "fingerprint": "f7a0f93d0776247f59a26fbce59c30d4"
+    },
+    {
+      "table": "StaffSession",
+      "count": 9,
+      "fingerprint": "9787789623103aba04db2e33a311ec28"
+    },
+    {
+      "table": "User",
+      "count": 11,
+      "fingerprint": "25cf745818966cdb1b0b1dc036b6a5d0"
+    },
+    {
+      "table": "WorkScheduleBreak",
+      "count": 15,
+      "fingerprint": "13e596a197186780a2f9c400bb4853ec"
+    },
+    {
+      "table": "WorkScheduleDay",
+      "count": 28,
+      "fingerprint": "135525a8fa2d7f04d20fb07811a66607"
+    },
+    {
+      "table": "WorkScheduleGroup",
+      "count": 4,
+      "fingerprint": "6d5f506c2e61e9b80a507825b90b9367"
+    },
+    {
+      "table": "WorkScheduleVersion",
+      "count": 4,
+      "fingerprint": "a94cfd3f116c76a3f8ea62e54da6defe"
+    }
+  ]
+}

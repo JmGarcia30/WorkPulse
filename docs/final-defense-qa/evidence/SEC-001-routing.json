@@ -1,0 +1,9 @@
+{
+  "id": "SEC-001-routing",
+  "command": "node docs/final-defense-qa/exported-suites.cjs test-platform-routing.cjs",
+  "capturedAt": "2026-11-01T16:24:55.443Z",
+  "durationMs": 11903,
+  "exitCode": 0,
+  "status": "PASS",
+  "schema": "batch3_test_a72cf5b77a14345888c5f2ca"
+}

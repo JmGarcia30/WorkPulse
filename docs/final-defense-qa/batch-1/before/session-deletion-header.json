@@ -1,0 +1,9 @@
+{
+  "path": "/api/attendance/rfid/kiosk",
+  "name": "__Host-workpulse_session",
+  "secure": false,
+  "httpOnly": false,
+  "pathRoot": true,
+  "hasDomain": false,
+  "expiresSession": true
+}

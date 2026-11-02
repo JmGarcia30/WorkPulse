@@ -1,0 +1,10 @@
+{
+  "id": "B2-targeted-lint",
+  "command": "node node_modules/eslint/bin/eslint.js src/features/company-registration src/lib/email/index.ts src/lib/tenant/host.ts src/features/hiring/actions.ts src/lib/auth/session.ts scripts/test-staff-session-security.cjs",
+  "capturedAt": "2026-11-01T17:42:44.140Z",
+  "durationMs": 4991,
+  "exitCode": 0,
+  "signal": null,
+  "status": "PASS",
+  "log": "B2-targeted-lint.log"
+}

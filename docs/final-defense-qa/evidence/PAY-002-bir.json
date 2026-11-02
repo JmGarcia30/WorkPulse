@@ -1,0 +1,10 @@
+{
+  "id": "PAY-002-bir",
+  "command": "node node_modules/tsx/dist/cli.mjs scripts/test-payroll-bir.ts",
+  "capturedAt": "2026-11-01T16:21:24.855Z",
+  "durationMs": 648,
+  "exitCode": 0,
+  "signal": null,
+  "status": "PASS",
+  "log": "PAY-002-bir.log"
+}

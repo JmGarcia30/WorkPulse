@@ -1,0 +1,4 @@
+{
+  "code": "PrismaClientInitializationError",
+  "message": "\nInvalid `prisma.$queryRawUnsafe()` invocation:\n\n\nCan't reach database server at `ep-wild-mud-az8yzifu.c-3.ap-southeast-1.aws.neon.tech:5432`\n\nPlease make sure your database server is running at `ep-wild-mud-az8yzifu.c-3.ap-southeast-1.aws.neon.tech:5432`."
+}

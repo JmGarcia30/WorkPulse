@@ -1,0 +1,9 @@
+{
+  "path": "/saga/employee/attendance",
+  "name": "__Host-workpulse_session",
+  "secure": true,
+  "httpOnly": true,
+  "pathRoot": true,
+  "hasDomain": false,
+  "expiresSession": true
+}

@@ -1,0 +1,414 @@
+{
+  "capturedAt": "2026-11-02T04:56:05.693Z",
+  "status": "PASS",
+  "passed": true,
+  "assertions": 46,
+  "fixturesRolledBack": true,
+  "cases": [
+    {
+      "id": "SSS-5249.99",
+      "expected": {
+        "ee": "250",
+        "er": "500",
+        "ec": "10"
+      },
+      "actual": {
+        "ee": "250.00",
+        "er": "500.00",
+        "ec": "10.00"
+      },
+      "status": "PASS"
+    },
+    {
+      "id": "SSS-5250",
+      "expected": {
+        "ee": "275",
+        "er": "550",
+        "ec": "10"
+      },
+      "actual": {
+        "ee": "275.00",
+        "er": "550.00",
+        "ec": "10.00"
+      },
+      "status": "PASS"
+    },
+    {
+      "id": "SSS-14749.99",
+      "expected": {
+        "ee": "725",
+        "er": "1450",
+        "ec": "10"
+      },
+      "actual": {
+        "ee": "725.00",
+        "er": "1450.00",
+        "ec": "10.00"
+      },
+      "status": "PASS"
+    },
+    {
+      "id": "SSS-14750",
+      "expected": {
+        "ee": "750",
+        "er": "1500",
+        "ec": "30"
+      },
+      "actual": {
+        "ee": "750.00",
+        "er": "1500.00",
+        "ec": "30.00"
+      },
+      "status": "PASS"
+    },
+    {
+      "id": "SSS-20250",
+      "expected": {
+        "ee": "1025",
+        "er": "2050",
+        "ec": "30"
+      },
+      "actual": {
+        "ee": "1025.00",
+        "er": "2050.00",
+        "ec": "30.00"
+      },
+      "status": "PASS"
+    },
+    {
+      "id": "SSS-34750",
+      "expected": {
+        "ee": "1750",
+        "er": "3500",
+        "ec": "30"
+      },
+      "actual": {
+        "ee": "1750.00",
+        "er": "3500.00",
+        "ec": "30.00"
+      },
+      "status": "PASS"
+    },
+    {
+      "id": "SSS-100000",
+      "expected": {
+        "ee": "1750",
+        "er": "3500",
+        "ec": "30"
+      },
+      "actual": {
+        "ee": "1750.00",
+        "er": "3500.00",
+        "ec": "30.00"
+      },
+      "status": "PASS"
+    },
+    {
+      "id": "PH-9000",
+      "expected": {
+        "ee": "250",
+        "er": "250"
+      },
+      "actual": {
+        "ee": "250.00",
+        "er": "250.00"
+      },
+      "status": "PASS"
+    },
+    {
+      "id": "PH-35000",
+      "expected": {
+        "ee": "875",
+        "er": "875"
+      },
+      "actual": {
+        "ee": "875.00",
+        "er": "875.00"
+      },
+      "status": "PASS"
+    },
+    {
+      "id": "PH-100000",
+      "expected": {
+        "ee": "2500",
+        "er": "2500"
+      },
+      "actual": {
+        "ee": "2500.00",
+        "er": "2500.00"
+      },
+      "status": "PASS"
+    },
+    {
+      "id": "PH-150000",
+      "expected": {
+        "ee": "2500",
+        "er": "2500"
+      },
+      "actual": {
+        "ee": "2500.00",
+        "er": "2500.00"
+      },
+      "status": "PASS"
+    },
+    {
+      "id": "PH-10000.20",
+      "expected": {
+        "ee": "250",
+        "er": "250.01"
+      },
+      "actual": {
+        "ee": "250.00",
+        "er": "250.01"
+      },
+      "status": "PASS"
+    },
+    {
+      "id": "PI-1500",
+      "expected": {
+        "ee": "15",
+        "er": "30"
+      },
+      "actual": {
+        "ee": "15.00",
+        "er": "30.00"
+      },
+      "status": "PASS"
+    },
+    {
+      "id": "PI-1550",
+      "expected": {
+        "ee": "31",
+        "er": "31"
+      },
+      "actual": {
+        "ee": "31.00",
+        "er": "31.00"
+      },
+      "status": "PASS"
+    },
+    {
+      "id": "PI-9999",
+      "expected": {
+        "ee": "199.98",
+        "er": "199.98"
+      },
+      "actual": {
+        "ee": "199.98",
+        "er": "199.98"
+      },
+      "status": "PASS"
+    },
+    {
+      "id": "PI-10000",
+      "expected": {
+        "ee": "200",
+        "er": "200"
+      },
+      "actual": {
+        "ee": "200.00",
+        "er": "200.00"
+      },
+      "status": "PASS"
+    },
+    {
+      "id": "PI-35000",
+      "expected": {
+        "ee": "200",
+        "er": "200"
+      },
+      "actual": {
+        "ee": "200.00",
+        "er": "200.00"
+      },
+      "status": "PASS"
+    },
+    {
+      "id": "NOV-SSS",
+      "status": "PASS_SAFETY_GUARD",
+      "payrollOutcome": "BLOCKED",
+      "errorCode": "UNVERIFIED_SCHEDULE"
+    },
+    {
+      "id": "NOV-PH",
+      "status": "PASS_SAFETY_GUARD",
+      "payrollOutcome": "BLOCKED",
+      "errorCode": "UNVERIFIED_SCHEDULE"
+    },
+    {
+      "id": "NOV-PI",
+      "status": "PASS_SAFETY_GUARD",
+      "payrollOutcome": "BLOCKED",
+      "errorCode": "UNVERIFIED_SCHEDULE"
+    },
+    {
+      "id": "BIR-2026-10-23",
+      "status": "PASS_SAFETY_GUARD",
+      "payrollOutcome": "BLOCKED",
+      "errorCode": "UNVERIFIED_RULES"
+    },
+    {
+      "id": "BIR-2026-11-02",
+      "status": "PASS_SAFETY_GUARD",
+      "payrollOutcome": "BLOCKED",
+      "errorCode": "UNVERIFIED_RULES"
+    },
+    {
+      "id": "BIR-2026-11-15",
+      "status": "PASS_SAFETY_GUARD",
+      "payrollOutcome": "BLOCKED",
+      "errorCode": "UNVERIFIED_RULES"
+    },
+    {
+      "id": "BIR-2026-11-30",
+      "status": "PASS_SAFETY_GUARD",
+      "payrollOutcome": "BLOCKED",
+      "errorCode": "UNVERIFIED_RULES"
+    },
+    {
+      "id": "MIXED-EARNINGS-YTD",
+      "expected": {
+        "gross": "49900.00",
+        "statutory": "2825.00",
+        "taxable": "35675.00",
+        "exemptBenefits": "11400.00",
+        "bir": "2226.30",
+        "net": "44848.70",
+        "taxableYtdAfter": "235675.00",
+        "taxYtdAfter": "12226.30"
+      },
+      "actual": {
+        "gross": "49900.00",
+        "statutory": "2825.00",
+        "taxable": "35675.00",
+        "exemptBenefits": "11400.00",
+        "bir": "2226.30",
+        "net": "44848.70",
+        "taxableYtdAfter": "235675.00",
+        "taxYtdAfter": "12226.30"
+      },
+      "status": "PASS"
+    },
+    {
+      "id": "CURRENT-2026-11-01-2026-11-30",
+      "readiness": {
+        "employeeId": "cmvysd34k0020ujv4uov8pm2z",
+        "employeeName": "Payroll mvysd2zt-kdbnsr",
+        "salary": "PHP 35000.00 · monthly",
+        "government": "No verified BIR rules cover this payment date.",
+        "history": "Verified opening history saved",
+        "attendance": "No attendance deduction under current policy",
+        "ready": false,
+        "action": "No verified BIR rules cover this payment date."
+      },
+      "generated": {
+        "createdCount": 0,
+        "existingCount": 0,
+        "setupErrors": [
+          {
+            "employeeId": "cmvysd34k0020ujv4uov8pm2z",
+            "employeeNumber": "2B-mvysd2zt-kdbnsr",
+            "employeeName": "Payroll mvysd2zt-kdbnsr",
+            "code": "SETUP_REQUIRED",
+            "message": "UNVERIFIED_SCHEDULE: No verified SSS schedule covers 2026-11."
+          }
+        ]
+      },
+      "status": "PASS_SAFETY_GUARD",
+      "payrollOutcome": "BLOCKED"
+    },
+    {
+      "id": "CURRENT-2026-11-01-2026-11-15",
+      "readiness": {
+        "employeeId": "cmvysd5qb002kujv4efeimf78",
+        "employeeName": "Payroll mvysd5lk-kxvy63",
+        "salary": "PHP 35000.00 · semi monthly",
+        "government": "No verified BIR rules cover this payment date.",
+        "history": "Verified opening history saved",
+        "attendance": "No attendance deduction under current policy",
+        "ready": false,
+        "action": "No verified BIR rules cover this payment date."
+      },
+      "generated": {
+        "createdCount": 0,
+        "existingCount": 0,
+        "setupErrors": [
+          {
+            "employeeId": "cmvysd5qb002kujv4efeimf78",
+            "employeeNumber": "2B-mvysd5lk-kxvy63",
+            "employeeName": "Payroll mvysd5lk-kxvy63",
+            "code": "SETUP_REQUIRED",
+            "message": "UNVERIFIED_SCHEDULE: No verified SSS schedule covers 2026-11."
+          }
+        ]
+      },
+      "status": "PASS_SAFETY_GUARD",
+      "payrollOutcome": "BLOCKED"
+    },
+    {
+      "id": "CURRENT-2026-09-01-2026-11-02",
+      "readiness": {
+        "employeeId": "cmvysd8cq0034ujv42nl128g6",
+        "employeeName": "Payroll mvysd87v-gd0unf",
+        "salary": "PHP 35000.00 · monthly",
+        "government": "No verified BIR rules cover this payment date.",
+        "history": "Verified opening history saved",
+        "attendance": "No attendance deduction under current policy",
+        "ready": false,
+        "action": "No verified BIR rules cover this payment date."
+      },
+      "generated": {
+        "createdCount": 0,
+        "existingCount": 0,
+        "setupErrors": [
+          {
+            "employeeId": "cmvysd8cq0034ujv42nl128g6",
+            "employeeNumber": "2B-mvysd87v-gd0unf",
+            "employeeName": "Payroll mvysd87v-gd0unf",
+            "code": "SETUP_REQUIRED",
+            "message": "UNVERIFIED_RULES: No verified BIR rules cover this payment date."
+          }
+        ]
+      },
+      "status": "PASS_SAFETY_GUARD",
+      "payrollOutcome": "BLOCKED"
+    },
+    {
+      "id": "ESS-SECURITY",
+      "status": "PASS",
+      "scenarios": [
+        "draft hidden",
+        "review hidden",
+        "own finalized visible",
+        "same-tenant other employee rejected",
+        "disabled account rejected"
+      ]
+    }
+  ],
+  "findings": [
+    {
+      "id": "B3-READINESS",
+      "severity": "P2",
+      "readiness": {
+        "employeeId": "cmvysdava003oujv44p1tnn64",
+        "employeeName": "Payroll mvysdaqj-l5v2no",
+        "salary": "PHP 35000.00 · semi monthly",
+        "government": "Verified period setup",
+        "history": "Verified opening history saved",
+        "attendance": "No attendance deduction under current policy",
+        "ready": true,
+        "action": "Generate payroll; calculation and ledger checks follow."
+      },
+      "generationErrors": [
+        {
+          "employeeId": "cmvysdava003oujv44p1tnn64",
+          "employeeNumber": "2B-mvysdaqj-l5v2no",
+          "employeeName": "Payroll mvysdaqj-l5v2no",
+          "code": "SETUP_REQUIRED",
+          "message": "INVALID_ALLOCATION: Second cutoff requires exactly one posted first cutoff."
+        }
+      ],
+      "issue": "Readiness labels second cutoff ready without validating first-cutoff ledger."
+    }
+  ]
+}

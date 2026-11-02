@@ -1,0 +1,10 @@
+{
+  "id": "B2-tenant-routing",
+  "command": "node docs/final-defense-qa/exported-suites.cjs test-platform-routing.cjs",
+  "capturedAt": "2026-11-01T17:49:41.079Z",
+  "durationMs": 11052,
+  "exitCode": 0,
+  "status": "PASS",
+  "schema": "batch3_test_a0c9a6d8547f76eed3e4b1b0",
+  "isolatedPerSuite": true
+}

@@ -1,0 +1,10 @@
+{
+  "id": "ENV-005-build",
+  "command": "node node_modules/next/dist/bin/next build --webpack",
+  "capturedAt": "2026-11-01T16:21:42.404Z",
+  "durationMs": 107642,
+  "exitCode": 0,
+  "signal": null,
+  "status": "PASS",
+  "log": "ENV-005-build.log"
+}

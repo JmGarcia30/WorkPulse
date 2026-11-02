@@ -1,0 +1,11 @@
+{
+  "createdAt": "2026-11-01T16:20:40.869Z",
+  "schema": "batch3_test_a72cf5b77a14345888c5f2ca",
+  "identity": {
+    "branch_id": "br-damp-fog-azmmxhga",
+    "endpoint_id": "ep-wild-mud-az8yzifu",
+    "read_only": "on"
+  },
+  "productionEndpointDistinct": true,
+  "syntheticOnly": true
+}

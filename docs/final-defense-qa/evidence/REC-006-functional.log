@@ -1,0 +1,64 @@
+PASS TEACHING complete checklist passes; evaluation is read-only
+PASS TEACHING missing requirements block even when IN_PROGRESS (0 tasks)
+PASS TEACHING missing requirements block even when IN_PROGRESS (1 tasks)
+PASS TEACHING missing requirements block even when IN_PROGRESS (9 tasks)
+PASS TEACHING missing requirements block even when COMPLETED (0 tasks)
+PASS TEACHING missing requirements block even when COMPLETED (1 tasks)
+PASS TEACHING missing requirements block even when COMPLETED (9 tasks)
+PASS TEACHING WAIVED requirements preserved and accepted
+PASS TEACHING required template cannot be bypassed by stored optional flag
+PASS TEACHING documented legacy TOR/diploma aliases preserve evidence
+PASS TEACHING CANCELLED onboarding blocks; legacy HIRED prerequisites rechecked
+PASS TEACHING legitimate SCREENING -> SHORTLISTED
+PASS TEACHING missing policy documents block SHORTLISTED
+PASS TEACHING legitimate SHORTLISTED -> INTERVIEW
+PASS TEACHING missing policy documents block INTERVIEW
+PASS TEACHING legitimate INTERVIEW -> ASSESSMENT
+PASS TEACHING missing policy documents block ASSESSMENT
+PASS TEACHING legitimate ASSESSMENT -> OFFER
+PASS TEACHING missing policy documents block OFFER
+PASS TEACHING initial screening cannot advance while scheduled/unapproved/no-show
+PASS TEACHING SAGA institutional interviews do not precede entry into examinations
+PASS TEACHING missing exam/end endorsements block OFFER and final hiring
+PASS TEACHING failed/expired/pending/below-threshold exams block
+PASS TEACHING individual missing/negative institutional approvals and unsigned contracts block
+PASS NON_TEACHING complete checklist passes; evaluation is read-only
+PASS NON_TEACHING missing requirements block even when IN_PROGRESS (0 tasks)
+PASS NON_TEACHING missing requirements block even when IN_PROGRESS (1 tasks)
+PASS NON_TEACHING missing requirements block even when IN_PROGRESS (9 tasks)
+PASS NON_TEACHING missing requirements block even when COMPLETED (0 tasks)
+PASS NON_TEACHING missing requirements block even when COMPLETED (1 tasks)
+PASS NON_TEACHING missing requirements block even when COMPLETED (9 tasks)
+PASS NON_TEACHING WAIVED requirements preserved and accepted
+PASS NON_TEACHING required template cannot be bypassed by stored optional flag
+PASS NON_TEACHING documented legacy TOR/diploma aliases preserve evidence
+PASS NON_TEACHING CANCELLED onboarding blocks; legacy HIRED prerequisites rechecked
+PASS NON_TEACHING legitimate SCREENING -> SHORTLISTED
+PASS NON_TEACHING missing policy documents block SHORTLISTED
+PASS NON_TEACHING legitimate SHORTLISTED -> INTERVIEW
+PASS NON_TEACHING missing policy documents block INTERVIEW
+PASS NON_TEACHING legitimate INTERVIEW -> ASSESSMENT
+PASS NON_TEACHING missing policy documents block ASSESSMENT
+PASS NON_TEACHING legitimate ASSESSMENT -> OFFER
+PASS NON_TEACHING missing policy documents block OFFER
+PASS NON_TEACHING initial screening cannot advance while scheduled/unapproved/no-show
+PASS NON_TEACHING SAGA institutional interviews do not precede entry into examinations
+PASS NON_TEACHING missing exam/end endorsements block OFFER and final hiring
+PASS NON_TEACHING failed/expired/pending/below-threshold exams block
+PASS NON_TEACHING individual missing/negative institutional approvals and unsigned contracts block
+PASS non-teaching policy excludes mandatory LET and demonstration
+PASS custom tenant policy remains distinct, including category-specific requirements
+PASS rejection/withdrawal remain allowed; skipping/terminal progression invalid
+PASS lifecycle numbering matches shared tracker model for every category/status
+PASS actual stage action/service atomically records transition and duplicate is idempotent
+PASS actual action/service preserve role, tenant, and conversion-only HIRED checks
+PASS read-only frontend restrictions match stage enforcement; rejection stays available
+PASS concurrent synthetic transactions commit once; loser reports review/retry
+PASS old stale update reproduces HIRED history/OFFER status; current service rejects terminal overwrite
+PASS legacy OFFER/employee mismatch requires HR review and remains untouched
+PASS actual employee conversion blocks incomplete COMPLETED checklists before any writes
+PASS complete readiness reaches downstream conversion safeguards without writes
+PASS actual conversion creates synthetic employee/employment/probation and HIRED audit atomically; retry is idempotent
+PASS simulated concurrent rejection/conversion retain one consistent status/audit and no partial employee
+PASS manual/automatic completion cannot mark a partial institutional checklist complete; verified record retained
+PASS 63 synthetic functional regression groups; no database/network/storage access

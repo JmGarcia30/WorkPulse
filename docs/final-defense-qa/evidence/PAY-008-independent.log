@@ -1,0 +1,92 @@
+[
+  {
+    "id": "PAY-008-SSS-oracle",
+    "status": "PASS",
+    "month": "2026-09",
+    "basis": "35000.00",
+    "employee": "1750.00",
+    "employer": "3500.00",
+    "employerOnly": "30.00"
+  },
+  {
+    "id": "PAY-009-SSS-current",
+    "status": "BLOCKED",
+    "guardWorking": true,
+    "errorCode": "UNVERIFIED_SCHEDULE",
+    "message": "No verified SSS schedule covers 2026-11."
+  },
+  {
+    "id": "PAY-008-PHILHEALTH-oracle",
+    "status": "PASS",
+    "month": "2026-09",
+    "basis": "35000.00",
+    "employee": "875.00",
+    "employer": "875.00",
+    "employerOnly": "0.00"
+  },
+  {
+    "id": "PAY-009-PHILHEALTH-current",
+    "status": "BLOCKED",
+    "guardWorking": true,
+    "errorCode": "UNVERIFIED_SCHEDULE",
+    "message": "No verified PHILHEALTH schedule covers 2026-11."
+  },
+  {
+    "id": "PAY-008-PAGIBIG-oracle",
+    "status": "PASS",
+    "month": "2026-09",
+    "basis": "35000.00",
+    "employee": "200.00",
+    "employer": "200.00",
+    "employerOnly": "0.00"
+  },
+  {
+    "id": "PAY-009-PAGIBIG-current",
+    "status": "BLOCKED",
+    "guardWorking": true,
+    "errorCode": "UNVERIFIED_SCHEDULE",
+    "message": "No verified PAGIBIG schedule covers 2026-11."
+  },
+  {
+    "id": "PAY-008-BIR-MONTHLY-oracle",
+    "status": "PASS",
+    "payDate": "2026-09-30",
+    "taxable": "32175",
+    "expected": "1701.30"
+  },
+  {
+    "id": "PAY-008-BIR-SEMI_MONTHLY-oracle",
+    "status": "PASS",
+    "payDate": "2026-09-30",
+    "taxable": "16087.50",
+    "expected": "850.58"
+  },
+  {
+    "id": "PAY-009-BIR-2026-10-23",
+    "status": "BLOCKED",
+    "guardWorking": true,
+    "errorCode": "UNVERIFIED_RULES",
+    "message": "No verified BIR rules cover this payment date."
+  },
+  {
+    "id": "PAY-009-BIR-2026-10-31",
+    "status": "BLOCKED",
+    "guardWorking": true,
+    "errorCode": "UNVERIFIED_RULES",
+    "message": "No verified BIR rules cover this payment date."
+  },
+  {
+    "id": "PAY-009-BIR-2026-11-02",
+    "status": "BLOCKED",
+    "guardWorking": true,
+    "errorCode": "UNVERIFIED_RULES",
+    "message": "No verified BIR rules cover this payment date."
+  },
+  {
+    "id": "PAY-009-BIR-2026-11-15",
+    "status": "BLOCKED",
+    "guardWorking": true,
+    "errorCode": "UNVERIFIED_RULES",
+    "message": "No verified BIR rules cover this payment date."
+  }
+]

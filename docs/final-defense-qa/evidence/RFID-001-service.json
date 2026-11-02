@@ -1,0 +1,9 @@
+{
+  "id": "RFID-001-service",
+  "command": "node --require ./docs/final-defense-qa/preload.cjs node_modules/tsx/dist/cli.mjs scripts/test-rfid-attendance.ts",
+  "capturedAt": "2026-11-01T16:25:34.498Z",
+  "durationMs": 90949,
+  "exitCode": 0,
+  "status": "PASS",
+  "schema": "batch3_test_a72cf5b77a14345888c5f2ca"
+}

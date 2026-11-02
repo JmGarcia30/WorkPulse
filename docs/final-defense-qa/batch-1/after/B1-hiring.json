@@ -1,0 +1,10 @@
+{
+  "id": "B1-hiring",
+  "command": "node docs/final-defense-qa/adapt-legacy.cjs test-hiring-postgres.cjs",
+  "capturedAt": "2026-11-01T17:26:26.591Z",
+  "durationMs": 103370,
+  "exitCode": 0,
+  "status": "PASS",
+  "schema": "batch3_test_805518a7be501f5040cc8218",
+  "isolatedPerSuite": true
+}

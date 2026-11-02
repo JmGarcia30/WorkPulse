@@ -1,0 +1,9 @@
+PASS B2-H01 Vercel single-host verification produces /w/tenant/login rather than unsupported wildcard subdomain
+PASS B2-H02 cross-device verification initializes the correct HR workspace
+PASS B2-H03 Vercel-style login route receives signed tenant rewrite context
+[WorkPulse timing] branding read: 122.2ms
+[WorkPulse timing] tenant resolution: 122.7ms
+PASS B2-H04 rewritten path resolves only the persisted new organization
+PASS B2-H05 non-HTTPS Vercel public origin fails closed
+PASS B2-H06 conflicting configured public/root hosts fail closed
+{"passed":true,"assertions":6,"checks":["B2-H01 Vercel single-host verification produces /w/tenant/login rather than unsupported wildcard subdomain","B2-H02 cross-device verification initializes the correct HR workspace","B2-H03 Vercel-style login route receives signed tenant rewrite context","B2-H04 rewritten path resolves only the persisted new organization","B2-H05 non-HTTPS Vercel public origin fails closed","B2-H06 conflicting configured public/root hosts fail closed"],"productionRequested":false,"syntheticOnly":true}

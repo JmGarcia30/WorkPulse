@@ -1,0 +1,62 @@
+{
+  "capturedAt": "2026-11-01T17:53:11.676Z",
+  "node": "v24.18.0",
+  "profiles": [
+    {
+      "file": ".env",
+      "keys": [
+        "DATABASE_URL",
+        "EMAIL_FROM",
+        "EMAIL_OAUTH_ENCRYPTION_KEY",
+        "GMAIL_APP_PASSWORD",
+        "GMAIL_USER",
+        "GOOGLE_AI_API_KEY",
+        "GOOGLE_EMAIL_CLIENT_ID",
+        "GOOGLE_EMAIL_CLIENT_SECRET",
+        "NODE_ENV",
+        "SESSION_SECRET"
+      ],
+      "sha256": "e683b25719e068642138ef2551f810634534b3a3b4565e90ce4353b039c3ae8e",
+      "sessionSecretAtLeast32": true
+    },
+    {
+      "file": ".env.recovery.local",
+      "keys": [
+        "DATABASE_URL",
+        "H10_TEST_DATABASE_URL",
+        "SESSION_SECRET",
+        "WORKPULSE_TEST_NEON_BRANCH_ID",
+        "WORKPULSE_TEST_NEON_BRANCH_NAME",
+        "WORKPULSE_TEST_NEON_CHECKPOINT_BRANCH_ID",
+        "WORKPULSE_TEST_NEON_CHECKPOINT_DATABASE_URL",
+        "WORKPULSE_TEST_NEON_CHECKPOINT_ENDPOINT_ID",
+        "WORKPULSE_TEST_NEON_CHECKPOINT_PARENT_BRANCH_ID",
+        "WORKPULSE_TEST_NEON_ENDPOINT_ID"
+      ],
+      "sha256": "78fc548c42893aa779aad4f72606a3f7eaff43901efc82bbd43045a5f4350661",
+      "sessionSecretAtLeast32": true,
+      "branch": "br-damp-fog-azmmxhga",
+      "branchName": "workpulse-ess-design"
+    },
+    {
+      "file": "workpulse-rehearsal.env",
+      "keys": [
+        "REHEARSAL_DATABASE_URL"
+      ],
+      "sha256": "147ace62c85a88dd19980e77f856514060fbe723775d4b4448afa9d2a88892e1",
+      "sessionSecretAtLeast32": false
+    }
+  ],
+  "protectedHashes": {
+    ".env": "e683b25719e068642138ef2551f810634534b3a3b4565e90ce4353b039c3ae8e",
+    ".env.recovery.local": "78fc548c42893aa779aad4f72606a3f7eaff43901efc82bbd43045a5f4350661",
+    "workpulse-rehearsal.env": "147ace62c85a88dd19980e77f856514060fbe723775d4b4448afa9d2a88892e1"
+  },
+  "versions": {
+    "next": "16.3.6",
+    "prisma": "6.19.3",
+    "@prisma/client": "6.19.3",
+    "typescript": "5.9.3",
+    "eslint": "9.39.5"
+  }
+}

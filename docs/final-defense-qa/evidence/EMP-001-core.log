@@ -1,0 +1,7 @@
+EmployeeConversionError: Candidate is not ready to be hired. Required prerequisites incomplete: Onboarding checklist requires HR review. Missing or unverified requirements: Resume / application letter, Organization onboarding review. Existing verified and waived records are preserved.
+    at convertInTransaction (G:\CAPSTONE\WorkPulse\src\features\employees\conversion.ts:220:11)
+    at async Proxy._transactionWithCallback (G:\CAPSTONE\WorkPulse\node_modules\@prisma\client\src\runtime\getPrismaClient.ts:722:18)
+    at async convertApplicationToEmployee (G:\CAPSTONE\WorkPulse\src\features\employees\conversion.ts:376:14)
+    at async main (G:\CAPSTONE\WorkPulse\scripts\test-h1-employee-core.ts:252:19) {
+  code: 'NOT_READY'
+}

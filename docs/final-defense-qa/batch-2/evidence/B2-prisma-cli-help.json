@@ -1,0 +1,10 @@
+{
+  "id": "B2-prisma-cli-help",
+  "command": "node node_modules/prisma/build/index.js migrate deploy --help",
+  "capturedAt": "2026-11-01T17:46:06.324Z",
+  "durationMs": 1219,
+  "exitCode": 0,
+  "signal": null,
+  "status": "PASS",
+  "log": "B2-prisma-cli-help.log"
+}

@@ -1,0 +1,10 @@
+{
+  "id": "B1-cookie-reproduction",
+  "command": "node docs/final-defense-qa/adapt-legacy.cjs test-rfid-browser.cjs",
+  "capturedAt": "2026-11-01T17:18:24.614Z",
+  "durationMs": 27241,
+  "exitCode": 1,
+  "status": "FAIL",
+  "schema": "batch3_test_76310efe26a4205f79d12b2f",
+  "isolatedPerSuite": true
+}

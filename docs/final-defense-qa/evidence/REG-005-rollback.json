@@ -1,0 +1,10 @@
+{
+  "id": "REG-005-rollback",
+  "command": "node docs/final-defense-qa/exported-suites.cjs test-company-registration.cjs",
+  "capturedAt": "2026-11-01T16:37:37.167Z",
+  "durationMs": 44925,
+  "exitCode": 0,
+  "status": "PASS",
+  "schema": "batch3_test_d922be143c2ba5967c24ec0c",
+  "isolatedPerSuite": true
+}

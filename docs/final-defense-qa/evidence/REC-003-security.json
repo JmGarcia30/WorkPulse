@@ -1,0 +1,10 @@
+{
+  "id": "REC-003-security",
+  "command": "node scripts/test-hiring-candidate-security.cjs",
+  "capturedAt": "2026-11-01T16:28:20.489Z",
+  "durationMs": 372,
+  "exitCode": 1,
+  "signal": null,
+  "status": "FAIL",
+  "log": "REC-003-security.log"
+}

@@ -1,0 +1,79 @@
+RFID PASS 1: card identifiers preserve all leading zeroes
+RFID PASS 2: invalid scanner input rejected
+RFID PASS 3: invalid scanner input rejected
+RFID PASS 4: invalid scanner input rejected
+RFID PASS 5: invalid scanner input rejected
+RFID PASS 6: invalid scanner input rejected
+RFID PASS 7: invalid scanner input rejected
+RFID PASS 8: first scan chooses Time In
+RFID PASS 9: cooldown boundary permits Time Out
+RFID PASS 10: rapid scan cannot switch direction
+RFID PASS 11: future event requires HR review
+RFID PASS 12: cooldown also protects the local-midnight boundary
+RFID PASS 13: completed day cannot start a third event
+RFID PASS 14: out-before-in requires HR review
+RFID PASS 15: unclassified events require review
+RFID PASS 16: corrected day requires HR review
+RFID PASS 17: organization timezone determines the attendance day
+RFID PASS 18: card stored only as tenant-scoped keyed hash
+RFID PASS 23: employee search is bounded and scoped to current tenant
+RFID PASS 24: concurrent enrollment commits only one active assignment
+RFID PASS 25: replacement deactivates the old card atomically
+RFID PASS 27: replaced card cannot record attendance
+RFID PASS 28: unknown cards produce no employee information
+RFID PASS 30: concurrent identical scans return the same committed Time In
+RFID PASS 31: accepted timestamp comes from the database clock, independent of workstation clock skew
+RFID PASS 32: kiosk response exposes only the identified employee and organization-local timestamp context
+RFID PASS 35: different requests and kiosks cannot flip direction during cooldown
+RFID PASS 36: duplicate/concurrent scans produce one raw event
+RFID PASS 37: RFID immediately materializes the existing schedule-aware HR attendance record
+RFID PASS 38: client cannot supply attendance timestamps or direction
+RFID PASS 40: RFID respects a pre-existing manual Time In
+RFID PASS 41: explicitly deactivated card is refused
+RFID PASS 42: inactive employee cannot scan even with an active card
+RFID PASS 43: foreign-tenant card cannot identify an employee
+prisma:error 
+Invalid `prisma.rfidCard.create()` invocation in
+G:\CAPSTONE\WorkPulse\scripts\test-rfid-attendance.ts:111:46
+
+  108 const staff = await prisma.user.create({ data: { organizationId: f.organization.id, name: 'Synthetic hiring manager', email: `${randomUUID()}@fixture.invalid`, role: 'HIRING_MANAGER' } });
+  109 await rejects(() => service.enroll({ ...f.context, actorUserId: staff.id }, { employeeId: e.id, cardNumber: '0000000008', expectedCardId: null }), 'UNAUTHORIZED');
+  110 await rejects(() => service.authorizeKiosk({ ...f.context, actorUserId: other.actor.id }), 'UNAUTHORIZED');
+→ 111 await assert.rejects(() => prisma.rfidCard.create(
+Foreign key constraint violated on the constraint: `RfidCard_employeeId_organizationId_fkey`
+RFID PASS 46: database composite foreign key rejects cross-tenant assignments
+RFID PASS 47: replacement retains the original card assignment as history
+prisma:error 
+Invalid `prisma.rfidCard.create()` invocation in
+G:\CAPSTONE\WorkPulse\scripts\test-rfid-attendance.ts:115:46
+
+  112 ok(true, 'database composite foreign key rejects cross-tenant assignments');
+  113 ok(replacement.cardId !== enrolled.cardId, 'replacement retains the original card assignment as history');
+  114 const active = await prisma.rfidCard.findFirstOrThrow({ where: { organizationId: f.organization.id, employeeId: a.id, deactivatedAt: null } });
+→ 115 await assert.rejects(() => prisma.rfidCard.create(
+Unique constraint failed on the fields: (`organizationId`,`cardDigest`)
+RFID PASS 48: database partial unique index rejects duplicate active cards
+prisma:error 
+Invalid `prisma.rfidAudit.update()` invocation in
+G:\CAPSTONE\WorkPulse\scripts\test-rfid-attendance.ts:118:47
+
+  115 await assert.rejects(() => prisma.rfidCard.create({ data: { organizationId: f.organization.id, employeeId: e.id, cardDigest: active.cardDigest } }));
+  116 ok(true, 'database partial unique index rejects duplicate active cards');
+  117 const receipt = await prisma.rfidAudit.findUniqueOrThrow({ where: { organizationId_requestKey: { organizationId: f.organization.id, requestKey: requestId } } });
+→ 118 await assert.rejects(() => prisma.rfidAudit.update(
+Error occurred during query execution:
+ConnectorError(ConnectorError { user_facing_error: None, kind: QueryError(PostgresError { code: "P0001", message: "RFID audit records are immutable", severity: "ERROR", detail: None, column: None, hint: None }), transient: false })
+RFID PASS 49: database rejects audit history mutation
+RFID PASS 50: audit receipts contain neither raw card numbers nor kiosk tokens
+RFID PASS 52: expired kiosk token is refused
+RFID PASS 53: receipt is committed before the display lookup starts
+RFID PASS 54: retry recovers original employee, direction and timestamp after a lost confirmation
+RFID PASS 55: post-commit failure and retry preserve the original scan ID and one event
+RFID PASS 56: real server cooldown expiry records RFID Time Out
+RFID PASS 57: old idempotency key still returns original Time In after Time Out
+RFID PASS 58: only the intended Time In and Time Out exist
+RFID PASS 59: existing HR record shows the completed RFID attendance pair
+RFID PASS 61: persisted rate limit rejects excess requests
+RFID PASS 63: locked kiosk cannot record attendance
+RFID PASS 65: current persisted HR permissions are rechecked for kiosk scans
+RFID tests passed: 65 assertions.

@@ -1,0 +1,10 @@
+{
+  "id": "REC-004-job-actions",
+  "command": "node docs/final-defense-qa/exported-suites.cjs ../docs/final-defense-qa/job-check.cjs",
+  "capturedAt": "2026-11-01T16:35:40.888Z",
+  "durationMs": 6852,
+  "exitCode": 1,
+  "status": "FAIL",
+  "schema": "batch3_test_968fb53d4111838193f0ec23",
+  "isolatedPerSuite": true
+}

@@ -1,0 +1,10 @@
+{
+  "id": "REC-007-browser",
+  "command": "node docs/final-defense-qa/adapt-legacy.cjs test-hiring-browser-final.cjs",
+  "capturedAt": "2026-11-01T16:40:45.280Z",
+  "durationMs": 140559,
+  "exitCode": 1,
+  "status": "FAIL",
+  "schema": "batch3_test_56e793a935ca2ee6ddc54f1f",
+  "isolatedPerSuite": true
+}

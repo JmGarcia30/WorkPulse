@@ -1,0 +1,72 @@
+PASS: Generated slug validates for SAGA
+PASS: Generated slug validates for www
+PASS: Generated slug validates for ab
+PASS: Generated slug validates for École & Sons
+PASS: Generated slug validates for 世界
+PASS: Generated slug validates for aaaaaaaaaaaaaaaaaa
+PASS: Short passwords cannot register
+PASS: Invalid email cannot register
+PASS: Passwords exceeding bcrypt byte limit are rejected
+PASS: Unsupported tenant hosting cannot accept registration
+PASS: Unverified registration creates neither tenant nor login user
+PASS: Pending password is hashed with existing bcrypt policy
+PASS: Only keyed OTP verifier and browser proof hash are stored
+PASS: SMTP receives a six-digit code with ten-minute expiry and a public verification URL
+PASS: Public registration response contains no secret or password
+PASS: Duplicate submission cannot overwrite pending company details or password
+PASS: Email link alone cannot activate an attacker-prepared password
+PASS: Unknown tokens cannot activate a workspace
+PASS: Verification resend enforces its cooldown
+PASS: Another browser must know the registration password to resend
+PASS: Another browser cannot resend or invalidate a pending registration
+PASS: Resending immediately invalidates the old token
+PASS: Verification consumes the token and removes the pending password hash
+PASS: Verified registrant becomes only its own initial HR administrator
+PASS: Neutral organization starts in UTC with careers disabled and no SAGA configuration
+PASS: No employee, payroll, hiring, leave, schedule or branding data is inherited
+PASS: Verified registration redirects to its validated tenant login
+PASS: Verified creation is audited without a platform operator
+PASS: Organization is immediately visible to existing platform queries
+PASS: Consumed verification cannot create a second organization
+PASS: Registered email cannot create duplicate users or send registration email
+[WorkPulse timing] branding read: 120.0ms
+[WorkPulse timing] tenant resolution: 120.5ms
+[WorkPulse timing] branding read: 78.8ms
+[WorkPulse timing] tenant resolution: 79.0ms
+[WorkPulse timing] session validation: 325.1ms
+PASS: Verified administrator signs in through existing tenant authentication
+[WorkPulse timing] branding read: 61.3ms
+[WorkPulse timing] tenant resolution: 61.5ms
+[WorkPulse timing] branding read: 60.1ms
+[WorkPulse timing] tenant resolution: 60.4ms
+PASS: Valid new-company credentials and session cannot access SAGA
+PASS: Registration page is inaccessible on tenant hosts
+PASS: Verification page is inaccessible on discovery host
+PASS: Verification Server Action independently rejects tenant-host invocation
+PASS: Companies with identical names receive unique validated slugs
+PASS: Expired verification cannot create a tenant
+PASS: Expired pending registration can be restarted without reusing prior proofs
+PASS: SMTP failure returns actionable feedback
+PASS: Failed delivery leaves only a pending registration, never an active user
+PASS: Verification messages never leak to development email previews
+PASS: Initialization failure rolls back company, user and verification together
+PASS: Verification can retry successfully after an atomic initialization failure
+PASS: Incorrect attempt 1 is counted
+PASS: Incorrect attempt persists after rejection 1
+PASS: Incorrect attempt 2 is counted
+PASS: Incorrect attempt persists after rejection 2
+PASS: Incorrect attempt 3 is counted
+PASS: Incorrect attempt persists after rejection 3
+PASS: Incorrect attempt 4 is counted
+PASS: Incorrect attempt persists after rejection 4
+PASS: Incorrect attempt 5 is counted
+PASS: Incorrect attempt persists after rejection 5
+PASS: Correct code is rejected after five incorrect attempts
+PASS: Cross-browser resend rotates the nonce and resets attempts
+PASS: Cross-device code verification succeeds without any original browser cookie
+PASS: Existing pending link registration still completes safely across browsers with its password
+PASS: Legacy link is invalidated when resending as OTP
+PASS: Legacy pending record converts to OTP through the same onboarding service
+PASS: Persistent registration budget limits duplicate and email-flood attempts
+{"passed":true,"assertions":61,"checks":["Generated slug validates for SAGA","Generated slug validates for www","Generated slug validates for ab","Generated slug validates for École & Sons","Generated slug validates for 世界","Generated slug validates for aaaaaaaaaaaaaaaaaa","Short passwords cannot register","Invalid email cannot register","Passwords exceeding bcrypt byte limit are rejected","Unsupported tenant hosting cannot accept registration","Unverified registration creates neither tenant nor login user","Pending password is hashed with existing bcrypt policy","Only keyed OTP verifier and browser proof hash are stored","SMTP receives a six-digit code with ten-minute expiry and a public verification URL","Public registration response contains no secret or password","Duplicate submission cannot overwrite pending company details or password","Email link alone cannot activate an attacker-prepared password","Unknown tokens cannot activate a workspace","Verification resend enforces its cooldown","Another browser must know the registration password to resend","Another browser cannot resend or invalidate a pending registration","Resending immediately invalidates the old token","Verification consumes the token and removes the pending password hash","Verified registrant becomes only its own initial HR administrator","Neutral organization starts in UTC with careers disabled and no SAGA configuration","No employee, payroll, hiring, leave, schedule or branding data is inherited","Verified registration redirects to its validated tenant login","Verified creation is audited without a platform operator","Organization is immediately visible to existing platform queries","Consumed verification cannot create a second organization","Registered email cannot create duplicate users or send registration email","Verified administrator signs in through existing tenant authentication","Valid new-company credentials and session cannot access SAGA","Registration page is inaccessible on tenant hosts","Verification page is inaccessible on discovery host","Verification Server Action independently rejects tenant-host invocation","Companies with identical names receive unique validated slugs","Expired verification cannot create a tenant","Expired pending registration can be restarted without reusing prior proofs","SMTP failure returns actionable feedback","Failed delivery leaves only a pending registration, never an active user","Verification messages never leak to development email previews","Initialization failure rolls back company, user and verification together","Verification can retry successfully after an atomic initialization failure","Incorrect attempt 1 is counted","Incorrect attempt persists after rejection 1","Incorrect attempt 2 is counted","Incorrect attempt persists after rejection 2","Incorrect attempt 3 is counted","Incorrect attempt persists after rejection 3","Incorrect attempt 4 is counted","Incorrect attempt persists after rejection 4","Incorrect attempt 5 is counted","Incorrect attempt persists after rejection 5","Correct code is rejected after five incorrect attempts","Cross-browser resend rotates the nonce and resets attempts","Cross-device code verification succeeds without any original browser cookie","Existing pending link registration still completes safely across browsers with its password","Legacy link is invalidated when resending as OTP","Legacy pending record converts to OTP through the same onboarding service","Persistent registration budget limits duplicate and email-flood attempts"]}
+[WorkPulse Emailer] Sensitive email email_1793551035291_gj76ae was not delivered; content was discarded.

@@ -1,0 +1,33 @@
+{
+  "passed": true,
+  "assertions": 27,
+  "checks": [
+    "Public website exposes company registration",
+    "Registration fits a mobile viewport",
+    "Registration password visibility can be toggled",
+    "Real registration action sends loopback SMTP verification without creating a user",
+    "Browser proof cookie is host-only, HttpOnly and Secure",
+    "Verification clears email fragment and shows resend cooldown",
+    "Six OTP boxes fit mobile viewport",
+    "OTP verification fits a narrow 320px mobile viewport",
+    "Cross-browser Resend Code sends a replacement through existing SMTP",
+    "Pasting full code fills all six boxes and advances focus",
+    "Typing a digit moves focus to the next box",
+    "Real verification creates the tenant and redirects to its own login",
+    "First HR login continues to existing organization branding setup",
+    "Branding setup saves only the newly verified organization",
+    "Existing HR login opens the new organization dashboard",
+    "Dashboard refresh preserves tenant authentication",
+    "Actual HTTP rejects a new-company session copied onto SAGA",
+    "Tenant host cannot serve public registration",
+    "Verification HTTP response disables caching and referrers",
+    "Self-registered organization automatically appears in platform dashboard",
+    "Platform details display verified self-service onboarding metadata",
+    "Manual System Administrator organization creation remains available",
+    "Existing SAGA public workspace remains accessible",
+    "Concurrent duplicate submissions create one pending registration and email",
+    "Concurrent incorrect attempts commit exactly five failures for one issued code",
+    "A fresh browser cannot bypass exhausted code attempts",
+    "Concurrent verification consumes one proof and creates one company/account"
+  ]
+}

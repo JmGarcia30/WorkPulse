@@ -1,0 +1,17 @@
+========================================================================
+UNIT TESTS: TEXT EXTRACTION, NORMALIZATION & VALIDATION
+========================================================================
+
+1. Testing text normalization...
+   ✓ Normalization tests passed.
+
+2. Testing quality evaluation...
+   ✓ Quality evaluation tests passed.
+
+3. Testing Zod ParsedResumeSchema validation & normalization...
+   ✓ Schema validation tests passed.
+
+4. Testing DOCX / Unsupported handling...
+   ✓ Unsupported MIME type test passed.
+
+🎉 ALL UNIT TESTS PASSED SUCCESSFULLY!

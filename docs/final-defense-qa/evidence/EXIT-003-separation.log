@@ -1,0 +1,28 @@
+H10.1 and H10.2 migrations replayed in the isolated test schema.
+Verified H10 tables, active-case unique index, validated constraints, and enabled audit/lifecycle triggers.
+PASS 1: effective-date gate uses institution local midnight
+PASS 2: timezone boundary does not assume UTC date
+PASS 10: Organization Admin approval records decision, actor, time and remarks
+PASS 11: future approval preserves ACTIVE status
+PASS 12: future approval preserves account and invitations
+PASS 13: future approval preserves ESS eligibility
+PASS 19: approved-awaiting-effective listing is available
+PASS 20: authorized execution completes the approved case
+PASS 21: ACTIVE to SEPARATED is recorded once with the correct previous status
+PASS 22: open employment closes at the exclusive UTC-encoded calendar boundary
+PASS 23: already closed employment dates remain unchanged
+PASS 24: probation closes through H10 without fabricating an H2 decision
+PASS 25: account disabling is audited in the finalization transaction
+PASS 26: old JWT remains cryptographically valid
+PASS 28: final lifecycle changes have immutable separation audit history
+PASS 29: repeated execution returns the completed result without duplicate transitions
+PASS 32: hiring, payroll snapshots/periods, leave ledger, attendance and corrections are unchanged
+PASS 33: final pay readiness flags financial follow-up without inventing calculations or blocking exit
+PASS 34: profile summary and employee history distinguish completed cases
+PASS 35: completed listings are paginated and tenant-scoped
+Removed isolated fixture schema h102_test_3e69f3ff8b1d4a918f4d5f12.
+warn The configuration property `package.json#prisma` is deprecated and will be removed in Prisma 7. Please migrate to a Prisma config file (e.g., `prisma.config.ts`).
+For more information, see: https://pris.ly/prisma-config
+
+Environment variables loaded from .env
+Cannot find module 'G:\CAPSTONE\WorkPulse\src\features\leave\service' imported from G:\CAPSTONE\WorkPulse\scripts\test-h10-2-separation.ts

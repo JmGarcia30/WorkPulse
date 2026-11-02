@@ -1,0 +1,10 @@
+{
+  "id": "ENV-004-lint",
+  "command": "node node_modules/eslint/bin/eslint.js . --ignore-pattern docs/final-defense-qa/**",
+  "capturedAt": "2026-11-01T16:20:20.212Z",
+  "durationMs": 88001,
+  "exitCode": 1,
+  "signal": null,
+  "status": "FAIL",
+  "log": "ENV-004-lint.log"
+}

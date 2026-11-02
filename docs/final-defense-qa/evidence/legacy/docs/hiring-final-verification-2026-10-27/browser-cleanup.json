@@ -1,0 +1,10 @@
+{
+  "capturedAt": "2026-11-01T16:40:45.222Z",
+  "remainingApplications": 0,
+  "marker": "hiring-verify-4b355970f660ba3b",
+  "syntheticOrganizationsRemaining": 0,
+  "status": "PASS",
+  "changedTables": [],
+  "comparedTables": 73,
+  "outerTransactionRolledBack": true
+}

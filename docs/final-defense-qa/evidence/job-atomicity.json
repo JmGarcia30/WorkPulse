@@ -1,0 +1,10 @@
+{
+  "id": "QA-BUG-004",
+  "test": "REC-004-07",
+  "status": "FAIL",
+  "beforeRequirements": 1,
+  "afterRequirements": 0,
+  "errorType": "PrismaClientValidationError",
+  "expected": "Rejected edit preserves existing requirements",
+  "actual": "Requirements removed before failed job update"
+}

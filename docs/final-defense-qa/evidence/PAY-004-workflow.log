@@ -1,0 +1,16 @@
+WORKFLOW PASS empty payroll stays DRAFT after attempted review
+WORKFLOW PASS empty draft remains safely deletable
+WORKFLOW PASS missing statutory setup and opening history are explicit blockers
+WORKFLOW PASS standard monthly bases derive from salary only after explicit basic-only and coverage review
+WORKFLOW PASS standard shortcut never invents opening history
+WORKFLOW PASS standard profile still blocks payroll without verified historical balances
+WORKFLOW PASS verified employee generates statutory payroll
+WORKFLOW PASS finalized verified setup is offered for the same compensation and year
+WORKFLOW PASS rejected reuse cannot write inputs
+WORKFLOW PASS reuse preserves source evidence and records the current reviewer
+WORKFLOW PASS saved setup and verified opening history are reused without entering balances again
+WORKFLOW PASS reused configuration passes the actual statutory engine in the next period
+WORKFLOW PASS unverified pay date displays an explicit blocker
+WORKFLOW PASS effective-date mismatch gives an actionable salary message
+WORKFLOW PASS salary mismatch prevents reuse
+{"passed":true,"assertions":24,"fixturesRolledBack":true}

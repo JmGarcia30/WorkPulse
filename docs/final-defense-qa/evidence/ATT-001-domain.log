@@ -1,0 +1,20 @@
+PASS 1: three monthly late days do not meet the threshold
+PASS 2: four monthly late days meet the threshold
+PASS 3: two plus two across months is not habitual tardiness
+PASS 4: one qualifying month is found within a longer range
+PASS 5: 15-minute grace boundary is inclusive
+PASS 6: one second beyond grace retains exact seconds
+PASS 7: 20-minute arrival delay minus configured 15-minute grace is five late minutes
+PASS 8: zero grace retains all 20 late minutes
+PASS 9: 30-minute undertime and unpaid-lunch exclusion remain correct
+PASS 10: row order cannot falsely invalidate payroll evidence
+PASS 11: lateness changes invalidate the consumed payroll evidence
+PASS 12: undertime changes invalidate the consumed payroll evidence
+PASS 13: status changes invalidate the consumed payroll evidence
+PASS 14: approved leave changes invalidate the consumed payroll evidence
+PASS 15: date changes invalidate the consumed payroll evidence
+PASS 16: resolved present/absent records are eligible attendance inputs
+PASS 17: missing materialized days are blocked
+PASS 18: missing schedules are blocked for attendance policies
+PASS 19: OPEN inputs are blocked for attendance policies
+PASS 20: INCOMPLETE inputs are blocked for attendance policies

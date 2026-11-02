@@ -1,0 +1,30 @@
+{
+  "capturedAt": "2026-11-01T17:46:04.982Z",
+  "status": "PASS",
+  "approvedReviewBaseCandidate": "c820c5207d66399fd8d5bd2cef4c19332d87935b",
+  "baseApprovalStillRequired": true,
+  "currentCheckout": "cfcbd8512edbc3e74148e2541ed03bc9f37ec3cd",
+  "selectedFiles": [
+    "src/features/hiring/actions.ts",
+    "src/lib/auth/session.ts",
+    "scripts/test-staff-session-security.cjs"
+  ],
+  "selectedFilesBaseIdentical": true,
+  "patchSha256": "c53a32275ad240868778ddd013d0b7b342870eddbc075970c30ec07497913631",
+  "appliesToDeployedCommit": true,
+  "committed": false,
+  "pushed": false,
+  "deployed": false,
+  "migration": {
+    "file": "prisma/migrations/20261027000100_company_registration_otp/migration.sql",
+    "rawSha256": "03544310cff45c2014a32aeaf2874239f1f3c00c1a744c4307b6cd29cfa133c9",
+    "normalizedLfSha256": "03544310cff45c2014a32aeaf2874239f1f3c00c1a744c4307b6cd29cfa133c9",
+    "statementCount": 1,
+    "onlyAdditiveColumns": [
+      "otpHash",
+      "otpNonce",
+      "otpAttempts"
+    ],
+    "destructiveOrDataUpdateStatements": false
+  }
+}

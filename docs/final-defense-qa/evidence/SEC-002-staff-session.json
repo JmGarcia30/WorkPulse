@@ -1,0 +1,10 @@
+{
+  "id": "SEC-002-staff-session",
+  "command": "node docs/final-defense-qa/adapt-legacy.cjs test-staff-session-security.cjs",
+  "capturedAt": "2026-11-01T16:38:21.930Z",
+  "durationMs": 24083,
+  "exitCode": 1,
+  "status": "FAIL",
+  "schema": "staff_auth_test_54afd2aa6a206f975c2e3a30",
+  "isolatedPerSuite": true
+}

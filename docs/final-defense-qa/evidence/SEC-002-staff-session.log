@@ -1,0 +1,30 @@
+PASS 1: HR_ADMIN repeated incorrect credentials are rejected
+PASS 2: HR_ADMIN concurrent failures stop at the persistent five-attempt budget
+PASS 3: HR_ADMIN exhausted budget blocks even correct password
+PASS 4: HR_ADMIN correct password succeeds after window expiry
+PASS 5: ORGANIZATION_ADMIN repeated incorrect credentials are rejected
+PASS 6: ORGANIZATION_ADMIN concurrent failures stop at the persistent five-attempt budget
+PASS 7: ORGANIZATION_ADMIN exhausted budget blocks even correct password
+PASS 8: ORGANIZATION_ADMIN correct password succeeds after window expiry
+PASS 9: EMPLOYEE repeated incorrect credentials are rejected
+PASS 10: EMPLOYEE concurrent failures stop at the persistent five-attempt budget
+PASS 11: EMPLOYEE exhausted budget blocks even correct password
+PASS 12: EMPLOYEE correct password succeeds after window expiry
+PASS 13: Foreign credentials cannot authenticate in SAGA
+PASS 14: Foreign tenant retains its independent authentication budget
+PASS 15: Unknown identity fails without creating a user
+PASS 16: Overlong bcrypt input is rejected
+PASS 17: Malformed non-string identity is rejected
+PASS 18: Concurrent correct-password requests cannot bypass the five-attempt budget
+PASS 19: Tenant-wide cap stops random-identity attacks
+PASS 20: Exhausted tenant cap cannot create unbounded identity budget rows
+[WorkPulse timing] branding read: 118.4ms
+[WorkPulse timing] tenant resolution: 119.1ms
+PASS 21: HR login action establishes session and preserves SAGA dashboard redirect
+[WorkPulse timing] branding read: 59.0ms
+[WorkPulse timing] tenant resolution: 59.8ms
+[WorkPulse timing] branding read: 113.7ms
+[WorkPulse timing] tenant resolution: 113.9ms
+[WorkPulse timing] session validation: 283.2ms
+PASS 22: HR session retains existing back-office guard
+{"passed":false,"stage":"session actions","type":"AssertionError","code":"ERR_ASSERTION","message":"Staff cookie retains secure host-only attributes","location":"    at ok (G:\\CAPSTONE\\WorkPulse\\scripts\\test-staff-session-security.cjs:22:33)"}

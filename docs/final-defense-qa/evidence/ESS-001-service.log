@@ -1,0 +1,27 @@
+✓ H7 account guard, tenant/employee ownership, ID manipulation, finalized dashboard, missing data, and staff isolation
+prisma:error 
+Invalid `tx.employeeAccount.create()` invocation in
+G:\CAPSTONE\WorkPulse\scripts\test-h4-employee-self-service.ts:75:32
+
+  72 const first = await fixture(tx, 'tenant-a');
+  73 const second = await fixture(tx, 'tenant-b');
+  74 const user = await tx.user.create({ data: { organizationId: first.organization.id, name: 'Cross', email: `${marker}-cross@test.invalid`, passwordHash: null, role: Role.EMPLOYEE } });
+→ 75 await tx.employeeAccount.create(
+Error occurred during query execution:
+ConnectorError(ConnectorError { user_facing_error: None, kind: QueryError(PostgresError { code: "P0001", message: "Cross-tenant employee account link", severity: "ERROR", detail: None, column: None, hint: None }), transient: false })
+prisma:error 
+Invalid `tx.employeeAccountAudit.update()` invocation in
+G:\CAPSTONE\WorkPulse\scripts\test-h4-employee-self-service.ts:87:37
+
+  84 const user = await tx.user.create({ data: { organizationId: organization.id, name: 'Immutable', email: `${marker}-immutable@test.invalid`, passwordHash: null, role: Role.EMPLOYEE } });
+  85 const account = await tx.employeeAccount.create({ data: { organizationId: organization.id, userId: user.id, employeeId: employee.id, activationTokenHash: createHash('sha256').update('immutable').digest('hex'), activationTokenExpiresAt: new Date(Date.now() + 60_000), createdById: actor.id } });
+  86 const audit = await tx.employeeAccountAudit.create({ data: { organizationId: organization.id, employeeAccountId: account.id, actorUserId: actor.id, action: EmployeeAccountAuditAction.ACCOUNT_CREATED } });
+→ 87 await tx.employeeAccountAudit.update(
+Error occurred during query execution:
+ConnectorError(ConnectorError { user_facing_error: None, kind: QueryError(PostgresError { code: "P0001", message: "EmployeeAccountAudit is immutable", severity: "ERROR", detail: None, column: None, hint: None }), transient: false })
+✓ H4 Employee role isolation
+✓ H4 account schema and email identity independence
+✓ H4 cross-tenant link rejection
+✓ H4 append-only audit enforcement
+✓ H4 fragment capture survives URL cleanup and Strict Mode replay
+✓ H4 activation, expiry, rotation, one-time use, and secret hygiene

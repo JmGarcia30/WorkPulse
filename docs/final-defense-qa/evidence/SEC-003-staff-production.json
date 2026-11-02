@@ -1,0 +1,10 @@
+{
+  "id": "SEC-003-staff-production",
+  "command": "node docs/final-defense-qa/adapt-legacy.cjs test-staff-session-security.cjs",
+  "capturedAt": "2026-11-01T16:40:05.622Z",
+  "durationMs": 37097,
+  "exitCode": 0,
+  "status": "PASS",
+  "schema": "staff_auth_test_4d0c27d0721b43cd7f552341",
+  "isolatedPerSuite": true
+}

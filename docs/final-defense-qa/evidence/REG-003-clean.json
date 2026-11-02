@@ -1,0 +1,10 @@
+{
+  "id": "REG-003-clean",
+  "command": "node docs/final-defense-qa/exported-suites.cjs test-company-registration.cjs",
+  "capturedAt": "2026-11-01T16:29:51.505Z",
+  "durationMs": 28718,
+  "exitCode": 1,
+  "status": "FAIL",
+  "schema": "batch3_test_fc90b13e92bd9dcbcaf747c9",
+  "isolatedPerSuite": true
+}

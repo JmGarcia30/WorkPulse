@@ -1,0 +1,8 @@
+{
+  "capturedAt": "2026-11-02T04:53:23.819Z",
+  "status": "PASS",
+  "passed": true,
+  "assertions": 56,
+  "rollbackFixtures": true,
+  "concurrencyFixturesRemoved": true
+}

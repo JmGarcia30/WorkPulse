@@ -1,0 +1,9 @@
+{
+  "id": "REG-001-service",
+  "command": "node docs/final-defense-qa/exported-suites.cjs test-company-registration.cjs",
+  "capturedAt": "2026-11-01T16:24:40.740Z",
+  "durationMs": 18080,
+  "exitCode": 1,
+  "status": "FAIL",
+  "schema": "batch3_test_a72cf5b77a14345888c5f2ca"
+}

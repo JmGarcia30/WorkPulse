@@ -1,0 +1,10 @@
+{
+  "id": "RFID-004-https-browser",
+  "command": "node docs/final-defense-qa/adapt-legacy.cjs test-rfid-browser.cjs",
+  "capturedAt": "2026-11-01T16:40:30.813Z",
+  "durationMs": 3862,
+  "exitCode": 1,
+  "status": "FAIL",
+  "schema": "batch3_test_7d05ffe43ae0e97c44bd6560",
+  "isolatedPerSuite": true
+}

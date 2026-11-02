@@ -1,0 +1,10 @@
+{
+  "id": "UX-003-hiring",
+  "command": "node scripts/test-final-ux-hiring.cjs",
+  "capturedAt": "2026-11-01T16:28:22.762Z",
+  "durationMs": 1549,
+  "exitCode": 1,
+  "signal": null,
+  "status": "FAIL",
+  "log": "UX-003-hiring.log"
+}

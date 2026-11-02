@@ -14,6 +14,7 @@ import {
 import { getAvailableNextStatuses } from './pipeline';
 import { transitionApplicationStatus, transitionInclude, transitionSource } from './status-transition';
 import { getStageTransitionBlockers } from './stage-prerequisites';
+import { z } from 'zod';
 
 function slugify(text: string): string {
   return text
@@ -149,29 +150,33 @@ export async function updateJobAction(jobId: string, formData: FormData): Promis
     redirect(`/dashboard/hiring/jobs/${jobId}/edit?error=missing_fields`);
   }
 
-  let structuredReqsData: Array<{
-    id?: string;
-    name: string;
-    type: RequirementType;
-    description?: string;
-    isRequired: boolean;
-  }> = [];
-
-  if (reqsJson) {
-    try {
-      structuredReqsData = JSON.parse(reqsJson);
-    } catch {
-      // fallback
-    }
+  const closingDate = closingDateRaw ? new Date(closingDateRaw) : null;
+  if (closingDate && (!/^\d{4}-\d{2}-\d{2}$/.test(closingDateRaw)
+    || Number.isNaN(closingDate.getTime()) || closingDate.toISOString().slice(0, 10) !== closingDateRaw)) {
+    redirect(`/dashboard/hiring/jobs/${jobId}/edit?error=invalid_fields`);
   }
 
-  // Re-create structured requirements cleanly
-  await prisma.jobRequirement.deleteMany({ where: { jobId } });
+  let rawRequirements: unknown = [];
+  try {
+    if (reqsJson) rawRequirements = JSON.parse(reqsJson);
+  } catch {
+    redirect(`/dashboard/hiring/jobs/${jobId}/edit?error=invalid_fields`);
+  }
+  const parsedRequirements = z.array(z.object({
+    name: z.string(),
+    type: z.enum(RequirementType).or(z.literal('')).nullish().transform(value => value || RequirementType.SKILL),
+    description: z.string().nullish().transform(value => value || ''),
+    isRequired: z.boolean().nullish().transform(value => value ?? true),
+  })).safeParse(rawRequirements);
+  if (!parsedRequirements.success) {
+    redirect(`/dashboard/hiring/jobs/${jobId}/edit?error=invalid_fields`);
+  }
+  const structuredReqsData = parsedRequirements.data;
 
   const categoryRaw = (formData.get('category') as string)?.trim();
 
   await prisma.job.update({
-    where: { id: jobId },
+    where: { id: jobId, organizationId: user.organizationId },
     data: {
       title,
       department,
@@ -189,8 +194,10 @@ export async function updateJobAction(jobId: string, formData: FormData): Promis
       responsibilities: responsibilities || description,
       qualifications: qualifications || description,
       requirements: structuredReqsData.map((r) => r.name).join(', ') || title,
-      closingDate: closingDateRaw ? new Date(closingDateRaw) : null,
+      closingDate,
       structuredReqs: {
+        // A nested write atomically replaces requirements with the job update.
+        deleteMany: {},
         create: structuredReqsData.map((r) => ({
           name: r.name,
           type: r.type || RequirementType.SKILL,

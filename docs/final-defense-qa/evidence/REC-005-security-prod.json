@@ -1,0 +1,10 @@
+{
+  "id": "REC-005-security-prod",
+  "command": "node docs/final-defense-qa/offline-adapter.cjs test-hiring-candidate-security.cjs",
+  "capturedAt": "2026-11-01T16:37:35.303Z",
+  "durationMs": 513,
+  "exitCode": 0,
+  "signal": null,
+  "status": "PASS",
+  "log": "REC-005-security-prod.log"
+}

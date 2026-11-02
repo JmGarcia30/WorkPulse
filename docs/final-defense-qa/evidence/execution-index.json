@@ -1,0 +1,605 @@
+{
+  "capturedAt": "2026-11-01T16:54:26.035Z",
+  "testedCommit": "cfcbd8512edbc3e74148e2541ed03bc9f37ec3cd",
+  "remoteMain": "c820c5207d66399fd8d5bd2cef4c19332d87935b",
+  "environment": [
+    {
+      "file": ".env",
+      "unchanged": true
+    },
+    {
+      "file": ".env.recovery.local",
+      "unchanged": true
+    },
+    {
+      "file": "workpulse-rehearsal.env",
+      "unchanged": true
+    }
+  ],
+  "restoredHistoricalReportArtifacts": [],
+  "results": [
+    {
+      "id": "ADM-001-service",
+      "command": "node docs/final-defense-qa/exported-suites.cjs test-platform-admin.cjs",
+      "capturedAt": "2026-11-01T16:24:05.741Z",
+      "durationMs": 9974,
+      "exitCode": 1,
+      "status": "FAIL",
+      "schema": "batch3_test_a72cf5b77a14345888c5f2ca",
+      "evidence": "ADM-001-service.json"
+    },
+    {
+      "id": "ADM-002-onboarding",
+      "command": "node docs/final-defense-qa/exported-suites.cjs test-platform-onboarding.cjs",
+      "capturedAt": "2026-11-01T16:24:42.755Z",
+      "durationMs": 36250,
+      "exitCode": 0,
+      "status": "PASS",
+      "schema": "batch3_test_a72cf5b77a14345888c5f2ca",
+      "evidence": "ADM-002-onboarding.json"
+    },
+    {
+      "id": "ADM-003-clean",
+      "command": "node docs/final-defense-qa/exported-suites.cjs test-platform-admin.cjs",
+      "capturedAt": "2026-11-01T16:28:56.549Z",
+      "durationMs": 12371,
+      "exitCode": 1,
+      "status": "FAIL",
+      "schema": "batch3_test_e26066b8cb5662a0176bc729",
+      "isolatedPerSuite": true,
+      "evidence": "ADM-003-clean.json"
+    },
+    {
+      "id": "ATT-001-domain",
+      "command": "node node_modules/tsx/dist/cli.mjs scripts/test-attendance-payroll-rules.ts",
+      "capturedAt": "2026-11-01T16:21:27.386Z",
+      "durationMs": 2395,
+      "exitCode": 0,
+      "signal": null,
+      "status": "PASS",
+      "log": "ATT-001-domain.log",
+      "evidence": "ATT-001-domain.json"
+    },
+    {
+      "id": "ATT-002-service",
+      "command": "node --require ./docs/final-defense-qa/preload.cjs node_modules/tsx/dist/cli.mjs scripts/test-h3-attendance.ts",
+      "capturedAt": "2026-11-01T16:24:02.530Z",
+      "durationMs": 8770,
+      "exitCode": 1,
+      "status": "FAIL",
+      "schema": "batch3_test_a72cf5b77a14345888c5f2ca",
+      "evidence": "ATT-002-service.json"
+    },
+    {
+      "id": "ATT-003-clean",
+      "command": "node --require tsx/cjs --require ./docs/final-defense-qa/preload.cjs scripts/test-h3-attendance.ts",
+      "capturedAt": "2026-11-01T16:26:24.597Z",
+      "durationMs": 20032,
+      "exitCode": 0,
+      "status": "PASS",
+      "schema": "batch3_test_78e5cfd178d11bc46aae1a92",
+      "isolatedPerSuite": true,
+      "evidence": "ATT-003-clean.json"
+    },
+    {
+      "id": "EMP-001-core",
+      "command": "node node_modules/tsx/dist/cli.mjs scripts/test-h1-employee-core.ts",
+      "capturedAt": "2026-11-01T16:22:14.332Z",
+      "durationMs": 8242,
+      "exitCode": 1,
+      "status": "FAIL",
+      "schema": "batch3_test_a72cf5b77a14345888c5f2ca",
+      "evidence": "EMP-001-core.json"
+    },
+    {
+      "id": "EMP-002-probation",
+      "command": "node node_modules/tsx/dist/cli.mjs scripts/test-h2-employment-probation.ts",
+      "capturedAt": "2026-11-01T16:22:25.733Z",
+      "durationMs": 7487,
+      "exitCode": 1,
+      "status": "FAIL",
+      "schema": "batch3_test_a72cf5b77a14345888c5f2ca",
+      "evidence": "EMP-002-probation.json"
+    },
+    {
+      "id": "ENV-002-prisma",
+      "command": "node node_modules/prisma/build/index.js validate",
+      "capturedAt": "2026-11-01T16:19:15.305Z",
+      "durationMs": 23385,
+      "exitCode": 0,
+      "signal": null,
+      "status": "PASS",
+      "log": "ENV-002-prisma.log",
+      "evidence": "ENV-002-prisma.json"
+    },
+    {
+      "id": "ENV-003-typescript",
+      "command": "node node_modules/typescript/bin/tsc --noEmit --incremental false",
+      "capturedAt": "2026-11-01T16:19:59.704Z",
+      "durationMs": 67780,
+      "exitCode": 0,
+      "signal": null,
+      "status": "PASS",
+      "log": "ENV-003-typescript.log",
+      "evidence": "ENV-003-typescript.json"
+    },
+    {
+      "id": "ENV-004-lint",
+      "command": "node node_modules/eslint/bin/eslint.js . --ignore-pattern docs/final-defense-qa/**",
+      "capturedAt": "2026-11-01T16:20:20.212Z",
+      "durationMs": 88001,
+      "exitCode": 1,
+      "signal": null,
+      "status": "FAIL",
+      "log": "ENV-004-lint.log",
+      "evidence": "ENV-004-lint.json"
+    },
+    {
+      "id": "ENV-005-build",
+      "command": "node node_modules/next/dist/bin/next build --webpack",
+      "capturedAt": "2026-11-01T16:21:42.404Z",
+      "durationMs": 107642,
+      "exitCode": 0,
+      "signal": null,
+      "status": "PASS",
+      "log": "ENV-005-build.log",
+      "evidence": "ENV-005-build.json"
+    },
+    {
+      "id": "ENV-008-startup",
+      "command": "node scripts/test-runtime-startup.cjs",
+      "capturedAt": "2026-11-01T16:20:51.428Z",
+      "durationMs": 175,
+      "exitCode": 0,
+      "signal": null,
+      "status": "PASS",
+      "log": "ENV-008-startup.log",
+      "evidence": "ENV-008-startup.json"
+    },
+    {
+      "id": "ENV-009-prisma-cache",
+      "command": "node scripts/test-prisma-client-cache.cjs",
+      "capturedAt": "2026-11-01T16:20:52.296Z",
+      "durationMs": 762,
+      "exitCode": 0,
+      "signal": null,
+      "status": "PASS",
+      "log": "ENV-009-prisma-cache.log",
+      "evidence": "ENV-009-prisma-cache.json"
+    },
+    {
+      "id": "ESS-001-service",
+      "command": "node --require ./docs/final-defense-qa/preload.cjs node_modules/tsx/dist/cli.mjs scripts/test-h4-employee-self-service.ts",
+      "capturedAt": "2026-11-01T16:24:20.375Z",
+      "durationMs": 24609,
+      "exitCode": 0,
+      "status": "PASS",
+      "schema": "batch3_test_a72cf5b77a14345888c5f2ca",
+      "evidence": "ESS-001-service.json"
+    },
+    {
+      "id": "EXIT-001-final-pay",
+      "command": "node docs/final-defense-qa/adapt-legacy.cjs test-final-pay.cjs",
+      "capturedAt": "2026-11-01T16:35:09.111Z",
+      "durationMs": 133568,
+      "exitCode": 0,
+      "status": "PASS",
+      "schema": "batch3_test_db01535abcc74df4e714bc62",
+      "isolatedPerSuite": true,
+      "evidence": "EXIT-001-final-pay.json"
+    },
+    {
+      "id": "EXIT-002-resignation",
+      "command": "node docs/final-defense-qa/adapt-legacy.cjs test-ess-resignation.cjs",
+      "capturedAt": "2026-11-01T16:37:30.771Z",
+      "durationMs": 94605,
+      "exitCode": 0,
+      "status": "PASS",
+      "schema": "batch3_test_0a6e3a343e7ae8ba5d6efbb1",
+      "isolatedPerSuite": true,
+      "evidence": "EXIT-002-resignation.json"
+    },
+    {
+      "id": "EXIT-003-separation",
+      "command": "node --require tsx/cjs --require ./docs/final-defense-qa/preload.cjs scripts/test-h10-2-separation.ts",
+      "capturedAt": "2026-11-01T16:31:26.410Z",
+      "durationMs": 66013,
+      "exitCode": 1,
+      "status": "FAIL",
+      "schema": "batch3_test_fcd6c3ec68365bedb6c13a04",
+      "isolatedPerSuite": true,
+      "evidence": "EXIT-003-separation.json"
+    },
+    {
+      "id": "LEA-001-service",
+      "command": "node --require ./docs/final-defense-qa/preload.cjs node_modules/tsx/dist/cli.mjs scripts/test-h5-leave-management.ts",
+      "capturedAt": "2026-11-01T16:24:21.901Z",
+      "durationMs": 774,
+      "exitCode": 1,
+      "status": "FAIL",
+      "schema": "batch3_test_a72cf5b77a14345888c5f2ca",
+      "evidence": "LEA-001-service.json"
+    },
+    {
+      "id": "LEA-002-clean",
+      "command": "node --require tsx/cjs --require ./docs/final-defense-qa/preload.cjs scripts/test-h5-leave-management.ts",
+      "capturedAt": "2026-11-01T16:32:28.548Z",
+      "durationMs": 79947,
+      "exitCode": 0,
+      "status": "PASS",
+      "schema": "batch3_test_92af0058ae5c1f3bfe36cbab",
+      "isolatedPerSuite": true,
+      "evidence": "LEA-002-clean.json"
+    },
+    {
+      "id": "PAY-001-statutory",
+      "command": "node node_modules/tsx/dist/cli.mjs scripts/test-payroll-statutory.ts",
+      "capturedAt": "2026-11-01T16:21:24.090Z",
+      "durationMs": 1108,
+      "exitCode": 0,
+      "signal": null,
+      "status": "PASS",
+      "log": "PAY-001-statutory.log",
+      "evidence": "PAY-001-statutory.json"
+    },
+    {
+      "id": "PAY-002-bir",
+      "command": "node node_modules/tsx/dist/cli.mjs scripts/test-payroll-bir.ts",
+      "capturedAt": "2026-11-01T16:21:24.855Z",
+      "durationMs": 648,
+      "exitCode": 0,
+      "signal": null,
+      "status": "PASS",
+      "log": "PAY-002-bir.log",
+      "evidence": "PAY-002-bir.json"
+    },
+    {
+      "id": "PAY-003-foundation",
+      "command": "node --require ./docs/final-defense-qa/preload.cjs node_modules/tsx/dist/cli.mjs scripts/test-h6-payroll-foundation.ts",
+      "capturedAt": "2026-11-01T16:25:44.083Z",
+      "durationMs": 8609,
+      "exitCode": 1,
+      "status": "FAIL",
+      "schema": "batch3_test_a72cf5b77a14345888c5f2ca",
+      "evidence": "PAY-003-foundation.json"
+    },
+    {
+      "id": "PAY-004-workflow",
+      "command": "node docs/final-defense-qa/exported-suites.cjs test-payroll-workflow.ts runPayrollWorkflow",
+      "capturedAt": "2026-11-01T16:26:49.390Z",
+      "durationMs": 23407,
+      "exitCode": 0,
+      "status": "PASS",
+      "schema": "batch3_test_6f9f12b5cc0048ebe9ec336d",
+      "isolatedPerSuite": true,
+      "evidence": "PAY-004-workflow.json"
+    },
+    {
+      "id": "PAY-005-integration",
+      "command": "node docs/final-defense-qa/exported-suites.cjs test-payroll-integration.ts runPayrollIntegration",
+      "capturedAt": "2026-11-01T16:28:19.480Z",
+      "durationMs": 60834,
+      "exitCode": 0,
+      "status": "PASS",
+      "schema": "batch3_test_f6abec9046f064c2d91ee70e",
+      "isolatedPerSuite": true,
+      "evidence": "PAY-005-integration.json"
+    },
+    {
+      "id": "PAY-006-phase3",
+      "command": "node docs/final-defense-qa/exported-suites.cjs test-payroll-phase3.ts runPayrollPhase3",
+      "capturedAt": "2026-11-01T16:31:15.441Z",
+      "durationMs": 28581,
+      "exitCode": 0,
+      "status": "PASS",
+      "schema": "batch3_test_cf0f687e6358b9900d2ba734",
+      "isolatedPerSuite": true,
+      "evidence": "PAY-006-phase3.json"
+    },
+    {
+      "id": "PAY-007-presentation",
+      "command": "node docs/final-defense-qa/exported-suites.cjs test-payroll-presentation.ts runPayrollPresentation",
+      "capturedAt": "2026-11-01T16:32:05.361Z",
+      "durationMs": 23662,
+      "exitCode": 0,
+      "status": "PASS",
+      "schema": "batch3_test_f5dfccd6195d65a305dd92e4",
+      "isolatedPerSuite": true,
+      "evidence": "PAY-007-presentation.json"
+    },
+    {
+      "id": "PAY-008-independent",
+      "command": "node docs/final-defense-qa/statutory-check.cjs",
+      "capturedAt": "2026-11-01T16:31:02.684Z",
+      "durationMs": 334,
+      "exitCode": 0,
+      "signal": null,
+      "status": "PASS",
+      "log": "PAY-008-independent.log",
+      "evidence": "PAY-008-independent.json"
+    },
+    {
+      "id": "REC-001-extraction",
+      "command": "node node_modules/tsx/dist/cli.mjs scripts/test-extraction-units.ts",
+      "capturedAt": "2026-11-01T16:21:31.443Z",
+      "durationMs": 3089,
+      "exitCode": 0,
+      "signal": null,
+      "status": "PASS",
+      "log": "REC-001-extraction.log",
+      "evidence": "REC-001-extraction.json"
+    },
+    {
+      "id": "REC-002-hiring",
+      "command": "node docs/final-defense-qa/adapt-legacy.cjs test-hiring-postgres.cjs",
+      "capturedAt": "2026-11-01T16:40:38.165Z",
+      "durationMs": 108964,
+      "exitCode": 0,
+      "status": "PASS",
+      "schema": "batch3_test_72f7b55326ee9298c1f7bbba",
+      "isolatedPerSuite": true,
+      "evidence": "REC-002-hiring.json"
+    },
+    {
+      "id": "REC-003-security",
+      "command": "node scripts/test-hiring-candidate-security.cjs",
+      "capturedAt": "2026-11-01T16:28:20.489Z",
+      "durationMs": 372,
+      "exitCode": 1,
+      "signal": null,
+      "status": "FAIL",
+      "log": "REC-003-security.log",
+      "evidence": "REC-003-security.json"
+    },
+    {
+      "id": "REC-004-job-actions",
+      "command": "node docs/final-defense-qa/exported-suites.cjs ../docs/final-defense-qa/job-check.cjs",
+      "capturedAt": "2026-11-01T16:35:40.888Z",
+      "durationMs": 6852,
+      "exitCode": 1,
+      "status": "FAIL",
+      "schema": "batch3_test_968fb53d4111838193f0ec23",
+      "isolatedPerSuite": true,
+      "evidence": "REC-004-job-actions.json"
+    },
+    {
+      "id": "REC-005-security-prod",
+      "command": "node docs/final-defense-qa/offline-adapter.cjs test-hiring-candidate-security.cjs",
+      "capturedAt": "2026-11-01T16:37:35.303Z",
+      "durationMs": 513,
+      "exitCode": 0,
+      "signal": null,
+      "status": "PASS",
+      "log": "REC-005-security-prod.log",
+      "evidence": "REC-005-security-prod.json"
+    },
+    {
+      "id": "REC-006-functional",
+      "command": "node docs/final-defense-qa/offline-adapter.cjs test-hiring-functional-fixes.cjs",
+      "capturedAt": "2026-11-01T16:37:36.835Z",
+      "durationMs": 481,
+      "exitCode": 0,
+      "signal": null,
+      "status": "PASS",
+      "log": "REC-006-functional.log",
+      "evidence": "REC-006-functional.json"
+    },
+    {
+      "id": "REC-007-browser",
+      "command": "node docs/final-defense-qa/adapt-legacy.cjs test-hiring-browser-final.cjs",
+      "capturedAt": "2026-11-01T16:40:45.280Z",
+      "durationMs": 140559,
+      "exitCode": 1,
+      "status": "FAIL",
+      "schema": "batch3_test_56e793a935ca2ee6ddc54f1f",
+      "isolatedPerSuite": true,
+      "evidence": "REC-007-browser.json"
+    },
+    {
+      "id": "REG-001-service",
+      "command": "node docs/final-defense-qa/exported-suites.cjs test-company-registration.cjs",
+      "capturedAt": "2026-11-01T16:24:40.740Z",
+      "durationMs": 18080,
+      "exitCode": 1,
+      "status": "FAIL",
+      "schema": "batch3_test_a72cf5b77a14345888c5f2ca",
+      "evidence": "REG-001-service.json"
+    },
+    {
+      "id": "REG-002-browser",
+      "command": "node docs/final-defense-qa/adapt-legacy.cjs company-registration-browser.cjs",
+      "capturedAt": "2026-11-01T16:30:24.924Z",
+      "durationMs": 28867,
+      "exitCode": 1,
+      "status": "FAIL",
+      "schema": "batch3_test_d0cb085a3efc9c25e36a352c",
+      "isolatedPerSuite": true,
+      "evidence": "REG-002-browser.json"
+    },
+    {
+      "id": "REG-003-clean",
+      "command": "node docs/final-defense-qa/exported-suites.cjs test-company-registration.cjs",
+      "capturedAt": "2026-11-01T16:29:51.505Z",
+      "durationMs": 28718,
+      "exitCode": 1,
+      "status": "FAIL",
+      "schema": "batch3_test_fc90b13e92bd9dcbcaf747c9",
+      "isolatedPerSuite": true,
+      "evidence": "REG-003-clean.json"
+    },
+    {
+      "id": "REG-004-browser",
+      "command": "node docs/final-defense-qa/adapt-legacy.cjs company-registration-browser.cjs",
+      "capturedAt": "2026-11-01T16:36:23.458Z",
+      "durationMs": 144711,
+      "exitCode": 0,
+      "status": "PASS",
+      "schema": "batch3_test_cc58603e0ad0faa440395329",
+      "isolatedPerSuite": true,
+      "evidence": "REG-004-browser.json"
+    },
+    {
+      "id": "REG-005-rollback",
+      "command": "node docs/final-defense-qa/exported-suites.cjs test-company-registration.cjs",
+      "capturedAt": "2026-11-01T16:37:37.167Z",
+      "durationMs": 44925,
+      "exitCode": 0,
+      "status": "PASS",
+      "schema": "batch3_test_d922be143c2ba5967c24ec0c",
+      "isolatedPerSuite": true,
+      "evidence": "REG-005-rollback.json"
+    },
+    {
+      "id": "RFID-001-service",
+      "command": "node --require ./docs/final-defense-qa/preload.cjs node_modules/tsx/dist/cli.mjs scripts/test-rfid-attendance.ts",
+      "capturedAt": "2026-11-01T16:25:34.498Z",
+      "durationMs": 90949,
+      "exitCode": 0,
+      "status": "PASS",
+      "schema": "batch3_test_a72cf5b77a14345888c5f2ca",
+      "evidence": "RFID-001-service.json"
+    },
+    {
+      "id": "RFID-002-clean",
+      "command": "node --require tsx/cjs --require ./docs/final-defense-qa/preload.cjs scripts/test-rfid-attendance.ts",
+      "capturedAt": "2026-11-01T16:28:20.920Z",
+      "durationMs": 89266,
+      "exitCode": 0,
+      "status": "PASS",
+      "schema": "batch3_test_60b9242693877e9e8f65ae47",
+      "isolatedPerSuite": true,
+      "evidence": "RFID-002-clean.json"
+    },
+    {
+      "id": "RFID-003-browser",
+      "command": "node docs/final-defense-qa/adapt-legacy.cjs test-rfid-browser.cjs",
+      "capturedAt": "2026-11-01T16:37:59.683Z",
+      "durationMs": 92862,
+      "exitCode": 1,
+      "status": "FAIL",
+      "schema": "batch3_test_5d6ab18134f02a60295740eb",
+      "isolatedPerSuite": true,
+      "evidence": "RFID-003-browser.json"
+    },
+    {
+      "id": "RFID-004-https-browser",
+      "command": "node docs/final-defense-qa/adapt-legacy.cjs test-rfid-browser.cjs",
+      "capturedAt": "2026-11-01T16:40:30.813Z",
+      "durationMs": 3862,
+      "exitCode": 1,
+      "status": "FAIL",
+      "schema": "batch3_test_7d05ffe43ae0e97c44bd6560",
+      "isolatedPerSuite": true,
+      "evidence": "RFID-004-https-browser.json"
+    },
+    {
+      "id": "RFID-005-https-isolated",
+      "command": "node docs/final-defense-qa/adapt-legacy.cjs test-rfid-browser.cjs",
+      "capturedAt": "2026-11-01T16:42:27.324Z",
+      "durationMs": 27328,
+      "exitCode": 1,
+      "status": "FAIL",
+      "schema": "batch3_test_2ca1669d1789d49e9e55f5ef",
+      "isolatedPerSuite": true,
+      "evidence": "RFID-005-https-isolated.json"
+    },
+    {
+      "id": "RFID-006-trusted-https",
+      "command": "node docs/final-defense-qa/adapt-legacy.cjs test-rfid-browser.cjs",
+      "capturedAt": "2026-11-01T16:46:20.130Z",
+      "durationMs": 25585,
+      "exitCode": 1,
+      "status": "FAIL",
+      "schema": "batch3_test_c86f1551fff81562a80b405d",
+      "isolatedPerSuite": true,
+      "evidence": "RFID-006-trusted-https.json"
+    },
+    {
+      "id": "RFID-008-cookie-and-scans",
+      "command": "node docs/final-defense-qa/adapt-legacy.cjs test-rfid-browser.cjs",
+      "capturedAt": "2026-11-01T16:51:34.258Z",
+      "durationMs": 78315,
+      "exitCode": 1,
+      "status": "FAIL",
+      "schema": "batch3_test_bd813917cb3e1a6729b7d83d",
+      "isolatedPerSuite": true,
+      "evidence": "RFID-008-cookie-and-scans.json"
+    },
+    {
+      "id": "SEC-001-routing",
+      "command": "node docs/final-defense-qa/exported-suites.cjs test-platform-routing.cjs",
+      "capturedAt": "2026-11-01T16:24:55.443Z",
+      "durationMs": 11903,
+      "exitCode": 0,
+      "status": "PASS",
+      "schema": "batch3_test_a72cf5b77a14345888c5f2ca",
+      "evidence": "SEC-001-routing.json"
+    },
+    {
+      "id": "SEC-002-staff-session",
+      "command": "node docs/final-defense-qa/adapt-legacy.cjs test-staff-session-security.cjs",
+      "capturedAt": "2026-11-01T16:38:21.930Z",
+      "durationMs": 24083,
+      "exitCode": 1,
+      "status": "FAIL",
+      "schema": "staff_auth_test_54afd2aa6a206f975c2e3a30",
+      "isolatedPerSuite": true,
+      "evidence": "SEC-002-staff-session.json"
+    },
+    {
+      "id": "SEC-003-staff-production",
+      "command": "node docs/final-defense-qa/adapt-legacy.cjs test-staff-session-security.cjs",
+      "capturedAt": "2026-11-01T16:40:05.622Z",
+      "durationMs": 37097,
+      "exitCode": 0,
+      "status": "PASS",
+      "schema": "staff_auth_test_4d0c27d0721b43cd7f552341",
+      "isolatedPerSuite": true,
+      "evidence": "SEC-003-staff-production.json"
+    },
+    {
+      "id": "UX-001-payroll",
+      "command": "node scripts/test-final-ux-payroll-state.cjs",
+      "capturedAt": "2026-11-01T16:21:28.237Z",
+      "durationMs": 686,
+      "exitCode": 0,
+      "signal": null,
+      "status": "PASS",
+      "log": "UX-001-payroll.log",
+      "evidence": "UX-001-payroll.json"
+    },
+    {
+      "id": "UX-002-jobs",
+      "command": "node scripts/test-ui-batch1-jobs.cjs",
+      "capturedAt": "2026-11-01T16:28:21.130Z",
+      "durationMs": 559,
+      "exitCode": 0,
+      "signal": null,
+      "status": "PASS",
+      "log": "UX-002-jobs.log",
+      "evidence": "UX-002-jobs.json"
+    },
+    {
+      "id": "UX-003-hiring",
+      "command": "node scripts/test-final-ux-hiring.cjs",
+      "capturedAt": "2026-11-01T16:28:22.762Z",
+      "durationMs": 1549,
+      "exitCode": 1,
+      "signal": null,
+      "status": "FAIL",
+      "log": "UX-003-hiring.log",
+      "evidence": "UX-003-hiring.json"
+    },
+    {
+      "id": "UX-004-hiring-adapted",
+      "command": "node docs/final-defense-qa/offline-adapter.cjs test-final-ux-hiring.cjs",
+      "capturedAt": "2026-11-01T16:37:36.264Z",
+      "durationMs": 858,
+      "exitCode": 0,
+      "signal": null,
+      "status": "PASS",
+      "log": "UX-004-hiring-adapted.log",
+      "evidence": "UX-004-hiring-adapted.json"
+    }
+  ]
+}

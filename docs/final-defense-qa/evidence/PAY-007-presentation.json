@@ -1,0 +1,10 @@
+{
+  "id": "PAY-007-presentation",
+  "command": "node docs/final-defense-qa/exported-suites.cjs test-payroll-presentation.ts runPayrollPresentation",
+  "capturedAt": "2026-11-01T16:32:05.361Z",
+  "durationMs": 23662,
+  "exitCode": 0,
+  "status": "PASS",
+  "schema": "batch3_test_f5dfccd6195d65a305dd92e4",
+  "isolatedPerSuite": true
+}

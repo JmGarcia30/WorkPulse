@@ -1,0 +1,7 @@
+{
+  "id": "RFID-008-cookie",
+  "status": "PASS",
+  "expected": "No HR session cookie after kiosk authorization",
+  "residualCookies": [],
+  "blockedReasons": []
+}

@@ -1,0 +1,10 @@
+{
+  "id": "PAY-001-statutory",
+  "command": "node node_modules/tsx/dist/cli.mjs scripts/test-payroll-statutory.ts",
+  "capturedAt": "2026-11-01T16:21:24.090Z",
+  "durationMs": 1108,
+  "exitCode": 0,
+  "signal": null,
+  "status": "PASS",
+  "log": "PAY-001-statutory.log"
+}

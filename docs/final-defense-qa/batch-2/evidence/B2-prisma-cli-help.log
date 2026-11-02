@@ -1,0 +1,24 @@
+
+Apply pending migrations to update the database schema in production/staging
+
+Usage
+
+  $ prisma migrate deploy [options]
+
+Options
+
+  -h, --help   Display this help message
+    --config   Custom path to your Prisma config file
+    --schema   Custom path to your Prisma schema
+
+Examples
+
+  Deploy your pending migrations to your production/staging database
+  $ prisma migrate deploy
+
+  Specify a schema
+  $ prisma migrate deploy --schema=./schema.prisma
+
+warn The configuration property `package.json#prisma` is deprecated and will be removed in Prisma 7. Please migrate to a Prisma config file (e.g., `prisma.config.ts`).
+For more information, see: https://pris.ly/prisma-config
+

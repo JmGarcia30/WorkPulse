@@ -1,0 +1,26 @@
+[WorkPulse timing] branding read: 113.1ms
+[WorkPulse timing] tenant resolution: 114.2ms
+[WorkPulse timing] session validation: 277.5ms
+PASS REC-004-01 draft creation persists structured requirements
+[WorkPulse timing] branding read: 57.7ms
+[WorkPulse timing] tenant resolution: 58.2ms
+[WorkPulse timing] session validation: 166.2ms
+PASS REC-004-02 publish stamps published state
+[WorkPulse timing] branding read: 56.5ms
+[WorkPulse timing] tenant resolution: 57.2ms
+[WorkPulse timing] session validation: 166.1ms
+PASS REC-004-03 valid edit saves
+[WorkPulse timing] branding read: 55.1ms
+[WorkPulse timing] tenant resolution: 55.4ms
+[WorkPulse timing] session validation: 165.5ms
+PASS REC-004-04 cross-tenant publication denied
+PASS REC-004-05 foreign job remains unchanged
+[WorkPulse timing] branding read: 61.2ms
+[WorkPulse timing] tenant resolution: 61.6ms
+[WorkPulse timing] session validation: 167.3ms
+PASS REC-004-06 close saves CLOSED state
+[WorkPulse timing] branding read: 55.6ms
+[WorkPulse timing] tenant resolution: 55.9ms
+[WorkPulse timing] session validation: 173.8ms
+{"id":"QA-BUG-004","test":"REC-004-07","status":"FAIL","beforeRequirements":1,"afterRequirements":0,"errorType":"PrismaClientValidationError","expected":"Rejected edit preserves existing requirements","actual":"Requirements removed before failed job update"}
+{"passed":false,"checks":["REC-004-01 draft creation persists structured requirements","REC-004-02 publish stamps published state","REC-004-03 valid edit saves","REC-004-04 cross-tenant publication denied","REC-004-05 foreign job remains unchanged","REC-004-06 close saves CLOSED state"],"defect":{"id":"QA-BUG-004","test":"REC-004-07","status":"FAIL","beforeRequirements":1,"afterRequirements":0,"errorType":"PrismaClientValidationError","expected":"Rejected edit preserves existing requirements","actual":"Requirements removed before failed job update"}}

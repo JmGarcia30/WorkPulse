@@ -1,0 +1,10 @@
+{
+  "id": "ENV-003-typescript",
+  "command": "node node_modules/typescript/bin/tsc --noEmit --incremental false",
+  "capturedAt": "2026-11-01T16:19:59.704Z",
+  "durationMs": 67780,
+  "exitCode": 0,
+  "signal": null,
+  "status": "PASS",
+  "log": "ENV-003-typescript.log"
+}

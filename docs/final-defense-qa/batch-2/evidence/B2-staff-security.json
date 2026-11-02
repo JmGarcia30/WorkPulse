@@ -1,0 +1,10 @@
+{
+  "id": "B2-staff-security",
+  "command": "node docs/final-defense-qa/adapt-legacy.cjs test-staff-session-security.cjs",
+  "capturedAt": "2026-11-01T17:48:44.550Z",
+  "durationMs": 38005,
+  "exitCode": 0,
+  "status": "PASS",
+  "schema": "staff_auth_test_1f7179de4880868a66a46945",
+  "isolatedPerSuite": true
+}

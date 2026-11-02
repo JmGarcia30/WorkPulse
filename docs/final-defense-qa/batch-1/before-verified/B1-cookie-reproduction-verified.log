@@ -1,0 +1,34 @@
+✓ Running next.config.ts took 50ms
+RFID PASS 1: real HR search and scanned-card enrollment succeed
+RFID PASS 2: real replacement UI deactivates the old card
+RFID PASS 3: real HR deactivation and fresh enrollment succeed
+RFID PASS 4: kiosk authorization issues its HttpOnly Strict cookie
+{"id":"RFID-008-cookie","status":"FAIL","expected":"No HR session cookie after kiosk authorization","residualCookies":[{"name":"__Host-workpulse_session","domain":"saga.localhost","secure":true,"httpOnly":true}],"blockedReasons":[["InvalidPrefix"]]}
+RFID PASS 5: copied pre-kiosk HR token is absent server-side and cannot authorize protected HTTP requests
+RFID PASS 6: attendance commits even when the successful HTTP confirmation is lost
+RFID PASS 7: request remains valid beyond the former 20-second client deadline
+RFID PASS 8: Retry Same Scan resubmits the original UUID after a committed scan
+RFID PASS 9: keyboard scanner with Enter records attendance and displays employee and exact time
+RFID PASS 10: reader without Enter suffix submits automatically and rapid duplicate does not toggle
+RFID PASS 11: unknown and inactive card feedback restores scanner focus
+RFID PASS 12: kiosk fits a mobile viewport without horizontal overflow
+RFID PASS 13: network retry keeps the same UUID and at most the intended daily pair
+RFID PASS 14: cross-origin API writes are rejected
+RFID PASS 15: API rejects scans without a kiosk session
+RFID PASS 16: copied kiosk token is refused on another tenant host
+RFID PASS 17: kiosk has no hydration errors or unexpected browser exceptions
+RFID PASS 18: locked kiosk token is revoked server-side
+RFID PASS 19: committed scan appears in HR Employee Attendance with its Asia/Manila time and RFID source
+RFID PASS 20: successful scan is intentionally included in Recent RFID Activity
+RFID PASS 21: Vercel /saga HR authorization, kiosk page, and prefixed scan API work
+RFID PASS 22: committed scan appears in employee self-service Attendance with the same Asia/Manila time
+RFID browser tests passed: 22 assertions.
+⨯ Error: The destination stream closed early.
+    at ignore-listed frames {
+  digest: '3122515128'
+}
+RFID request rejected. { code: 'UNAUTHORIZED' }
+RFID request rejected. { code: 'INVALID_ORIGIN' }
+RFID request rejected. { code: 'KIOSK_EXPIRED' }
+RFID request rejected. { code: 'KIOSK_EXPIRED' }
+RFID request rejected. { code: 'KIOSK_EXPIRED' }

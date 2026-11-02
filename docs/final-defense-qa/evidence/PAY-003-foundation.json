@@ -1,0 +1,9 @@
+{
+  "id": "PAY-003-foundation",
+  "command": "node --require ./docs/final-defense-qa/preload.cjs node_modules/tsx/dist/cli.mjs scripts/test-h6-payroll-foundation.ts",
+  "capturedAt": "2026-11-01T16:25:44.083Z",
+  "durationMs": 8609,
+  "exitCode": 1,
+  "status": "FAIL",
+  "schema": "batch3_test_a72cf5b77a14345888c5f2ca"
+}

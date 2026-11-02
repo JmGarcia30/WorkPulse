@@ -1,0 +1,3 @@
+PASS anonymous portal and both upload actions deny before private reads
+PASS hashed fifteen-minute links, rate limits, expiry and failed delivery deny access
+FAIL ERR_ASSERTION

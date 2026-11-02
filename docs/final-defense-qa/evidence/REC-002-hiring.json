@@ -1,0 +1,10 @@
+{
+  "id": "REC-002-hiring",
+  "command": "node docs/final-defense-qa/adapt-legacy.cjs test-hiring-postgres.cjs",
+  "capturedAt": "2026-11-01T16:40:38.165Z",
+  "durationMs": 108964,
+  "exitCode": 0,
+  "status": "PASS",
+  "schema": "batch3_test_72f7b55326ee9298c1f7bbba",
+  "isolatedPerSuite": true
+}
