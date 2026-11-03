@@ -78,20 +78,12 @@ export default async function EmployeeDashboardPage() {
   const timeZone =
     data.attendance?.timeZoneSnapshot ?? data.profile?.organization.timeZone ?? 'UTC';
 
-  const hasAttendanceStatus = Boolean(data.attendance?.attendanceStatus);
-
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 text-[#282934]">
       {/* 1. Mascot Welcome & Daily Summary Banner */}
       <EssHeroBanner
         employeeName={fullName}
         summaryItems={[scheduleText, leaveText, statusSummary]}
-        floatingScheduleBadge={isWorkday ? 'Shift Scheduled' : 'Rest Day'}
-        floatingStatusBadge={
-          hasAttendanceStatus
-            ? `Status: ${data.attendance?.attendanceStatus}`
-            : 'Attendance Ready'
-        }
         primaryAction={{
           label: 'View Attendance',
           href: '/employee/attendance',
@@ -102,6 +94,9 @@ export default async function EmployeeDashboardPage() {
         }}
       />
 
+      {/* Horizontal Divider Line Above Four Cards */}
+      <div className="w-full border-t border-[#E5E5E5]" aria-hidden="true" />
+
       {/* 2. Top Summary Stat Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {/* Card 1: Today's Shift */}
@@ -110,22 +105,22 @@ export default async function EmployeeDashboardPage() {
           className="group relative flex flex-col justify-between rounded-2xl bg-white p-5 shadow-[0_3px_16px_rgba(30,35,40,0.06)] transition-all hover:shadow-[0_4px_20px_rgba(30,35,40,0.08)]"
         >
           <div className="flex items-center justify-between">
-            <span className="flex h-9 w-9 items-center justify-center rounded-xl text-sm transition-transform group-hover:scale-105 text-[var(--tenant-primary)] bg-[var(--tenant-tint)]">
+            <span className="flex h-9 w-9 items-center justify-center rounded-xl text-sm transition-transform group-hover:scale-105 text-[#282934] bg-[#ECECEA]">
               <Clock3 className="h-4 w-4" />
             </span>
             <span
-              className={`rounded-full px-2 py-0.5 text-[11px] font-bold ${isWorkday ? 'bg-emerald-50 text-emerald-700' : 'bg-slate-100 text-slate-600'
+              className={`rounded-full px-2 py-0.5 text-[11px] font-bold ${isWorkday ? 'bg-emerald-50 text-emerald-700' : 'bg-slate-100 text-[#282934]/65'
                 }`}
             >
               {isWorkday ? 'Workday' : 'Rest Day'}
             </span>
           </div>
           <div className="mt-4 space-y-1">
-            <div className="text-xs font-medium text-slate-400">Today&apos;s Schedule</div>
-            <div className="text-base sm:text-lg font-bold tracking-tight text-slate-900 truncate">
+            <div className="text-xs font-medium text-[#282934]/50">Today&apos;s Schedule</div>
+            <div className="text-base sm:text-lg font-bold tracking-tight text-[#282934] truncate">
               {schedule?.name ?? 'Standard Schedule'}
             </div>
-            <p className="text-xs text-slate-500 truncate">
+            <p className="text-xs text-[#282934]/65 truncate">
               {isWorkday && todayRule
                 ? `${formatSeconds(todayRule.expectedStartSecond)} – ${formatSeconds(todayRule.expectedEndSecond)}`
                 : 'No shift required'}
@@ -139,19 +134,19 @@ export default async function EmployeeDashboardPage() {
           className="group relative flex flex-col justify-between rounded-2xl bg-white p-5 shadow-[0_3px_16px_rgba(30,35,40,0.06)] transition-all hover:shadow-[0_4px_20px_rgba(30,35,40,0.08)]"
         >
           <div className="flex items-center justify-between">
-            <span className="flex h-9 w-9 items-center justify-center rounded-xl text-sm transition-transform group-hover:scale-105 text-emerald-700 bg-emerald-50">
+            <span className="flex h-9 w-9 items-center justify-center rounded-xl text-sm transition-transform group-hover:scale-105 text-[#282934] bg-[#ECECEA]">
               <UserCheck className="h-4 w-4" />
             </span>
-            <span className="text-[11px] font-bold text-slate-500">
+            <span className="text-[11px] font-bold text-[#282934]/65">
               {data.monthSummary.recordedDays} days logged
             </span>
           </div>
           <div className="mt-4 space-y-1">
-            <div className="text-xs font-medium text-slate-400">Monthly Attendance</div>
-            <div className="text-2xl font-bold tracking-tight text-slate-900 tabular-nums">
-              {data.monthSummary.presentDays} <span className="text-sm font-semibold text-slate-500">present</span>
+            <div className="text-xs font-medium text-[#282934]/50">Monthly Attendance</div>
+            <div className="text-2xl font-bold tracking-tight text-[#282934] tabular-nums">
+              {data.monthSummary.presentDays} <span className="text-sm font-semibold text-[#282934]/65">present</span>
             </div>
-            <p className="text-xs text-slate-500">
+            <p className="text-xs text-[#282934]/65">
               {data.monthSummary.lateOccurrences} late • {data.monthSummary.approvedLeaveDays} on leave
             </p>
           </div>
@@ -163,7 +158,7 @@ export default async function EmployeeDashboardPage() {
           className="group relative flex flex-col justify-between rounded-2xl bg-white p-5 shadow-[0_3px_16px_rgba(30,35,40,0.06)] transition-all hover:shadow-[0_4px_20px_rgba(30,35,40,0.08)]"
         >
           <div className="flex items-center justify-between">
-            <span className="flex h-9 w-9 items-center justify-center rounded-xl text-sm transition-transform group-hover:scale-105 text-indigo-700 bg-indigo-50">
+            <span className="flex h-9 w-9 items-center justify-center rounded-xl text-sm transition-transform group-hover:scale-105 text-[#282934] bg-[#ECECEA]">
               <CalendarDays className="h-4 w-4" />
             </span>
             {pendingLeaves > 0 ? (
@@ -177,11 +172,11 @@ export default async function EmployeeDashboardPage() {
             )}
           </div>
           <div className="mt-4 space-y-1">
-            <div className="text-xs font-medium text-slate-400">Leave Entitlements</div>
-            <div className="text-2xl font-bold tracking-tight text-slate-900 tabular-nums">
-              {balancesCount} <span className="text-sm font-semibold text-slate-500">types available</span>
+            <div className="text-xs font-medium text-[#282934]/50">Leave Entitlements</div>
+            <div className="text-2xl font-bold tracking-tight text-[#282934] tabular-nums">
+              {balancesCount} <span className="text-sm font-semibold text-[#282934]/65">types available</span>
             </div>
-            <p className="text-xs text-slate-500">
+            <p className="text-xs text-[#282934]/65">
               {data.leave.requests[0]
                 ? `Last: ${data.leave.requests[0].status}`
                 : 'No recent requests'}
@@ -195,16 +190,16 @@ export default async function EmployeeDashboardPage() {
           className="group relative flex flex-col justify-between rounded-2xl bg-white p-5 shadow-[0_3px_16px_rgba(30,35,40,0.06)] transition-all hover:shadow-[0_4px_20px_rgba(30,35,40,0.08)]"
         >
           <div className="flex items-center justify-between">
-            <span className="flex h-9 w-9 items-center justify-center rounded-xl text-sm transition-transform group-hover:scale-105 text-emerald-700 bg-emerald-50">
+            <span className="flex h-9 w-9 items-center justify-center rounded-xl text-sm transition-transform group-hover:scale-105 text-[#282934] bg-[#ECECEA]">
               <Banknote className="h-4 w-4" />
             </span>
-            <span className="rounded-full bg-slate-100 px-2 py-0.5 text-[11px] font-bold text-slate-600">
+            <span className="rounded-full bg-slate-100 px-2 py-0.5 text-[11px] font-bold text-[#282934]/65">
               {data.latestPayroll ? 'Finalized' : 'Pending'}
             </span>
           </div>
           <div className="mt-4 space-y-1">
-            <div className="text-xs font-medium text-slate-400">Latest Net Pay</div>
-            <div className="text-lg sm:text-xl font-bold tracking-tight text-slate-900 truncate">
+            <div className="text-xs font-medium text-[#282934]/50">Latest Net Pay</div>
+            <div className="text-lg sm:text-xl font-bold tracking-tight text-[#282934] truncate">
               {data.latestPayroll
                 ? new Intl.NumberFormat('en-PH', {
                   style: 'currency',
@@ -212,7 +207,7 @@ export default async function EmployeeDashboardPage() {
                 }).format(Number(data.latestPayroll.netPay))
                 : 'Awaiting payroll'}
             </div>
-            <p className="text-xs text-slate-500 truncate">
+            <p className="text-xs text-[#282934]/65 truncate">
               {data.latestPayroll
                 ? `Paid: ${data.latestPayroll.payDate}`
                 : 'No finalized payslip yet'}
@@ -220,6 +215,9 @@ export default async function EmployeeDashboardPage() {
           </div>
         </Link>
       </div>
+
+      {/* Horizontal Divider Line Below Four Cards */}
+      <div className="w-full border-t border-[#E5E5E5]" aria-hidden="true" />
 
       {/* 3. Main Dashboard Content Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 items-stretch">
@@ -229,12 +227,12 @@ export default async function EmployeeDashboardPage() {
           <section className="rounded-2xl bg-white p-5 sm:p-6 shadow-[0_3px_16px_rgba(30,35,40,0.06)]">
             <div className="flex items-center justify-between border-b border-slate-100 pb-4">
               <div className="flex items-center gap-2.5">
-                <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-[var(--tenant-tint)] text-[var(--tenant-primary)]">
+                <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#ECECEA] text-[#282934]">
                   <Clock3 className="h-4 w-4" />
                 </span>
                 <div>
-                  <h2 className="text-sm sm:text-base font-bold text-slate-900">Today&apos;s Timekeeping</h2>
-                  <p className="text-xs text-slate-500">Date: {data.today} ({timeZone})</p>
+                  <h2 className="text-sm sm:text-base font-bold text-[#282934]">Today&apos;s Timekeeping</h2>
+                  <p className="text-xs text-[#282934]/65">Date: {data.today} ({timeZone})</p>
                 </div>
               </div>
               <Link
@@ -248,26 +246,26 @@ export default async function EmployeeDashboardPage() {
 
             <div className="mt-5 grid grid-cols-2 sm:grid-cols-4 gap-4">
               <div className="rounded-xl border border-slate-100 bg-slate-50/50 p-3.5">
-                <dt className="text-xs font-medium text-slate-500">First Time In</dt>
-                <dd className="mt-1 text-base font-bold text-slate-900">
+                <dt className="text-xs font-medium text-[#282934]/65">First Time In</dt>
+                <dd className="mt-1 text-base font-bold text-[#282934]">
                   {formatTime(data.attendance?.firstTimeIn, timeZone)}
                 </dd>
               </div>
               <div className="rounded-xl border border-slate-100 bg-slate-50/50 p-3.5">
-                <dt className="text-xs font-medium text-slate-500">Last Time Out</dt>
-                <dd className="mt-1 text-base font-bold text-slate-900">
+                <dt className="text-xs font-medium text-[#282934]/65">Last Time Out</dt>
+                <dd className="mt-1 text-base font-bold text-[#282934]">
                   {formatTime(data.attendance?.lastTimeOut, timeZone)}
                 </dd>
               </div>
               <div className="rounded-xl border border-slate-100 bg-slate-50/50 p-3.5">
-                <dt className="text-xs font-medium text-slate-500">Today&apos;s Status</dt>
-                <dd className="mt-1 text-sm font-bold text-slate-900">
+                <dt className="text-xs font-medium text-[#282934]/65">Today&apos;s Status</dt>
+                <dd className="mt-1 text-sm font-bold text-[#282934]">
                   {data.attendance?.attendanceStatus ?? 'Not recorded yet'}
                 </dd>
               </div>
               <div className="rounded-xl border border-slate-100 bg-slate-50/50 p-3.5">
-                <dt className="text-xs font-medium text-slate-500">Expected Hours</dt>
-                <dd className="mt-1 text-sm font-bold text-slate-900">
+                <dt className="text-xs font-medium text-[#282934]/65">Expected Hours</dt>
+                <dd className="mt-1 text-sm font-bold text-[#282934]">
                   {todayRule?.isWorkday
                     ? `${formatSeconds(todayRule.expectedStartSecond)} – ${formatSeconds(todayRule.expectedEndSecond)}`
                     : 'Rest Day'}
@@ -280,12 +278,12 @@ export default async function EmployeeDashboardPage() {
           <section className="rounded-2xl bg-white p-5 sm:p-6 shadow-[0_3px_16px_rgba(30,35,40,0.06)]">
             <div className="flex items-center justify-between border-b border-slate-100 pb-4">
               <div className="flex items-center gap-2.5">
-                <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-indigo-50 text-indigo-700">
+                <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#ECECEA] text-[#282934]">
                   <CalendarDays className="h-4 w-4" />
                 </span>
                 <div>
-                  <h2 className="text-sm sm:text-base font-bold text-slate-900">Leave Entitlements</h2>
-                  <p className="text-xs text-slate-500">{balancesCount} active leave policy balances</p>
+                  <h2 className="text-sm sm:text-base font-bold text-[#282934]">Leave Entitlements</h2>
+                  <p className="text-xs text-[#282934]/65">{balancesCount} active leave policy balances</p>
                 </div>
               </div>
               <Link
@@ -305,10 +303,10 @@ export default async function EmployeeDashboardPage() {
                     className="flex items-center justify-between rounded-xl border border-slate-100 p-3.5 hover:bg-slate-50/40 transition"
                   >
                     <div className="min-w-0 pr-3">
-                      <p className="text-sm font-bold text-slate-900 truncate">
+                      <p className="text-sm font-bold text-[#282934] truncate">
                         {balance.leaveTypeName}
                       </p>
-                      <p className="text-xs text-slate-400 truncate">{balance.cycleName}</p>
+                      <p className="text-xs text-[#282934]/50 truncate">{balance.cycleName}</p>
                     </div>
                     <span className="shrink-0 rounded-full bg-[var(--tenant-tint)] px-2.5 py-1 text-xs font-bold text-[var(--tenant-primary)]">
                       {balance.pendingCalculation
@@ -319,15 +317,15 @@ export default async function EmployeeDashboardPage() {
                 ))}
               </div>
             ) : (
-              <p className="mt-4 text-xs text-slate-500">No applicable leave balances currently available.</p>
+              <p className="mt-4 text-xs text-[#282934]/65">No applicable leave balances currently available.</p>
             )}
 
             {data.leave.requests[0] && (
               <div className="mt-4 rounded-xl border border-slate-200/70 bg-slate-50/60 p-3.5 text-xs flex flex-wrap items-center justify-between gap-2">
                 <div className="flex items-center gap-2">
-                  <FileText className="h-3.5 w-3.5 text-slate-400" />
-                  <span className="text-slate-600">Latest Request:</span>
-                  <strong className="text-slate-800">
+                  <FileText className="h-3.5 w-3.5 text-[#282934]/50" />
+                  <span className="text-[#282934]/65">Latest Request:</span>
+                  <strong className="text-[#282934]">
                     {data.leave.requests[0].leaveTypeNameSnapshot} ({data.leave.requests[0].status})
                   </strong>
                 </div>
@@ -347,43 +345,43 @@ export default async function EmployeeDashboardPage() {
           {/* Employment Overview Widget */}
           <section className="rounded-2xl bg-white p-5 sm:p-6 shadow-[0_3px_16px_rgba(30,35,40,0.06)]">
             <div className="flex items-center gap-2.5 border-b border-slate-100 pb-4">
-              <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-teal-50 text-teal-700">
+              <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#ECECEA] text-[#282934]">
                 <BriefcaseBusiness className="h-4 w-4" />
               </span>
               <div>
-                <h2 className="text-sm sm:text-base font-bold text-slate-900">Employment Overview</h2>
-                <p className="text-xs text-slate-500">{data.profile?.organization.name}</p>
+                <h2 className="text-sm sm:text-base font-bold text-[#282934]">Employment Overview</h2>
+                <p className="text-xs text-[#282934]/65">{data.profile?.organization.name}</p>
               </div>
             </div>
 
             <dl className="mt-4 space-y-3 text-xs sm:text-sm">
               <div className="flex justify-between items-center py-1 border-b border-slate-100">
-                <dt className="text-slate-500">Employee No.</dt>
-                <dd className="font-bold text-slate-900">{data.profile?.employee.employeeNumber}</dd>
+                <dt className="text-[#282934]/65">Employee No.</dt>
+                <dd className="font-bold text-[#282934]">{data.profile?.employee.employeeNumber}</dd>
               </div>
               <div className="flex justify-between items-center py-1 border-b border-slate-100">
-                <dt className="text-slate-500">Position</dt>
-                <dd className="font-bold text-slate-900 truncate max-w-44 text-right">
+                <dt className="text-[#282934]/65">Position</dt>
+                <dd className="font-bold text-[#282934] truncate max-w-44 text-right">
                   {employment?.jobTitle ?? '—'}
                 </dd>
               </div>
               <div className="flex justify-between items-center py-1 border-b border-slate-100">
-                <dt className="text-slate-500">Department</dt>
-                <dd className="font-bold text-slate-900 truncate max-w-44 text-right">
+                <dt className="text-[#282934]/65">Department</dt>
+                <dd className="font-bold text-[#282934] truncate max-w-44 text-right">
                   {employment?.department ?? '—'}
                 </dd>
               </div>
               <div className="flex justify-between items-center py-1 border-b border-slate-100">
-                <dt className="text-slate-500">Status</dt>
-                <dd className="font-bold text-slate-900">
+                <dt className="text-[#282934]/65">Status</dt>
+                <dd className="font-bold text-[#282934]">
                   <span className="rounded-full bg-emerald-50 px-2 py-0.5 text-xs text-emerald-700 font-bold">
                     {data.profile?.employee.employeeStatus}
                   </span>
                 </dd>
               </div>
               <div className="flex justify-between items-center py-1">
-                <dt className="text-slate-500">Start Date</dt>
-                <dd className="font-bold text-slate-900">
+                <dt className="text-[#282934]/65">Start Date</dt>
+                <dd className="font-bold text-[#282934]">
                   {formatDate(employment?.startDate)}
                 </dd>
               </div>
@@ -391,7 +389,7 @@ export default async function EmployeeDashboardPage() {
 
             <Link
               href="/employee/employment"
-              className="mt-4 block w-full rounded-lg border border-slate-200 bg-slate-50/50 py-2 text-center text-xs font-semibold text-slate-700 hover:bg-slate-100 transition"
+              className="mt-4 block w-full rounded-lg border border-slate-200 bg-slate-50/50 py-2 text-center text-xs font-semibold text-[#282934]/65 hover:text-[#282934] hover:bg-slate-100 transition"
             >
               View Full Employment Record
             </Link>
@@ -399,61 +397,61 @@ export default async function EmployeeDashboardPage() {
 
           {/* Quick Actions Panel */}
           <section className="rounded-2xl bg-white p-5 sm:p-6 shadow-[0_3px_16px_rgba(30,35,40,0.06)]">
-            <h2 className="text-sm font-bold text-slate-900 mb-3">Self-Service Actions</h2>
+            <h2 className="text-sm font-bold text-[#282934] mb-3">Self-Service Actions</h2>
             <div className="space-y-2">
               <Link
                 href="/employee/leave/new"
-                className="flex items-center justify-between rounded-xl border border-slate-200/70 p-3 text-xs font-semibold text-slate-800 hover:border-slate-300 hover:bg-slate-50 transition"
+                className="flex items-center justify-between rounded-xl border border-slate-200/70 p-3 text-xs font-semibold text-[#282934] hover:border-slate-300 hover:bg-slate-50 transition"
               >
                 <div className="flex items-center gap-2.5">
-                  <CalendarCheck2 className="h-4 w-4 text-[var(--tenant-primary)]" />
+                  <CalendarCheck2 className="h-4 w-4 text-[#282934]" />
                   <span>File a Leave Request</span>
                 </div>
-                <ChevronRight className="h-3.5 w-3.5 text-slate-400" />
+                <ChevronRight className="h-3.5 w-3.5 text-[#282934]" />
               </Link>
 
               <Link
                 href="/employee/attendance"
-                className="flex items-center justify-between rounded-xl border border-slate-200/70 p-3 text-xs font-semibold text-slate-800 hover:border-slate-300 hover:bg-slate-50 transition"
+                className="flex items-center justify-between rounded-xl border border-slate-200/70 p-3 text-xs font-semibold text-[#282934] hover:border-slate-300 hover:bg-slate-50 transition"
               >
                 <div className="flex items-center gap-2.5">
-                  <Clock3 className="h-4 w-4 text-[var(--tenant-accent)]" />
+                  <Clock3 className="h-4 w-4 text-[#282934]" />
                   <span>View Attendance Records</span>
                 </div>
-                <ChevronRight className="h-3.5 w-3.5 text-slate-400" />
+                <ChevronRight className="h-3.5 w-3.5 text-[#282934]" />
               </Link>
 
               <Link
                 href="/employee/payroll"
-                className="flex items-center justify-between rounded-xl border border-slate-200/70 p-3 text-xs font-semibold text-slate-800 hover:border-slate-300 hover:bg-slate-50 transition"
+                className="flex items-center justify-between rounded-xl border border-slate-200/70 p-3 text-xs font-semibold text-[#282934] hover:border-slate-300 hover:bg-slate-50 transition"
               >
                 <div className="flex items-center gap-2.5">
-                  <Banknote className="h-4 w-4 text-emerald-600" />
+                  <Banknote className="h-4 w-4 text-[#282934]" />
                   <span>View Finalized Payslips</span>
                 </div>
-                <ChevronRight className="h-3.5 w-3.5 text-slate-400" />
+                <ChevronRight className="h-3.5 w-3.5 text-[#282934]" />
               </Link>
 
               <Link
                 href="/employee/profile"
-                className="flex items-center justify-between rounded-xl border border-slate-200/70 p-3 text-xs font-semibold text-slate-800 hover:border-slate-300 hover:bg-slate-50 transition"
+                className="flex items-center justify-between rounded-xl border border-slate-200/70 p-3 text-xs font-semibold text-[#282934] hover:border-slate-300 hover:bg-slate-50 transition"
               >
                 <div className="flex items-center gap-2.5">
-                  <UserRound className="h-4 w-4 text-indigo-600" />
+                  <UserRound className="h-4 w-4 text-[#282934]" />
                   <span>My Profile & Work Schedule</span>
                 </div>
-                <ChevronRight className="h-3.5 w-3.5 text-slate-400" />
+                <ChevronRight className="h-3.5 w-3.5 text-[#282934]" />
               </Link>
 
               <Link
                 href="/employee/resignation"
-                className="flex items-center justify-between rounded-xl border border-slate-200/70 p-3 text-xs font-semibold text-slate-800 hover:border-slate-300 hover:bg-slate-50 transition"
+                className="flex items-center justify-between rounded-xl border border-slate-200/70 p-3 text-xs font-semibold text-[#282934] hover:border-slate-300 hover:bg-slate-50 transition"
               >
                 <div className="flex items-center gap-2.5">
-                  <LogOut className="h-4 w-4 text-slate-500" />
+                  <LogOut className="h-4 w-4 text-[#282934]" />
                   <span>Resignation & Exit Notices</span>
                 </div>
-                <ChevronRight className="h-3.5 w-3.5 text-slate-400" />
+                <ChevronRight className="h-3.5 w-3.5 text-[#282934]" />
               </Link>
             </div>
           </section>

@@ -80,7 +80,7 @@ export function ResignationForm({ requestKey, today }: { requestKey: string; tod
 
         <button
           type="submit"
-          className="inline-flex min-h-10 items-center justify-center gap-2 rounded-lg bg-[var(--tenant-primary)] px-5 py-2 text-xs sm:text-sm font-bold text-white shadow-2xs hover:brightness-95 transition disabled:opacity-50"
+          className="inline-flex min-h-10 items-center justify-center gap-2 rounded-lg bg-[#282934] px-5 py-2 text-xs sm:text-sm font-bold text-white shadow-2xs transition hover:bg-[#1f2029] active:scale-[0.99] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#282934] disabled:opacity-50"
         >
           {pending ? (
             <>

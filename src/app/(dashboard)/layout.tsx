@@ -41,7 +41,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
         </a>
 
         {/* Existing sidebar outside the container */}
-        <aside className="wp-tenant-sidebar sticky top-0 z-30 hidden h-full w-60 shrink-0 flex-col bg-transparent md:flex">
+        <aside className="wp-tenant-sidebar sticky top-0 z-30 hidden h-full w-60 shrink-0 flex-col bg-transparent md:flex selection:bg-[#ECECEA] selection:text-[#282934]">
           <div className="pl-[26px] pr-3 pt-5 pb-1">
             <div className="flex items-center gap-2.5">
               <TenantLogo

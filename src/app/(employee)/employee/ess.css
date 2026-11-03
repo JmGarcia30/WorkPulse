@@ -1,0 +1,234 @@
+/* ==========================================================================
+   WorkPulse Employee Self-Service (ESS) Unified Text Color System
+   Base Color: #282934
+   - Primary:   #282934 (100% opacity)
+   - Secondary: rgba(40, 41, 52, 0.65) (65% opacity)
+   - Muted:     rgba(40, 41, 52, 0.48) (48% opacity)
+   - Subtle:    rgba(40, 41, 52, 0.35) (35% opacity)
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   1. ESS Portal Tokens & Base Resets
+   -------------------------------------------------------------------------- */
+.wp-ess-portal {
+  --ess-text-primary: #282934;
+  --ess-text-secondary: rgba(40, 41, 52, 0.65);
+  --ess-text-muted: rgba(40, 41, 52, 0.48);
+  --ess-text-subtle: rgba(40, 41, 52, 0.35);
+
+  /* Override generic workspace tokens for all ESS sub-components */
+  --wp-text: #282934;
+  --wp-text-muted: rgba(40, 41, 52, 0.65);
+}
+
+/* Base text color for the light ESS content canvas */
+.wp-ess-canvas {
+  color: var(--ess-text-primary);
+}
+
+/* Sidebar text selection highlight: light-gray background with dark charcoal text */
+.wp-ess-portal .wp-tenant-sidebar ::selection,
+.wp-ess-portal .wp-tenant-sidebar::selection,
+.wp-mobile-nav ::selection,
+.wp-mobile-nav::selection {
+  background: #ececea;
+  background-color: #ececea;
+  color: #282934;
+}
+
+/* --------------------------------------------------------------------------
+   2. Primary Text: #282934 (100% opacity)
+   Headings, section titles, card labels, metrics/statistics, dd data terms
+   -------------------------------------------------------------------------- */
+.wp-ess-canvas :is(.text-slate-900,
+  .text-slate-800,
+  .text-gray-900,
+  .text-gray-800,
+  .text-zinc-900,
+  .text-zinc-800,
+  .text-neutral-900,
+  .text-neutral-800,
+  .text-black) {
+  color: #282934;
+}
+
+/* Default headings without explicit color class inherit primary */
+.wp-ess-canvas :is(h1, h2, h3, h4, h5, h6):not([class*="text-"]) {
+  color: #282934;
+}
+
+/* --------------------------------------------------------------------------
+   3. Secondary Text: rgba(40, 41, 52, 0.65) (65% opacity)
+   Subtitles, descriptions, secondary values, dt definition labels, table cells
+   -------------------------------------------------------------------------- */
+.wp-ess-canvas :is(.text-slate-700,
+  .text-slate-600,
+  .text-slate-500,
+  .text-gray-700,
+  .text-gray-600,
+  .text-gray-500,
+  .text-zinc-700,
+  .text-zinc-600,
+  .text-zinc-500,
+  .text-neutral-700,
+  .text-neutral-600,
+  .text-neutral-500) {
+  color: rgba(40, 41, 52, 0.65);
+}
+
+/* --------------------------------------------------------------------------
+   4. Muted / Helper Text: rgba(40, 41, 52, 0.48) (48% opacity)
+   Category tracking eyebrows, timestamps, monospace IDs, cycle names, subtle icons
+   -------------------------------------------------------------------------- */
+.wp-ess-canvas :is(.text-slate-400,
+  .text-gray-400,
+  .text-zinc-400,
+  .text-neutral-400) {
+  color: rgba(40, 41, 52, 0.48);
+}
+
+/* --------------------------------------------------------------------------
+   5. Subtle Dots & Hairlines: rgba(40, 41, 52, 0.35)
+   -------------------------------------------------------------------------- */
+.wp-ess-canvas :is(.text-slate-300,
+  .text-gray-300,
+  .text-zinc-300,
+  .text-neutral-300) {
+  color: rgba(40, 41, 52, 0.35);
+}
+
+/* --------------------------------------------------------------------------
+   6. Interactive States & Links
+   -------------------------------------------------------------------------- */
+.wp-ess-canvas .hover\:text-slate-900:hover,
+.wp-ess-canvas .hover\:text-slate-800:hover,
+.wp-ess-canvas .hover\:text-gray-900:hover,
+.wp-ess-canvas .hover\:text-black:hover {
+  color: #282934;
+}
+
+.wp-ess-canvas .hover\:text-slate-700:hover,
+.wp-ess-canvas .hover\:text-slate-600:hover,
+.wp-ess-canvas .hover\:text-gray-700:hover {
+  color: rgba(40, 41, 52, 0.85);
+}
+
+/* --------------------------------------------------------------------------
+   7. Form Controls, Inputs, Placeholders, and Labels
+   -------------------------------------------------------------------------- */
+.wp-ess-canvas input:not([type="checkbox"]):not([type="radio"]):not([type="submit"]):not([type="button"]):not([type="reset"]),
+.wp-ess-canvas select,
+.wp-ess-canvas textarea {
+  color: #282934;
+}
+
+.wp-ess-canvas input::placeholder,
+.wp-ess-canvas textarea::placeholder {
+  color: rgba(40, 41, 52, 0.48);
+  opacity: 1;
+}
+
+/* Accessible high-contrast form labels */
+.wp-ess-canvas label:not(.wp-badge):not(.wp-status):not([class*="text-amber"]):not([class*="text-emerald"]):not([class*="text-rose"]):not([class*="text-red"]) {
+  color: rgba(40, 41, 52, 0.75);
+}
+
+/* --------------------------------------------------------------------------
+   8. Neutral Status Pills
+   Ensure clear readability on subtle gray badges (withdrawn, cancelled, etc.)
+   -------------------------------------------------------------------------- */
+.wp-ess-canvas .bg-slate-100:is(.text-slate-600, .text-slate-700) {
+  color: rgba(40, 41, 52, 0.70);
+}
+
+/* --------------------------------------------------------------------------
+   9. Unified Rounded-Square Icon Containers: bg-[#ECECEA] & text-[#282934]
+   Applies to all rounded-square icon background containers throughout ESS.
+   Preserves sizes, dimensions, padding, borders, and alignments.
+   Excludes sidebar, circular containers, buttons, and status badges.
+   -------------------------------------------------------------------------- */
+.wp-ess-canvas .bg-\[\#ECECEA\] {
+  background-color: #ECECEA !important;
+  color: #282934 !important;
+}
+
+.wp-ess-canvas .bg-\[\#ECECEA\] > svg {
+  color: #282934 !important;
+}
+
+/* --------------------------------------------------------------------------
+   10. ESS Attendance Page: Monthly Overview Color Indicators Refinement
+   Slightly brighten status indicator dots and badges while preserving color
+   meanings and subtle, professional styling.
+   Scoped ONLY to the Monthly Overview section on the ESS Attendance page.
+   -------------------------------------------------------------------------- */
+
+/* Legend status indicator dots */
+.wp-ess-canvas .ess-monthly-overview [class*="legend"] i[class*="present"] {
+  background-color: #22c55e !important;
+}
+.wp-ess-canvas .ess-monthly-overview [class*="legend"] i[class*="late"] {
+  background-color: #f59e0b !important;
+}
+.wp-ess-canvas .ess-monthly-overview [class*="legend"] i[class*="absent"] {
+  background-color: #ef4444 !important;
+}
+.wp-ess-canvas .ess-monthly-overview [class*="legend"] i[class*="leave"] {
+  background-color: #8b5cf6 !important;
+}
+.wp-ess-canvas .ess-monthly-overview [class*="legend"] i[class*="restday"] {
+  background-color: #94a3b8 !important;
+}
+.wp-ess-canvas .ess-monthly-overview [class*="legend"] i:is([class*="upcoming"], [class*="norecord"]) {
+  background-color: #cbd5e1 !important;
+}
+.wp-ess-canvas .ess-monthly-overview [class*="legend"] i:is([class*="noschedule"], [class*="open"], [class*="incomplete"]) {
+  background-color: #38bdf8 !important;
+}
+
+/* Status badges inside Monthly Overview calendar cells */
+.wp-ess-canvas .ess-monthly-overview [class*="badge"][class*="present"] {
+  background-color: #dcfce7 !important;
+  color: #15803d !important;
+}
+.wp-ess-canvas .ess-monthly-overview [class*="badge"][class*="late"] {
+  background-color: #fef3c7 !important;
+  color: #b45309 !important;
+}
+.wp-ess-canvas .ess-monthly-overview [class*="badge"][class*="absent"] {
+  background-color: #fee2e2 !important;
+  color: #b91c1c !important;
+}
+.wp-ess-canvas .ess-monthly-overview [class*="badge"][class*="leave"] {
+  background-color: #ede9fe !important;
+  color: #6d28d9 !important;
+}
+.wp-ess-canvas .ess-monthly-overview [class*="badge"][class*="restday"] {
+  background-color: #f1f5f9 !important;
+  color: #475569 !important;
+}
+.wp-ess-canvas .ess-monthly-overview [class*="badge"]:is([class*="noschedule"], [class*="open"], [class*="incomplete"]) {
+  background-color: #e0f2fe !important;
+  color: #0369a1 !important;
+}
+.wp-ess-canvas .ess-monthly-overview [class*="badge"]:is([class*="upcoming"], [class*="norecord"]) {
+  background-color: #f8fafc !important;
+  color: #64748b !important;
+}
+
+/* Day cell background tints (slightly brighter & fresher) */
+.wp-ess-canvas .ess-monthly-overview [class*="dayCell"][class*="present"] {
+  background-color: #f0fdf4 !important;
+}
+.wp-ess-canvas .ess-monthly-overview [class*="dayCell"][class*="late"] {
+  background-color: #fffbeb !important;
+}
+.wp-ess-canvas .ess-monthly-overview [class*="dayCell"][class*="absent"] {
+  background-color: #fef2f2 !important;
+}
+.wp-ess-canvas .ess-monthly-overview [class*="dayCell"][class*="leave"] {
+  background-color: #faf5ff !important;
+}
+.wp-ess-canvas .ess-monthly-overview [class*="dayCell"][class*="restday"] {
+  background-color: #f8fafc !important;
+}

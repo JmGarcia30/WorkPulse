@@ -108,13 +108,10 @@ export default async function MyAttendancePage({
       {/* Page Header */}
       <header className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <p className="text-xs font-bold uppercase tracking-wider text-[var(--tenant-accent)]">
-            Employee Self-Service • Attendance
-          </p>
           <h1 className="text-2xl font-black text-slate-900 tracking-tight sm:text-3xl">
             My Attendance
           </h1>
-          <p className="mt-1 flex flex-wrap items-center gap-2 text-xs sm:text-sm text-slate-500">
+          <p className="mt-2 sm:mt-2.5 flex flex-wrap items-center gap-2 text-xs sm:text-sm italic text-slate-500">
             <strong className="text-slate-800">
               {context.employee.firstName} {context.employee.lastName}
             </strong>
@@ -137,7 +134,7 @@ export default async function MyAttendancePage({
 
         {/* Month Navigation Control */}
         <div
-          className="flex items-center justify-between rounded-xl border border-slate-200/90 bg-white p-1.5 shadow-2xs"
+          className="flex items-center justify-between rounded-xl bg-white p-1.5 shadow-2xs"
           aria-label="Calendar month navigation"
         >
           <Link
@@ -165,7 +162,7 @@ export default async function MyAttendancePage({
 
       {/* Calendar Filter Toolbar */}
       <form
-        className="flex flex-wrap items-end gap-3 rounded-2xl border border-slate-200/80 bg-white p-4 shadow-2xs"
+        className="flex flex-wrap items-end gap-3 rounded-2xl bg-white p-4 shadow-2xs"
         aria-label="Calendar filters"
       >
         <div className="min-w-36 flex-1">
@@ -220,7 +217,7 @@ export default async function MyAttendancePage({
         <div className="flex items-center gap-2 pt-1">
           <button
             type="submit"
-            className="inline-flex min-h-10 items-center justify-center rounded-lg bg-[var(--tenant-primary)] px-4 py-2 text-xs sm:text-sm font-semibold text-white shadow-2xs hover:brightness-95 transition"
+            className="inline-flex min-h-10 items-center justify-center rounded-lg bg-[#282934] px-4 py-2 text-xs sm:text-sm font-semibold text-white shadow-2xs hover:bg-[#1f2029] transition"
           >
             Apply
           </button>
@@ -238,12 +235,12 @@ export default async function MyAttendancePage({
 
       {/* Monthly Calendar View */}
       <section
-        className="rounded-2xl border border-slate-200/80 bg-white shadow-2xs overflow-hidden"
+        className="rounded-2xl bg-white shadow-2xs overflow-hidden ess-monthly-overview"
         aria-labelledby="calendar-heading"
       >
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between border-b border-slate-100 p-4 sm:p-5">
           <div className="flex items-center gap-2.5">
-            <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-teal-50 text-teal-700">
+            <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#ECECEA] text-[#282934]">
               <CalendarDays className="h-4 w-4" />
             </span>
             <div>
@@ -277,12 +274,12 @@ export default async function MyAttendancePage({
 
       {/* Timekeeping Logs Table Section */}
       <section
-        className="rounded-2xl border border-slate-200/80 bg-white shadow-2xs overflow-hidden"
+        className="rounded-2xl bg-white shadow-2xs overflow-hidden"
         aria-labelledby="logs-heading"
       >
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between border-b border-slate-100 p-4 sm:p-5">
           <div className="flex items-center gap-2.5">
-            <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-[var(--tenant-tint)] text-[var(--tenant-primary)]">
+            <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#ECECEA] text-[#282934]">
               <Clock3 className="h-4 w-4" />
             </span>
             <div>
@@ -353,7 +350,7 @@ export default async function MyAttendancePage({
           <div className="flex items-center gap-2 pt-1">
             <button
               type="submit"
-              className="inline-flex min-h-9 items-center justify-center rounded-lg bg-[var(--tenant-primary)] px-3.5 py-1.5 text-xs font-semibold text-white shadow-2xs hover:brightness-95 transition"
+              className="inline-flex min-h-9 items-center justify-center rounded-lg bg-[#282934] px-3.5 py-1.5 text-xs font-semibold text-white shadow-2xs hover:bg-[#1f2029] transition"
             >
               Filter logs
             </button>

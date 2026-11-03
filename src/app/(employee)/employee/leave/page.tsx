@@ -2,7 +2,25 @@ import Link from 'next/link';
 import { CalendarDays, Clock, FilePlus2, FileText } from 'lucide-react';
 import { getMyLeaveOverview } from '@/features/leave/self-queries';
 
-function LeaveStatusBadge({ status }: { status: string }) {
+function LeaveStatusBadge({ status, isHistory }: { status: string; isHistory?: boolean }) {
+  if (isHistory) {
+    const historyMap: Record<string, string> = {
+      PENDING: 'bg-amber-50 text-amber-700',
+      APPROVED: 'bg-emerald-50 text-emerald-700',
+      REJECTED: 'bg-rose-50 text-rose-700',
+      WITHDRAWN: 'bg-slate-100 text-slate-600',
+      CANCELLED: 'bg-slate-100 text-slate-600',
+    };
+
+    const style = historyMap[status] ?? 'bg-slate-100 text-slate-700';
+
+    return (
+      <span className={`inline-flex items-center rounded-[6px] px-2.5 py-0.5 text-xs font-bold ${style}`}>
+        {status}
+      </span>
+    );
+  }
+
   const map: Record<string, string> = {
     PENDING: 'bg-amber-50 text-amber-700 border-amber-200',
     APPROVED: 'bg-emerald-50 text-emerald-700 border-emerald-200',
@@ -25,8 +43,8 @@ export default async function MyLeavePage() {
   const pending = data.requests.filter((request) => request.status === 'PENDING');
   const history = data.requests.filter((request) => request.status !== 'PENDING');
 
-  const renderTable = (requests: typeof data.requests, emptyMessage: string) => (
-    <div className="overflow-x-auto rounded-2xl border border-slate-200/80 bg-white shadow-2xs">
+  const renderTable = (requests: typeof data.requests, emptyMessage: string, isHistory = false) => (
+    <div className="overflow-x-auto rounded-2xl bg-white shadow-2xs">
       <table className="w-full text-left text-sm border-collapse">
         <thead>
           <tr className="border-b border-slate-200 bg-slate-50/70 text-xs font-semibold text-slate-500 uppercase tracking-wider">
@@ -55,7 +73,7 @@ export default async function MyLeavePage() {
                 {request.requestedUnits != null ? `${request.requestedUnits} d` : 'Pending calculation'}
               </td>
               <td className="py-3.5 px-4">
-                <LeaveStatusBadge status={request.status} />
+                <LeaveStatusBadge status={request.status} isHistory={isHistory} />
               </td>
               <td className="py-3.5 px-4 text-right">
                 <Link
@@ -84,22 +102,19 @@ export default async function MyLeavePage() {
       {/* Header */}
       <header className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <p className="text-xs font-bold uppercase tracking-wider text-[var(--tenant-accent)]">
-            Employee Self-Service • Leave Management
-          </p>
           <h1 className="text-2xl font-black text-slate-900 tracking-tight sm:text-3xl">
             My Leave
           </h1>
-          <p className="text-sm text-slate-500">
+          <p className="mt-2 sm:mt-2.5 text-sm italic text-slate-500">
             View available leave entitlements, active requests, and past submissions.
           </p>
         </div>
 
         <Link
           href="/employee/leave/new"
-          className="inline-flex min-h-10 items-center justify-center gap-2 rounded-lg bg-[var(--tenant-primary)] px-4 py-2 text-sm font-semibold text-white shadow-2xs hover:brightness-95 transition"
+          className="inline-flex min-h-10 items-center justify-center gap-2 rounded-lg bg-[#282934] px-4 py-2 text-sm font-semibold text-white shadow-2xs transition hover:bg-[#1f2029] active:scale-[0.99] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#282934]"
         >
-          <FilePlus2 className="h-4 w-4" />
+          <FilePlus2 className="h-4 w-4 text-white" />
           <span>Apply for Leave</span>
         </Link>
       </header>
@@ -108,7 +123,7 @@ export default async function MyLeavePage() {
       {data.balances.length > 0 && (
         <section className="space-y-3">
           <div className="flex items-center gap-2">
-            <span className="flex h-7 w-7 items-center justify-center rounded-md bg-indigo-50 text-indigo-700">
+            <span className="flex h-7 w-7 items-center justify-center rounded-md bg-[#ECECEA] text-[#282934]">
               <CalendarDays className="h-4 w-4" />
             </span>
             <h2 className="text-sm font-bold text-slate-900">Leave Balances</h2>
@@ -118,7 +133,7 @@ export default async function MyLeavePage() {
             {data.balances.map((balance) => (
               <div
                 key={balance.cycleId}
-                className="rounded-2xl border border-slate-200/80 bg-white p-5 shadow-2xs space-y-3"
+                className="rounded-2xl bg-white p-5 shadow-2xs space-y-3"
               >
                 <div className="flex items-center justify-between">
                   <span className="text-xs font-semibold uppercase tracking-wider text-slate-400">
@@ -164,7 +179,7 @@ export default async function MyLeavePage() {
       <section className="space-y-3">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <span className="flex h-7 w-7 items-center justify-center rounded-md bg-amber-50 text-amber-700">
+            <span className="flex h-7 w-7 items-center justify-center rounded-md bg-[#ECECEA] text-[#282934]">
               <Clock className="h-4 w-4" />
             </span>
             <h2 className="text-sm font-bold text-slate-900">Pending Requests</h2>
@@ -173,14 +188,14 @@ export default async function MyLeavePage() {
             {pending.length} pending approval
           </span>
         </div>
-        {renderTable(pending, 'No pending leave requests at this time.')}
+        {renderTable(pending, 'No pending leave requests at this time.', false)}
       </section>
 
       {/* Leave History Table */}
       <section className="space-y-3">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <span className="flex h-7 w-7 items-center justify-center rounded-md bg-slate-100 text-slate-700">
+            <span className="flex h-7 w-7 items-center justify-center rounded-md bg-[#ECECEA] text-[#282934]">
               <FileText className="h-4 w-4" />
             </span>
             <h2 className="text-sm font-bold text-slate-900">Leave History</h2>
@@ -189,7 +204,7 @@ export default async function MyLeavePage() {
             {history.length} finalized records
           </span>
         </div>
-        {renderTable(history, 'No previous leave history recorded.')}
+        {renderTable(history, 'No previous leave history recorded.', true)}
       </section>
     </div>
   );

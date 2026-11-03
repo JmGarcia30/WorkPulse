@@ -31,14 +31,11 @@ export default async function MyPayslipsPage() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <header className="flex flex-col gap-2">
-        <p className="text-xs font-bold uppercase tracking-wider text-[var(--tenant-accent)]">
-          Employee Self-Service • Payroll & Compensation
-        </p>
+      <header>
         <h1 className="text-2xl font-black text-slate-900 tracking-tight sm:text-3xl">
           My Payroll
         </h1>
-        <p className="text-sm text-slate-500">
+        <p className="mt-2 sm:mt-2.5 text-sm italic text-slate-500">
           Review your finalized payslips, earnings, deductions, and net pay disbursements.
         </p>
       </header>
@@ -51,7 +48,7 @@ export default async function MyPayslipsPage() {
               <span className="text-xs font-semibold uppercase tracking-wider text-slate-400">
                 Latest Disbursement
               </span>
-              <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-emerald-50 text-emerald-700">
+              <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#ECECEA] text-[#282934]">
                 <Banknote className="h-4 w-4" />
               </span>
             </div>
@@ -68,7 +65,7 @@ export default async function MyPayslipsPage() {
               <span className="text-xs font-semibold uppercase tracking-wider text-slate-400">
                 Payslips on Record
               </span>
-              <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-[var(--tenant-tint)] text-[var(--tenant-primary)]">
+              <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#ECECEA] text-[#282934]">
                 <ReceiptText className="h-4 w-4" />
               </span>
             </div>
@@ -86,7 +83,7 @@ export default async function MyPayslipsPage() {
       <section className="space-y-3">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <span className="flex h-7 w-7 items-center justify-center rounded-md bg-emerald-50 text-emerald-700">
+            <span className="flex h-7 w-7 items-center justify-center rounded-md bg-[#ECECEA] text-[#282934]">
               <ReceiptText className="h-4 w-4" />
             </span>
             <h2 className="text-sm font-bold text-slate-900">Finalized Payslips</h2>
@@ -97,7 +94,7 @@ export default async function MyPayslipsPage() {
         </div>
 
         {payslips.length === 0 ? (
-          <div className="rounded-2xl border border-slate-200/80 bg-white p-12 text-center shadow-2xs">
+          <div className="rounded-2xl bg-white p-12 text-center shadow-2xs">
             <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-slate-100 text-slate-400 mb-3">
               <ReceiptText className="h-6 w-6" />
             </div>
@@ -111,7 +108,7 @@ export default async function MyPayslipsPage() {
             {payslips.map((item) => (
               <article
                 key={item.entryId}
-                className="flex flex-col gap-4 rounded-2xl border border-slate-200/80 bg-white p-5 shadow-2xs sm:flex-row sm:items-center sm:justify-between hover:border-slate-300 transition"
+                className="flex flex-col gap-4 rounded-2xl bg-white p-5 shadow-2xs sm:flex-row sm:items-center sm:justify-between transition"
               >
                 <div className="space-y-2 min-w-0 flex-1">
                   <div className="flex flex-wrap items-center gap-2.5">

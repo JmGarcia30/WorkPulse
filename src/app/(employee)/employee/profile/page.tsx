@@ -48,20 +48,17 @@ export default async function MyProfilePage() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <header className="flex flex-col gap-1">
-        <p className="text-xs font-bold uppercase tracking-wider text-[var(--tenant-accent)]">
-          Employee Self-Service • Identity & Profile
-        </p>
+      <header>
         <h1 className="text-2xl font-black text-slate-900 tracking-tight sm:text-3xl">
           My Profile
         </h1>
-        <p className="text-sm text-slate-500">
+        <p className="mt-2 sm:mt-2.5 text-sm italic text-slate-500">
           Official employee identity, employment assignment, and schedule details maintained by HR.
         </p>
       </header>
 
       {/* Profile Overview Card */}
-      <section className="rounded-2xl border border-slate-200/80 bg-white p-6 sm:p-7 shadow-2xs">
+      <section className="rounded-2xl bg-white p-6 sm:p-7 shadow-2xs">
         <div className="flex flex-col sm:flex-row sm:items-center gap-5 border-b border-slate-100 pb-6">
           <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-2xl bg-[var(--tenant-primary)] text-xl font-black text-white shadow-xs">
             {initials}
@@ -71,7 +68,14 @@ export default async function MyProfilePage() {
               <h2 className="text-xl sm:text-2xl font-bold text-slate-900">
                 {profile.employee.firstName} {profile.employee.lastName}
               </h2>
-              <span className="rounded-full bg-emerald-50 border border-emerald-200 px-2.5 py-0.5 text-xs font-bold text-emerald-700">
+              <span
+                className={`inline-flex items-center rounded-[6px] px-2.5 py-0.5 text-xs font-bold ${/inactive|terminated|suspended|resigned/i.test(profile.employee.employeeStatus)
+                  ? 'bg-rose-50 text-rose-700'
+                  : /probation/i.test(profile.employee.employeeStatus)
+                    ? 'bg-amber-50 text-amber-700'
+                    : 'bg-emerald-50 text-emerald-700'
+                  }`}
+              >
                 {profile.employee.employeeStatus}
               </span>
             </div>
@@ -127,9 +131,9 @@ export default async function MyProfilePage() {
       </section>
 
       {/* Employment Assignment Details Card */}
-      <section className="rounded-2xl border border-slate-200/80 bg-white p-6 sm:p-7 shadow-2xs space-y-5">
+      <section className="rounded-2xl bg-white p-6 sm:p-7 shadow-2xs space-y-5">
         <div className="flex items-center gap-2.5 border-b border-slate-100 pb-4">
-          <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-teal-50 text-teal-700">
+          <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#ECECEA] text-[#282934]">
             <Briefcase className="h-4 w-4" />
           </span>
           <h2 className="text-sm sm:text-base font-bold text-slate-900">Employment Details</h2>
@@ -187,10 +191,10 @@ export default async function MyProfilePage() {
       </section>
 
       {/* Work Schedule Card */}
-      <section className="rounded-2xl border border-slate-200/80 bg-white p-6 sm:p-7 shadow-2xs space-y-4">
+      <section className="rounded-2xl bg-white p-6 sm:p-7 shadow-2xs space-y-4">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between border-b border-slate-100 pb-4 gap-2">
           <div className="flex items-center gap-2.5">
-            <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-[var(--tenant-tint)] text-[var(--tenant-primary)]">
+            <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#ECECEA] text-[#282934]">
               <Clock className="h-4 w-4" />
             </span>
             <div>
@@ -217,9 +221,9 @@ export default async function MyProfilePage() {
                 <div className="flex items-center gap-3 min-w-32">
                   <strong className="text-slate-900 w-24">{weekdays[day.isoWeekday - 1]}</strong>
                   <span
-                    className={`rounded-full px-2 py-0.5 text-[11px] font-bold ${day.isWorkday
-                        ? 'bg-emerald-50 text-emerald-700'
-                        : 'bg-slate-100 text-slate-500'
+                    className={`rounded-[6px] px-2 py-0.5 text-[11px] font-bold ${day.isWorkday
+                      ? 'bg-emerald-50 text-emerald-700'
+                      : 'bg-slate-100 text-slate-500'
                       }`}
                   >
                     {day.isWorkday ? 'Workday' : 'Rest Day'}

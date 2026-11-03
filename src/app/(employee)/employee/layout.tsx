@@ -1,4 +1,5 @@
 import '../../(dashboard)/workspace.css';
+import './ess.css';
 import { poppins } from '@/lib/fonts';
 import { redirect } from 'next/navigation';
 import { LogOut } from 'lucide-react';
@@ -33,7 +34,7 @@ export default async function EmployeeLayout({ children }: { children: React.Rea
 
   return (
     <TenantTheme branding={brand}>
-      <div className={`wp-workspace wp-tenant-shell ${poppins.variable} ${poppins.className} flex h-screen h-[100dvh] overflow-hidden text-[var(--wp-text)] bg-[#282934]`}>
+      <div className={`wp-workspace wp-tenant-shell wp-ess-portal ${poppins.variable} ${poppins.className} flex h-screen h-[100dvh] overflow-hidden text-[var(--wp-text)] bg-[#282934]`}>
         <a
           href="#employee-workspace-content"
           className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50 wp-button-primary"
@@ -42,7 +43,7 @@ export default async function EmployeeLayout({ children }: { children: React.Rea
         </a>
 
         {/* Desktop Sidebar outside the container */}
-        <aside className="wp-tenant-sidebar sticky top-0 z-30 hidden h-full w-60 shrink-0 flex-col bg-transparent md:flex">
+        <aside className="wp-tenant-sidebar sticky top-0 z-30 hidden h-full w-60 shrink-0 flex-col bg-transparent md:flex selection:bg-[#ECECEA] selection:text-[#282934]">
           <div className="pl-[26px] pr-3 pt-5 pb-1">
             <div className="flex items-center gap-2.5">
               <TenantLogo
@@ -91,7 +92,7 @@ export default async function EmployeeLayout({ children }: { children: React.Rea
         {/* Outer margin wrapper */}
         <div className="flex-1 min-w-0 h-full p-2.5 sm:p-3 lg:p-3.5 flex flex-col">
           {/* One unified rounded rectangular container enclosing header and main content */}
-          <div className="flex-1 min-h-0 flex flex-col rounded-xl lg:rounded-2xl border border-[var(--wp-border)] wp-content-canvas shadow-2xs overflow-hidden">
+          <div className="flex-1 min-h-0 flex flex-col rounded-xl lg:rounded-2xl border border-[var(--wp-border)] wp-content-canvas wp-ess-canvas shadow-2xs overflow-hidden">
             {/* Stationary ESS Top Header Bar */}
             <EmployeeHeader
               orgName={brand.displayName}

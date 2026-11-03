@@ -46,6 +46,18 @@
   border-color: transparent;
 }
 
+/* Sidebar text selection highlight: light-gray background with dark charcoal text */
+.wp-tenant-sidebar ::selection,
+.wp-tenant-sidebar::selection,
+.wp-mobile-nav ::selection,
+.wp-mobile-nav::selection,
+[aria-label="Employee navigation"] ::selection,
+[aria-label="Organization workspace navigation"] ::selection {
+  background: #ececea;
+  background-color: #ececea;
+  color: #282934;
+}
+
 .wp-sidebar-divider {
   height: 1px;
   background-color: rgba(180, 181, 192, 0.22);

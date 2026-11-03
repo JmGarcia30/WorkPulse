@@ -101,7 +101,7 @@ export function EmployeeHeader({
 
       {mobileOpen ? (
         <DialogFrame label="WorkPulse Employee Navigation" onClose={() => setMobileOpen(false)} className="wp-mobile-nav">
-          <div className="flex min-h-full flex-col bg-[#282934] text-white">
+          <div className="flex min-h-full flex-col bg-[#282934] text-white selection:bg-[#ECECEA] selection:text-[#282934]">
             <div className="flex min-h-16 items-center justify-between gap-3 border-b border-white/10 px-4">
               <div className="min-w-0">
                 <p className="truncate text-sm font-bold text-white">{orgName}</p>

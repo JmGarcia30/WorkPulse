@@ -25,7 +25,7 @@ export function LeaveRequestForm({ types }: { types: LeaveTypeOption[] }) {
 
   return (
     <form
-      className="space-y-5 rounded-2xl border border-slate-200/80 bg-white p-5 sm:p-7 shadow-2xs"
+      className="space-y-5 rounded-2xl bg-white p-5 sm:p-7 shadow-2xs"
       onSubmit={(event) => {
         event.preventDefault();
         const form = new FormData(event.currentTarget);
@@ -219,7 +219,7 @@ export function LeaveRequestForm({ types }: { types: LeaveTypeOption[] }) {
         <button
           type="submit"
           disabled={pending || !types.length}
-          className="inline-flex min-h-10 items-center justify-center gap-2 rounded-lg bg-[var(--tenant-primary)] px-5 py-2 text-sm font-bold text-white shadow-xs transition hover:brightness-95 disabled:opacity-50"
+          className="inline-flex min-h-10 items-center justify-center gap-2 rounded-lg bg-[#282934] px-5 py-2 text-sm font-bold text-white shadow-xs transition hover:bg-[#1f2029] disabled:opacity-50"
         >
           {pending ? (
             <>

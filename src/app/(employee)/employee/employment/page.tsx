@@ -50,22 +50,19 @@ export default async function MyEmploymentPage() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <header className="flex flex-col gap-1">
-        <p className="text-xs font-bold uppercase tracking-wider text-[var(--tenant-accent)]">
-          Employee Self-Service • Employment Lifecycle
-        </p>
+      <header>
         <h1 className="text-2xl font-black text-slate-900 tracking-tight sm:text-3xl">
           My Employment
         </h1>
-        <p className="text-sm text-slate-500">
+        <p className="mt-2 sm:mt-2.5 text-sm italic text-slate-500">
           Official position assignment, classification, and lifecycle milestones maintained by HR.
         </p>
       </header>
 
       {/* Main Employment Record Card */}
-      <section className="rounded-2xl border border-slate-200/80 bg-white p-6 sm:p-7 shadow-2xs space-y-6">
+      <section className="rounded-2xl bg-white p-6 sm:p-7 shadow-2xs space-y-6">
         <div className="flex items-center gap-2.5 border-b border-slate-100 pb-4">
-          <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-[var(--tenant-tint)] text-[var(--tenant-primary)]">
+          <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#ECECEA] text-[#282934]">
             <BriefcaseBusiness className="h-4 w-4" />
           </span>
           <div>
@@ -132,9 +129,9 @@ export default async function MyEmploymentPage() {
       )}
 
       {/* Quick Action Navigation */}
-      <section className="rounded-2xl border border-slate-200/80 bg-white p-5 sm:p-6 shadow-2xs flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+      <section className="rounded-2xl bg-white p-5 sm:p-6 shadow-2xs flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div className="flex items-center gap-3">
-          <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-50 text-emerald-700">
+          <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#ECECEA] text-[#282934]">
             <Banknote className="h-5 w-5" />
           </span>
           <div>
@@ -147,7 +144,7 @@ export default async function MyEmploymentPage() {
 
         <Link
           href="/employee/payroll"
-          className="inline-flex min-h-10 shrink-0 items-center justify-center rounded-lg bg-[var(--tenant-primary)] px-4 py-2 text-xs sm:text-sm font-semibold text-white shadow-2xs hover:brightness-95 transition"
+          className="inline-flex min-h-10 shrink-0 items-center justify-center rounded-lg bg-[#282934] px-4 py-2 text-xs sm:text-sm font-semibold text-white shadow-2xs transition hover:bg-[#1f2029] active:scale-[0.99] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#282934]"
         >
           View Finalized Payslips
         </Link>

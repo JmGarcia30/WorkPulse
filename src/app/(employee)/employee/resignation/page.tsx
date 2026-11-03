@@ -65,24 +65,21 @@ export default async function ResignationPage({
         : 'Policy not yet configured';
 
   return (
-    <div className="max-w-4xl space-y-6">
+    <div className="w-full space-y-6">
       {/* Header */}
-      <header className="flex flex-col gap-1">
-        <p className="text-xs font-bold uppercase tracking-wider text-[var(--tenant-accent)]">
-          Employee Self-Service • Separation & Exit
-        </p>
+      <header>
         <h1 className="text-2xl font-black text-slate-900 tracking-tight sm:text-3xl">
           My Resignation
         </h1>
-        <p className="text-sm text-slate-500">
+        <p className="mt-2 sm:mt-2.5 text-sm italic text-slate-500">
           Submit formal resignation notices and monitor HR review, clearance progress, and exit status.
         </p>
       </header>
 
       {/* Notice Policy Card */}
-      <section className="rounded-2xl border border-slate-200/80 bg-white p-5 sm:p-7 shadow-2xs space-y-4">
+      <section className="rounded-2xl bg-white p-5 sm:p-7 shadow-2xs space-y-4">
         <div className="flex items-center gap-2.5 border-b border-slate-100 pb-4">
-          <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-[var(--tenant-tint)] text-[var(--tenant-primary)]">
+          <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#ECECEA] text-[#282934]">
             <Info className="h-4 w-4" />
           </span>
           <div>
@@ -121,9 +118,9 @@ export default async function ResignationPage({
       </section>
 
       {/* Submit Notice Section */}
-      <section className="rounded-2xl border border-slate-200/80 bg-white p-5 sm:p-7 shadow-2xs space-y-4">
+      <section className="rounded-2xl bg-white p-5 sm:p-7 shadow-2xs space-y-4">
         <div className="flex items-center gap-2.5 border-b border-slate-100 pb-4">
-          <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-teal-50 text-teal-700">
+          <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#ECECEA] text-[#282934]">
             <FileText className="h-4 w-4" />
           </span>
           <h2 className="text-sm sm:text-base font-bold text-slate-900">
@@ -147,7 +144,7 @@ export default async function ResignationPage({
       <section className="space-y-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <span className="flex h-7 w-7 items-center justify-center rounded-md bg-slate-100 text-slate-700">
+            <span className="flex h-7 w-7 items-center justify-center rounded-md bg-[#ECECEA] text-[#282934]">
               <Clock className="h-4 w-4" />
             </span>
             <h2 className="text-sm font-bold text-slate-900">Submitted Notices History</h2>
@@ -158,7 +155,7 @@ export default async function ResignationPage({
         </div>
 
         {!data.items.length ? (
-          <div className="rounded-2xl border border-slate-200/80 bg-white p-10 text-center shadow-2xs text-xs sm:text-sm text-slate-500">
+          <div className="rounded-2xl bg-white p-10 text-center shadow-2xs text-xs sm:text-sm text-slate-500">
             No resignation notices have been submitted through your account.
           </div>
         ) : (
@@ -166,7 +163,7 @@ export default async function ResignationPage({
             {data.items.map((item) => (
               <article
                 key={item.id}
-                className="rounded-2xl border border-slate-200/80 bg-white p-5 sm:p-7 shadow-2xs space-y-4"
+                className="rounded-2xl bg-white p-5 sm:p-7 shadow-2xs space-y-4"
               >
                 <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 border-b border-slate-100 pb-3">
                   <div className="flex items-center gap-2.5">

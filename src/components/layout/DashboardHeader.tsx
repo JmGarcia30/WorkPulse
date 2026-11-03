@@ -92,7 +92,7 @@ export function DashboardHeader({ orgName, orgSlug, role }: { orgName: string; o
       </header>
       {mobileOpen ? (
         <DialogFrame label="WorkPulse navigation" onClose={() => setMobileOpen(false)} className="wp-mobile-nav">
-          <div className="flex min-h-full flex-col bg-[#282934] text-white">
+          <div className="flex min-h-full flex-col bg-[#282934] text-white selection:bg-[#ECECEA] selection:text-[#282934]">
             <div className="flex min-h-16 items-center justify-between gap-3 border-b border-white/10 px-4">
               <div className="min-w-0">
                 <p className="truncate text-sm font-semibold text-white">{orgName}</p>

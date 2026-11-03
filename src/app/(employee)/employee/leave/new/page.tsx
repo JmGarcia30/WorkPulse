@@ -17,13 +17,10 @@ export default async function NewLeavePage() {
           <ArrowLeft className="h-3.5 w-3.5" />
           <span>Back to Leave Overview</span>
         </Link>
-        <p className="text-xs font-bold uppercase tracking-wider text-[var(--tenant-accent)]">
-          Employee Self-Service • Leave Application
-        </p>
         <h1 className="text-2xl font-black text-slate-900 tracking-tight sm:text-3xl">
           Apply for Leave
         </h1>
-        <p className="mt-1 text-sm text-slate-500">
+        <p className="mt-2 sm:mt-2.5 text-sm italic text-slate-500">
           Your request will be routed directly to HR for verification and approval. Final leave units and balance deductions are confirmed during review.
         </p>
       </div>
