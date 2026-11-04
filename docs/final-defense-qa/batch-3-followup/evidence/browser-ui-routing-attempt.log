@@ -1,0 +1,8 @@
+✓ Running next.config.ts took 45ms
+{"scenario":"MONTHLY: compensation saved through real Server Action","passed":true}
+⨯ Error: The destination stream closed early.
+    at ignore-listed frames {
+  digest: '3122515128'
+}
+{"scenario":"Monthly synthetic September: missing setup produces visible SETUP_REQUIRED without an entry","passed":true}
+Error BROWSER_CONTROL_UNAVAILABLE

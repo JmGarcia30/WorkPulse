@@ -1,0 +1,30 @@
+{
+  "checks": [
+    "Live target is the verified isolated production copy",
+    "All copied production records match the restored baseline before rehearsal",
+    "Payroll V2 migration is unapplied on this copy",
+    "Injected end-of-migration failure is observed",
+    "Failed migration rolls back every new object and leaves original constraints unchanged",
+    "Prisma migrate deploy attempt 1 succeeds",
+    "Prisma migrate deploy attempt 2 succeeds",
+    "Second Prisma deployment is a no-op",
+    "Raw SQL replay fails closed instead of hiding schema drift"
+  ],
+  "migration": "20261104000100_payroll_simplification_v2",
+  "migrationSha256": "c9eea057c15910a8ec33f58fd2d3bd911172df5d91d061400998237621779b7b",
+  "branch": "br-lingering-dawn-azrdk13o",
+  "productionWrites": 0,
+  "commands": [
+    {
+      "command": "prisma migrate deploy",
+      "attempt": 1,
+      "exitCode": 0
+    },
+    {
+      "command": "prisma migrate deploy",
+      "attempt": 2,
+      "exitCode": 0
+    }
+  ],
+  "error": "Pre-use down-migration works transactionally and is rolled back to retain the migrated copy"
+}

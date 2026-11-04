@@ -1,0 +1,18 @@
+{
+  "status": "PASS",
+  "deployedCommit": "b24616ba92294018da82341b2f3e8d3a35c69f32",
+  "generatedFromExactDeployedSchema": true,
+  "exactDeployedStaffSecuritySource": true,
+  "checks": [
+    "Exact deployed staff authentication works after schema-first migration",
+    "Deployed authentication retains cross-tenant denial",
+    "Deployed session persistence works",
+    "Deployed model supports Batch 1 atomic nested requirement replacement",
+    "Deployed Prisma Client has no dependency on new security model",
+    "Deployed registration model can read additive OTP defaults",
+    "Tenant-scoped deployed model reads do not expose foreign job"
+  ],
+  "assertions": 7,
+  "allFixturesRolledBack": true,
+  "scope": "Focused deployed client/auth compatibility; not a production web smoke test"
+}

@@ -1,0 +1,40 @@
+{
+  "status": "FAIL",
+  "scope": "Columns, constraints, indexes and non-internal triggers against independently replayed 38-migration catalog; enum labels/order and pre-existing function signatures/bodies also compared after upgrade (only new immutable-event function excluded); enum labels/order and pre-existing function signatures/bodies also compared after upgrade (only new immutable-event function excluded); enum labels/order and pre-existing function signatures/bodies also compared after upgrade (only new immutable-event function excluded)",
+  "expectedSchema": "batch3_test_85af98243422107f2dcf5307",
+  "branch": "br-odd-field-azce2cjf",
+  "differences": {
+    "columns": {
+      "unexpected": [],
+      "missing": []
+    },
+    "constraints": {
+      "unexpected": [],
+      "missing": []
+    },
+    "indexes": {
+      "unexpected": [],
+      "missing": []
+    },
+    "triggers": {
+      "unexpected": [],
+      "missing": []
+    }
+  },
+  "additionalDefinitions": {
+    "enums": {
+      "unexpected": [],
+      "missing": [],
+      "definitionsCompared": 247
+    },
+    "functions": {
+      "unexpected": [
+        "{\"proname\":\"h10_fail_audit\",\"arguments\":\"\",\"result\":\"trigger\",\"lanname\":\"plpgsql\",\"prosrc\":\" BEGIN IF NEW.\\\"newValues\\\"->>'reason' = 'H10_FORCE_AUDIT_FAILURE' THEN RAISE EXCEPTION 'Forced audit failure'; END IF; RETURN NEW; END; \"}"
+      ],
+      "missing": [],
+      "definitionsCompared": 22
+    }
+  },
+  "functionLineEndingsNormalizedOnly": true,
+  "extensionOwnedFunctionsExcluded": true
+}

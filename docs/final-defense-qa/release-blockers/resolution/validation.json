@@ -1,0 +1,21 @@
+{
+  "capturedAt": "2026-11-02T14:26:00.789Z",
+  "status": "PASS",
+  "baselineFiles": 2200,
+  "byteIdentical": 2195,
+  "intendedChangedFiles": [
+    ".env.example",
+    "scripts/test-prisma-client-cache.cjs",
+    "src/features/email-integration/google.ts",
+    "src/lib/db/prisma.ts",
+    "src/lib/email/index.ts"
+  ],
+  "unexpectedChangedFiles": [],
+  "missingReportLinks": [],
+  "configuredSecretLeaks": [],
+  "failedChecks": [],
+  "productionWrites": 0,
+  "migrationsExecuted": 0,
+  "externalMessages": 0,
+  "releaseRecommendation": "NO-GO"
+}

@@ -1,0 +1,44 @@
+{
+  "typescript": {
+    "passed": true
+  },
+  "targetedLint": {
+    "passed": true,
+    "warnings": 0
+  },
+  "statutoryBirAttendance": {
+    "passed": true,
+    "nodeTestCases": 150,
+    "attendanceAssertions": 20
+  },
+  "essH4H7": {
+    "passed": true
+  },
+  "build": {
+    "passed": true,
+    "productionStyle": true,
+    "buildCount": 1,
+    "buildId": "4lsdvAHLs1_uGj8Ymkdzm"
+  },
+  "database": {
+    "project": "purple-tree-62095489",
+    "branch": "br-green-king-azcpyvmo",
+    "endpoint": "ep-divine-dream-azkfj1bk",
+    "database": "workpulse_preview",
+    "migrationAppliedOnlyToIsolatedBranch": true
+  },
+  "safety": {
+    "productionPayrollGenerated": false,
+    "productionDataModified": false,
+    "originalEnvChanged": false,
+    "pushed": false,
+    "deployed": false
+  },
+  "browser": {
+    "passed": true,
+    "checks": 20,
+    "realServerActions": true,
+    "desktopAndMobile": true,
+    "printPdf": true
+  }
+}

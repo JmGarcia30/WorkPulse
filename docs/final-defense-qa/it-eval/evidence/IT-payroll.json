@@ -1,0 +1,10 @@
+{
+  "id": "IT-payroll",
+  "command": "node docs/final-defense-qa/it-eval/payroll-regressions.cjs",
+  "capturedAt": "2026-11-02T06:17:41.376Z",
+  "durationMs": 182074,
+  "exitCode": 0,
+  "status": "PASS",
+  "schema": "batch3_test_2958fe831c76f3d3b1883e47",
+  "isolatedPerSuite": true
+}

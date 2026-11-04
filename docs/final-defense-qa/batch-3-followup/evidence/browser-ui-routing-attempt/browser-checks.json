@@ -1,0 +1,10 @@
+[
+  {
+    "scenario": "MONTHLY: compensation saved through real Server Action",
+    "passed": true
+  },
+  {
+    "scenario": "Monthly synthetic September: missing setup produces visible SETUP_REQUIRED without an entry",
+    "passed": true
+  }
+]

@@ -1,0 +1,10 @@
+{
+  "id": "IT-ESS",
+  "command": "node docs/final-defense-qa/it-eval/legacy.cjs test-ess-resignation.cjs",
+  "capturedAt": "2026-11-02T06:19:28.242Z",
+  "durationMs": 91740,
+  "exitCode": 0,
+  "status": "PASS",
+  "schema": "batch3_test_6142e47f9b12f956940151cb",
+  "isolatedPerSuite": true
+}

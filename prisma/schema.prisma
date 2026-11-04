@@ -814,6 +814,9 @@ model User {
   organizationBrandingAudits   OrganizationBrandingAudit[]
   payrollPoliciesCreated       OrganizationPayrollPolicy[] @relation("PayrollPolicyCreatedBy")
   payrollPeriodsFinalized     PayrollPeriod[]              @relation("PayrollPeriodFinalizedBy")
+  payrollNotificationsCreated PayrollNotification[] @relation("PayrollNotificationActor")
+  payrollNotificationsReceived PayrollNotification[] @relation("PayrollNotificationRecipient")
+  payrollInputRevisions PayrollInputRevision[]
   separationCasesInitiated    EmployeeSeparationCase[]      @relation("SeparationInitiator")
   separationCasesCancelled    EmployeeSeparationCase[]      @relation("SeparationCanceller")
   separationNoticeExceptions EmployeeSeparationCase[]      @relation("SeparationNoticeException")
@@ -1207,6 +1210,7 @@ model EmployeeNumberSequence {
 }
 
 model Employee {
+  payrollInputRevisions PayrollInputRevision[]
   rfidCards RfidCard[]
   rfidAudits RfidAudit[]
   payrollStatutoryInputs PayrollStatutoryInput[]
@@ -1356,6 +1360,7 @@ model EmployeeCompensation {
 }
 
 model PayrollPeriod {
+  inputRevisions PayrollInputRevision[]
   statutoryInputs PayrollStatutoryInput[]
   id             String              @id @default(cuid())
   organizationId String
@@ -1381,6 +1386,7 @@ model PayrollPeriod {
 }
 
 model PayrollEntry {
+  notification PayrollNotification?
   statutoryPosting PayrollStatutoryPosting?
   id                     String             @id @default(cuid())
   organizationId         String
@@ -1406,6 +1412,41 @@ model PayrollEntry {
   @@index([organizationId, payrollPeriodId, status])
   @@index([organizationId, employeeId])
   @@index([employeeCompensationId])
+}
+
+// Persistent in-app delivery, independent of email. One announcement per finalized entry.
+model PayrollNotification {
+  id String @id @default(cuid())
+  organizationId String
+  employeeId String
+  payrollEntryId String @unique
+  recipientUserId String
+  actorUserId String
+  message String
+  createdAt DateTime @default(now())
+  entry PayrollEntry @relation(fields: [payrollEntryId, organizationId, employeeId], references: [id, organizationId, employeeId], onDelete: Restrict)
+  actor User @relation("PayrollNotificationActor", fields: [actorUserId, organizationId], references: [id, organizationId], onDelete: Restrict)
+  recipient User @relation("PayrollNotificationRecipient", fields: [recipientUserId, organizationId], references: [id, organizationId], onDelete: Restrict)
+  @@unique([payrollEntryId, organizationId, employeeId])
+  @@index([organizationId, recipientUserId, createdAt])
+}
+
+// Retains prior draft calculations and input provenance after explicit HR recalculation.
+model PayrollInputRevision {
+  id String @id @default(cuid())
+  organizationId String
+  employeeId String
+  payrollPeriodId String
+  actorUserId String
+  reason String
+  before Json
+  after Json
+  previousEntry Json?
+  createdAt DateTime @default(now())
+  employee Employee @relation(fields: [employeeId, organizationId], references: [id, organizationId], onDelete: Restrict)
+  period PayrollPeriod @relation(fields: [payrollPeriodId, organizationId], references: [id, organizationId], onDelete: Restrict)
+  actor User @relation(fields: [actorUserId, organizationId], references: [id, organizationId], onDelete: Restrict)
+  @@index([organizationId, payrollPeriodId, employeeId])
 }
 
 // Reviewed inputs are explicit; historical earnings/coverage are never guessed.

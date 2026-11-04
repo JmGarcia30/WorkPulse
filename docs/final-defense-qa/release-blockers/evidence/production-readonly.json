@@ -1,0 +1,17 @@
+{
+  "capturedAt": "2026-11-02T07:30:52.545Z",
+  "scope": "Only branch identity, migration counts and schema catalogs selected; no business records",
+  "rows": [
+    {
+      "database": "neondb",
+      "branch_id": "br-hidden-violet-azjl3vam",
+      "endpoint_id": "ep-weathered-mouse-azpx765h",
+      "applied_migrations": "38",
+      "unresolved_migrations": "0",
+      "security_table": null,
+      "reset_table": null,
+      "otp_columns": "0"
+    }
+  ],
+  "productionWrites": 0
+}

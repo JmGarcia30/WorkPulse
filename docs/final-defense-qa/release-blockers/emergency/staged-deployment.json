@@ -1,0 +1,12 @@
+{
+  "capturedAt": "2026-11-02T15:21:14.509Z",
+  "status": "STAGED_BUILD_PENDING",
+  "commit": "93a1718d774c9bb32661df04dd3ae52abc45efad",
+  "artifactArchiveSha256": "ef8edff36c9d01fb6bb365c84f5b136b47bfaae4eb2d9e705fe51a1af1b489b0",
+  "deployment": "dpl_27wDq5pqiuxptSRigZZamkaghYTS",
+  "url": "https://work-pulse-hozuemm82-jose-miguel-garcias-projects.vercel.app",
+  "target": "production",
+  "noDomainAssignmentRequested": true,
+  "exactCommittedSource": true,
+  "expectedSessionTemplateRejected": true
+}

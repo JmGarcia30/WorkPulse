@@ -1,6 +1,7 @@
 /** Government schedules only. Organization payroll policies cannot override these. */
-export const STATUTORY_VERIFIED_THROUGH = '2026-10';
-export const STATUTORY_VERIFIED_ON = '2026-10-22';
+// Bounded November review of the unchanged ordinary-employee schedules; see RULE-REVIEW.md.
+export const STATUTORY_VERIFIED_THROUGH = '2026-11';
+export const STATUTORY_VERIFIED_ON = '2026-11-05';
 
 export const STATUTORY_SCHEDULES = Object.freeze({
   SSS: Object.freeze({

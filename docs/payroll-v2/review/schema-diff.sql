@@ -1,0 +1,6 @@
+-- RenameIndex
+ALTER INDEX "EmployeeCompensation_organizationId_employeeId_effectiveFrom_id" RENAME TO "EmployeeCompensation_organizationId_employeeId_effectiveFro_idx";
+
+-- RenameIndex
+ALTER INDEX "OrganizationPayrollPolicy_organizationId_status_effectiveFrom_e" RENAME TO "OrganizationPayrollPolicy_organizationId_status_effectiveFr_idx";
+

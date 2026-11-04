@@ -1,0 +1,8 @@
+{
+  "id": "RB-payroll-verified-migration",
+  "status": "PASS",
+  "exitCode": 0,
+  "durationMs": 94789,
+  "schema": "batch3_test_e1a917ca09673802cbd536ac",
+  "branch": "br-odd-field-azce2cjf"
+}

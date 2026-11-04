@@ -1,0 +1,9 @@
+{
+  "passed": true,
+  "completePatchSha256": "fd2399d398ac2b1654734b8c7d83b744033054050c9b348ad1b0eff1de0471be",
+  "followupPatchSha256": "b36b58c6c4c0d87bb5a992323ee878068afea6e4d7c77a002e6fb81adee62809",
+  "initialPatchSha256": "5d3f13c4ea50ebf178db0dd35ed858417259d0a56c86341e3c92441c61263463",
+  "completePatchReverseCheck": 0,
+  "includesUntrackedSourceAndMigrationFiles": true,
+  "excludesEnvironmentCredentialsAndProductionRows": true
+}

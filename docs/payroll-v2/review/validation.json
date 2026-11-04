@@ -1,0 +1,58 @@
+{
+  "reviewDate": "2026-11-05",
+  "branch": "feature/payroll-simplification-v2",
+  "passed": true,
+  "results": {
+    "rule-tests": {
+      "passed": true,
+      "checks": 23
+    },
+    "security-tests": {
+      "passed": true,
+      "checks": 39
+    },
+    "november-integration": {
+      "passed": true,
+      "checks": 14
+    },
+    "migration-rehearsal": {
+      "passed": true,
+      "checks": 18
+    },
+    "index-rehearsal": {
+      "passed": true,
+      "checks": 9
+    },
+    "final-preservation": {
+      "passed": true
+    },
+    "diff-verification": {
+      "passed": true
+    }
+  },
+  "birStatutoryUnitCases": {
+    "passed": true,
+    "total": 149,
+    "failed": 0,
+    "log": "bir-statutory-tests.log"
+  },
+  "typescript": {
+    "passed": true,
+    "command": "npx.cmd tsc --noEmit --pretty false"
+  },
+  "targetedLint": {
+    "passed": true,
+    "warnings": 0
+  },
+  "buildsDuringFollowup": 0,
+  "browserEvidence": {
+    "file": "../browser.json",
+    "checks": 20,
+    "scope": "Earlier production build; UI hashes unchanged, no new bundle claimed"
+  },
+  "releaseRecommendation": "Conditional GO for the documented ordinary November candidate; explicit user release approval still required",
+  "productionMigrationApplied": false,
+  "pushed": false,
+  "merged": false,
+  "deployed": false
+}

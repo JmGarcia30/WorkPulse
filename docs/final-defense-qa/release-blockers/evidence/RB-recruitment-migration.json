@@ -1,0 +1,8 @@
+{
+  "id": "RB-recruitment-migration",
+  "status": "FAIL",
+  "exitCode": 1,
+  "durationMs": 17098,
+  "schema": "batch3_test_ed973bfdf1b5808c9538c3f4",
+  "branch": "br-odd-field-azce2cjf"
+}

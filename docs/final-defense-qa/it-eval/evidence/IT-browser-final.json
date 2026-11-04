@@ -1,0 +1,10 @@
+{
+  "id": "IT-browser-final",
+  "command": "node docs/final-defense-qa/it-eval/browser.cjs",
+  "capturedAt": "2026-11-02T06:24:02.522Z",
+  "durationMs": 44362,
+  "exitCode": 1,
+  "status": "FAIL",
+  "schema": "batch3_test_7b7f7726941adce3d03fa126",
+  "isolatedPerSuite": true
+}

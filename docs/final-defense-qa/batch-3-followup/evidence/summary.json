@@ -1,0 +1,32 @@
+{
+  "capturedAt": "2026-11-02T05:27:06.682Z",
+  "results": [
+    {
+      "id": "integration",
+      "status": "PASS",
+      "assertions": 56
+    },
+    {
+      "id": "workflow",
+      "status": "PASS",
+      "assertions": 24
+    },
+    {
+      "id": "presentation",
+      "status": "PASS",
+      "assertions": 28
+    },
+    {
+      "id": "phase3",
+      "status": "PASS",
+      "assertions": 15
+    },
+    {
+      "id": "readiness",
+      "status": "PASS",
+      "assertions": 33
+    }
+  ],
+  "migrationsExecuted": 0,
+  "productionWrites": 0
+}

@@ -1,0 +1,69 @@
+{
+  "reviewDate": "2026-11-05",
+  "timeZone": "Asia/Singapore",
+  "sources": [
+    {
+      "file": "annex-e.pdf",
+      "url": "https://bir-cdn.bir.gov.ph/local/pdf/Annex%20E%20RR%2011-2018.pdf",
+      "sha256": "ed7543231b936e5a87263f4382b8da6409169e0dc7d943ed04a3d1bdea380eb3",
+      "bytes": 357734,
+      "savedAt": "2026-11-04T15:52:11.588Z"
+    },
+    {
+      "file": "rr11-2018.pdf",
+      "url": "https://bir-cdn.bir.gov.ph/local/pdf/RR%20No.%2011-2018.pdf",
+      "sha256": "ac605c3b591c9f9c194c05e021ad2c5ac1927346cf43ae75789a1f788b53390d",
+      "bytes": 1077409,
+      "savedAt": "2026-11-04T15:53:10.257Z"
+    },
+    {
+      "file": "rr29-2025.pdf",
+      "url": "https://bir-cdn.bir.gov.ph/BIR/pdf/RR%20No.%2029-2025.pdf",
+      "sha256": "b35cc25bcac4206469385a4dab89a5cc942aab73a55b6637ef323d601a552315",
+      "bytes": 409714,
+      "savedAt": "2026-11-04T15:52:11.056Z"
+    },
+    {
+      "file": "rr29-2025-digest.pdf",
+      "url": "https://bir-cdn.bir.gov.ph/BIR/pdf/RR%20No.%2029-2025%20digest%20FINAL.pdf",
+      "sha256": "a2ae8da6b7b85968b39088985b82aa235aad36d2f3a2fc673b8d3ab056ea0be4",
+      "bytes": 101151,
+      "savedAt": "2026-11-04T15:53:08.333Z"
+    },
+    {
+      "file": "official-wt-calculator.js",
+      "url": "https://web-services.bir.gov.ph/tax_calculator/js/wt_calculator.js",
+      "sha256": "67fc4fdf1c67e83215b6503e4105b9daf55c3ff83639e515c79f417168edc9a1",
+      "bytes": 31659,
+      "savedAt": "2026-11-04T15:53:07.407Z"
+    },
+    {
+      "file": "bir-2025-regulations.txt",
+      "url": "https://www.bir.gov.ph/2025-Revenue-Regulations",
+      "sha256": "7a1fedad5a8e33c1a2f095abcdda9608efd725b829753857a79c5af5cc64bc32",
+      "bytes": 9681,
+      "savedAt": "2026-11-04T15:56:56.241Z"
+    },
+    {
+      "file": "bir-2026-regulations.txt",
+      "url": "https://www.bir.gov.ph/2026-Revenue-Regulations",
+      "sha256": "eb9675e634faf053280d57597351cd0e87fc912397560313c90d55ec69782d59",
+      "bytes": 2605,
+      "savedAt": "2026-11-04T15:56:41.907Z"
+    },
+    {
+      "file": "bir-2026-circulars.txt",
+      "url": "https://www.bir.gov.ph/2026-Revenue-Memorandum-Circulars",
+      "sha256": "28dac6a2d6140e12590c4d3d4e156cba183148bcbb92c4ac03edb95c0c3cddfd",
+      "bytes": 31537,
+      "savedAt": "2026-11-04T15:56:49.077Z"
+    },
+    {
+      "file": "pagibig-460.pdf",
+      "url": "https://naro.law.upd.edu.ph/issuances/3217",
+      "sha256": "3bf3e9f09933f99e8bd220822980104dfa63b5ab779eac13b11d4763fb314f59",
+      "bytes": 5761470,
+      "savedAt": "2026-11-04T16:02:37.647Z"
+    }
+  ]
+}

@@ -1,0 +1,6 @@
+✓ Running next.config.ts took 50ms
+⨯ Error: The destination stream closed early.
+    at ignore-listed frames {
+  digest: '3122515128'
+}
+NORMAL_LOGIN_TIMEOUT NORMAL_LOGIN_TIMEOUT

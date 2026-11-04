@@ -1,0 +1,8 @@
+{
+  "id": "RB-staff-migration",
+  "status": "FAIL",
+  "exitCode": 1,
+  "durationMs": 16895,
+  "schema": "staff_auth_test_d6c58c71c85e9039b212ad24",
+  "branch": "br-odd-field-azce2cjf"
+}

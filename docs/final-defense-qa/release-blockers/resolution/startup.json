@@ -1,0 +1,9 @@
+{
+  "capturedAt": "2026-11-02T12:48:32.652Z",
+  "status": "PASS",
+  "check": "Built Next server denies HTTP requests when Preview identity configuration is missing",
+  "httpStatus": 500,
+  "earlyReadyBannerPrinted": true,
+  "productionWrites": 0,
+  "externalMessages": 0
+}

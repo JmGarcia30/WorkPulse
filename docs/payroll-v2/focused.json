@@ -1,0 +1,116 @@
+{
+  "passed": true,
+  "branch": "br-green-king-azcpyvmo",
+  "checks": [
+    "Unsupported reimbursement classification fails closed",
+    "Basic monthly: generates one entry",
+    "Basic monthly: manually calculated gross, employee deductions, BIR and net match",
+    "Repeated earning submission is rejected",
+    "Single taxable bonus: generates one entry",
+    "Single taxable bonus: manually calculated gross, employee deductions, BIR and net match",
+    "Bonus + taxable allowance + overtime: generates one entry",
+    "Bonus + taxable allowance + overtime: manually calculated gross, employee deductions, BIR and net match",
+    "Same payment reference cannot be submitted under a second earning ID",
+    "Employee cannot change payroll earnings",
+    "HR cannot edit a foreign tenant payroll period",
+    "Regeneration after bonus edit: generates one entry",
+    "Regeneration after bonus edit: manually calculated gross, employee deductions, BIR and net match",
+    "Regeneration after overtime removal: generates one entry",
+    "Regeneration after overtime removal: manually calculated gross, employee deductions, BIR and net match",
+    "Repeated generation leaves the entry unchanged",
+    "Recalculation keeps one posting and three contribution allocations",
+    "Every earning change retains an audit revision",
+    "Notification preview is blocked before finalization",
+    "ESS amounts and custom descriptions come from the finalized snapshot",
+    "Notification requires explicit HR confirmation",
+    "Notification creation is idempotent",
+    "Employee sees their persistent in-app notification",
+    "Database rejects notification record tampering",
+    "Database rejects revision audit tampering",
+    "Database rejects a recipient who does not own the finalized payslip",
+    "Foreign tenant cannot retrieve employee notifications",
+    "Finalized earnings cannot be edited",
+    "Finalized payroll cannot be regenerated",
+    "Finalized snapshot remains unchanged after notifications and rejected edits",
+    "Setup reuse cannot copy period-specific earnings to the next payroll",
+    "Advanced setup also rejects a repeated payment reference in a later period"
+  ],
+  "amounts": [
+    {
+      "label": "Basic monthly",
+      "expected": {
+        "gross": "35000.00",
+        "deductions": "4526.30",
+        "net": "30473.70",
+        "tax": "1701.30"
+      },
+      "actual": {
+        "gross": "35000.00",
+        "deductions": "4526.30",
+        "net": "30473.70",
+        "tax": "1701.30"
+      }
+    },
+    {
+      "label": "Single taxable bonus",
+      "expected": {
+        "gross": "37000.00",
+        "deductions": "4826.30",
+        "net": "32173.70",
+        "tax": "2001.30"
+      },
+      "actual": {
+        "gross": "37000.00",
+        "deductions": "4826.30",
+        "net": "32173.70",
+        "tax": "2001.30"
+      }
+    },
+    {
+      "label": "Bonus + taxable allowance + overtime",
+      "expected": {
+        "gross": "37800.00",
+        "deductions": "4946.30",
+        "net": "32853.70",
+        "tax": "2121.30"
+      },
+      "actual": {
+        "gross": "37800.00",
+        "deductions": "4946.30",
+        "net": "32853.70",
+        "tax": "2121.30"
+      }
+    },
+    {
+      "label": "Regeneration after bonus edit",
+      "expected": {
+        "gross": "36800.00",
+        "deductions": "4796.30",
+        "net": "32003.70",
+        "tax": "1971.30"
+      },
+      "actual": {
+        "gross": "36800.00",
+        "deductions": "4796.30",
+        "net": "32003.70",
+        "tax": "1971.30"
+      }
+    },
+    {
+      "label": "Regeneration after overtime removal",
+      "expected": {
+        "gross": "36500.00",
+        "deductions": "4751.30",
+        "net": "31748.70",
+        "tax": "1926.30"
+      },
+      "actual": {
+        "gross": "36500.00",
+        "deductions": "4751.30",
+        "net": "31748.70",
+        "tax": "1926.30"
+      }
+    }
+  ],
+  "regressions": {}
+}

@@ -1,0 +1,8 @@
+{
+  "capturedAt": "2026-11-02T05:24:20.810Z",
+  "id": "lint",
+  "command": "node node_modules/eslint/bin/eslint.js src/features/payroll/readiness.ts src/features/payroll/second-cutoff-readiness.ts",
+  "status": "PASS",
+  "exitCode": 0,
+  "durationMs": 27718
+}

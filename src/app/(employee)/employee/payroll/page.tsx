@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { Banknote, ChevronRight, ReceiptText } from 'lucide-react';
 import { requireEmployeeSelfContext } from '@/features/employee-self-service/context';
 import { listFinalizedPayslipsForEmployee } from '@/features/payroll/payslip';
+import { listPayrollNotifications } from '@/features/payroll/notifications';
 
 const formatDateLabel = (value: string) => {
   try {
@@ -27,6 +28,7 @@ export default async function MyPayslipsPage() {
   });
 
   const latestPayslip = payslips[0];
+  const notifications = await listPayrollNotifications({ organizationId: context.organization.id, userId: context.user.id });
 
   return (
     <div className="space-y-6">
@@ -36,9 +38,10 @@ export default async function MyPayslipsPage() {
           My Payroll
         </h1>
         <p className="mt-2 sm:mt-2.5 text-sm italic text-slate-500">
-          Review your finalized payslips, earnings, deductions, and net pay disbursements.
+          Review your finalized earnings, deductions, attendance, and net pay. Finalization does not confirm payment.
         </p>
       </header>
+      {notifications.length > 0 && <section aria-label="Payroll notifications" className="rounded-2xl border bg-white p-4"><h2 className="text-sm font-semibold">Payslip notifications</h2><ul className="mt-2 space-y-2 text-sm">{notifications.map(row => <li key={row.id}><Link className="underline" href={`/employee/payroll/${row.payrollEntryId}`}>{row.message}</Link><p className="text-xs text-slate-500">{row.createdAt.toLocaleString('en-PH', { timeZone: context.organization.timeZone ?? 'Asia/Manila' })}</p></li>)}</ul></section>}
 
       {/* Top Highlights if payslips exist */}
       {latestPayslip && (
@@ -46,7 +49,7 @@ export default async function MyPayslipsPage() {
           <div className="rounded-2xl border border-slate-200/80 bg-white p-5 shadow-2xs space-y-1">
             <div className="flex items-center justify-between">
               <span className="text-xs font-semibold uppercase tracking-wider text-slate-400">
-                Latest Disbursement
+                Latest finalized net pay
               </span>
               <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#ECECEA] text-[#282934]">
                 <Banknote className="h-4 w-4" />
@@ -56,7 +59,7 @@ export default async function MyPayslipsPage() {
               {formatCurrency(latestPayslip.netPay, latestPayslip.currency)}
             </div>
             <p className="text-xs text-slate-500">
-              Pay Date: {formatDateLabel(latestPayslip.payDate)}
+              Scheduled pay date: {formatDateLabel(latestPayslip.payDate)}
             </p>
           </div>
 
@@ -100,7 +103,7 @@ export default async function MyPayslipsPage() {
             </div>
             <h3 className="text-base font-bold text-slate-900">No Finalized Payslips</h3>
             <p className="mt-1 text-xs sm:text-sm text-slate-500 max-w-sm mx-auto">
-              Your payslip records will appear here as soon as HR finalizes and releases the payroll period.
+              Your payslip records will appear here as soon as HR finalizes the payroll period.
             </p>
           </div>
         ) : (
@@ -121,7 +124,7 @@ export default async function MyPayslipsPage() {
                   </div>
 
                   <p className="text-xs text-slate-500">
-                    Disbursement Date: <strong>{formatDateLabel(item.payDate)}</strong>
+                    Scheduled pay date: <strong>{formatDateLabel(item.payDate)}</strong>
                   </p>
 
                   <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs pt-2">

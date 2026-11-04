@@ -1,0 +1,33 @@
+{
+  "passed": true,
+  "checks": [
+    "Missing historical earnings are unavailable",
+    "Missing attendance evidence blocks payroll",
+    "Resolved attendance permits calculation",
+    "Independent attendance deduction totals match",
+    "Attendance correction invalidates unfinished calculation",
+    "Unresolved attendance changes block finalization",
+    "Explicit recalculation consumes corrected attendance",
+    "Newly approved leave invalidates the draft snapshot",
+    "Unreviewed monthly unpaid leave method blocks generation",
+    "Daily compensation remains blocked by unsupported statutory method"
+  ],
+  "amounts": [
+    {
+      "label": "Two absences + lateness + undertime",
+      "expected": {
+        "gross": "35000.00",
+        "deductions": "4724.80",
+        "net": "30275.20",
+        "tax": "1669.80"
+      },
+      "actual": {
+        "gross": "35000.00",
+        "deductions": "4724.80",
+        "net": "30275.20",
+        "tax": "1669.80"
+      }
+    }
+  ],
+  "fixturesRolledBack": true
+}

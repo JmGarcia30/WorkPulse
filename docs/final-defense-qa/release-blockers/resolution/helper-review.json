@@ -1,0 +1,18 @@
+{
+  "capturedDate": "2026-11-02",
+  "method": "Read-only Neon SQL catalog query; no function execution or DDL",
+  "project": "late-block-61364102",
+  "branch": "br-hidden-violet-azjl3vam",
+  "endpoint": "ep-weathered-mouse-azpx765h",
+  "database": "neondb",
+  "function": "public.h10_fail_audit()",
+  "bodyFingerprint": "b74bbdd0572348f92148f597613deac8",
+  "securityDefiner": false,
+  "configuration": null,
+  "attachedTriggers": 0,
+  "dependentFunctions": 0,
+  "body": " BEGIN IF NEW.\"newValues\"->>'reason' = 'H10_FORCE_AUDIT_FAILURE' THEN RAISE EXCEPTION 'Forced audit failure'; END IF; RETURN NEW; END; ",
+  "assessment": "Inert unattached legacy failure-injection trigger helper. No business DML, external calls or elevated privileges. No current application path references it. No demonstrated runtime production risk. Technical review resolved; retain as explicitly documented drift pending owner acceptance or separately authorized cleanup.",
+  "fixRequired": false,
+  "productionWrites": 0
+}

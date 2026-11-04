@@ -1,0 +1,8 @@
+{
+  "id": "RB-RFID-migration",
+  "status": "FAIL",
+  "exitCode": 1,
+  "durationMs": 16986,
+  "schema": "batch3_test_efcca2c434fae04f377487cc",
+  "branch": "br-odd-field-azce2cjf"
+}

@@ -18,6 +18,8 @@ export const prisma =
     && cachedPrisma?.employeeFinalPay
     && cachedPrisma?.employeeFinalPayPayment
     && cachedPrisma?.employeeFinalPayAudit
+    && cachedPrisma?.payrollNotification
+    && cachedPrisma?.payrollInputRevision
     ? cachedPrisma
     : new PrismaClient({
         log: process.env.NODE_ENV === 'development' ? ['query', 'error', 'warn'] : ['error'],

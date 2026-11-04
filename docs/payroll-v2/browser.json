@@ -1,0 +1,34 @@
+{
+  "passed": true,
+  "checks": [
+    "HR sees the four-step workflow",
+    "Create Payroll Period: actual form submitted (SUBMITTED)",
+    "Add Earnings: actual form submitted (SUBMITTED)",
+    "Custom earning saved through authenticated Server Action",
+    "Generate Payroll: actual form submitted (SUBMITTED)",
+    "Move to Review: actual form submitted (SUBMITTED)",
+    "Finalize Payroll: actual form submitted (SUBMITTED)",
+    "Finalized earnings have no edit controls",
+    "Notify Employees: actual form submitted (SUBMITTED)",
+    "Concurrent notification retries cannot duplicate delivery",
+    "Browser-generated net equals independently expected 32173.70",
+    "HR mobile page fits viewport with scrollable payroll table",
+    "ESS displays persisted notification with no email dependency",
+    "ESS displays recorded custom earning description and the same finalized net",
+    "Finalized payslip has print action",
+    "Finalized payslip produces a printable PDF",
+    "ESS payslip fits mobile viewport",
+    "Real foreign-tenant payslip URL exposes no payroll data",
+    "Same-tenant employee cannot view another employee’s finalized payslip",
+    "Browser view and notification retries preserve finalized snapshot"
+  ],
+  "branch": "br-green-king-azcpyvmo",
+  "productionBuild": true,
+  "realServerActions": true,
+  "emailSent": false,
+  "syntheticFixtureRetainedForReview": {
+    "organizationId": "cmw2a3qfq0000ujqc4kjaag7n",
+    "payrollPeriodId": "cmw2a4g4o001wujqc5etj75vw",
+    "entryId": "cmw2a4xn00023ujqcegqakb7q"
+  }
+}

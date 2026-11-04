@@ -1,0 +1,66 @@
+PASS 1: HR edits existing own account
+PASS 2: Organization Administrator edits own name
+PASS 3: Profile updates do not duplicate users
+PASS 4: Hiring manager cannot edit HR profile
+PASS 5: Employee cannot access administrator profile
+PASS 6: Session identity cannot select another administrator
+PASS 7: Profile rejects cross-tenant session
+PASS 8: Invalid full name rejected
+PASS 9: Readonly email and role preserved
+PASS 10: Password change requires actual current password
+PASS 11: Password change revokes all existing own sessions
+PASS 12: Changed password stored as bcrypt
+PASS 13: Successful login 1 does not exhaust failure count
+PASS 14: Successful login 2 does not exhaust failure count
+PASS 15: Successful login 3 does not exhaust failure count
+PASS 16: Successful login 4 does not exhaust failure count
+PASS 17: Successful login 5 does not exhaust failure count
+PASS 18: Successful login 6 does not exhaust failure count
+PASS 19: Successful login 7 does not exhaust failure count
+PASS 20: Successful login 8 does not exhaust failure count
+PASS 21: Successful logins do not create incorrect-password counter
+PASS 22: No lockout event before fifth actual failure
+[WorkPulse Emailer (SMTP)] Sensitive transactional email accepted by SMTP provider.
+[WorkPulse Emailer (SMTP)] Sensitive transactional email accepted by SMTP provider.
+[WorkPulse Emailer (SMTP)] Sensitive transactional email accepted by SMTP provider.
+PASS 23: Concurrent fifth failures produce one durable lockout
+PASS 24: Correct password temporarily blocked during lockout
+PASS 25: Receiving SMTP inbox got owner and two verified authorized administrator alerts
+PASS 26: Alerts delivered to correct owner and HR recipients
+PASS 27: No foreign-tenant or unauthorized alert recipients
+PASS 28: Concurrent notification retries do not send duplicate alerts
+PASS 29: SMTP acceptance durably recorded without message contents
+PASS 30: Unknown recovery has generic response
+PASS 31: Foreign recovery has same generic response
+PASS 32: Unknown/foreign recovery sends no message
+[WorkPulse Emailer (SMTP)] Sensitive transactional email accepted by SMTP provider.
+PASS 33: Verified employee recovery has same response
+PASS 34: Reset bearer link actually received by isolated SMTP inbox
+PASS 35: Only expiring token hash persisted
+PASS 36: Repeated recovery requests cannot flood inbox
+PASS 37: Reset token cannot cross tenant
+PASS 38: Reset token cannot be reused
+PASS 39: Reset revokes prior employee sessions
+PASS 40: Account recovered after lockout
+PASS 41: Old password rejected after reset
+PASS 42: Expired reset link rejected
+[WorkPulse Emailer (SMTP)] Sensitive transactional email accepted by SMTP provider.
+PASS 43: Verified HR recovery email received
+PASS 44: HR account recovery succeeds
+PASS 45: Other user credentials/profile unaffected
+PASS 46: Tenant administrator cannot read centralized audit
+PASS 47: Anonymous cannot read centralized audit
+PASS 48: Platform sees safe success and failure metadata
+PASS 49: Audit projection contains no tenant email, password hash, token or raw actor ID
+PASS 50: Security audit UPDATE blocked by database
+PASS 51: Security audit DELETE blocked by database
+PASS 52: Draft deletion requires exact confirmation
+PASS 53: Hiring manager cannot delete draft
+PASS 54: Cross-tenant draft deletion blocked
+PASS 55: Draft with applications cannot be deleted
+PASS 56: Published posting cannot be deleted
+PASS 57: Previously published posting cannot be deleted
+PASS 58: Unused draft safely removed
+PASS 59: Draft deletion has immutable atomic audit evidence
+PASS 60: Official application untouched
+PASS 61: No passwords or reset tokens stored in security audit

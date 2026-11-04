@@ -1,0 +1,74 @@
+[WorkPulse timing] branding read: 123.3ms
+[WorkPulse timing] tenant resolution: 124.3ms
+[WorkPulse timing] session validation: 332.2ms
+[WorkPulse timing] branding read: 61.2ms
+[WorkPulse timing] tenant resolution: 61.5ms
+[WorkPulse timing] session validation: 187.6ms
+PASS B1-JOB invalid edit preserves complete job and requirement IDs: invalid date
+[WorkPulse timing] branding read: 62.3ms
+[WorkPulse timing] tenant resolution: 62.6ms
+[WorkPulse timing] session validation: 183.4ms
+PASS B1-JOB invalid edit preserves complete job and requirement IDs: impossible calendar date
+[WorkPulse timing] branding read: 74.2ms
+[WorkPulse timing] tenant resolution: 74.4ms
+[WorkPulse timing] session validation: 187.1ms
+PASS B1-JOB invalid edit preserves complete job and requirement IDs: malformed requirements JSON
+[WorkPulse timing] branding read: 64.0ms
+[WorkPulse timing] tenant resolution: 64.3ms
+[WorkPulse timing] session validation: 191.6ms
+PASS B1-JOB invalid edit preserves complete job and requirement IDs: non-array requirements
+[WorkPulse timing] branding read: 60.7ms
+[WorkPulse timing] tenant resolution: 61.0ms
+[WorkPulse timing] session validation: 186.4ms
+PASS B1-JOB invalid edit preserves complete job and requirement IDs: null requirement
+[WorkPulse timing] branding read: 60.8ms
+[WorkPulse timing] tenant resolution: 61.0ms
+[WorkPulse timing] session validation: 183.3ms
+PASS B1-JOB invalid edit preserves complete job and requirement IDs: invalid requirement enum
+[WorkPulse timing] branding read: 61.4ms
+[WorkPulse timing] tenant resolution: 61.7ms
+[WorkPulse timing] session validation: 180.1ms
+PASS B1-JOB invalid edit preserves complete job and requirement IDs: invalid required flag
+[WorkPulse timing] branding read: 60.7ms
+[WorkPulse timing] tenant resolution: 61.0ms
+[WorkPulse timing] session validation: 187.7ms
+PASS B1-JOB invalid edit preserves complete job and requirement IDs: missing required job field
+[WorkPulse timing] branding read: 69.3ms
+[WorkPulse timing] tenant resolution: 69.5ms
+[WorkPulse timing] session validation: 188.9ms
+PASS B1-JOB database failure rolls back job fields and requirement deletion together
+[WorkPulse timing] branding read: 61.7ms
+[WorkPulse timing] tenant resolution: 62.0ms
+[WorkPulse timing] session validation: 186.6ms
+PASS B1-JOB cross-tenant edits cannot change foreign requirements
+[WorkPulse timing] branding read: 63.2ms
+[WorkPulse timing] tenant resolution: 63.5ms
+[WorkPulse timing] session validation: 186.2ms
+PASS B1-JOB hiring manager cannot edit jobs
+[WorkPulse timing] branding read: 61.4ms
+[WorkPulse timing] tenant resolution: 61.7ms
+PASS B1-JOB copied tenant session cannot edit across workspace hosts
+[WorkPulse timing] branding read: 292.3ms
+[WorkPulse timing] tenant resolution: 292.4ms
+[WorkPulse timing] session validation: 194.7ms
+PASS B1-JOB valid edit replaces requirements without changing publication state
+[WorkPulse timing] branding read: 62.6ms
+[WorkPulse timing] tenant resolution: 62.8ms
+[WorkPulse timing] session validation: 191.4ms
+PASS B1-JOB explicit empty array still clears requirements
+[WorkPulse timing] branding read: 61.3ms
+[WorkPulse timing] tenant resolution: 61.5ms
+[WorkPulse timing] session validation: 188.1ms
+[WorkPulse timing] branding read: 593.2ms
+[WorkPulse timing] tenant resolution: 593.4ms
+[WorkPulse timing] session validation: 386.6ms
+PASS B1-JOB concurrent valid edits leave one complete matching requirement set
+[WorkPulse timing] branding read: 67.9ms
+[WorkPulse timing] tenant resolution: 68.2ms
+[WorkPulse timing] session validation: 198.0ms
+PASS B1-JOB publication unchanged
+[WorkPulse timing] branding read: 76.4ms
+[WorkPulse timing] tenant resolution: 76.6ms
+[WorkPulse timing] session validation: 204.0ms
+PASS B1-JOB closure unchanged
+{"passed":true,"assertions":17,"checks":["B1-JOB invalid edit preserves complete job and requirement IDs: invalid date","B1-JOB invalid edit preserves complete job and requirement IDs: impossible calendar date","B1-JOB invalid edit preserves complete job and requirement IDs: malformed requirements JSON","B1-JOB invalid edit preserves complete job and requirement IDs: non-array requirements","B1-JOB invalid edit preserves complete job and requirement IDs: null requirement","B1-JOB invalid edit preserves complete job and requirement IDs: invalid requirement enum","B1-JOB invalid edit preserves complete job and requirement IDs: invalid required flag","B1-JOB invalid edit preserves complete job and requirement IDs: missing required job field","B1-JOB database failure rolls back job fields and requirement deletion together","B1-JOB cross-tenant edits cannot change foreign requirements","B1-JOB hiring manager cannot edit jobs","B1-JOB copied tenant session cannot edit across workspace hosts","B1-JOB valid edit replaces requirements without changing publication state","B1-JOB explicit empty array still clears requirements","B1-JOB concurrent valid edits leave one complete matching requirement set","B1-JOB publication unchanged","B1-JOB closure unchanged"],"databaseFailureInjectedInOwnedSchemaOnly":true}

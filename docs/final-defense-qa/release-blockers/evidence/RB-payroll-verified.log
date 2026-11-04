@@ -1,0 +1,91 @@
+PASS 1: monthly generation handles multiple employees
+PASS 2: monthly totals include only employee shares plus withholding
+PASS 3: each employee statutory share is separate
+PASS 4: mandatory shares excluded before BIR calculation
+PASS 5: employer SSS/EC retained separately and excluded from net deductions
+PASS 6: monthly totals include only employee shares plus withholding
+PASS 7: each employee statutory share is separate
+PASS 8: mandatory shares excluded before BIR calculation
+PASS 9: employer SSS/EC retained separately and excluded from net deductions
+PASS 10: generation does not write another organization
+PASS 15: retry preserves entries and does not duplicate allocations
+PASS 18: integrated period has no review issues: 
+PASS 20: finalization and retry preserve calculation snapshots
+PASS 21: second organization has independent ledgers
+PASS 22: second cutoff without first ledger is blocked
+PASS 23: first semi-monthly cutoff generates
+PASS 24: unfinalized first cutoff blocks second payment
+PASS 25: integrated period has no review issues: 
+PASS 26: second cutoff reconciles finalized first allocation
+PASS 27: semi-monthly tax uses its own table and correct period shares
+PASS 28: SSS two cutoffs total exactly one monthly employee liability
+PASS 29: PHILHEALTH two cutoffs total exactly one monthly employee liability
+PASS 30: PAGIBIG two cutoffs total exactly one monthly employee liability
+PASS 31: second payment uses persisted earlier taxable compensation
+PASS 32: odd basic-salary centavo settles in second cutoff
+PASS 33: missing reviewed statutory inputs returns SETUP_REQUIRED
+PASS 34: unknown tax/benefit history never defaults to zero
+PASS 35: unresolved Pag-IBIG fractional-centavo rounding blocks generation
+PASS 36: failed calculation leaves no partial reservations
+PASS 41: persisted exhausted annual pool taxes bonus while retaining qualifying de minimis
+PASS 42: benefit usage delta is persisted atomically
+PASS 44: attendance policy generation succeeds: []
+PASS 45: late/absence salary reductions affect BIR once; undertime net deduction does not reduce tax base
+PASS 46: attendance deductions preserve company net effect and unreduced PhilHealth basic salary
+PASS 48: legacy finalized H6.2.5 snapshot remains byte-equivalent
+PASS 49: untracked historical payment after opening blocks tax calculation
+PASS 50: transaction failure rolls back entry, tax usage and contribution reservations together
+PASS 51: three concurrent generations create exactly one entry
+PASS 52: concurrent retries create one tax posting and one allocation per agency
+PASS 54: concurrent finalization atomically finalizes the entry
+PASS 55: finalization serialized against generation and explicitly rolled back for fixture cleanup
+PASS 56: rollback restores review status with the reservation intact
+Payroll integration: 56 assertions passed
+{"id":"integration","status":"PASS","assertions":56}
+WORKFLOW PASS empty payroll stays DRAFT after attempted review
+WORKFLOW PASS empty draft remains safely deletable
+WORKFLOW PASS missing statutory setup and opening history are explicit blockers
+WORKFLOW PASS standard monthly bases derive from salary only after explicit basic-only and coverage review
+WORKFLOW PASS standard shortcut never invents opening history
+WORKFLOW PASS standard profile still blocks payroll without verified historical balances
+WORKFLOW PASS verified employee generates statutory payroll
+WORKFLOW PASS finalized verified setup is offered for the same compensation and year
+WORKFLOW PASS rejected reuse cannot write inputs
+WORKFLOW PASS reuse preserves source evidence and records the current reviewer
+WORKFLOW PASS saved setup and verified opening history are reused without entering balances again
+WORKFLOW PASS reused configuration passes the actual statutory engine in the next period
+WORKFLOW PASS unverified pay date displays an explicit blocker
+WORKFLOW PASS effective-date mismatch gives an actionable salary message
+WORKFLOW PASS salary mismatch prevents reuse
+{"id":"workflow","status":"PASS","assertions":24}
+UI PASS 9: exemption reviewer comes from authenticated action context
+UI PASS 11: opening zero balances require explicit values and review confirmation
+UI PASS 12: legacy statutory amounts remain unknown
+UI PASS 13: incomplete new snapshot is unavailable rather than fabricated
+UI PASS 14: HR and authorized ESS use the same finalized snapshot projection
+UI PASS 15: monthly payslip exposes exact stored employee statutory amounts
+UI PASS 16: employer counterparts and EC remain separate from employee totals
+UI PASS 17: ESS receives no reviewed input payload or historical evidence
+UI PASS 18: semi-monthly payslips show the allocated cutoff rather than the full monthly liability
+UI PASS 24: ESS list retains the snapshotted totals
+UI PASS 25: used/finalized setup is read-only
+UI PASS 26: missing setup is identified before generation without assumed values
+UI PASS 27: legacy ESS payslip retains recorded policy deductions and totals without invented statutory zeros
+UI PASS 28: display and setup queries leave finalized snapshots unchanged
+{"id":"presentation","status":"PASS","assertions":28}
+PHASE3 PASS 1: unresolved monthly unpaid leave blocks rather than paying full salary
+PHASE3 PASS 2: supported paid leave allows ordinary monthly payroll
+PHASE3 PASS 3: paid leave preserves correct statutory net and leave summary
+PHASE3 PASS 5: ordinary monthly Fund Salary above 10,000 cap is unaffected by unresolved fractional-centavo rounding
+PHASE3 PASS 6: ordinary capped Pag-IBIG employee amount is exactly 200
+PHASE3 PASS 7: fractional-centavo Pag-IBIG case stays blocked without an invented rule
+PHASE3 PASS 8: daily/unsupported arrangement produces setup issues rather than silent zero deductions
+PHASE3 PASS 9: second cutoff reconciles an upward revised actual monthly remuneration
+PHASE3 PASS 10: second cutoff subtracts actual posted first share, preserving independent BIR calculation
+PHASE3 PASS 11: two SSS employee allocations total the revised monthly liability exactly once
+PHASE3 PASS 12: database has unique month/agency/cutoff protection
+PHASE3 PASS 13: database enforces month frequency through composite foreign key
+PHASE3 PASS 14: database actually rejects a monthly allocation against a semi-monthly guard
+PHASE3 PASS 15: database actually rejects cross-tenant statutory input ownership
+{"id":"phase3","status":"PASS","assertions":15}
+{"id":"readiness","status":"PASS","assertions":33}

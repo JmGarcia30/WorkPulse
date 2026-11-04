@@ -1,0 +1,194 @@
+{
+  "capturedAt": "2026-11-02T07:19:08.756Z",
+  "vercel": {
+    "teamId": "team_UJrtsVOW9iHGOJYrMtflRVU2",
+    "projectId": "prj_O3lYRwFRzfShyGDhCzek5v0gW4pr",
+    "projectName": "work-pulse",
+    "deployment": {
+      "id": "dpl_G2xJzwCrDAxQaLPynEmLucZKDHTZ",
+      "target": "production",
+      "source": "git",
+      "state": "READY",
+      "branch": "main",
+      "commit": "b24616ba92294018da82341b2f3e8d3a35c69f32",
+      "repository": "JmGarcia30/WorkPulse"
+    }
+  },
+  "environmentMetadata": {
+    "decryptedValuesRequested": true,
+    "protectedValuesReadable": false,
+    "variables": [
+      {
+        "id": "G6nMLGDgkploCHul",
+        "key": "GOOGLE_EMAIL_CLIENT_ID",
+        "type": "sensitive",
+        "target": [
+          "production"
+        ],
+        "gitBranch": null
+      },
+      {
+        "id": "Y8aRUzDtXiWbCgq1",
+        "key": "GOOGLE_EMAIL_CLIENT_SECRET",
+        "type": "sensitive",
+        "target": [
+          "production"
+        ],
+        "gitBranch": null
+      },
+      {
+        "id": "jtuC7NqaEyGnC1ru",
+        "key": "EMAIL_OAUTH_ENCRYPTION_KEY",
+        "type": "sensitive",
+        "target": [
+          "production"
+        ],
+        "gitBranch": null
+      },
+      {
+        "id": "jYjnUJzj9AICSUyF",
+        "key": "BLOB_READ_WRITE_TOKEN",
+        "type": "encrypted",
+        "target": [
+          "production",
+          "preview",
+          "development"
+        ],
+        "gitBranch": null
+      },
+      {
+        "id": "V0AmwEQIsIMso1fM",
+        "key": "PLATFORM_PUBLIC_ORIGIN",
+        "type": "encrypted",
+        "target": [
+          "preview"
+        ],
+        "gitBranch": "employee-ui-design"
+      },
+      {
+        "id": "d4eL1c9CqqkgOWsP",
+        "key": "PLATFORM_ROOT_DOMAIN",
+        "type": "encrypted",
+        "target": [
+          "preview"
+        ],
+        "gitBranch": "employee-ui-design"
+      },
+      {
+        "id": "bKPx9igwNgfoBkLh",
+        "key": "SESSION_SECRET",
+        "type": "sensitive",
+        "target": [
+          "preview"
+        ],
+        "gitBranch": "employee-ui-design"
+      },
+      {
+        "id": "o0a6QWfPbdklImz0",
+        "key": "DATABASE_URL",
+        "type": "sensitive",
+        "target": [
+          "preview"
+        ],
+        "gitBranch": "employee-ui-design"
+      },
+      {
+        "id": "LI5HJK1RDjv3fG69",
+        "key": "PLATFORM_ROOT_DOMAIN",
+        "type": "sensitive",
+        "target": [
+          "production"
+        ],
+        "gitBranch": null
+      },
+      {
+        "id": "Y9IaUkc3a2O20Nkb",
+        "key": "PLATFORM_PUBLIC_ORIGIN",
+        "type": "sensitive",
+        "target": [
+          "production"
+        ],
+        "gitBranch": null
+      },
+      {
+        "id": "dNVmW5LzHeqt40VZ",
+        "key": "DATABASE_URL",
+        "type": "sensitive",
+        "target": [
+          "production",
+          "preview"
+        ],
+        "gitBranch": null
+      },
+      {
+        "id": "8F5np2Zrvpz5QZSw",
+        "key": "SESSION_SECRET",
+        "type": "sensitive",
+        "target": [
+          "production",
+          "preview"
+        ],
+        "gitBranch": null
+      },
+      {
+        "id": "3IUppvvCG37pnWIr",
+        "key": "GOOGLE_AI_API_KEY",
+        "type": "sensitive",
+        "target": [
+          "production",
+          "preview"
+        ],
+        "gitBranch": null
+      },
+      {
+        "id": "GfVqcRBu3FvODgmC",
+        "key": "GMAIL_USER",
+        "type": "sensitive",
+        "target": [
+          "production",
+          "preview"
+        ],
+        "gitBranch": null
+      },
+      {
+        "id": "KUMv062V9xxUWhWC",
+        "key": "GMAIL_APP_PASSWORD",
+        "type": "sensitive",
+        "target": [
+          "production",
+          "preview"
+        ],
+        "gitBranch": null
+      },
+      {
+        "id": "pA7ui9E1efZuu8SD",
+        "key": "EMAIL_FROM",
+        "type": "sensitive",
+        "target": [
+          "production",
+          "preview"
+        ],
+        "gitBranch": null
+      }
+    ],
+    "productionRuntimeEndpointBinding": "BLOCKED: protected value unavailable; no existing runtime identity diagnostic",
+    "previewIsolation": "FAIL: default DATABASE_URL record targets production and preview; one named branch override is not generic isolation",
+    "previewMailIsolation": "FAIL: Gmail credentials and sender records target production and preview"
+  },
+  "deploymentPrevention": {
+    "supportedControls": [
+      "Project Ignored Build Step: Don't build anything (exit 0)",
+      "git.deploymentEnabled:false",
+      "Separate explicitly approved staged deployment/promotion after migrations"
+    ],
+    "effectiveStateVerified": false,
+    "liveSettingsChanged": false,
+    "repositoryDeploymentConfigAdded": false
+  },
+  "liveSmtp": {
+    "status": "BLOCKED",
+    "reason": "No approved isolated live SMTP profile and controlled receiving inbox confirmed",
+    "localReceivingSink": "Separate integration evidence only; not live delivery verification"
+  },
+  "secretsWritten": false
+}

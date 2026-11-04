@@ -1,0 +1,10 @@
+{
+  "capturedAt": "2026-11-02T05:39:21.062Z",
+  "headUnchanged": true,
+  "filesCompared": 2027,
+  "changedPreexistingFiles": [
+    "src/features/payroll/readiness.ts"
+  ],
+  "unexpectedChanges": [],
+  "status": "PASS"
+}

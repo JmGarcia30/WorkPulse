@@ -5,6 +5,7 @@ import { resolvePayrollPolicy } from './policy';
 import { lockPayrollPeriod, payrollTransaction } from './transactions';
 import { statutoryEntryIssue } from './statutory-integration';
 import { attendanceReadinessIssue, payrollAttendanceEvidence } from './attendance-evidence';
+import { payrollLeaveEvidence } from './leave-evidence';
 
 type PayrollDb = Prisma.TransactionClient | typeof prisma;
 
@@ -23,6 +24,7 @@ type SnapshotShape = {
   policy?: { id?: string; version?: number };
   calculation?: { baseAmount?: string; grossAmount?: string; totalDeductions?: string; netAmount?: string; attendanceAffectsPay?: boolean };
   attendanceEvidence?: string | null;
+  leaveEvidence?: string;
 };
 
 function snapshotObject(value: Prisma.JsonValue | null): SnapshotShape | null {
@@ -142,6 +144,10 @@ async function assessPeriod(organizationId: string, payrollPeriodId: string, db:
       }
     }
     const compensation = entry.employeeCompensation;
+    if (period.status !== PayrollPeriodStatus.FINALIZED && snapshot.leaveEvidence) {
+      const days = await db.leaveRequestDay.findMany({ where: { organizationId, employeeId: employee.id, attendanceDate: { gte: period.periodStart, lte: period.periodEnd }, leaveRequest: { status: 'APPROVED' } }, include: { leaveRequest: { select: { id: true, leaveTypeId: true, leavePaidSnapshot: true } } } });
+      if (payrollLeaveEvidence(days) !== snapshot.leaveEvidence) issues.push({ ...identity, kind: 'SETUP_REQUIRED', message: 'Approved leave changed after calculation. Prepare recalculation and generate payroll again before finalization.' });
+    }
     const applicableCompensationCount = applicableCounts.get(employee.id) ?? 0;
     const compensationValid = compensation.organizationId === organizationId
       && compensation.employeeId === employee.id

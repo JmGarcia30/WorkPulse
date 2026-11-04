@@ -1,0 +1,10 @@
+{
+  "id": "IT-staff-security",
+  "command": "node docs/final-defense-qa/it-eval/legacy.cjs test-staff-session-security.cjs",
+  "capturedAt": "2026-11-02T06:19:05.884Z",
+  "durationMs": 43389,
+  "exitCode": 0,
+  "status": "PASS",
+  "schema": "staff_auth_test_c82dd035bab23ed048a79767",
+  "isolatedPerSuite": true
+}

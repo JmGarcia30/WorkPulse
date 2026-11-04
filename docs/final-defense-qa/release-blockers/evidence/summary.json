@@ -1,0 +1,24 @@
+{
+  "status": "PASS",
+  "live": {
+    "database": "neondb",
+    "branch_id": "br-odd-field-azce2cjf",
+    "endpoint_id": "ep-patient-cake-az9urbbj"
+  },
+  "productionSnapshot": {
+    "project": "late-block-61364102",
+    "branch": "br-odd-field-azce2cjf",
+    "endpoint": "ep-patient-cake-az9urbbj",
+    "parent": "br-hidden-violet-azjl3vam",
+    "parentLsn": "0/16544B40",
+    "snapshotTimestamp": "2026-11-02T07:08:51Z"
+  },
+  "upgrade": "38 -> 39 -> 40",
+  "existingTablesPreserved": 73,
+  "existingDefinitionsPreserved": true,
+  "existingRecordsPreserved": true,
+  "checksumsVerified": 40,
+  "partialObjects": false,
+  "unresolvedMigrations": 0,
+  "repeatDeploymentNoop": true
+}

@@ -1,0 +1,69 @@
+{
+  "capturedAt": "2026-11-02T05:39:21.214Z",
+  "status": "PASS",
+  "statutoryTestCases": 93,
+  "birTestCases": 56,
+  "databaseAssertions": 156,
+  "browserChecks": 29,
+  "results": [
+    {
+      "id": "typescript",
+      "status": "PASS",
+      "exitCode": 0
+    },
+    {
+      "id": "lint",
+      "status": "PASS",
+      "exitCode": 0
+    },
+    {
+      "id": "build",
+      "status": "PASS",
+      "exitCode": 0
+    },
+    {
+      "id": "statutory",
+      "status": "PASS",
+      "exitCode": 0
+    },
+    {
+      "id": "bir",
+      "status": "PASS",
+      "exitCode": 0
+    },
+    {
+      "id": "integration",
+      "status": "PASS",
+      "assertions": 56
+    },
+    {
+      "id": "workflow",
+      "status": "PASS",
+      "assertions": 24
+    },
+    {
+      "id": "presentation",
+      "status": "PASS",
+      "assertions": 28
+    },
+    {
+      "id": "phase3",
+      "status": "PASS",
+      "assertions": 15
+    },
+    {
+      "id": "readiness",
+      "status": "PASS",
+      "assertions": 33
+    },
+    {
+      "id": "browser-run",
+      "status": "PASS",
+      "exitCode": 0
+    }
+  ],
+  "limitations": [
+    "September 2026 fictional scenarios only; verification dates unchanged.",
+    "Browser uses real production build/actions and SQL inside a rollback transaction; independent service suite tests ordinary concurrent transactions."
+  ]
+}

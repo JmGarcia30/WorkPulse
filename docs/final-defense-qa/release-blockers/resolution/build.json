@@ -1,0 +1,9 @@
+{
+  "capturedAt": "2026-11-02T15:18:01.241Z",
+  "id": "build",
+  "status": "PASS",
+  "exitCode": 0,
+  "durationMs": 65948,
+  "productionWrites": 0,
+  "externalMessages": 0
+}

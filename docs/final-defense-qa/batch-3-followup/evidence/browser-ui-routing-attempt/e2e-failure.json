@@ -1,0 +1,8 @@
+{
+  "code": "Error",
+  "message": "BROWSER_CONTROL_UNAVAILABLE",
+  "last": {
+    "scenario": "Monthly synthetic September: missing setup produces visible SETUP_REQUIRED without an entry",
+    "passed": true
+  }
+}

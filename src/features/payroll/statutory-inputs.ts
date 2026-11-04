@@ -29,14 +29,24 @@ export const statutoryInputSchema = z.object({
   }).strict(),
   additionalEarnings: z.array(z.object({
     id: reference,
-    kind: z.enum(['FIXED_ALLOWANCE', 'OVERTIME', 'COMMISSION', 'THIRTEENTH_MONTH', 'QUALIFYING_OTHER_BENEFIT', 'RICE_SUBSIDY', 'CLOTHING_ALLOWANCE', 'LAUNDRY_ALLOWANCE']),
+    kind: z.enum(['FIXED_ALLOWANCE', 'OVERTIME', 'COMMISSION', 'TAXABLE_BONUS', 'THIRTEENTH_MONTH', 'QUALIFYING_OTHER_BENEFIT', 'RICE_SUBSIDY', 'CLOTHING_ALLOWANCE', 'LAUNDRY_ALLOWANCE']),
     amount, qualificationReference: reference.optional(),
+    description: z.string().trim().min(1).max(200).optional(),
+    category: z.enum(['OVERTIME', 'BONUS', 'COMMISSION', 'ALLOWANCE', 'THIRTEENTH_MONTH', 'OTHER']).optional(),
+    supportingReference: reference.optional(),
+    createdById: reference.optional(),
+    updatedById: reference.optional(),
   }).strict()),
   companyDeductionTreatment: z.object({ late: deductionTreatment, absence: deductionTreatment, undertime: deductionTreatment }).strict(),
   unionDues: z.object({ amount, reference }).strict(),
   otherNetDeductions: z.array(z.object({ id: reference, amount, reference }).strict()),
 }).strict();
 export type StatutoryPayrollInput = z.infer<typeof statutoryInputSchema>;
+export const categoryKinds: Record<NonNullable<StatutoryPayrollInput['additionalEarnings'][number]['category']>, string[]> = {
+  OVERTIME: ['OVERTIME'], BONUS: ['TAXABLE_BONUS', 'QUALIFYING_OTHER_BENEFIT'], COMMISSION: ['COMMISSION'],
+  ALLOWANCE: ['FIXED_ALLOWANCE', 'RICE_SUBSIDY', 'CLOTHING_ALLOWANCE', 'LAUNDRY_ALLOWANCE'], THIRTEENTH_MONTH: ['THIRTEENTH_MONTH'],
+  OTHER: ['FIXED_ALLOWANCE', 'OVERTIME', 'COMMISSION', 'TAXABLE_BONUS', 'QUALIFYING_OTHER_BENEFIT', 'RICE_SUBSIDY', 'CLOTHING_ALLOWANCE', 'LAUNDRY_ALLOWANCE'],
+};
 export const openingSchema = z.object({
   riceExemptUsedThisMonth: amount, laundryExemptUsedThisMonth: amount,
   clothingExemptUsedThisYear: amount, otherBenefitsGrossPaidYtd: amount,
@@ -46,6 +56,17 @@ export const openingSchema = z.object({
 export function parseStatutoryInput(value: unknown): StatutoryPayrollInput {
   const parsed = statutoryInputSchema.safeParse(value);
   if (!parsed.success) throw new PayrollError('SETUP_REQUIRED', `Resolve statutory earnings, bases, coverage and tax profile: ${parsed.error.issues.map(issue => issue.path.join('.')).join(', ')}.`);
+  const ids = parsed.data.additionalEarnings.map(item => item.id);
+  if (ids.includes('BASIC_SALARY') || new Set(ids).size !== ids.length) throw new PayrollError('SETUP_REQUIRED', 'Each additional earning must have a unique reference.');
+  const references = new Set<string>();
+  for (const row of parsed.data.additionalEarnings) {
+    if (row.category && (!row.description || !row.supportingReference || !row.qualificationReference || !categoryKinds[row.category].includes(row.kind))) throw new PayrollError('SETUP_REQUIRED', 'Custom earnings require a description, supporting reference and approved matching payroll classification.');
+    if (row.supportingReference) {
+      const key = row.supportingReference.trim().toLowerCase();
+      if (references.has(key)) throw new PayrollError('DUPLICATE_EARNING', 'An approved payment reference may only appear once.');
+      references.add(key);
+    }
+  }
   return parsed.data;
 }
 
@@ -67,6 +88,16 @@ export async function savePayrollStatutoryInput(input: { organizationId: string;
     if (!period) throw new PayrollError('NOT_FOUND', 'Payroll period unavailable.');
     if (period.status === 'FINALIZED' || await tx.payrollEntry.count({ where: { organizationId: input.organizationId, employeeId: input.employeeId, payrollPeriodId: period.id } })) throw new PayrollError('IMMUTABLE', 'Used payroll inputs cannot be replaced; explicit adjustment handling is required.');
     const data = { payload: payload as Prisma.InputJsonObject, evidenceReference: input.evidenceReference, reviewedById: input.actorUserId };
+    // Creator provenance comes from the authenticated reviewer, never posted JSON.
+    const prior = await tx.payrollStatutoryInput.findUnique({ where: { organizationId_employeeId_payrollPeriodId: { organizationId: input.organizationId, employeeId: input.employeeId, payrollPeriodId: period.id } } });
+    const oldRows = prior ? parseStatutoryInput(prior.payload).additionalEarnings : [];
+    for (const row of payload.additionalEarnings) {
+      row.createdById = oldRows.find(old => old.id === row.id)?.createdById ?? input.actorUserId;
+      row.updatedById = input.actorUserId;
+    }
+    const otherPeriods = await tx.payrollStatutoryInput.findMany({ where: { organizationId: input.organizationId, employeeId: input.employeeId, payrollPeriodId: { not: period.id } } });
+    const paymentReferences = new Set(otherPeriods.flatMap(record => parseStatutoryInput(record.payload).additionalEarnings.flatMap(row => row.supportingReference ? [row.supportingReference.trim().toLowerCase()] : [])));
+    if (payload.additionalEarnings.some(row => row.supportingReference && paymentReferences.has(row.supportingReference.trim().toLowerCase()))) throw new PayrollError('DUPLICATE_EARNING', 'A supporting payment reference is already used in another payroll period.');
     return tx.payrollStatutoryInput.upsert({ where: { organizationId_employeeId_payrollPeriodId: { organizationId: input.organizationId, employeeId: input.employeeId, payrollPeriodId: period.id } }, create: { organizationId: input.organizationId, employeeId: input.employeeId, payrollPeriodId: period.id, ...data }, update: data });
   });
 }

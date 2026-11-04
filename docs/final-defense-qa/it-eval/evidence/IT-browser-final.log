@@ -1,0 +1,20 @@
+✓ Running next.config.ts took 50ms
+PASS 1: HR profile displays own readonly email and role
+PASS 2: Browser name form saves existing User
+PASS 3: Updated name appears on dashboard
+PASS 4: Mobile profile has no page overflow
+PASS 5: Wrong current password keeps existing HR session
+PASS 6: Browser password change signs out HR and revokes session
+PASS 7: New HR password authenticates through normal browser login
+PASS 8: Organization Administrator browser self-profile works
+PASS 9: Browser job creation writes immutable audit
+PASS 10: Existing job edit retains atomic requirements write and adds audit
+⨯ Error: The destination stream closed early.
+    at ignore-listed frames {
+  digest: '3122515128'
+}
+⨯ Error: The destination stream closed early.
+    at ignore-listed frames {
+  digest: '3122515128'
+}
+{"stage":"audited job actions","error":"BUTTON:Publish Job"}

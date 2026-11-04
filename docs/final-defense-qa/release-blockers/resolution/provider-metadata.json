@@ -1,0 +1,315 @@
+{
+  "capturedAt": "2026-11-02T12:40:13.069Z",
+  "source": "Authenticated read-only Vercel and Neon connector calls; no decrypted values requested",
+  "project": {
+    "result": {
+      "id": "prj_O3lYRwFRzfShyGDhCzek5v0gW4pr",
+      "name": "work-pulse",
+      "framework": "nextjs",
+      "accountId": "team_UJrtsVOW9iHGOJYrMtflRVU2",
+      "createdAt": 1790268421105,
+      "updatedAt": 1793596480297,
+      "nodeVersion": "24.x",
+      "live": false,
+      "latestDeployment": {
+        "id": "dpl_G2xJzwCrDAxQaLPynEmLucZKDHTZ",
+        "url": "work-pulse-cykjz0esq-jose-miguel-garcias-projects.vercel.app",
+        "createdAt": 1793596321381,
+        "readyState": "READY",
+        "target": "production"
+      },
+      "domains": [
+        "work-pulse-omega.vercel.app",
+        "work-pulse-jose-miguel-garcias-projects.vercel.app",
+        "work-pulse-git-main-jose-miguel-garcias-projects.vercel.app"
+      ],
+      "passwordProtection": {
+        "enabled": false,
+        "deploymentType": null
+      },
+      "ssoProtection": {
+        "enabled": true,
+        "deploymentType": "all_except_custom_domains"
+      },
+      "trustedIps": {
+        "enabled": false,
+        "deploymentType": null,
+        "addresses": [],
+        "protectionMode": null
+      }
+    }
+  },
+  "deployment": {
+    "result": {
+      "deployment": {
+        "id": "dpl_G2xJzwCrDAxQaLPynEmLucZKDHTZ",
+        "name": "work-pulse",
+        "url": "work-pulse-cykjz0esq-jose-miguel-garcias-projects.vercel.app",
+        "type": "LAMBDAS",
+        "state": "READY",
+        "createdAt": 1793596321381,
+        "creator": {
+          "uid": "rtZII6YYbBWSp1OLSWGwqa9W",
+          "username": "jmgarcia30"
+        },
+        "project": {
+          "id": "prj_O3lYRwFRzfShyGDhCzek5v0gW4pr",
+          "name": "work-pulse",
+          "framework": "nextjs"
+        },
+        "meta": {
+          "githubCommitRef": "main",
+          "githubCommitSha": "b24616ba92294018da82341b2f3e8d3a35c69f32",
+          "githubCommitMessage": "Fixed bugs",
+          "githubRepo": "WorkPulse",
+          "githubOrg": "JmGarcia30"
+        },
+        "alias": [
+          "work-pulse-omega.vercel.app",
+          "work-pulse-jose-miguel-garcias-projects.vercel.app",
+          "work-pulse-git-main-jose-miguel-garcias-projects.vercel.app"
+        ],
+        "target": "production",
+        "regions": [
+          "sin1"
+        ],
+        "buildingAt": 1793596322787,
+        "ready": 1793596480024,
+        "readyState": "READY",
+        "source": "git",
+        "aliasError": null
+      }
+    }
+  },
+  "environmentRecords": [
+    {
+      "id": "G6nMLGDgkploCHul",
+      "key": "GOOGLE_EMAIL_CLIENT_ID",
+      "target": [
+        "production"
+      ],
+      "type": "sensitive",
+      "visibility": "secret"
+    },
+    {
+      "id": "Y8aRUzDtXiWbCgq1",
+      "key": "GOOGLE_EMAIL_CLIENT_SECRET",
+      "target": [
+        "production"
+      ],
+      "type": "sensitive",
+      "visibility": "secret"
+    },
+    {
+      "id": "jtuC7NqaEyGnC1ru",
+      "key": "EMAIL_OAUTH_ENCRYPTION_KEY",
+      "target": [
+        "production"
+      ],
+      "type": "sensitive",
+      "visibility": "secret"
+    },
+    {
+      "id": "jYjnUJzj9AICSUyF",
+      "key": "BLOB_READ_WRITE_TOKEN",
+      "target": [
+        "production",
+        "preview",
+        "development"
+      ],
+      "type": "encrypted"
+    },
+    {
+      "id": "V0AmwEQIsIMso1fM",
+      "key": "PLATFORM_PUBLIC_ORIGIN",
+      "target": [
+        "preview"
+      ],
+      "gitBranch": "employee-ui-design",
+      "type": "encrypted"
+    },
+    {
+      "id": "d4eL1c9CqqkgOWsP",
+      "key": "PLATFORM_ROOT_DOMAIN",
+      "target": [
+        "preview"
+      ],
+      "gitBranch": "employee-ui-design",
+      "type": "encrypted"
+    },
+    {
+      "id": "bKPx9igwNgfoBkLh",
+      "key": "SESSION_SECRET",
+      "target": [
+        "preview"
+      ],
+      "gitBranch": "employee-ui-design",
+      "type": "sensitive",
+      "visibility": "secret"
+    },
+    {
+      "id": "o0a6QWfPbdklImz0",
+      "key": "DATABASE_URL",
+      "target": [
+        "preview"
+      ],
+      "gitBranch": "employee-ui-design",
+      "type": "sensitive",
+      "visibility": "secret"
+    },
+    {
+      "id": "LI5HJK1RDjv3fG69",
+      "key": "PLATFORM_ROOT_DOMAIN",
+      "target": [
+        "production"
+      ],
+      "type": "sensitive",
+      "visibility": "secret"
+    },
+    {
+      "id": "Y9IaUkc3a2O20Nkb",
+      "key": "PLATFORM_PUBLIC_ORIGIN",
+      "target": [
+        "production"
+      ],
+      "type": "sensitive",
+      "visibility": "secret"
+    },
+    {
+      "id": "dNVmW5LzHeqt40VZ",
+      "key": "DATABASE_URL",
+      "target": [
+        "production",
+        "preview"
+      ],
+      "type": "sensitive",
+      "visibility": "secret"
+    },
+    {
+      "id": "8F5np2Zrvpz5QZSw",
+      "key": "SESSION_SECRET",
+      "target": [
+        "production",
+        "preview"
+      ],
+      "type": "sensitive",
+      "visibility": "secret"
+    },
+    {
+      "id": "3IUppvvCG37pnWIr",
+      "key": "GOOGLE_AI_API_KEY",
+      "target": [
+        "production",
+        "preview"
+      ],
+      "type": "sensitive",
+      "visibility": "secret"
+    },
+    {
+      "id": "GfVqcRBu3FvODgmC",
+      "key": "GMAIL_USER",
+      "target": [
+        "production",
+        "preview"
+      ],
+      "type": "sensitive",
+      "visibility": "secret"
+    },
+    {
+      "id": "KUMv062V9xxUWhWC",
+      "key": "GMAIL_APP_PASSWORD",
+      "target": [
+        "production",
+        "preview"
+      ],
+      "type": "sensitive",
+      "visibility": "secret"
+    },
+    {
+      "id": "pA7ui9E1efZuu8SD",
+      "key": "EMAIL_FROM",
+      "target": [
+        "production",
+        "preview"
+      ],
+      "type": "sensitive",
+      "visibility": "secret"
+    }
+  ],
+  "neonBranches": [
+    {
+      "id": "br-damp-fog-azmmxhga",
+      "project_id": "late-block-61364102",
+      "parent_id": "br-hidden-violet-azjl3vam",
+      "name": "workpulse-ess-design",
+      "init_source": "parent-data",
+      "primary": false,
+      "default": false
+    },
+    {
+      "id": "br-hidden-violet-azjl3vam",
+      "project_id": "late-block-61364102",
+      "name": "production",
+      "init_source": "parent-data",
+      "primary": true,
+      "default": true
+    },
+    {
+      "id": "br-odd-field-azce2cjf",
+      "project_id": "late-block-61364102",
+      "parent_id": "br-hidden-violet-azjl3vam",
+      "name": "it-eval-release-rehearsal-20261102",
+      "init_source": "parent-data",
+      "primary": false,
+      "default": false
+    },
+    {
+      "id": "br-flat-lake-azay82fk",
+      "project_id": "late-block-61364102",
+      "parent_id": "br-damp-fog-azmmxhga",
+      "name": "workpulse-ess-design-pre-requestedat-20261027",
+      "init_source": "parent-data",
+      "primary": false,
+      "default": false
+    },
+    {
+      "id": "br-nameless-sea-azximn2k",
+      "project_id": "late-block-61364102",
+      "name": "branch_from_snapshot_Oct 25, 2026 10:45 PM GMT+8",
+      "init_source": "parent-data",
+      "primary": false,
+      "default": false
+    },
+    {
+      "id": "br-silent-wildflower-azjigpdy",
+      "project_id": "late-block-61364102",
+      "parent_id": "br-hidden-violet-azjl3vam",
+      "name": "before-stage-documents-main-20261026",
+      "init_source": "parent-data",
+      "primary": false,
+      "default": false
+    },
+    {
+      "id": "br-shy-glitter-az5vqooe",
+      "project_id": "late-block-61364102",
+      "parent_id": "br-damp-fog-azmmxhga",
+      "name": "workpulse-ess-checkpoint",
+      "init_source": "parent-data",
+      "primary": false,
+      "default": false
+    },
+    {
+      "id": "br-late-surf-azuf1uc1",
+      "project_id": "late-block-61364102",
+      "parent_id": "br-hidden-violet-azjl3vam",
+      "name": "pre-h10-production-backup",
+      "init_source": "parent-data",
+      "primary": false,
+      "default": false
+    }
+  ],
+  "productionRuntimeBinding": "BLOCKED: protected deployment connection unavailable; no existing runtime diagnostic deployed",
+  "previewRuntimeBinding": "BLOCKED: default shared record and unverified branch override; no runtime diagnostic deployed",
+  "effectiveLiveDeploymentFreeze": "BLOCKED: metadata omits Git configuration; local CLI unavailable",
+  "mutations": 0
+}

@@ -1,0 +1,25 @@
+▲ Next.js 16.3.6
+- Local:         http://127.0.0.1:14454
+- Network:       http://127.0.0.1:14454
+✓ Ready in 174ms
+✓ Running next.config.ts took 51ms
+Failed to prepare server Error: An error occurred while loading instrumentation hook: WORKPULSE_DATABASE_IDENTITY_REJECTED
+    at e (G:\CAPSTONE\WorkPulse\.next\server\chunks\8867.js:1:290)
+    at f (G:\CAPSTONE\WorkPulse\.next\server\chunks\8867.js:1:795)
+    at Module.d (G:\CAPSTONE\WorkPulse\.next\server\instrumentation.js:1:185)
+⨯ unhandledRejection: Error: An error occurred while loading instrumentation hook: WORKPULSE_DATABASE_IDENTITY_REJECTED
+    at e (G:\CAPSTONE\WorkPulse\.next\server\chunks\8867.js:1:290)
+    at f (G:\CAPSTONE\WorkPulse\.next\server\chunks\8867.js:1:795)
+    at Module.d (G:\CAPSTONE\WorkPulse\.next\server\instrumentation.js:1:185)
+Failed to prepare server Error: An error occurred while loading instrumentation hook: WORKPULSE_DATABASE_IDENTITY_REJECTED
+    at e (G:\CAPSTONE\WorkPulse\.next\server\chunks\8867.js:1:290)
+    at f (G:\CAPSTONE\WorkPulse\.next\server\chunks\8867.js:1:795)
+    at Module.d (G:\CAPSTONE\WorkPulse\.next\server\instrumentation.js:1:185)
+Error: An error occurred while loading instrumentation hook: WORKPULSE_DATABASE_IDENTITY_REJECTED
+    at e (G:\CAPSTONE\WorkPulse\.next\server\chunks\8867.js:1:290)
+    at f (G:\CAPSTONE\WorkPulse\.next\server\chunks\8867.js:1:795)
+    at Module.d (G:\CAPSTONE\WorkPulse\.next\server\instrumentation.js:1:185)
+Error: An error occurred while loading instrumentation hook: WORKPULSE_DATABASE_IDENTITY_REJECTED
+    at e (G:\CAPSTONE\WorkPulse\.next\server\chunks\8867.js:1:290)
+    at f (G:\CAPSTONE\WorkPulse\.next\server\chunks\8867.js:1:795)
+    at Module.d (G:\CAPSTONE\WorkPulse\.next\server\instrumentation.js:1:185)

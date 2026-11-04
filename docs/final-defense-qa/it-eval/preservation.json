@@ -1,0 +1,22 @@
+{
+  "capturedAt": "2026-11-02T07:03:08.644Z",
+  "headUnchanged": true,
+  "filesCompared": 2096,
+  "intendedChangedPreexistingFiles": [
+    "next.config.ts",
+    "prisma/schema.prisma",
+    "src/app/(auth)/login/page.tsx",
+    "src/app/(dashboard)/dashboard/hiring/jobs/[jobId]/page.tsx",
+    "src/app/platform/(protected)/layout.tsx",
+    "src/components/layout/DashboardSidebarNav.tsx",
+    "src/features/hiring/actions.ts",
+    "src/lib/auth/actions.ts",
+    "src/lib/auth/staff-security.ts",
+    "src/lib/tenant/navigation.ts",
+    "src/proxy.ts"
+  ],
+  "unexpectedChanges": [],
+  "batch3FilesVerified": 70,
+  "batch3ByteIdentical": true,
+  "status": "PASS"
+}

@@ -1,0 +1,137 @@
+{
+  "passed": true,
+  "checks": [
+    "Review date is separate from the bounded November payment horizon",
+    "November monthly basic",
+    "November first cutoff",
+    "November second cutoff",
+    "Unrounded manual withholding amounts are 1701.30 monthly and 850.575 per cutoff",
+    "Two semimonthly deductions total 4526.16: exactly 0.14 below monthly deductions",
+    "Official BIR JavaScript independently confirms both withholding values and per-payment centavo rounding",
+    "Independent twelve-month illustration requires annual reconciliation: tax 20415.00 versus periodic totals 20415.60 / 20413.92",
+    "November agency shares match independently transcribed official amounts",
+    "SSS employer counterpart and EC remain separate",
+    "November taxable bonus",
+    "RR29 November caps with exhausted annual pool",
+    "RR29 rice 2500/month, clothing 8000/year and laundry 400/month caps are enforced",
+    "13th-month shared pool with only 100 remaining",
+    "CBA_PRODUCTIVITY cannot silently use another RR29 exemption",
+    "MEDICAL_ASSISTANCE cannot silently use another RR29 exemption",
+    "CHRISTMAS_GIFT cannot silently use another RR29 exemption",
+    "Annualization remains an explicit blocker",
+    "Incomplete benefit history still blocks exemptions",
+    "2026-12-01 remains outside the verified BIR window",
+    "2027-01-01 remains outside the verified BIR window",
+    "December agency schedule remains unverified",
+    "Withholding rounding does not depend on global Decimal rounding mode"
+  ],
+  "amounts": [
+    {
+      "label": "November monthly basic",
+      "expected": {
+        "gross": "35000.00",
+        "tax": "1701.30",
+        "deductions": "4526.30",
+        "net": "30473.70",
+        "nonTaxableBenefits": "0.00"
+      },
+      "actual": {
+        "gross": "35000.00",
+        "tax": "1701.30",
+        "deductions": "4526.30",
+        "net": "30473.70",
+        "nonTaxableBenefits": "0.00"
+      }
+    },
+    {
+      "label": "November first cutoff",
+      "expected": {
+        "gross": "17500.00",
+        "tax": "850.58",
+        "deductions": "2263.08",
+        "net": "15236.92",
+        "nonTaxableBenefits": "0.00"
+      },
+      "actual": {
+        "gross": "17500.00",
+        "tax": "850.58",
+        "deductions": "2263.08",
+        "net": "15236.92",
+        "nonTaxableBenefits": "0.00"
+      }
+    },
+    {
+      "label": "November second cutoff",
+      "expected": {
+        "gross": "17500.00",
+        "tax": "850.58",
+        "deductions": "2263.08",
+        "net": "15236.92",
+        "nonTaxableBenefits": "0.00"
+      },
+      "actual": {
+        "gross": "17500.00",
+        "tax": "850.58",
+        "deductions": "2263.08",
+        "net": "15236.92",
+        "nonTaxableBenefits": "0.00"
+      }
+    },
+    {
+      "label": "November taxable bonus",
+      "expected": {
+        "gross": "37000.00",
+        "tax": "2001.30",
+        "deductions": "4826.30",
+        "net": "32173.70",
+        "nonTaxableBenefits": "0.00"
+      },
+      "actual": {
+        "gross": "37000.00",
+        "tax": "2001.30",
+        "deductions": "4826.30",
+        "net": "32173.70",
+        "nonTaxableBenefits": "0.00"
+      }
+    },
+    {
+      "label": "RR29 November caps with exhausted annual pool",
+      "expected": {
+        "gross": "46950.00",
+        "tax": "1858.80",
+        "deductions": "4683.80",
+        "net": "42266.20",
+        "nonTaxableBenefits": "10900.00"
+      },
+      "actual": {
+        "gross": "46950.00",
+        "tax": "1858.80",
+        "deductions": "4683.80",
+        "net": "42266.20",
+        "nonTaxableBenefits": "10900.00"
+      }
+    },
+    {
+      "label": "13th-month shared pool with only 100 remaining",
+      "expected": {
+        "gross": "36000.00",
+        "tax": "1836.30",
+        "deductions": "4661.30",
+        "net": "31338.70",
+        "nonTaxableBenefits": "100.00"
+      },
+      "actual": {
+        "gross": "36000.00",
+        "tax": "1836.30",
+        "deductions": "4661.30",
+        "net": "31338.70",
+        "nonTaxableBenefits": "100.00"
+      }
+    }
+  ],
+  "officialReference": {
+    "calculator": "https://web-services.bir.gov.ph/tax_calculator/js/wt_calculator.js",
+    "monthly": "1701.30",
+    "semimonthly": "850.58"
+  }
+}

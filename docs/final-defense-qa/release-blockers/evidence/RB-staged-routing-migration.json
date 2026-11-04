@@ -1,0 +1,8 @@
+{
+  "id": "RB-staged-routing-migration",
+  "status": "PASS",
+  "exitCode": 0,
+  "durationMs": 28562,
+  "schema": "batch3_test_6c8ba53f906bb58a2478cfbc",
+  "branch": "br-odd-field-azce2cjf"
+}

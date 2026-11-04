@@ -1,0 +1,9 @@
+{
+  "capturedAt": "2026-11-02T12:47:11.024Z",
+  "status": "FAIL",
+  "exitCode": null,
+  "error": "ETIMEDOUT",
+  "check": "Built Next server rejects unconfigured Preview before readiness",
+  "productionWrites": 0,
+  "externalMessages": 0
+}

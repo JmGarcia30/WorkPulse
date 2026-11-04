@@ -1,0 +1,22 @@
+{
+  "action": "Save reviewed period inputs",
+  "error": "BUTTON_MISSING",
+  "buttons": [
+    "Hiring",
+    "Employees",
+    "Attendance",
+    "Leave",
+    "Settings",
+    "",
+    "",
+    "Create Period",
+    "Generate Payroll",
+    "Overview",
+    "Run Payroll1",
+    "Employee Pay Setup",
+    "Create Payroll Period",
+    "",
+    "Generate Payroll",
+    "Move to Review"
+  ]
+}

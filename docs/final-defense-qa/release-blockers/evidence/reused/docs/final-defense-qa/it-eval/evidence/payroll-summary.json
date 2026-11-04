@@ -1,0 +1,27 @@
+[
+  {
+    "id": "integration",
+    "status": "PASS",
+    "assertions": 56
+  },
+  {
+    "id": "workflow",
+    "status": "PASS",
+    "assertions": 24
+  },
+  {
+    "id": "presentation",
+    "status": "PASS",
+    "assertions": 28
+  },
+  {
+    "id": "phase3",
+    "status": "PASS",
+    "assertions": 15
+  },
+  {
+    "id": "readiness",
+    "status": "PASS",
+    "assertions": 33
+  }
+]

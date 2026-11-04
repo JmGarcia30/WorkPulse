@@ -1,0 +1,1330 @@
+diff --git a/prisma/schema.prisma b/prisma/schema.prisma
+index 991bc73..f4a304f 100644
+--- a/prisma/schema.prisma
++++ b/prisma/schema.prisma
+@@ -1381,6 +1381,7 @@ model PayrollPeriod {
+ }
+ 
+ model PayrollEntry {
++  notification PayrollNotification?
+   statutoryPosting PayrollStatutoryPosting?
+   id                     String             @id @default(cuid())
+   organizationId         String
+@@ -1408,6 +1409,36 @@ model PayrollEntry {
+   @@index([employeeCompensationId])
+ }
+ 
++// Persistent in-app delivery, independent of email. One announcement per finalized entry.
++model PayrollNotification {
++  id String @id @default(cuid())
++  organizationId String
++  employeeId String
++  payrollEntryId String @unique
++  recipientUserId String
++  actorUserId String
++  message String
++  createdAt DateTime @default(now())
++  entry PayrollEntry @relation(fields: [payrollEntryId, organizationId, employeeId], references: [id, organizationId, employeeId], onDelete: Restrict)
++  @@unique([payrollEntryId, organizationId, employeeId])
++  @@index([organizationId, recipientUserId, createdAt])
++}
++
++// Retains prior draft calculations and input provenance after explicit HR recalculation.
++model PayrollInputRevision {
++  id String @id @default(cuid())
++  organizationId String
++  employeeId String
++  payrollPeriodId String
++  actorUserId String
++  reason String
++  before Json
++  after Json
++  previousEntry Json?
++  createdAt DateTime @default(now())
++  @@index([organizationId, payrollPeriodId, employeeId])
++}
++
+ // Reviewed inputs are explicit; historical earnings/coverage are never guessed.
+ model PayrollStatutoryInput {
+   id String @id @default(cuid())
+diff --git a/src/app/(dashboard)/dashboard/payroll/page.tsx b/src/app/(dashboard)/dashboard/payroll/page.tsx
+index ef57c2b..936e17c 100644
+--- a/src/app/(dashboard)/dashboard/payroll/page.tsx
++++ b/src/app/(dashboard)/dashboard/payroll/page.tsx
+@@ -1,170 +1,65 @@
+ import { notFound } from 'next/navigation';
+-import { Role } from '@prisma/client';
+ import { requireBackOfficeContext } from '@/lib/auth/guards';
+-import { canViewPayroll } from '@/lib/permissions/rbac';
++import { canManagePayroll, canViewPayroll } from '@/lib/permissions/rbac';
++import { prisma } from '@/lib/db/prisma';
+ import { getPayrollDashboardData } from '@/features/payroll/queries';
+-import { formatPayrollPeriodRange } from '@/features/payroll/formatters';
+-import {
+-  PayrollDashboardHeader,
+-  PayrollTabId,
+-} from '@/components/payroll/PayrollDashboardHeader';
+-import { PayrollSummaryCards } from '@/components/payroll/PayrollSummaryCards';
+-import { PayrollTrendChart } from '@/components/payroll/PayrollTrendChart';
+-import { PayrollBreakdownPanel } from '@/components/payroll/PayrollBreakdownPanel';
+-import { EmployeePayrollEntriesTable } from '@/components/payroll/EmployeePayrollEntriesTable';
+-import { RecentPayrollPeriodsWidget } from '@/components/payroll/RecentPayrollPeriodsWidget';
+-import { PayrollActionQueueWidget } from '@/components/payroll/PayrollActionQueueWidget';
+-import { PayrollProcessingTab } from '@/components/payroll/PayrollProcessingTab';
+-import { PayrollConfigurationTab } from '@/components/payroll/PayrollConfigurationTab';
+ import { getPayrollReadiness } from '@/features/payroll/readiness';
++import { earningsVersion } from '@/features/payroll/earnings';
++import { parseStatutoryInput } from '@/features/payroll/statutory-inputs';
++import { previewPayrollNotifications } from '@/features/payroll/notifications';
++import { formatPayrollDate } from '@/features/payroll/formatters';
++import { PayrollPeriodForm, PayrollGenerationForm, PayrollReviewControls } from '@/components/payroll/PayrollSetupForms';
+ import { PayrollReadinessTable } from '@/components/payroll/PayrollReadinessTable';
+ import { PayrollReuseSetup } from '@/components/payroll/PayrollReuseSetup';
++import { PayrollConfigurationTab } from '@/components/payroll/PayrollConfigurationTab';
++import { EmployeePayrollEntriesTable } from '@/components/payroll/EmployeePayrollEntriesTable';
++import { PayrollEarningsForm, PayrollRecalculateForm } from '@/components/payroll/PayrollEarningsForm';
++import { PayrollNotifyForm } from '@/components/payroll/PayrollNotifyForm';
+ 
+-export default async function PayrollPage({
+-  searchParams,
+-}: {
+-  searchParams: Promise<{ period?: string; tab?: string }>;
+-}) {
++export default async function PayrollPage({ searchParams }: { searchParams: Promise<{ period?: string; tab?: string }> }) {
+   const user = await requireBackOfficeContext();
+   if (!canViewPayroll(user)) notFound();
+-
+-  const { period: selectedPeriodId, tab: rawTab } = await searchParams;
+-  const validTabs: PayrollTabId[] = ['overview', 'processing', 'configuration'];
+-  const activeTab: PayrollTabId = validTabs.includes(rawTab as PayrollTabId)
+-    ? (rawTab as PayrollTabId)
+-    : 'overview';
+-
+-  const data = await getPayrollDashboardData(user.organizationId, selectedPeriodId);
+-  const { foundation, kpis, trendPoints, recentPeriods, entries, actions } = data;
+-  const {
+-    employees,
+-    compensations,
+-    periods,
+-    selectedPeriod,
+-    review,
+-    policies,
+-    currentPolicy,
+-    leaveTypes,
+-  } = foundation;
+-
+-  const canManagePayroll =
+-    user.role === Role.ORGANIZATION_ADMIN || user.role === Role.HR_ADMIN;
+-  const canGeneratePayroll =
+-    canManagePayroll && selectedPeriod !== null && selectedPeriod.status !== 'FINALIZED';
+-  const readinessData = ['processing', 'configuration'].includes(activeTab) && canManagePayroll && selectedPeriod && selectedPeriod.status !== 'FINALIZED'
+-    ? await getPayrollReadiness({ organizationId: user.organizationId, actorUserId: user.userId, payrollPeriodId: selectedPeriod.id }) : null;
+-
+-  const statutorySetup = readinessData?.setup ?? null;
+-
+-  const periodOptions = periods.map((p) => ({
+-    id: p.id,
+-    name: p.name,
+-    status: p.status,
+-  }));
+-
+-  const selectedPeriodDateRange = selectedPeriod
+-    ? formatPayrollPeriodRange(selectedPeriod.periodStart, selectedPeriod.periodEnd)
+-    : undefined;
+-  // Client props contain display values, never Prisma Decimal instances or unused ledger payloads.
+-  const configurationCompensations = compensations.map(record => ({
+-    id: record.id, compensationType: record.compensationType, baseRate: record.baseRate.toFixed(2), currency: record.currency,
+-    payFrequency: record.payFrequency, effectiveFrom: record.effectiveFrom, effectiveTo: record.effectiveTo, status: record.status, employee: record.employee,
+-  }));
+-  const configurationPolicies = policies.map(policy => ({
+-    id: policy.id, version: policy.version, effectiveFrom: policy.effectiveFrom, effectiveTo: policy.effectiveTo, status: policy.status,
+-    dailyPayBasis: policy.dailyPayBasis, lateDeductionRule: policy.lateDeductionRule, absenceDeductionRule: policy.absenceDeductionRule,
+-    undertimeDeductionRule: policy.undertimeDeductionRule, roundingRule: policy.roundingRule, createdBy: policy.createdBy,
+-  }));
+-
+-  return (
+-    <div className="space-y-6">
+-      {/* 1. Dashboard Top Header with Period Picker & Tab Switcher */}
+-      <PayrollDashboardHeader
+-        periods={periodOptions}
+-        selectedPeriodId={selectedPeriod?.id ?? null}
+-        activeTab={activeTab}
+-        canManagePayroll={canManagePayroll}
+-        canGeneratePayroll={canGeneratePayroll}
+-        issuesCount={review?.issues.length ?? 0}
+-      />
+-
+-      {/* 2. Tab Content: Overview (Default Financial Dashboard) */}
+-      {activeTab === 'overview' && (
+-        <div className="space-y-5">
+-          {/* Top 5 KPI Summary Cards */}
+-          <PayrollSummaryCards
+-            kpis={kpis}
+-            periodName={selectedPeriod?.name}
+-          />
+-
+-          {/* Main Financial Workspace Grid (matching reference layout composition) */}
+-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 items-start">
+-            {/* Left Column (8 Cols): Trend Chart Top + Employee Entries Table Below */}
+-            <div className="lg:col-span-8 flex flex-col gap-5 min-w-0">
+-              {/* Upper Left: Payroll Trend Chart */}
+-              <PayrollTrendChart
+-                trendPoints={trendPoints}
+-                currentPeriodName={selectedPeriod?.name}
+-              />
+-
+-              {/* Lower Left: Employee Payroll Entries Table */}
+-              <EmployeePayrollEntriesTable
+-                entries={entries}
+-                selectedPeriodName={selectedPeriod?.name}
+-                isPeriodFinalized={selectedPeriod?.status === 'FINALIZED'}
+-              />
+-            </div>
+-
+-            {/* Right Column (4 Cols): Summary Breakdown Top + Recent Periods & Actions Queue Below */}
+-            <div className="lg:col-span-4 flex flex-col gap-5 min-w-0">
+-              {/* Upper Right: Payroll Summary Breakdown Gauge */}
+-              <PayrollBreakdownPanel
+-                kpis={kpis}
+-                periodName={selectedPeriod?.name}
+-                periodDateRange={selectedPeriodDateRange}
+-                processingHref={`/dashboard/payroll?tab=processing${selectedPeriod ? `&period=${selectedPeriod.id}` : ''
+-                  }`}
+-              />
+-
+-              {/* Lower Right (Top): Recent Payroll Periods */}
+-              <RecentPayrollPeriodsWidget periods={recentPeriods} />
+-
+-              {/* Lower Right (Bottom): Payroll Action Queue */}
+-              <PayrollActionQueueWidget actions={actions} />
+-            </div>
+-          </div>
+-        </div>
+-      )}
+-
+-      {/* 3. Tab Content: Payroll Processing (Create Period, Generate, Review, Finalize) */}
+-      {activeTab === 'processing' && (
+-        <>
+-          <PayrollProcessingTab
+-            readiness={<>
+-              {readinessData && <PayrollReadinessTable rows={readinessData.readiness} />}
+-              {statutorySetup && selectedPeriod && <PayrollReuseSetup rows={statutorySetup} periodId={selectedPeriod.id} />}
+-              <a className="wp-button-secondary" href={'/dashboard/payroll?tab=configuration' + (selectedPeriod ? '&period=' + selectedPeriod.id : '') + '#advanced-payroll'}>Advanced Payroll Setup</a>
+-            </>}
+-            periods={periods}
+-            selectedPeriod={selectedPeriod}
+-            review={review ? { period: review.period, summary: review.summary, totals: review.totals, issues: review.issues, canFinalize: review.canFinalize } : null}
+-          />
+-          <EmployeePayrollEntriesTable entries={entries} selectedPeriodName={selectedPeriod?.name} isPeriodFinalized={selectedPeriod?.status === 'FINALIZED'} />
+-        </>
+-      )}
+-
+-      {/* 4. Tab Content: Payroll Configuration (Compensations & Policy Versions) */}
+-      {activeTab === 'configuration' && (
+-        <PayrollConfigurationTab
+-          employees={employees}
+-          compensations={configurationCompensations}
+-          policies={configurationPolicies}
+-          statutorySetup={statutorySetup}
+-          selectedPeriod={selectedPeriod}
+-          currentPolicy={configurationPolicies.find(policy => policy.id === currentPolicy?.id) ?? null}
+-          leaveTypes={leaveTypes}
+-        />
+-      )}
+-    </div>
+-  );
++  const params = await searchParams;
++  const data = await getPayrollDashboardData(user.organizationId, params.period);
++  const { employees, compensations, periods, selectedPeriod: period, review, policies, currentPolicy, leaveTypes } = data.foundation;
++  const manage = canManagePayroll(user);
++  const editable = manage && period && period.status !== 'FINALIZED';
++  const scope = { organizationId: user.organizationId, actorUserId: user.userId, payrollPeriodId: period?.id ?? '' };
++  const readiness = editable ? await getPayrollReadiness(scope) : null;
++  const inputs = editable ? await prisma.payrollStatutoryInput.findMany({ where: { organizationId: user.organizationId, payrollPeriodId: period.id } }) : [];
++  const earningsEmployees = inputs.flatMap(record => {
++    const person = employees.find(row => row.id === record.employeeId);
++    if (!person) return [];
++    try { return [{ id: person.id, name: `${person.firstName} ${person.lastName}`, input: parseStatutoryInput(record.payload), version: earningsVersion(record.payload), hasEntry: data.entries.some(row => row.employeeId === person.id) }]; } catch { return []; }
++  });
++  const notification = manage && period?.status === 'FINALIZED' ? await previewPayrollNotifications(scope) : null;
++  const configurationCompensations = compensations.map(record => ({ ...record, baseRate: record.baseRate.toFixed(2) }));
++  const configurationPolicies = policies.map(policy => ({ id: policy.id, version: policy.version, effectiveFrom: policy.effectiveFrom, effectiveTo: policy.effectiveTo, status: policy.status, dailyPayBasis: policy.dailyPayBasis, lateDeductionRule: policy.lateDeductionRule, absenceDeductionRule: policy.absenceDeductionRule, undertimeDeductionRule: policy.undertimeDeductionRule, roundingRule: policy.roundingRule, createdBy: policy.createdBy }));
++  const card = 'rounded-2xl border bg-white p-4 sm:p-6 space-y-4';
++  return <div className="space-y-5 bg-[#FAF8F6] text-[#282934]">
++    <header><h1 className="text-2xl font-bold">Payroll</h1><p className="mt-1 text-sm text-slate-600">Select a period, manage earnings, review payroll, and notify employees.</p></header>
++    <ol aria-label="Payroll workflow" className="grid grid-cols-2 gap-2 text-xs sm:grid-cols-4">{['1. Select period', '2. Earnings & generation', '3. Review & finalize', '4. Notify employees'].map(label => <li className="rounded-lg border bg-white p-3 font-semibold" key={label}>{label}</li>)}</ol>
++    <section className={card} aria-labelledby="payroll-period"><h2 id="payroll-period" className="font-semibold">1. Select Payroll Period</h2>
++      <form method="get" className="flex flex-wrap items-end gap-3"><label className="grid flex-1 gap-1 text-xs font-semibold">Payroll period<select name="period" defaultValue={period?.id ?? ''} className="min-w-0 rounded-lg border px-3 py-2 text-sm">{!periods.length && <option value="">No periods yet</option>}{periods.map(row => <option key={row.id} value={row.id}>{row.name} · {row.status}</option>)}</select></label><button className="wp-button-secondary">Select period</button></form>
++      {period && <dl className="grid grid-cols-2 gap-3 text-sm sm:grid-cols-4">{[['Start date', formatPayrollDate(period.periodStart)], ['End date', formatPayrollDate(period.periodEnd)], ['Scheduled pay date', formatPayrollDate(period.payDate)], ['Status', period.status]].map(([label, value]) => <div key={label}><dt className="text-xs text-slate-500">{label}</dt><dd className="mt-1 font-semibold">{value}</dd></div>)}</dl>}
++      {manage && <details><summary className="cursor-pointer text-sm font-semibold">Create a payroll period</summary><p className="mt-2 text-xs text-slate-600">Use your configured pay frequency and cutoff dates. Semi-monthly periods use 1–15 or 16–month-end.</p><PayrollPeriodForm /></details>}
++    </section>
++    <section className={card} aria-labelledby="payroll-generate"><h2 id="payroll-generate" className="font-semibold">2. Manage Earnings and Generate Payroll</h2>
++      {editable ? <>
++        <p className="text-sm text-slate-600">{employees.length} eligible employees. Approved attendance and leave are checked during generation.</p>
++        {readiness && <PayrollReadinessTable rows={readiness.readiness} />}
++        <PayrollEarningsForm employees={earningsEmployees} periodId={period.id} />
++        <PayrollGenerationForm key={period.id} periods={[period]} selectedPeriodId={period.id} />
++        {readiness?.setup && <details><summary className="cursor-pointer text-sm font-semibold">Reuse verified employee setup</summary><PayrollReuseSetup rows={readiness.setup} periodId={period.id} /></details>}
++      </> : <p className="text-sm text-slate-600">{period?.status === 'FINALIZED' ? 'This payroll is finalized. Earnings and calculations are locked.' : 'Select or create a period to prepare payroll.'}</p>}
++    </section>
++    <section className={card} aria-labelledby="payroll-review"><h2 id="payroll-review" className="font-semibold">3. Review and Finalize</h2>
++      <EmployeePayrollEntriesTable entries={data.entries} selectedPeriodName={period?.name} isPeriodFinalized={period?.status === 'FINALIZED'} />
++      {review && period?.status !== 'FINALIZED' && review.issues.length > 0 && <details open><summary className="cursor-pointer font-semibold text-amber-900">Resolve {review.issues.length} items before finalization</summary><ul className="mt-2 list-disc space-y-1 pl-5 text-sm">{review.issues.map((issue, index) => <li key={index}>{issue.employeeName ? `${issue.employeeName}: ` : ''}{issue.message}</li>)}</ul></details>}
++      {manage && period && review && <PayrollReviewControls periodId={period.id} periodLabel={period.name} status={period.status} canFinalize={review.canFinalize} hasEntries={data.entries.length > 0} />}
++      {editable && <details><summary className="cursor-pointer text-sm font-semibold">Recalculate an unfinished employee entry</summary>{earningsEmployees.filter(row => row.hasEntry).map(row => <details key={row.id} className="mt-3"><summary className="cursor-pointer text-sm">{row.name}</summary><PayrollRecalculateForm employee={row} periodId={period.id} /></details>)}</details>}
++    </section>
++    <section className={card} aria-labelledby="payroll-notify"><h2 id="payroll-notify" className="font-semibold">4. Notify Employees</h2>{notification && period ? <PayrollNotifyForm periodId={period.id} token={notification.token} recipients={notification.recipients} skipped={notification.skipped} /> : <p className="text-sm text-slate-600">Notifications become available after finalization. Finalized payslips are available in ESS immediately.</p>}</section>
++    {manage && <details id="advanced-payroll" className={card} open={params.tab === 'configuration'}><summary className="cursor-pointer font-semibold">Advanced Settings</summary><PayrollConfigurationTab employees={employees} compensations={configurationCompensations} policies={configurationPolicies} currentPolicy={configurationPolicies.find(row => row.id === currentPolicy?.id) ?? null} leaveTypes={leaveTypes} statutorySetup={readiness?.setup ?? null} selectedPeriod={period} /></details>}
++  </div>;
+ }
+diff --git a/src/app/(employee)/employee/payroll/page.tsx b/src/app/(employee)/employee/payroll/page.tsx
+index f699575..aad3df9 100644
+--- a/src/app/(employee)/employee/payroll/page.tsx
++++ b/src/app/(employee)/employee/payroll/page.tsx
+@@ -2,6 +2,7 @@ import Link from 'next/link';
+ import { Banknote, ChevronRight, ReceiptText } from 'lucide-react';
+ import { requireEmployeeSelfContext } from '@/features/employee-self-service/context';
+ import { listFinalizedPayslipsForEmployee } from '@/features/payroll/payslip';
++import { listPayrollNotifications } from '@/features/payroll/notifications';
+ 
+ const formatDateLabel = (value: string) => {
+   try {
+@@ -27,6 +28,7 @@ export default async function MyPayslipsPage() {
+   });
+ 
+   const latestPayslip = payslips[0];
++  const notifications = await listPayrollNotifications({ organizationId: context.organization.id, userId: context.user.id });
+ 
+   return (
+     <div className="space-y-6">
+@@ -36,9 +38,10 @@ export default async function MyPayslipsPage() {
+           My Payroll
+         </h1>
+         <p className="mt-2 sm:mt-2.5 text-sm italic text-slate-500">
+-          Review your finalized payslips, earnings, deductions, and net pay disbursements.
++          Review your finalized earnings, deductions, attendance, and net pay. Finalization does not confirm payment.
+         </p>
+       </header>
++      {notifications.length > 0 && <section aria-label="Payroll notifications" className="rounded-2xl border bg-white p-4"><h2 className="text-sm font-semibold">Payslip notifications</h2><ul className="mt-2 space-y-2 text-sm">{notifications.map(row => <li key={row.id}><Link className="underline" href={`/employee/payroll/${row.payrollEntryId}`}>{row.message}</Link><p className="text-xs text-slate-500">{row.createdAt.toLocaleString('en-PH', { timeZone: context.organization.timeZone ?? 'Asia/Manila' })}</p></li>)}</ul></section>}
+ 
+       {/* Top Highlights if payslips exist */}
+       {latestPayslip && (
+@@ -46,7 +49,7 @@ export default async function MyPayslipsPage() {
+           <div className="rounded-2xl border border-slate-200/80 bg-white p-5 shadow-2xs space-y-1">
+             <div className="flex items-center justify-between">
+               <span className="text-xs font-semibold uppercase tracking-wider text-slate-400">
+-                Latest Disbursement
++                Latest finalized net pay
+               </span>
+               <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#ECECEA] text-[#282934]">
+                 <Banknote className="h-4 w-4" />
+@@ -56,7 +59,7 @@ export default async function MyPayslipsPage() {
+               {formatCurrency(latestPayslip.netPay, latestPayslip.currency)}
+             </div>
+             <p className="text-xs text-slate-500">
+-              Pay Date: {formatDateLabel(latestPayslip.payDate)}
++              Scheduled pay date: {formatDateLabel(latestPayslip.payDate)}
+             </p>
+           </div>
+ 
+@@ -100,7 +103,7 @@ export default async function MyPayslipsPage() {
+             </div>
+             <h3 className="text-base font-bold text-slate-900">No Finalized Payslips</h3>
+             <p className="mt-1 text-xs sm:text-sm text-slate-500 max-w-sm mx-auto">
+-              Your payslip records will appear here as soon as HR finalizes and releases the payroll period.
++              Your payslip records will appear here as soon as HR finalizes the payroll period.
+             </p>
+           </div>
+         ) : (
+@@ -121,7 +124,7 @@ export default async function MyPayslipsPage() {
+                   </div>
+ 
+                   <p className="text-xs text-slate-500">
+-                    Disbursement Date: <strong>{formatDateLabel(item.payDate)}</strong>
++                    Scheduled pay date: <strong>{formatDateLabel(item.payDate)}</strong>
+                   </p>
+ 
+                   <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs pt-2">
+diff --git a/src/components/payroll/EmployeePayrollEntriesTable.tsx b/src/components/payroll/EmployeePayrollEntriesTable.tsx
+index 89b6641..a4a27d3 100644
+--- a/src/components/payroll/EmployeePayrollEntriesTable.tsx
++++ b/src/components/payroll/EmployeePayrollEntriesTable.tsx
+@@ -140,6 +140,8 @@ export function EmployeePayrollEntriesTable({
+             <tr className="border-b border-slate-100 bg-slate-50/75 text-[11px] font-bold uppercase tracking-wider text-slate-500">
+               <th className="px-3.5 py-3">Employee</th>
+               <th className="px-3 py-3">Compensation</th>
++              <th className="px-3 py-3">Basic Pay</th>
++              <th className="px-3 py-3">Additional Earnings</th>
+               <th className="px-3 py-3">Attendance & Leave</th>
+               <th className="px-3 py-3 text-right">Gross Pay</th>
+               <th className="px-3 py-3 text-right">Deductions</th>
+@@ -152,7 +154,7 @@ export function EmployeePayrollEntriesTable({
+           <tbody className="divide-y divide-slate-100">
+             {paginatedEntries.length === 0 ? (
+               <tr>
+-                <td colSpan={9} className="py-12 text-center text-slate-400">
++                <td colSpan={11} className="py-12 text-center text-slate-400">
+                   <div className="flex flex-col items-center justify-center max-w-sm mx-auto px-4">
+                     <div className="rounded-full bg-slate-100 p-3 text-slate-400 mb-3">
+                       <FileText className="h-6 w-6" />
+@@ -250,6 +252,8 @@ export function EmployeePayrollEntriesTable({
+                       </span>
+                     </td>
+ 
++                    <td className="px-3 py-3 whitespace-nowrap">{entry.baseAmountFormatted}</td>
++                    <td className="px-3 py-3">{entry.additionalEarnings ? entry.additionalEarnings.length ? <details><summary className="cursor-pointer font-semibold">{entry.additionalEarnings.length} earnings</summary><ul className="mt-2 space-y-1">{entry.additionalEarnings.map(row => <li key={row.id}>{row.description}: {entry.currency} {row.amount}</li>)}</ul></details> : 'None recorded' : 'Breakdown unavailable'}</td>
+                     {/* Attendance & Leave Snapshot */}
+                     <td className="px-3 py-3 whitespace-nowrap">
+                       {entry.attendanceSummary ? (
+diff --git a/src/components/payroll/PayslipView.tsx b/src/components/payroll/PayslipView.tsx
+index da425e7..f0f65af 100644
+--- a/src/components/payroll/PayslipView.tsx
++++ b/src/components/payroll/PayslipView.tsx
+@@ -26,7 +26,8 @@ export function PayslipView({ payslip, branding, backHref }: { payslip: PayslipV
+       <section className="grid gap-6 border-b py-6 sm:grid-cols-2"><div><h2 className="text-xs font-black uppercase tracking-wider text-slate-500">Employee</h2><dl className="mt-3 space-y-1 text-sm"><div><dt className="inline text-slate-500">Name: </dt><dd className="inline font-bold">{payslip.employee.name}</dd></div><div><dt className="inline text-slate-500">Employee number: </dt><dd className="inline font-bold">{payslip.employee.employeeNumber}</dd></div>{payslip.employee.department ? <div><dt className="inline text-slate-500">Department: </dt><dd className="inline">{payslip.employee.department}</dd></div> : null}{payslip.employee.position ? <div><dt className="inline text-slate-500">Position: </dt><dd className="inline">{payslip.employee.position}</dd></div> : null}</dl></div><div><h2 className="text-xs font-black uppercase tracking-wider text-slate-500">Payroll</h2><dl className="mt-3 space-y-1 text-sm"><div><dt className="inline text-slate-500">Period: </dt><dd className="inline">{dateLabel(payslip.payroll.periodStart)} – {dateLabel(payslip.payroll.periodEnd)}</dd></div><div><dt className="inline text-slate-500">Pay date: </dt><dd className="inline">{dateLabel(payslip.payroll.payDate)}</dd></div><div><dt className="inline text-slate-500">Compensation: </dt><dd className="inline">{payslip.payroll.compensationType} · {money(payslip.payroll.compensationRate, currency)} · {payslip.payroll.payFrequency}</dd></div></dl></div></section>
+       <div className="grid gap-8 py-6 md:grid-cols-2"><section><h2 className="text-xs font-black uppercase tracking-wider text-slate-500">Calculation</h2><dl className="mt-3"><AmountLine label="Base Pay" value={payslip.calculation.basePay} currency={currency} /><AmountLine label="Gross Pay" value={payslip.calculation.grossPay} currency={currency} strong /></dl><div className="mt-6"><PayrollDeductionBreakdown breakdown={payslip.breakdown} currency={currency} /></div><dl className="mt-3"><AmountLine label="Total Deductions" value={payslip.calculation.totalDeductions} currency={currency} strong /><AmountLine label="Net Pay" value={payslip.calculation.netPay} currency={currency} strong /></dl></section>
+         <section><h2 className="text-xs font-black uppercase tracking-wider text-slate-500">Attendance Summary</h2><dl className="mt-3 divide-y">{attendanceLines.filter(([, value]) => value !== null).map(([label, value, unit]) => <div key={label} className="flex justify-between py-2 text-sm"><dt>{label}</dt><dd className="font-bold">{value} {unit}</dd></div>)}</dl>{payslip.leaveTreatments.length ? <><h3 className="mt-6 text-xs font-black uppercase tracking-wider text-slate-500">Leave Treatment</h3><ul className="mt-3 space-y-2 text-sm">{payslip.leaveTreatments.map((item, index) => <li key={`${item.typeName}-${index}`} className="flex justify-between gap-3"><span>{item.typeName}</span><span className="font-bold">{item.treatment.replaceAll('_', ' ')}</span></li>)}</ul></> : null}</section></div>
+-      <footer className="border-t pt-5 text-xs text-slate-500"><p>Finalized: {timestampLabel(payslip.payroll.finalizedAt, branding.timeZone)}</p><p className="mt-1">This payslip is rendered from the finalized payroll calculation snapshot.</p></footer>
++      <section className="border-t py-5"><h2 className="text-xs font-bold uppercase text-slate-500">Additional Earnings</h2>{payslip.calculation.additionalEarnings === null ? <p className="mt-2 text-sm">Additional earnings breakdown was not recorded in this historical snapshot.</p> : payslip.calculation.additionalEarnings.length ? <dl className="mt-2">{payslip.calculation.additionalEarnings.map(row => <AmountLine key={row.id} label={row.description} value={row.amount} currency={currency} />)}</dl> : <p className="mt-2 text-sm">No additional earnings recorded.</p>}</section>
++      <footer className="border-t pt-5 text-xs text-slate-500"><p>Finalized: {timestampLabel(payslip.payroll.finalizedAt, branding.timeZone)}</p><p className="mt-1">This payslip is rendered from the finalized payroll calculation snapshot. Finalization does not confirm payment or disbursement.</p></footer>
+     </article>
+   </div>;
+ }
+diff --git a/src/features/payroll/actions.ts b/src/features/payroll/actions.ts
+index d56af96..8aefff5 100644
+--- a/src/features/payroll/actions.ts
++++ b/src/features/payroll/actions.ts
+@@ -11,6 +11,32 @@ import { savePayrollStatutoryInput, savePayrollTaxOpening } from './statutory-in
+ import { statutoryPayloadFromForm, openingBalancesFromForm } from './setup-form';
+ import { reusePayrollSetup } from './reuse';
+ import { saveStandardPayrollProfile } from './standard-profile';
++import { changePayrollEarning } from './earnings';
++import { notifyPayrollEmployees } from './notifications';
++
++export async function changePayrollEarningAction(_state: PayrollActionState, form: FormData): Promise<PayrollActionState> {
++  const user = await requireBackOfficeContext();
++  if (!canManagePayroll(user)) return { error: 'Unauthorized to manage earnings.' };
++  const field = (name: string) => String(form.get(name) ?? '').trim();
++  const operation = field('operation');
++  if (!['SAVE', 'REMOVE', 'RECALCULATE'].includes(operation)) return { error: 'Unsupported earning action.' };
++  try {
++    await changePayrollEarning({ organizationId: user.organizationId, actorUserId: user.userId, employeeId: field('employeeId'), payrollPeriodId: field('payrollPeriodId'), expectedVersion: field('expectedVersion'), reason: field('reason'), confirmRecalculation: form.get('confirmRecalculation') === 'CONFIRMED', operation: operation as 'SAVE' | 'REMOVE' | 'RECALCULATE', earningId: field('earningId'), earning: { id: field('earningId'), category: field('category'), kind: field('kind'), amount: field('amount'), description: field('description'), supportingReference: field('supportingReference'), qualificationReference: field('qualificationReference') }, agencyReview: { monthlySssRemuneration: field('monthlySssRemuneration'), monthlyPagIbigFundSalary: field('monthlyPagIbigFundSalary'), agencyBasisReference: field('agencyBasisReference') } });
++    revalidatePath('/dashboard/payroll');
++    return { success: 'Inputs saved. Generate payroll and review the updated calculation before finalizing.' };
++  } catch (error) { return failure(error); }
++}
++
++export async function notifyPayrollEmployeesAction(_state: PayrollActionState, form: FormData): Promise<PayrollActionState> {
++  const user = await requireBackOfficeContext();
++  if (!canManagePayroll(user)) return { error: 'Unauthorized to notify employees.' };
++  try {
++    const result = await notifyPayrollEmployees({ organizationId: user.organizationId, actorUserId: user.userId, payrollPeriodId: String(form.get('payrollPeriodId') ?? ''), confirmation: String(form.get('confirmation') ?? ''), recipientToken: String(form.get('recipientToken') ?? '') });
++    revalidatePath('/dashboard/payroll');
++    revalidatePath('/employee/payroll');
++    return { success: `${result.created} in-app notifications created. ${result.alreadyCreated} already announced.` };
++  } catch (error) { return failure(error); }
++}
+ 
+ export type PayrollActionState = { error?: string; success?: string; setupErrors?: Array<{ employeeNumber: string; employeeName: string; message: string }> };
+ const failure = (error: unknown): PayrollActionState => ({ error: error instanceof PayrollError ? error.message : 'The payroll action could not be completed. Please try again.' });
+diff --git a/src/features/payroll/bir/earnings.ts b/src/features/payroll/bir/earnings.ts
+index bec9e7e..8be9c89 100644
+--- a/src/features/payroll/bir/earnings.ts
++++ b/src/features/payroll/bir/earnings.ts
+@@ -2,7 +2,7 @@ import { Prisma } from '@prisma/client';
+ import { BENEFIT_RULES } from './rules';
+ import { fail, money, requiredText, type TaxMoney } from './validation';
+ 
+-export type EarningKind = 'BASIC_SALARY' | 'FIXED_ALLOWANCE' | 'OVERTIME' | 'COMMISSION'
++export type EarningKind = 'BASIC_SALARY' | 'FIXED_ALLOWANCE' | 'OVERTIME' | 'COMMISSION' | 'TAXABLE_BONUS'
+   | 'THIRTEENTH_MONTH' | 'QUALIFYING_OTHER_BENEFIT' | 'RICE_SUBSIDY' | 'CLOTHING_ALLOWANCE' | 'LAUNDRY_ALLOWANCE';
+ export interface CashEarning {
+   id: string;
+@@ -57,7 +57,8 @@ export function classifyCashEarnings(input: {
+     let regularTaxable = new Prisma.Decimal(0), supplementaryTaxable = new Prisma.Decimal(0);
+     let deMinimisExempt = new Prisma.Decimal(0), otherBenefitsExempt = new Prisma.Decimal(0), benefitPoolAmount = new Prisma.Decimal(0);
+     if (earning.kind === 'BASIC_SALARY' || earning.kind === 'FIXED_ALLOWANCE') regularTaxable = amount;
+-    else if (earning.kind === 'OVERTIME' || earning.kind === 'COMMISSION') supplementaryTaxable = amount;
++    // BIR withholding calculator identifies a reviewed taxable bonus as supplementary compensation.
++    else if (earning.kind === 'OVERTIME' || earning.kind === 'COMMISSION' || earning.kind === 'TAXABLE_BONUS') supplementaryTaxable = amount;
+     else {
+       if (!['RICE_SUBSIDY', 'CLOTHING_ALLOWANCE', 'LAUNDRY_ALLOWANCE', 'THIRTEENTH_MONTH', 'QUALIFYING_OTHER_BENEFIT'].includes(earning.kind)) {
+         fail('UNSUPPORTED_CLASSIFICATION', 'Unresolved or unsupported earning classification; no default taxable/exempt assumption.');
+diff --git a/src/features/payroll/payslip.ts b/src/features/payroll/payslip.ts
+index 8c42c3a..f1ad2c5 100644
+--- a/src/features/payroll/payslip.ts
++++ b/src/features/payroll/payslip.ts
+@@ -2,6 +2,7 @@ import { EmployeeAccountStatus, PayrollEntryStatus, PayrollPeriodStatus, Prisma,
+ import { prisma } from '@/lib/db/prisma';
+ import { PayrollError } from './domain';
+ import { payrollSnapshotBreakdown } from './snapshot-breakdown';
++import { payrollEarningsBreakdown } from './earnings-breakdown';
+ 
+ type PayrollDb = Prisma.TransactionClient | typeof prisma;
+ 
+@@ -85,6 +86,7 @@ function toPayslip(entry: FinalizedEntry) {
+       finalizedAt: entry.payrollPeriod.finalizedAt!.toISOString(),
+     },
+     calculation: {
++      additionalEarnings: payrollEarningsBreakdown(entry.calculationSnapshot),
+       basePay: snapshot.calculation!.baseAmount!, grossPay: snapshot.calculation!.grossAmount!,
+       totalDeductions: snapshot.calculation!.totalDeductions!, netPay: snapshot.calculation!.netAmount!,
+       deductions: {
+diff --git a/src/features/payroll/queries.ts b/src/features/payroll/queries.ts
+index 12860ce..fdd2910 100644
+--- a/src/features/payroll/queries.ts
++++ b/src/features/payroll/queries.ts
+@@ -3,6 +3,7 @@ import { prisma } from '@/lib/db/prisma';
+ import { assessPayrollPeriodFromReadInputs, payrollReviewEntryInclude } from './review';
+ import { formatCurrency, formatPayrollDate, formatPayrollPeriodRange } from './formatters';
+ import { payrollSnapshotBreakdown, type PayrollSnapshotBreakdown } from './snapshot-breakdown';
++import { payrollEarningsBreakdown } from './earnings-breakdown';
+ 
+ type PayrollDb = Prisma.TransactionClient | typeof prisma;
+ 
+@@ -69,6 +70,7 @@ export interface PayrollDashboardEntryItem {
+   } | null;
+   canViewPayslip: boolean;
+   breakdown?: PayrollSnapshotBreakdown;
++  additionalEarnings?: ReturnType<typeof payrollEarningsBreakdown>;
+ }
+ 
+ export interface PayrollDashboardSummaryKPIs {
+@@ -251,6 +253,7 @@ export async function getPayrollDashboardData(
+     return {
+       id: entry.id,
+       breakdown: payrollSnapshotBreakdown(entry.calculationSnapshot),
++      additionalEarnings: payrollEarningsBreakdown(entry.calculationSnapshot),
+       employeeId: entry.employeeId,
+       employeeNumber: entry.employee.employeeNumber,
+       firstName: entry.employee.firstName,
+diff --git a/src/features/payroll/reuse.ts b/src/features/payroll/reuse.ts
+index 3bf3cfb..3e3404c 100644
+--- a/src/features/payroll/reuse.ts
++++ b/src/features/payroll/reuse.ts
+@@ -16,6 +16,9 @@ export async function reusablePayrollSetup(db: Prisma.TransactionClient, organiz
+   const parsed = statutoryInputSchema.safeParse(source.payload);
+   if (!parsed.success) return null;
+   const payload = parsed.data;
++  // Period-specific payments and deductions must never be copied into a future payment.
++  // Their contribution bases also need fresh review, so basic-only reuse is unavailable.
++  if (payload.additionalEarnings.length || payload.otherNetDeductions.length || !new Prisma.Decimal(payload.unionDues.amount).isZero()) return null;
+   if (!new Prisma.Decimal(payload.monthlyPhilHealthBasic).eq(compensation[0].baseRate)) return null;
+   return { sourceId: source.id, periodName: source.period.name, payload, evidenceReference: source.evidenceReference };
+ }
+diff --git a/src/features/payroll/review.ts b/src/features/payroll/review.ts
+index de87b3e..4a389ad 100644
+--- a/src/features/payroll/review.ts
++++ b/src/features/payroll/review.ts
+@@ -5,6 +5,7 @@ import { resolvePayrollPolicy } from './policy';
+ import { lockPayrollPeriod, payrollTransaction } from './transactions';
+ import { statutoryEntryIssue } from './statutory-integration';
+ import { attendanceReadinessIssue, payrollAttendanceEvidence } from './attendance-evidence';
++import { payrollLeaveEvidence } from './leave-evidence';
+ 
+ type PayrollDb = Prisma.TransactionClient | typeof prisma;
+ 
+@@ -23,6 +24,7 @@ type SnapshotShape = {
+   policy?: { id?: string; version?: number };
+   calculation?: { baseAmount?: string; grossAmount?: string; totalDeductions?: string; netAmount?: string; attendanceAffectsPay?: boolean };
+   attendanceEvidence?: string | null;
++  leaveEvidence?: string;
+ };
+ 
+ function snapshotObject(value: Prisma.JsonValue | null): SnapshotShape | null {
+@@ -142,6 +144,10 @@ async function assessPeriod(organizationId: string, payrollPeriodId: string, db:
+       }
+     }
+     const compensation = entry.employeeCompensation;
++    if (period.status !== PayrollPeriodStatus.FINALIZED && snapshot.leaveEvidence) {
++      const days = await db.leaveRequestDay.findMany({ where: { organizationId, employeeId: employee.id, attendanceDate: { gte: period.periodStart, lte: period.periodEnd }, leaveRequest: { status: 'APPROVED' } }, include: { leaveRequest: { select: { id: true, leaveTypeId: true, leavePaidSnapshot: true } } } });
++      if (payrollLeaveEvidence(days) !== snapshot.leaveEvidence) issues.push({ ...identity, kind: 'SETUP_REQUIRED', message: 'Approved leave changed after calculation. Prepare recalculation and generate payroll again before finalization.' });
++    }
+     const applicableCompensationCount = applicableCounts.get(employee.id) ?? 0;
+     const compensationValid = compensation.organizationId === organizationId
+       && compensation.employeeId === employee.id
+diff --git a/src/features/payroll/service.ts b/src/features/payroll/service.ts
+index 726e3a6..5711fd0 100644
+--- a/src/features/payroll/service.ts
++++ b/src/features/payroll/service.ts
+@@ -6,6 +6,7 @@ import { resolvePayrollPolicy, validateResolvedPolicyParameters } from './policy
+ import { lockPayrollEmployee, lockPayrollPeriod, payrollTransaction } from './transactions';
+ import { calculateIntegratedPayroll, persistIntegratedPayroll, STATUTORY_SNAPSHOT_VERSION } from './statutory-integration';
+ import { attendanceReadinessIssue, payrollAttendanceEvidence } from './attendance-evidence';
++import { payrollLeaveEvidence } from './leave-evidence';
+ 
+ type PayrollDb = Prisma.TransactionClient | typeof prisma;
+ 
+@@ -323,6 +324,7 @@ async function generateInTransaction(input: GeneratePayrollInput, db: Prisma.Tra
+       attendanceSummary,
+       attendanceEvidence: attendanceRequired ? payrollAttendanceEvidence(attendance) : null,
+       leaveSummary,
++      leaveEvidence: payrollLeaveEvidence(leaveDays),
+     } satisfies Prisma.InputJsonObject;
+     const entry = await db.payrollEntry.create({
+       data: {
+diff --git a/src/features/payroll/statutory-inputs.ts b/src/features/payroll/statutory-inputs.ts
+index d8910dd..ad64f78 100644
+--- a/src/features/payroll/statutory-inputs.ts
++++ b/src/features/payroll/statutory-inputs.ts
+@@ -29,14 +29,24 @@ export const statutoryInputSchema = z.object({
+   }).strict(),
+   additionalEarnings: z.array(z.object({
+     id: reference,
+-    kind: z.enum(['FIXED_ALLOWANCE', 'OVERTIME', 'COMMISSION', 'THIRTEENTH_MONTH', 'QUALIFYING_OTHER_BENEFIT', 'RICE_SUBSIDY', 'CLOTHING_ALLOWANCE', 'LAUNDRY_ALLOWANCE']),
++    kind: z.enum(['FIXED_ALLOWANCE', 'OVERTIME', 'COMMISSION', 'TAXABLE_BONUS', 'THIRTEENTH_MONTH', 'QUALIFYING_OTHER_BENEFIT', 'RICE_SUBSIDY', 'CLOTHING_ALLOWANCE', 'LAUNDRY_ALLOWANCE']),
+     amount, qualificationReference: reference.optional(),
++    description: z.string().trim().min(1).max(200).optional(),
++    category: z.enum(['OVERTIME', 'BONUS', 'COMMISSION', 'ALLOWANCE', 'THIRTEENTH_MONTH', 'OTHER']).optional(),
++    supportingReference: reference.optional(),
++    createdById: reference.optional(),
++    updatedById: reference.optional(),
+   }).strict()),
+   companyDeductionTreatment: z.object({ late: deductionTreatment, absence: deductionTreatment, undertime: deductionTreatment }).strict(),
+   unionDues: z.object({ amount, reference }).strict(),
+   otherNetDeductions: z.array(z.object({ id: reference, amount, reference }).strict()),
+ }).strict();
+ export type StatutoryPayrollInput = z.infer<typeof statutoryInputSchema>;
++export const categoryKinds: Record<NonNullable<StatutoryPayrollInput['additionalEarnings'][number]['category']>, string[]> = {
++  OVERTIME: ['OVERTIME'], BONUS: ['TAXABLE_BONUS', 'QUALIFYING_OTHER_BENEFIT'], COMMISSION: ['COMMISSION'],
++  ALLOWANCE: ['FIXED_ALLOWANCE', 'RICE_SUBSIDY', 'CLOTHING_ALLOWANCE', 'LAUNDRY_ALLOWANCE'], THIRTEENTH_MONTH: ['THIRTEENTH_MONTH'],
++  OTHER: ['FIXED_ALLOWANCE', 'OVERTIME', 'COMMISSION', 'TAXABLE_BONUS', 'QUALIFYING_OTHER_BENEFIT', 'RICE_SUBSIDY', 'CLOTHING_ALLOWANCE', 'LAUNDRY_ALLOWANCE'],
++};
+ export const openingSchema = z.object({
+   riceExemptUsedThisMonth: amount, laundryExemptUsedThisMonth: amount,
+   clothingExemptUsedThisYear: amount, otherBenefitsGrossPaidYtd: amount,
+@@ -46,6 +56,17 @@ export const openingSchema = z.object({
+ export function parseStatutoryInput(value: unknown): StatutoryPayrollInput {
+   const parsed = statutoryInputSchema.safeParse(value);
+   if (!parsed.success) throw new PayrollError('SETUP_REQUIRED', `Resolve statutory earnings, bases, coverage and tax profile: ${parsed.error.issues.map(issue => issue.path.join('.')).join(', ')}.`);
++  const ids = parsed.data.additionalEarnings.map(item => item.id);
++  if (ids.includes('BASIC_SALARY') || new Set(ids).size !== ids.length) throw new PayrollError('SETUP_REQUIRED', 'Each additional earning must have a unique reference.');
++  const references = new Set<string>();
++  for (const row of parsed.data.additionalEarnings) {
++    if (row.category && (!row.description || !row.supportingReference || !row.qualificationReference || !categoryKinds[row.category].includes(row.kind))) throw new PayrollError('SETUP_REQUIRED', 'Custom earnings require a description, supporting reference and approved matching payroll classification.');
++    if (row.supportingReference) {
++      const key = row.supportingReference.trim().toLowerCase();
++      if (references.has(key)) throw new PayrollError('DUPLICATE_EARNING', 'An approved payment reference may only appear once.');
++      references.add(key);
++    }
++  }
+   return parsed.data;
+ }
+ 
+@@ -67,6 +88,16 @@ export async function savePayrollStatutoryInput(input: { organizationId: string;
+     if (!period) throw new PayrollError('NOT_FOUND', 'Payroll period unavailable.');
+     if (period.status === 'FINALIZED' || await tx.payrollEntry.count({ where: { organizationId: input.organizationId, employeeId: input.employeeId, payrollPeriodId: period.id } })) throw new PayrollError('IMMUTABLE', 'Used payroll inputs cannot be replaced; explicit adjustment handling is required.');
+     const data = { payload: payload as Prisma.InputJsonObject, evidenceReference: input.evidenceReference, reviewedById: input.actorUserId };
++    // Creator provenance comes from the authenticated reviewer, never posted JSON.
++    const prior = await tx.payrollStatutoryInput.findUnique({ where: { organizationId_employeeId_payrollPeriodId: { organizationId: input.organizationId, employeeId: input.employeeId, payrollPeriodId: period.id } } });
++    const oldRows = prior ? parseStatutoryInput(prior.payload).additionalEarnings : [];
++    for (const row of payload.additionalEarnings) {
++      row.createdById = oldRows.find(old => old.id === row.id)?.createdById ?? input.actorUserId;
++      row.updatedById = input.actorUserId;
++    }
++    const otherPeriods = await tx.payrollStatutoryInput.findMany({ where: { organizationId: input.organizationId, employeeId: input.employeeId, payrollPeriodId: { not: period.id } } });
++    const paymentReferences = new Set(otherPeriods.flatMap(record => parseStatutoryInput(record.payload).additionalEarnings.flatMap(row => row.supportingReference ? [row.supportingReference.trim().toLowerCase()] : [])));
++    if (payload.additionalEarnings.some(row => row.supportingReference && paymentReferences.has(row.supportingReference.trim().toLowerCase()))) throw new PayrollError('DUPLICATE_EARNING', 'A supporting payment reference is already used in another payroll period.');
+     return tx.payrollStatutoryInput.upsert({ where: { organizationId_employeeId_payrollPeriodId: { organizationId: input.organizationId, employeeId: input.employeeId, payrollPeriodId: period.id } }, create: { organizationId: input.organizationId, employeeId: input.employeeId, payrollPeriodId: period.id, ...data }, update: data });
+   });
+ }
+diff --git a/src/features/payroll/statutory-integration.ts b/src/features/payroll/statutory-integration.ts
+index 0096ed9..4a0b701 100644
+--- a/src/features/payroll/statutory-integration.ts
++++ b/src/features/payroll/statutory-integration.ts
+@@ -130,6 +130,14 @@ export async function statutoryEntryIssue(db: Prisma.TransactionClient, entry: {
+   const posting = await db.payrollStatutoryPosting.findUnique({ where: { payrollEntryId: entry.id }, include: { allocations: true } });
+   if (!posting || posting.organizationId !== entry.organizationId || posting.employeeId !== entry.employeeId || posting.allocations.length !== 3 || !isDeepStrictEqual(posting.calculation, snapshot.statutory)) return 'SETUP_REQUIRED: Statutory/tax reservation ledger does not match this entry.';
+   const saved = posting.calculation as Prisma.JsonObject;
++  try {
++    const reviewed = parseStatutoryInput(saved.reviewedInput);
++    const input = await db.payrollStatutoryInput.findUnique({ where: { organizationId_employeeId_payrollPeriodId: { organizationId: entry.organizationId, employeeId: entry.employeeId, payrollPeriodId: (snapshot?.payrollPeriod as Prisma.JsonObject)?.id as string } } });
++    if (!input || !isDeepStrictEqual(input.payload, saved.reviewedInput)) return 'SETUP_REQUIRED: Reviewed payroll inputs changed after calculation.';
++    const base = new Prisma.Decimal((snapshot?.calculation as Prisma.JsonObject)?.baseAmount as string);
++    const gross = reviewed.additionalEarnings.reduce((sum, row) => sum.add(row.amount), base);
++    if (!gross.eq(entry.grossAmount)) return 'SETUP_REQUIRED: Base pay and additional earnings do not reconcile to gross pay.';
++  } catch { return 'SETUP_REQUIRED: Earnings reconciliation or reviewed input evidence is incomplete.'; }
+   if (saved.grossCompensation !== entry.grossAmount.toFixed(2) || saved.totalDeductions !== entry.totalDeductions.toFixed(2) || saved.netPay !== entry.netAmount.toFixed(2)) return 'SETUP_REQUIRED: Statutory totals do not reconcile to payroll.';
+   const allocations = saved.allocations as Prisma.JsonArray, liabilities = saved.monthlyLiabilities as Prisma.JsonArray;
+   for (const item of posting.allocations) {
+diff --git a/src/lib/db/prisma.ts b/src/lib/db/prisma.ts
+index 8d3e9d4..4682b03 100644
+--- a/src/lib/db/prisma.ts
++++ b/src/lib/db/prisma.ts
+@@ -18,6 +18,8 @@ export const prisma =
+     && cachedPrisma?.employeeFinalPay
+     && cachedPrisma?.employeeFinalPayPayment
+     && cachedPrisma?.employeeFinalPayAudit
++    && cachedPrisma?.payrollNotification
++    && cachedPrisma?.payrollInputRevision
+     ? cachedPrisma
+     : new PrismaClient({
+         log: process.env.NODE_ENV === 'development' ? ['query', 'error', 'warn'] : ['error'],
+diff --git a/prisma/migrations/20261104000100_payroll_simplification_v2/migration.sql b/prisma/migrations/20261104000100_payroll_simplification_v2/migration.sql
+new file mode 100644
+index 0000000..022efdd
+--- /dev/null
++++ b/prisma/migrations/20261104000100_payroll_simplification_v2/migration.sql
+@@ -0,0 +1,43 @@
++-- Additive only: existing payroll, compensation, policy and finalized snapshots are untouched.
++CREATE TABLE "PayrollNotification" (
++ "id" TEXT PRIMARY KEY, "organizationId" TEXT NOT NULL, "employeeId" TEXT NOT NULL,
++ "payrollEntryId" TEXT NOT NULL UNIQUE, "recipientUserId" TEXT NOT NULL,
++ "actorUserId" TEXT NOT NULL, "message" TEXT NOT NULL, "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
++ FOREIGN KEY ("payrollEntryId", "organizationId", "employeeId") REFERENCES "PayrollEntry"("id", "organizationId", "employeeId") ON DELETE RESTRICT ON UPDATE CASCADE
++);
++CREATE INDEX "PayrollNotification_organizationId_recipientUserId_createdAt_idx" ON "PayrollNotification"("organizationId", "recipientUserId", "createdAt");
++CREATE UNIQUE INDEX "PayrollNotification_payrollEntryId_organizationId_employeeId_key" ON "PayrollNotification"("payrollEntryId", "organizationId", "employeeId");
++CREATE TABLE "PayrollInputRevision" (
++ "id" TEXT PRIMARY KEY, "organizationId" TEXT NOT NULL, "employeeId" TEXT NOT NULL,
++ "payrollPeriodId" TEXT NOT NULL, "actorUserId" TEXT NOT NULL, "reason" TEXT NOT NULL,
++ "before" JSONB NOT NULL, "after" JSONB NOT NULL, "previousEntry" JSONB,
++ "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP
++);
++CREATE INDEX "PayrollInputRevision_organizationId_payrollPeriodId_employeeId_idx" ON "PayrollInputRevision"("organizationId", "payrollPeriodId", "employeeId");
++CREATE FUNCTION "payroll_v2_validate_insert"() RETURNS trigger LANGUAGE plpgsql AS $$
++BEGIN
++ IF NOT EXISTS (SELECT 1 FROM "User" WHERE id=NEW."actorUserId" AND "organizationId"=NEW."organizationId" AND role IN ('HR_ADMIN','ORGANIZATION_ADMIN')) THEN
++  RAISE EXCEPTION 'Payroll actor is outside authorized tenant';
++ END IF;
++ IF TG_TABLE_NAME='PayrollNotification' THEN
++  IF NOT EXISTS (SELECT 1 FROM "PayrollEntry" e JOIN "PayrollPeriod" p ON p.id=e."payrollPeriodId"
++    JOIN "EmployeeAccount" a ON a."employeeId"=e."employeeId" AND a."organizationId"=e."organizationId"
++    JOIN "User" u ON u.id=a."userId" AND u."organizationId"=e."organizationId"
++    WHERE e.id=NEW."payrollEntryId" AND e.status='FINALIZED' AND p.status='FINALIZED' AND p."finalizedAt" IS NOT NULL
++      AND a."userId"=NEW."recipientUserId" AND a.status='ACTIVE' AND u.role='EMPLOYEE') THEN
++   RAISE EXCEPTION 'Notification requires an owned finalized payslip';
++  END IF;
++ ELSE
++  IF NOT EXISTS (SELECT 1 FROM "Employee" WHERE id=NEW."employeeId" AND "organizationId"=NEW."organizationId")
++    OR NOT EXISTS (SELECT 1 FROM "PayrollPeriod" WHERE id=NEW."payrollPeriodId" AND "organizationId"=NEW."organizationId" AND status<>'FINALIZED') THEN
++   RAISE EXCEPTION 'Revision requires an unfinished period in the same tenant';
++  END IF;
++ END IF;
++ RETURN NEW;
++END $$;
++CREATE TRIGGER "PayrollNotification_validate" BEFORE INSERT ON "PayrollNotification" FOR EACH ROW EXECUTE FUNCTION "payroll_v2_validate_insert"();
++CREATE TRIGGER "PayrollInputRevision_validate" BEFORE INSERT ON "PayrollInputRevision" FOR EACH ROW EXECUTE FUNCTION "payroll_v2_validate_insert"();
++CREATE FUNCTION "payroll_v2_immutable"() RETURNS trigger LANGUAGE plpgsql AS $$
++BEGIN RAISE EXCEPTION 'Payroll audit and notification records are immutable'; END $$;
++CREATE TRIGGER "PayrollInputRevision_immutable" BEFORE UPDATE OR DELETE ON "PayrollInputRevision" FOR EACH ROW EXECUTE FUNCTION "payroll_v2_immutable"();
++CREATE TRIGGER "PayrollNotification_immutable" BEFORE UPDATE OR DELETE ON "PayrollNotification" FOR EACH ROW EXECUTE FUNCTION "payroll_v2_immutable"();
+diff --git a/scripts/payroll-v2-browser.cjs b/scripts/payroll-v2-browser.cjs
+new file mode 100644
+index 0000000..905e9d4
+--- /dev/null
++++ b/scripts/payroll-v2-browser.cjs
+@@ -0,0 +1,125 @@
++/* eslint-disable @typescript-eslint/no-require-imports -- Real browser, Server Actions and isolated synthetic database. */
++const fs = require('node:fs');
++const { createServer } = require('node:http');
++const { randomBytes } = require('node:crypto');
++const { hash } = require('bcryptjs');
++const { PrismaClient } = require('@prisma/client');
++const { organization, employee, period, setup } = require('./test-payroll-integration.ts');
++const browser = require('./batch0-recovery-browser.cjs');
++const port = 3139, directory = 'docs/payroll-v2';
++const pause = ms => new Promise(resolve => setTimeout(resolve, ms));
++const checks = [];
++const db = new PrismaClient({ log: [] });
++let session, app, server;
++function check(value, label) { if (!value) throw Error(label); checks.push(label); console.log('BROWSER PASS', label); }
++async function until(work, label) {
++  for (let i = 0; i < 180; i++) { if (await work()) return; await pause(250); }
++  if (session) fs.writeFileSync(`${directory}/browser-failure.json`, JSON.stringify({ label, page: await session.evaluate('({path:location.pathname,text:document.querySelector("main")?.innerText.slice(-5000)})') }, null, 2));
++  throw Error(label);
++}
++async function main() {
++  fs.mkdirSync(directory, { recursive: true });
++  const [identity] = await db.$queryRaw`SELECT current_setting('neon.branch_id',true) AS branch`;
++  if (identity.branch !== 'br-green-king-azcpyvmo') throw Error('WRONG_TEST_BRANCH');
++  const scope = await organization(db), person = await employee(db, scope);
++  const org = await db.organization.findUniqueOrThrow({ where: { id: scope.organizationId } });
++  await db.organizationBranding.create({ data: { organizationId: org.id, displayName: org.name, primaryColor: '#282934', accentColor: '#167D77' } });
++  const password = randomBytes(24).toString('hex'), passwordHash = await hash(password, 10);
++  const hr = await db.user.update({ where: { id: scope.actorUserId }, data: { passwordHash } });
++  const user = await db.user.create({ data: { organizationId: org.id, name: 'Synthetic payroll employee', role: 'EMPLOYEE', passwordHash, email: `browser-${person.id}@example.test` } });
++  await db.employeeAccount.create({ data: { organizationId: org.id, employeeId: person.id, userId: user.id, status: 'ACTIVE', activatedAt: new Date(), createdById: hr.id } });
++  const outsider = await organization(db), otherPerson = await employee(db, outsider);
++  const otherPeriod = await period(db, outsider);
++  await setup(db, outsider, otherPerson, otherPeriod.id);
++  const { generatePayroll } = require('../src/features/payroll/service.ts');
++  const { movePayrollPeriodToReview, finalizePayrollPeriod } = require('../src/features/payroll/review.ts');
++  await generatePayroll({ ...outsider, payrollPeriodId: otherPeriod.id }, db);
++  await movePayrollPeriodToReview({ ...outsider, payrollPeriodId: otherPeriod.id }, db);
++  await finalizePayrollPeriod({ ...outsider, payrollPeriodId: otherPeriod.id, confirmation: 'FINALIZE' }, db);
++  const foreignEntry = await db.payrollEntry.findFirstOrThrow({ where: { payrollPeriodId: otherPeriod.id } });
++  const otherUser = await db.user.create({ data: { organizationId: org.id, name: 'Other employee', role: 'EMPLOYEE', passwordHash, email: `other-browser-${person.id}@example.test` } });
++  // A separate same-tenant employee is used to verify ownership, in addition to wrong-tenant URL checks.
++  const ownOtherPerson = await employee(db, scope);
++  await db.employee.update({ where: { id: ownOtherPerson.id }, data: { employeeStatus: 'INACTIVE' } });
++  await db.employeeAccount.create({ data: { organizationId: org.id, employeeId: ownOtherPerson.id, userId: otherUser.id, status: 'ACTIVE', activatedAt: new Date(), createdById: hr.id } });
++  Object.assign(process.env, { PLATFORM_ROOT_DOMAIN: `localhost:${port}`, PLATFORM_PUBLIC_ORIGIN: `http://localhost:${port}` });
++  app = require('next')({ dev: false, hostname: '127.0.0.1', port }); await app.prepare();
++  const handle = app.getRequestHandler(); server = createServer((req, res) => handle(req, res));
++  await new Promise(resolve => server.listen(port, '127.0.0.1', resolve));
++  const origin = `http://${org.slug}.localhost:${port}`;
++  async function login(actor, isEmployee = false, host = org.slug + '.localhost') {
++    await session?.close();
++    session = await browser({ port, production: true, email: actor.email, password, employeeLogin: isEmployee, tenantHost: host });
++    await session.send('Page.addScriptToEvaluateOnNewDocument', { source: 'window.confirm=()=>true;window.__payrollErrors=[];addEventListener("error",e=>window.__payrollErrors.push(e.message));' });
++    await session.evaluate('window.confirm=()=>true;window.__payrollErrors=[];true');
++  }
++  async function goto(route, marker) {
++    await session.send('Page.navigate', { url: origin + route });
++    await until(() => session.evaluate(`document.readyState==='complete' && document.querySelector('main')?.innerText.toLowerCase().includes(${JSON.stringify(marker.toLowerCase())}) && !document.querySelector('main [data-wp-loading]')`), 'PAGE_NOT_READY_' + marker);
++    await pause(350);
++  }
++  async function submit(text, values) {
++    const result = await session.evaluate(`(()=>{const b=[...document.querySelectorAll('button')].find(e=>e.form&&e.textContent.trim()===${JSON.stringify(text)});if(!b)return 'BUTTON_MISSING';for(let d=b.closest('details');d;d=d.parentElement?.closest('details'))d.open=true;const f=b.form;for(const [name,value] of Object.entries(${JSON.stringify(values)})){const e=f.elements[name];if(!e)return 'FIELD_MISSING_'+name;if(e.type==='checkbox'){e.checked=!!value;continue}Object.getOwnPropertyDescriptor(e instanceof HTMLSelectElement?HTMLSelectElement.prototype:HTMLInputElement.prototype,'value').set.call(e,String(value));e.dispatchEvent(new Event(e instanceof HTMLSelectElement?'change':'input',{bubbles:true}))}f.querySelectorAll('input[type=checkbox][required]').forEach(e=>e.checked=true);if(!f.checkValidity())return 'INVALID_FORM';window.__submittedButton=b;f.requestSubmit(b);return 'SUBMITTED'})()`);
++    check(result === 'SUBMITTED', `${text}: actual form submitted (${result})`);
++    await pause(350);
++    await until(() => session.evaluate('(()=>{const b=window.__submittedButton;if(!b?.isConnected)return true;return b.form?.hasAttribute("aria-busy") ? b.form.getAttribute("aria-busy")!=="true" : !b.disabled})()'), 'ACTION_NOT_SETTLED_' + text);
++    await pause(800);
++  }
++  await login(hr); await goto('/dashboard/payroll', '1. Select Payroll Period');
++  check(await session.evaluate('document.body.innerText.includes("4. Notify Employees")'), 'HR sees the four-step workflow');
++  await submit('Create Payroll Period', { name: 'V2 Browser September 2026', periodStart: '2026-09-01', periodEnd: '2026-09-30', payDate: '2026-09-30' });
++  let p;
++  await until(async () => { p = await db.payrollPeriod.findFirst({ where: { organizationId: org.id } }); return !!p; }, 'PERIOD_NOT_CREATED');
++  await setup(db, scope, person, p.id);
++  await goto('/dashboard/payroll?period=' + p.id, 'Manage Earnings');
++  await submit('Add Earnings', { category: 'BONUS', description: 'Browser approved taxable bonus', amount: '2000', supportingReference: 'BROWSER-BONUS-001', kind: 'TAXABLE_BONUS', qualificationReference: 'Verified taxable bonus approval', monthlySssRemuneration: '37000', monthlyPagIbigFundSalary: '37000', agencyBasisReference: 'Reviewed synthetic monthly bases', reason: 'Approved project completion' });
++  await until(async () => (await db.payrollStatutoryInput.findFirstOrThrow({ where: { payrollPeriodId: p.id } })).payload.additionalEarnings.length === 1, 'EARNING_NOT_SAVED');
++  check(true, 'Custom earning saved through authenticated Server Action');
++  await goto('/dashboard/payroll?period=' + p.id, 'Manage Earnings');
++  await submit('Generate Payroll', { payrollPeriodId: p.id });
++  await until(async () => await db.payrollEntry.count({ where: { payrollPeriodId: p.id } }) === 1, 'GENERATION_FAILED');
++  await goto('/dashboard/payroll?period=' + p.id, '32,173.70');
++  await submit('Move to Review', {});
++  await until(async () => (await db.payrollPeriod.findUniqueOrThrow({ where: { id: p.id } })).status === 'REVIEW', 'REVIEW_FAILED');
++  await goto('/dashboard/payroll?period=' + p.id, 'Finalize Payroll');
++  await submit('Finalize Payroll', { confirmation: true });
++  await until(async () => (await db.payrollPeriod.findUniqueOrThrow({ where: { id: p.id } })).status === 'FINALIZED', 'FINALIZATION_FAILED');
++  await goto('/dashboard/payroll?period=' + p.id, 'Review notification recipients');
++  check(await session.evaluate('!document.querySelector("button[value=SAVE]")'), 'Finalized earnings have no edit controls');
++  await submit('Notify Employees', { confirmation: true });
++  await until(async () => await db.payrollNotification.count({ where: { organizationId: org.id } }) === 1, 'NOTIFICATION_FAILED');
++  const { previewPayrollNotifications, notifyPayrollEmployees } = require('../src/features/payroll/notifications.ts');
++  const preview = await previewPayrollNotifications({ ...scope, payrollPeriodId: p.id }, db);
++  const retry = { ...scope, payrollPeriodId: p.id, recipientToken: preview.token, confirmation: 'NOTIFY' };
++  const concurrent = await Promise.all([notifyPayrollEmployees(retry, db), notifyPayrollEmployees(retry, db)]);
++  check(concurrent.every(result => result.created === 0) && await db.payrollNotification.count({ where: { organizationId: org.id } }) === 1, 'Concurrent notification retries cannot duplicate delivery');
++  const entry = await db.payrollEntry.findFirstOrThrow({ where: { payrollPeriodId: p.id } });
++  const original = JSON.stringify(entry.calculationSnapshot);
++  check(entry.netAmount.toFixed(2) === '32173.70', 'Browser-generated net equals independently expected 32173.70');
++  await session.send('Emulation.setDeviceMetricsOverride', { width: 390, height: 844, deviceScaleFactor: 1, mobile: true });
++  const hrShot = await session.send('Page.captureScreenshot', { format: 'png' }); fs.writeFileSync(`${directory}/hr-mobile.png`, Buffer.from(hrShot.data, 'base64'));
++  check(await session.evaluate('document.documentElement.scrollWidth <= innerWidth + 1'), 'HR mobile page fits viewport with scrollable payroll table');
++  await login(user, true); await goto('/employee/payroll', 'Latest finalized net pay');
++  check(await session.evaluate('document.body.innerText.includes("Your payslip for V2 Browser September 2026 is now available")'), 'ESS displays persisted notification with no email dependency');
++  await goto('/employee/payroll/' + entry.id, 'Official Finalized Payslip');
++  check(await session.evaluate('document.body.innerText.includes("Browser approved taxable bonus") && document.body.innerText.includes("32,173.70")'), 'ESS displays recorded custom earning description and the same finalized net');
++  check(await session.evaluate('[...document.querySelectorAll("button")].some(b=>/Print/i.test(b.textContent))'), 'Finalized payslip has print action');
++  const printable = await session.send('Page.printToPDF', { printBackground: true, preferCSSPageSize: true });
++  fs.writeFileSync(`${directory}/payslip-print.pdf`, Buffer.from(printable.data, 'base64'));
++  check(Buffer.from(printable.data, 'base64').subarray(0, 4).toString() === '%PDF', 'Finalized payslip produces a printable PDF');
++  await session.send('Emulation.setDeviceMetricsOverride', { width: 390, height: 844, deviceScaleFactor: 1, mobile: true });
++  const essShot = await session.send('Page.captureScreenshot', { format: 'png' }); fs.writeFileSync(`${directory}/ess-mobile.png`, Buffer.from(essShot.data, 'base64'));
++  check(await session.evaluate('document.documentElement.scrollWidth <= innerWidth + 1'), 'ESS payslip fits mobile viewport');
++  // Verify a wrong record URL does not render payroll details.
++  await session.send('Page.navigate', { url: origin + '/employee/payroll/' + foreignEntry.id });
++  await until(() => session.evaluate('document.readyState==="complete" && !document.querySelector("main [data-wp-loading]")'), 'DENIED_PAGE_NOT_READY');
++  check(!await session.evaluate('document.body.innerText.includes("30,473.70")'), 'Real foreign-tenant payslip URL exposes no payroll data');
++  await db.employee.update({ where: { id: ownOtherPerson.id }, data: { employeeStatus: 'ACTIVE' } });
++  await login(otherUser, true);
++  await session.send('Page.navigate', { url: origin + '/employee/payroll/' + entry.id });
++  await until(() => session.evaluate('document.readyState==="complete" && !document.querySelector("main [data-wp-loading]")'), 'OWNERSHIP_DENIED_PAGE_NOT_READY');
++  check(!await session.evaluate('document.body.innerText.includes("32,173.70")'), 'Same-tenant employee cannot view another employee’s finalized payslip');
++  check(JSON.stringify((await db.payrollEntry.findUniqueOrThrow({ where: { id: entry.id } })).calculationSnapshot) === original, 'Browser view and notification retries preserve finalized snapshot');
++  fs.writeFileSync(`${directory}/browser.json`, JSON.stringify({ passed: true, checks, branch: identity.branch, productionBuild: true, realServerActions: true, emailSent: false, syntheticFixtureRetainedForReview: { organizationId: org.id, payrollPeriodId: p.id, entryId: entry.id } }, null, 2));
++}
++main().catch(error => { console.error(error.code || error.message); process.exitCode = 1; }).finally(async () => { await session?.close(); if (server) await new Promise(resolve => server.close(resolve)); await app?.close(); await db.$disconnect(); });
+diff --git a/scripts/payroll-v2-environment.cjs b/scripts/payroll-v2-environment.cjs
+new file mode 100644
+index 0000000..15f0be6
+--- /dev/null
++++ b/scripts/payroll-v2-environment.cjs
+@@ -0,0 +1,34 @@
++/* eslint-disable @typescript-eslint/no-require-imports -- Isolated verification launcher. */
++const fs = require('node:fs');
++const { parseEnv } = require('node:util');
++const { spawn } = require('node:child_process');
++const { randomBytes, createHash } = require('node:crypto');
++const { PrismaClient } = require('@prisma/client');
++const branch = 'br-green-king-azcpyvmo';
++const profile = parseEnv(fs.readFileSync('.env.payroll-v2.local', 'utf8'));
++const url = new URL(profile.DATABASE_URL);
++if (profile.PAYROLL_V2_TEST_BRANCH !== branch || !url.hostname.endsWith('.neon.tech')) throw Error('UNVERIFIED_TEST_PROFILE');
++for (const file of ['.env', '.env.recovery.local']) {
++  if (!fs.existsSync(file)) continue;
++  for (const [key, value] of Object.entries(parseEnv(fs.readFileSync(file, 'utf8')))) {
++    if (/DATABASE_URL$/.test(key) && value && new URL(value).hostname.replace('-pooler.', '.') === url.hostname.replace('-pooler.', '.')) throw Error('PROTECTED_DATABASE_SELECTED');
++  }
++}
++const original = createHash('sha256').update(fs.readFileSync('.env')).digest('hex');
++Object.assign(process.env, profile, { NODE_ENV: 'production', VERCEL: '0', VERCEL_ENV: '', NEXT_TELEMETRY_DISABLED: '1', SESSION_SECRET: randomBytes(48).toString('hex'), SMTP_HOST: '', SMTP_USER: '', SMTP_PASSWORD: '', GMAIL_USER: '', GMAIL_APP_PASSWORD: '', BLOB_READ_WRITE_TOKEN: '', GOOGLE_AI_API_KEY: '' });
++async function main() {
++  const db = new PrismaClient({ log: [] });
++  try {
++    const [identity] = await db.$queryRaw`SELECT current_setting('neon.branch_id',true) AS branch_id, current_setting('neon.endpoint_id',true) AS endpoint_id, current_database() AS database`;
++    if (identity.branch_id !== branch || identity.endpoint_id !== url.hostname.replace('-pooler.', '.').split('.')[0]) throw Error('LIVE_TEST_IDENTITY_MISMATCH');
++    console.log(JSON.stringify({ isolatedIdentity: identity, project: 'purple-tree-62095489' }));
++  } finally { await db.$disconnect(); }
++  const args = process.argv.slice(2);
++  if (args.length) {
++    const child = spawn(process.execPath, args, { env: process.env, stdio: 'inherit' });
++    const code = await new Promise((resolve, reject) => { child.once('error', reject); child.once('exit', resolve); });
++    process.exitCode = code || 0;
++  }
++  if (createHash('sha256').update(fs.readFileSync('.env')).digest('hex') !== original) throw Error('ORIGINAL_ENV_CHANGED');
++}
++main().catch(error => { console.error(error.code || error.message.replace(/postgres(?:ql)?:\/\/\S+/g, '[REDACTED]')); process.exitCode = 1; });
+diff --git a/scripts/payroll-v2-review-artifacts.cjs b/scripts/payroll-v2-review-artifacts.cjs
+new file mode 100644
+index 0000000..f229149
+--- /dev/null
++++ b/scripts/payroll-v2-review-artifacts.cjs
+@@ -0,0 +1,21 @@
++/* eslint-disable @typescript-eslint/no-require-imports -- Read-only Git evidence export, no index mutations. */
++const fs = require('node:fs');
++const { spawnSync } = require('node:child_process');
++const { createHash } = require('node:crypto');
++const directory = 'docs/payroll-v2/review';
++fs.mkdirSync(directory, { recursive: true });
++const digest = value => createHash('sha256').update(value).digest('hex');
++function git(args) { const result = spawnSync('git', args, { encoding: 'utf8', maxBuffer: 16 * 1024 * 1024 }); if (result.status > 1) throw Error('GIT_EXPORT_FAILED'); return result.stdout; }
++const tracked = git(['diff', '--name-only', 'HEAD', '--', 'src', 'prisma']).trim().split(/\r?\n/).filter(Boolean);
++const added = git(['ls-files', '--others', '--exclude-standard', '--', 'src', 'prisma', 'scripts']).trim().split(/\r?\n/).filter(path => path && (/^(src|prisma)\//.test(path) || /scripts\/(payroll-v2|test-payroll-v2)/.test(path)));
++const scripts = ['scripts/payroll-v2-environment.cjs', 'scripts/payroll-v2-browser.cjs', 'scripts/test-payroll-v2.ts', 'scripts/test-payroll-v2-edges.ts'];
++const files = [...new Set([...tracked, ...added, ...scripts.filter(path => fs.existsSync(path))])].sort();
++let patch = git(['diff', '--binary', '--no-ext-diff', 'HEAD', '--', ...files.filter(path => !added.includes(path))]);
++for (const path of added) patch += git(['diff', '--no-index', '--binary', '--no-ext-diff', '--', '/dev/null', path]);
++const name = process.argv[2] || 'implementation';
++if (!/^[a-z-]+$/.test(name)) throw Error('INVALID_EVIDENCE_NAME');
++fs.writeFileSync(`${directory}/${name}.patch`, patch);
++const protectedFiles = ['.env', '.env.recovery.local', 'docs/final-defense-qa/release-blockers/emergency/browser-baseline.json', 'docs/final-defense-qa/release-blockers/emergency/commit-review.json', 'docs/final-defense-qa/release-blockers/session-key-fix/RESULT.md'];
++const record = { baseCommit: git(['rev-parse', 'HEAD']).trim(), branch: git(['branch', '--show-current']).trim(), patchSha256: digest(patch), files: files.map(path => ({ path, sha256: digest(fs.readFileSync(path)) })), protectedFiles: protectedFiles.filter(path => fs.existsSync(path)).map(path => ({ path, sha256: digest(fs.readFileSync(path)) })) };
++fs.writeFileSync(`${directory}/${name}-manifest.json`, JSON.stringify(record, null, 2));
++console.log(JSON.stringify({ fileCount: files.length, patchSha256: record.patchSha256, baseCommit: record.baseCommit }));
+diff --git a/scripts/test-payroll-v2-edges.ts b/scripts/test-payroll-v2-edges.ts
+new file mode 100644
+index 0000000..72c96cb
+--- /dev/null
++++ b/scripts/test-payroll-v2-edges.ts
+@@ -0,0 +1,57 @@
++import assert from 'node:assert/strict';
++import fs from 'node:fs';
++import { Prisma, PrismaClient } from '@prisma/client';
++import { organization, employee, period, setup, payload } from './test-payroll-integration';
++import { createPayrollPolicy } from '../src/features/payroll/policy';
++import { generatePayroll } from '../src/features/payroll/service';
++import { assessPayrollPeriod, movePayrollPeriodToReview, finalizePayrollPeriod } from '../src/features/payroll/review';
++import { changePayrollEarning, earningsVersion } from '../src/features/payroll/earnings';
++import { payrollEarningsBreakdown } from '../src/features/payroll/earnings-breakdown';
++const db = new PrismaClient({ log: [] });
++const checks: string[] = [], amounts: unknown[] = [];
++const check = (value: unknown, label: string) => { assert(value, label); checks.push(label); console.log('PASS', label); };
++const rollback = Error('V2_EDGE_ROLLBACK');
++const date = (s: string) => new Date(s + 'T00:00:00Z');
++async function main() {
++  const [identity] = await db.$queryRaw<Array<{ branch: string }>>`SELECT current_setting('neon.branch_id',true) AS branch`;
++  assert.equal(identity.branch, 'br-green-king-azcpyvmo');
++  check(payrollEarningsBreakdown({ version: 'legacy' }) === null, 'Missing historical earnings are unavailable');
++  try { await db.$transaction(async tx => {
++    const scope = await organization(tx), person = await employee(tx, scope), p = await period(tx, scope);
++    const context = { ...scope, payrollPeriodId: p.id };
++    await createPayrollPolicy({ ...scope, effectiveFrom: '2026-01-01', dailyPayBasis: 'SCHEDULED_PAYABLE_DAYS', lateDeductionRule: 'PER_MINUTE', lateDeductionParameter: '1', absenceDeductionRule: 'FIXED_PER_ABSENCE', absenceDeductionParameter: '100', undertimeDeductionRule: 'PER_MINUTE', undertimeDeductionParameter: '10', roundingRule: 'STANDARD_2_DECIMAL' }, tx);
++    const reviewed = payload(); reviewed.companyDeductionTreatment = { late: 'SALARY_REDUCTION', absence: 'SALARY_REDUCTION', undertime: 'NET_DEDUCTION' };
++    reviewed.monthlySssRemuneration = '34790';
++    await setup(tx, scope, person, p.id, reviewed);
++    check((await generatePayroll(context, tx)).createdCount === 0, 'Missing attendance evidence blocks payroll');
++    await tx.dailyAttendanceRecord.createMany({ data: Array.from({ length: 30 }, (_, i) => ({ organizationId: scope.organizationId, employeeId: person.id, employmentRecordId: person.employment.id, attendanceDate: date(`2026-09-${String(i + 1).padStart(2, '0')}`), timeZoneSnapshot: 'UTC', attendanceStatus: i < 2 ? 'ABSENT' as const : 'PRESENT' as const, disposition: 'NORMAL' as const, lateSeconds: i === 2 ? 600 : 0, undertimeSeconds: i === 2 ? 120 : 0, lastCalculatedAt: new Date() })) });
++    check((await generatePayroll(context, tx)).createdCount === 1, 'Resolved attendance permits calculation');
++    const entry = await tx.payrollEntry.findFirstOrThrow({ where: { payrollPeriodId: p.id, organizationId: scope.organizationId } });
++    // Manually: 2*100 absence + 10*1 late = 210 salary reduction; 2*10 undertime=20 net-only.
++    // Taxable 35000-210-2825=31965. BIR (31965-20833)*15%=1669.80.
++    // Deductions 210+20+2825+1669.80=4724.80; net=30275.20.
++    const actual = { gross: entry.grossAmount.toFixed(2), deductions: entry.totalDeductions.toFixed(2), net: entry.netAmount.toFixed(2), tax: ((entry.calculationSnapshot as Prisma.JsonObject).statutory as Prisma.JsonObject).birWithholding };
++    const expected = { gross: '35000.00', deductions: '4724.80', net: '30275.20', tax: '1669.80' };
++    assert.deepEqual(actual, expected); amounts.push({ label: 'Two absences + lateness + undertime', expected, actual }); check(true, 'Independent attendance deduction totals match');
++    await movePayrollPeriodToReview(context, tx);
++    await tx.dailyAttendanceRecord.updateMany({ where: { organizationId: scope.organizationId, employeeId: person.id, attendanceDate: date('2026-09-03') }, data: { lateSeconds: 0 } });
++    check(!(await assessPayrollPeriod(scope.organizationId, p.id, tx)).canFinalize, 'Attendance correction invalidates unfinished calculation');
++    await assert.rejects(() => finalizePayrollPeriod({ ...context, confirmation: 'FINALIZE' }, tx)); check(true, 'Unresolved attendance changes block finalization');
++    const stored = await tx.payrollStatutoryInput.findFirstOrThrow({ where: { payrollPeriodId: p.id, employeeId: person.id } });
++    await changePayrollEarning({ ...context, employeeId: person.id, expectedVersion: earningsVersion(stored.payload), operation: 'RECALCULATE', reason: 'Approved attendance correction', confirmRecalculation: true }, tx);
++    check((await generatePayroll(context, tx)).createdCount === 1, 'Explicit recalculation consumes corrected attendance');
++    const leaveType = await tx.leaveType.create({ data: { organizationId: scope.organizationId, code: 'V2-UNPAID', name: 'Unpaid fixture', isPaid: false, countingMode: 'SCHEDULED_WORK_DAYS', policyReference: 'Synthetic reviewed leave policy' } });
++    const request = await tx.leaveRequest.create({ data: { organizationId: scope.organizationId, employeeId: person.id, leaveTypeId: leaveType.id, requestedStartDate: date('2026-09-04'), requestedEndDate: date('2026-09-04'), requestedUnits: 1, calculationFinalizedAt: new Date(), reason: 'Synthetic unpaid leave', status: 'APPROVED', policySnapshot: {}, leaveTypeCodeSnapshot: leaveType.code, leaveTypeNameSnapshot: leaveType.name, leavePaidSnapshot: false, countingModeSnapshot: 'SCHEDULED_WORK_DAYS' } });
++    await tx.leaveRequestDay.create({ data: { organizationId: scope.organizationId, leaveRequestId: request.id, employeeId: person.id, attendanceDate: date('2026-09-04'), employmentRecordId: person.employment.id, isScheduledWorkday: true, scheduledStartSecond: 28800, scheduledEndSecond: 61200, scheduledNetSeconds: 32400, chargeUnits: 1, employmentSnapshot: { employmentRecordId: person.employment.id } } });
++    check((await assessPayrollPeriod(scope.organizationId, p.id, tx)).issues.some(i => i.message.includes('Approved leave changed')), 'Newly approved leave invalidates the draft snapshot');
++    await changePayrollEarning({ ...context, employeeId: person.id, expectedVersion: earningsVersion(stored.payload), operation: 'RECALCULATE', reason: 'Review unpaid leave', confirmRecalculation: true }, tx);
++    check((await generatePayroll(context, tx)).setupErrors.some(e => e.message.includes('Monthly unpaid leave requires')), 'Unreviewed monthly unpaid leave method blocks generation');
++    const daily = await organization(tx), dailyPerson = await employee(tx, daily), dailyPeriod = await period(tx, daily);
++    await tx.employeeCompensation.update({ where: { id: dailyPerson.compensation.id }, data: { compensationType: 'DAILY', baseRate: '1000' } });
++    await setup(tx, daily, dailyPerson, dailyPeriod.id);
++    await tx.dailyAttendanceRecord.createMany({ data: Array.from({ length: 30 }, (_, i) => ({ organizationId: daily.organizationId, employeeId: dailyPerson.id, employmentRecordId: dailyPerson.employment.id, attendanceDate: date(`2026-09-${String(i + 1).padStart(2, '0')}`), timeZoneSnapshot: 'UTC', attendanceStatus: i < 22 ? 'PRESENT' as const : 'REST_DAY' as const, disposition: 'NORMAL' as const, lastCalculatedAt: new Date() })) });
++    check((await generatePayroll({ ...daily, payrollPeriodId: dailyPeriod.id }, tx)).setupErrors.some(e => e.message.includes('daily/partial/special')), 'Daily compensation remains blocked by unsupported statutory method');
++    throw rollback;
++  }, { timeout: 180_000 }); } catch (error) { if (error !== rollback) throw error; }
++}
++main().then(() => { fs.mkdirSync('docs/payroll-v2', { recursive: true }); fs.writeFileSync('docs/payroll-v2/edges.json', JSON.stringify({ passed: true, checks, amounts, fixturesRolledBack: true }, null, 2)); }).catch(error => { console.error(error); process.exitCode = 1; }).finally(() => db.$disconnect());
+diff --git a/scripts/test-payroll-v2.ts b/scripts/test-payroll-v2.ts
+new file mode 100644
+index 0000000..69eb29e
+--- /dev/null
++++ b/scripts/test-payroll-v2.ts
+@@ -0,0 +1,104 @@
++import assert from 'node:assert/strict';
++import fs from 'node:fs';
++import { Prisma, PrismaClient } from '@prisma/client';
++import { organization, employee, period, setup, runPayrollIntegration } from './test-payroll-integration';
++import { runPayrollPresentation } from './test-payroll-presentation';
++import { runPayrollWorkflow } from './test-payroll-workflow';
++import { runPayrollPhase3 } from './test-payroll-phase3';
++import { changePayrollEarning, earningsVersion, validateCustomEarning } from '../src/features/payroll/earnings';
++import { generatePayroll } from '../src/features/payroll/service';
++import { finalizePayrollPeriod, movePayrollPeriodToReview } from '../src/features/payroll/review';
++import { getFinalizedPayslipForEmployee } from '../src/features/payroll/payslip';
++import { previewPayrollNotifications, notifyPayrollEmployees, listPayrollNotifications } from '../src/features/payroll/notifications';
++import { reusablePayrollSetup } from '../src/features/payroll/reuse';
++import { savePayrollStatutoryInput } from '../src/features/payroll/statutory-inputs';
++
++const db = new PrismaClient({ log: [] });
++const report: { checks: string[]; amounts: unknown[]; regressions: Record<string, unknown> } = { checks: [], amounts: [], regressions: {} };
++const check = (value: unknown, label: string) => { assert(value, label); report.checks.push(label); console.log('PASS', label); };
++const rejects = async (fn: () => Promise<unknown>, code: string, label: string) => { await assert.rejects(fn, (e: unknown) => e instanceof Error && 'code' in e && e.code === code); check(true, label); };
++const rollback = Error('PAYROLL_V2_ROLLBACK');
++async function main() {
++  const [identity] = await db.$queryRaw<Array<{ branch: string }>>`SELECT current_setting('neon.branch_id',true) AS branch`;
++  assert.equal(identity.branch, 'br-green-king-azcpyvmo');
++  await assert.rejects(async () => validateCustomEarning({ id: 'x', kind: 'REIMBURSEMENT', category: 'OTHER', amount: '10', description: 'Travel', supportingReference: 'receipt', qualificationReference: 'unreviewed' }));
++  check(true, 'Unsupported reimbursement classification fails closed');
++  try { await db.$transaction(async tx => {
++    const scope = await organization(tx), other = await organization(tx), person = await employee(tx, scope), p = await period(tx, scope);
++    await setup(tx, scope, person, p.id);
++    const input = { ...scope, payrollPeriodId: p.id };
++    const user = await tx.user.create({ data: { organizationId: scope.organizationId, role: 'EMPLOYEE', name: 'Synthetic ESS', email: `ess-${person.id}@example.test` } });
++    await tx.employeeAccount.create({ data: { organizationId: scope.organizationId, employeeId: person.id, userId: user.id, status: 'ACTIVE', activatedAt: new Date(), createdById: scope.actorUserId } });
++    const version = async () => earningsVersion((await tx.payrollStatutoryInput.findUniqueOrThrow({ where: { organizationId_employeeId_payrollPeriodId: { organizationId: scope.organizationId, employeeId: person.id, payrollPeriodId: p.id } } })).payload);
++    const change = async (operation: 'SAVE' | 'REMOVE' | 'RECALCULATE', earning?: unknown, earningId?: string) => ({ ...input, employeeId: person.id, operation, earning, earningId, expectedVersion: await version(), reason: 'Synthetic approved payroll input change', confirmRecalculation: true, agencyReview: { monthlySssRemuneration: '37800', monthlyPagIbigFundSalary: '37800', agencyBasisReference: 'Reviewed monthly bases including custom earnings' } });
++    const bonus = { id: 'bonus-v2', category: 'BONUS', kind: 'TAXABLE_BONUS', amount: '2000', description: 'Approved project bonus', supportingReference: 'BONUS-2026-09-001', qualificationReference: 'Approved taxable bonus review' };
++    async function amounts(label: string, expected: { gross: string; deductions: string; net: string; tax: string }) {
++      const result = await generatePayroll(input, tx);
++      check(result.createdCount === 1, `${label}: generates one entry`);
++      const entry = await tx.payrollEntry.findFirstOrThrow({ where: { organizationId: scope.organizationId, payrollPeriodId: p.id } });
++      const actual = { gross: entry.grossAmount.toFixed(2), deductions: entry.totalDeductions.toFixed(2), net: entry.netAmount.toFixed(2), tax: (entry.calculationSnapshot as Prisma.JsonObject).statutory && ((entry.calculationSnapshot as Prisma.JsonObject).statutory as Prisma.JsonObject).birWithholding };
++      assert.deepEqual(actual, expected);
++      check(true, `${label}: manually calculated gross, employee deductions, BIR and net match`);
++      report.amounts.push({ label, expected, actual });
++      return entry;
++    }
++    // Independent pencil-and-paper amounts: SSS 1750 + PHIC 875 + HDMF 200 = 2825.
++    // BIR regular taxable = 35000 - 2825 = 32175. Annex E regular bracket is 15%.
++    // Supplementary pay uses that regular bracket: 1701.30 + supplementary * .15.
++    await amounts('Basic monthly', { gross: '35000.00', deductions: '4526.30', net: '30473.70', tax: '1701.30' });
++    const stale = await change('SAVE', bonus);
++    await changePayrollEarning(stale, tx);
++    await rejects(() => changePayrollEarning(stale, tx), 'STALE_INPUT', 'Repeated earning submission is rejected');
++    await amounts('Single taxable bonus', { gross: '37000.00', deductions: '4826.30', net: '32173.70', tax: '2001.30' });
++    await changePayrollEarning(await change('SAVE', { ...bonus, id: 'allowance-v2', category: 'ALLOWANCE', kind: 'FIXED_ALLOWANCE', amount: '500', description: 'Taxable transport allowance', supportingReference: 'ALLOWANCE-2026-09-001' }), tx);
++    await changePayrollEarning(await change('SAVE', { ...bonus, id: 'overtime-v2', category: 'OVERTIME', kind: 'OVERTIME', amount: '300', description: 'Approved overtime payment', supportingReference: 'OT-2026-09-001' }), tx);
++    // Regular taxable with allowance = 32675 (still 15%); 2300 supplementary.
++    await amounts('Bonus + taxable allowance + overtime', { gross: '37800.00', deductions: '4946.30', net: '32853.70', tax: '2121.30' });
++    await rejects(async () => changePayrollEarning(await change('SAVE', { ...bonus, id: 'duplicate' }), tx), 'DUPLICATE_EARNING', 'Same payment reference cannot be submitted under a second earning ID');
++    await rejects(async () => changePayrollEarning({ ...await change('SAVE', bonus), actorUserId: user.id }, tx), 'FORBIDDEN', 'Employee cannot change payroll earnings');
++    await rejects(async () => changePayrollEarning({ ...await change('SAVE', bonus), ...other }, tx), 'NOT_FOUND', 'HR cannot edit a foreign tenant payroll period');
++    await changePayrollEarning(await change('SAVE', { ...bonus, amount: '1000' }), tx);
++    await amounts('Regeneration after bonus edit', { gross: '36800.00', deductions: '4796.30', net: '32003.70', tax: '1971.30' });
++    await changePayrollEarning(await change('REMOVE', undefined, 'overtime-v2'), tx);
++    const final = await amounts('Regeneration after overtime removal', { gross: '36500.00', deductions: '4751.30', net: '31748.70', tax: '1926.30' });
++    const original = JSON.stringify(final.calculationSnapshot);
++    check((await generatePayroll(input, tx)).createdCount === 0, 'Repeated generation leaves the entry unchanged');
++    check(await tx.payrollStatutoryPosting.count({ where: { payrollEntryId: final.id } }) === 1 && await tx.payrollContributionAllocation.count({ where: { posting: { payrollEntryId: final.id } } }) === 3, 'Recalculation keeps one posting and three contribution allocations');
++    check(await tx.payrollInputRevision.count({ where: { organizationId: scope.organizationId } }) === 5, 'Every earning change retains an audit revision');
++    await rejects(() => previewPayrollNotifications(input, tx), 'NOT_FINALIZED', 'Notification preview is blocked before finalization');
++    await movePayrollPeriodToReview(input, tx); await finalizePayrollPeriod({ ...input, confirmation: 'FINALIZE' }, tx);
++    const ess = await getFinalizedPayslipForEmployee({ organizationId: scope.organizationId, userId: user.id, entryId: final.id }, tx);
++    check(ess.calculation.netPay === '31748.70' && ess.calculation.additionalEarnings?.[0].description === 'Taxable transport allowance', 'ESS amounts and custom descriptions come from the finalized snapshot');
++    const preview = await previewPayrollNotifications(input, tx);
++    const notification = { ...input, recipientToken: preview.token, confirmation: 'NOTIFY' };
++    await rejects(() => notifyPayrollEmployees({ ...notification, confirmation: '' }, tx), 'CONFIRMATION_REQUIRED', 'Notification requires explicit HR confirmation');
++    check((await notifyPayrollEmployees(notification, tx)).created === 1 && (await notifyPayrollEmployees(notification, tx)).created === 0, 'Notification creation is idempotent');
++    check((await listPayrollNotifications({ organizationId: scope.organizationId, userId: user.id }, tx)).length === 1, 'Employee sees their persistent in-app notification');
++    async function databaseRejects(work: () => Promise<unknown>, label: string) {
++      await tx.$executeRawUnsafe('SAVEPOINT v2_security_probe');
++      let rejected = false;
++      try { await work(); } catch { rejected = true; }
++      await tx.$executeRawUnsafe('ROLLBACK TO SAVEPOINT v2_security_probe');
++      await tx.$executeRawUnsafe('RELEASE SAVEPOINT v2_security_probe');
++      check(rejected, label);
++    }
++    await databaseRejects(() => tx.payrollNotification.updateMany({ where: { payrollEntryId: final.id }, data: { message: 'tampered' } }), 'Database rejects notification record tampering');
++    await databaseRejects(() => tx.payrollInputRevision.updateMany({ where: { organizationId: scope.organizationId }, data: { reason: 'tampered' } }), 'Database rejects revision audit tampering');
++    await databaseRejects(() => tx.payrollNotification.create({ data: { organizationId: scope.organizationId, employeeId: person.id, payrollEntryId: final.id, recipientUserId: other.actorUserId, actorUserId: scope.actorUserId, message: 'Forbidden recipient' } }), 'Database rejects a recipient who does not own the finalized payslip');
++    await rejects(() => listPayrollNotifications({ organizationId: other.organizationId, userId: user.id }, tx), 'FORBIDDEN', 'Foreign tenant cannot retrieve employee notifications');
++    await rejects(async () => changePayrollEarning(await change('SAVE', bonus), tx), 'IMMUTABLE', 'Finalized earnings cannot be edited');
++    await rejects(() => generatePayroll(input, tx), 'FINALIZED', 'Finalized payroll cannot be regenerated');
++    check(JSON.stringify((await tx.payrollEntry.findUniqueOrThrow({ where: { id: final.id } })).calculationSnapshot) === original, 'Finalized snapshot remains unchanged after notifications and rejected edits');
++    const next = await period(tx, scope, '2026-10-01', '2026-10-31');
++    check(await reusablePayrollSetup(tx, scope.organizationId, person.id, next) === null, 'Setup reuse cannot copy period-specific earnings to the next payroll');
++    const saved = await tx.payrollStatutoryInput.findFirstOrThrow({ where: { payrollPeriodId: p.id, employeeId: person.id } });
++    await rejects(() => savePayrollStatutoryInput({ ...scope, employeeId: person.id, payrollPeriodId: next.id, payload: saved.payload, evidenceReference: 'Repeated approved payment reference' }, tx), 'DUPLICATE_EARNING', 'Advanced setup also rejects a repeated payment reference in a later period');
++    throw rollback;
++  }, { timeout: 180_000 }); } catch (error) { if (error !== rollback) throw error; }
++  if (process.argv.includes('--focused')) return;
++  report.regressions.integration = await runPayrollIntegration(db);
++  report.regressions.presentation = await runPayrollPresentation(db);
++  report.regressions.workflow = await runPayrollWorkflow(db);
++  report.regressions.phase3 = await runPayrollPhase3(db);
++}
++main().then(() => { fs.mkdirSync('docs/payroll-v2', { recursive: true }); fs.writeFileSync(`docs/payroll-v2/${process.argv.includes('--focused') ? 'focused' : 'results'}.json`, JSON.stringify({ passed: true, branch: 'br-green-king-azcpyvmo', ...report }, null, 2)); }).catch(error => { console.error(error); process.exitCode = 1; }).finally(() => db.$disconnect());
+diff --git a/src/components/payroll/PayrollEarningsForm.tsx b/src/components/payroll/PayrollEarningsForm.tsx
+new file mode 100644
+index 0000000..4dac431
+--- /dev/null
++++ b/src/components/payroll/PayrollEarningsForm.tsx
+@@ -0,0 +1,54 @@
++'use client';
++
++import { useActionState, useState } from 'react';
++import { changePayrollEarningAction } from '@/features/payroll/actions';
++import type { StatutoryPayrollInput } from '@/features/payroll/statutory-inputs';
++
++export type EarningsEmployee = { id: string; name: string; version: string; input: StatutoryPayrollInput; hasEntry: boolean };
++const fieldClass = 'rounded-lg border bg-white px-3 py-2 text-sm';
++const categories = [['OVERTIME', 'Overtime Pay'], ['BONUS', 'Bonus / Incentive'], ['COMMISSION', 'Commission'], ['ALLOWANCE', 'Fixed Allowance'], ['THIRTEENTH_MONTH', '13th Month Pay'], ['OTHER', 'Other — Specify']];
++const classifications = [['OVERTIME', 'Taxable overtime'], ['TAXABLE_BONUS', 'Taxable bonus (reviewed)'], ['QUALIFYING_OTHER_BENEFIT', 'Qualifying other benefit (annual shared limit)'], ['COMMISSION', 'Taxable commission'], ['FIXED_ALLOWANCE', 'Taxable fixed allowance'], ['THIRTEENTH_MONTH', '13th month benefit (annual shared limit)'], ['RICE_SUBSIDY', 'Qualified rice subsidy'], ['CLOTHING_ALLOWANCE', 'Qualified clothing allowance'], ['LAUNDRY_ALLOWANCE', 'Qualified laundry allowance']];
++
++function EarningEditor({ employee, periodId, row }: { employee: EarningsEmployee; periodId: string; row?: StatutoryPayrollInput['additionalEarnings'][number] }) {
++  const [state, action, pending] = useActionState(changePayrollEarningAction, {});
++  const [id] = useState(() => row?.id ?? `custom-${employee.version}`);
++  return <form action={action} className="grid gap-3 rounded-xl border bg-[#FAF8F6] p-4 sm:grid-cols-2" aria-busy={pending}>
++    <input type="hidden" name="employeeId" value={employee.id} /><input type="hidden" name="payrollPeriodId" value={periodId} /><input type="hidden" name="expectedVersion" value={employee.version} /><input type="hidden" name="earningId" value={id} />
++    <div className="sm:col-span-2" aria-live="polite">{state.error && <p role="alert" className="text-sm text-red-700">{state.error}</p>}{state.success && <p role="status" className="text-sm text-emerald-800">{state.success}</p>}</div>
++    <label className="grid gap-1 text-xs font-semibold">Earning type<select name="category" defaultValue={row?.category ?? 'OTHER'} required className={fieldClass}>{categories.map(([v, label]) => <option key={v} value={v}>{label}</option>)}</select></label>
++    <label className="grid gap-1 text-xs font-semibold">Description<input name="description" defaultValue={row?.description ?? ''} required maxLength={200} className={fieldClass} /></label>
++    <label className="grid gap-1 text-xs font-semibold">Amount in PHP<input name="amount" type="number" min="0.01" max="9999999999.99" step="0.01" defaultValue={row?.amount} required className={fieldClass} /></label>
++    <label className="grid gap-1 text-xs font-semibold">Unique supporting payment reference<input name="supportingReference" defaultValue={row?.supportingReference} required maxLength={300} className={fieldClass} /></label>
++    <label className="grid gap-1 text-xs font-semibold">Approved payroll classification<select name="kind" required defaultValue={row?.kind ?? ''} className={fieldClass}><option value="">Select verified classification</option>{classifications.map(([v, label]) => <option key={v} value={v}>{label}</option>)}</select></label>
++    <label className="grid gap-1 text-xs font-semibold">Classification approval / qualification evidence<input name="qualificationReference" defaultValue={row?.qualificationReference} required maxLength={500} className={fieldClass} /></label>
++    <p className="text-xs text-slate-600 sm:col-span-2">Reverify monthly contribution bases including these earnings. Benefit exemptions require approved qualification and complete benefit history. Reimbursements require separate review.</p>
++    <label className="grid gap-1 text-xs font-semibold">Reviewed monthly SSS remuneration<input name="monthlySssRemuneration" type="number" min="0" step="0.01" required defaultValue={employee.input.monthlySssRemuneration} className={fieldClass} /></label>
++    <label className="grid gap-1 text-xs font-semibold">Reviewed monthly Pag-IBIG fund salary<input name="monthlyPagIbigFundSalary" type="number" min="0" step="0.01" required defaultValue={employee.input.monthlyPagIbigFundSalary} className={fieldClass} /></label>
++    <label className="grid gap-1 text-xs font-semibold">Contribution basis review reference<input name="agencyBasisReference" required className={fieldClass} /></label>
++    <label className="grid gap-1 text-xs font-semibold">Reason for this change<input name="reason" required className={fieldClass} /></label>
++    {employee.hasEntry && <label className="flex gap-2 text-xs sm:col-span-2"><input name="confirmRecalculation" type="checkbox" value="CONFIRMED" required />I confirm this employee’s unfinished calculation will be retained in the audit history and must be generated and reviewed again.</label>}
++    <div className="flex flex-wrap gap-2 sm:col-span-2"><button name="operation" value="SAVE" disabled={pending || !!state.success} className="wp-button-primary">{pending ? 'Saving…' : row ? 'Save earning changes' : 'Add Earnings'}</button>{row && <button name="operation" value="REMOVE" disabled={pending || !!state.success} className="wp-button-secondary">Remove earning</button>}</div>
++  </form>;
++}
++
++export function PayrollEarningsForm({ employees, periodId }: { employees: EarningsEmployee[]; periodId: string }) {
++  const [selected, select] = useState(employees[0]?.id ?? '');
++  const employee = employees.find(row => row.id === selected);
++  return <details className="rounded-xl border p-4"><summary className="cursor-pointer text-sm font-semibold">Add Earnings / Manage Earnings</summary>
++    {!employees.length ? <p className="mt-3 text-sm">Verify employee statutory setup in Advanced Settings first.</p> : <div className="mt-4 space-y-4">
++      <label className="grid gap-1 text-sm">Employee<select className={fieldClass} value={selected} onChange={e => select(e.target.value)}>{employees.map(row => <option key={row.id} value={row.id}>{row.name}</option>)}</select></label>
++      {employee && <div key={`${employee.id}-${employee.version}`} className="space-y-3">
++        {employee.input.additionalEarnings.map(row => <details key={row.id} className="rounded-xl border p-3"><summary className="cursor-pointer text-sm">{row.description ?? row.kind.replaceAll('_', ' ')} · PHP {row.amount} · Edit or remove</summary><div className="mt-3"><EarningEditor employee={employee} periodId={periodId} row={row} /></div></details>)}
++        <EarningEditor employee={employee} periodId={periodId} />
++      </div>}
++    </div>}
++  </details>;
++}
++
++export function PayrollRecalculateForm({ employee, periodId }: { employee: EarningsEmployee; periodId: string }) {
++  const [state, action, pending] = useActionState(changePayrollEarningAction, {});
++  return <form action={action} className="mt-4 space-y-2 text-xs"><input type="hidden" name="employeeId" value={employee.id} /><input type="hidden" name="payrollPeriodId" value={periodId} /><input type="hidden" name="expectedVersion" value={employee.version} /><input type="hidden" name="operation" value="RECALCULATE" />
++    <label className="grid gap-1">Reason for recalculation<input name="reason" required className={fieldClass} /></label><label className="flex gap-2"><input type="checkbox" name="confirmRecalculation" value="CONFIRMED" required />Retain the old draft in audit history and require generation and review again.</label>
++    <button disabled={pending || !!state.success} className="wp-button-secondary">Prepare recalculation</button>{state.error && <p role="alert">{state.error}</p>}{state.success && <p role="status">{state.success}</p>}
++  </form>;
++}
+diff --git a/src/components/payroll/PayrollNotifyForm.tsx b/src/components/payroll/PayrollNotifyForm.tsx
+new file mode 100644
+index 0000000..2876613
+--- /dev/null
++++ b/src/components/payroll/PayrollNotifyForm.tsx
+@@ -0,0 +1,18 @@
++'use client';
++
++import { useActionState } from 'react';
++import { notifyPayrollEmployeesAction } from '@/features/payroll/actions';
++
++export function PayrollNotifyForm({ periodId, token, recipients, skipped }: { periodId: string; token: string; recipients: Array<{ entryId: string; name: string; createdAt: string | null }>; skipped: number }) {
++  const [state, action, pending] = useActionState(notifyPayrollEmployeesAction, {});
++  const remaining = recipients.filter(row => !row.createdAt).length;
++  return <div className="space-y-3 text-sm">
++    <p>{recipients.length - remaining} of {recipients.length} eligible employees already announced. {skipped > 0 && `${skipped} finalized entries have no active ESS recipient.`}</p>
++    <details><summary className="cursor-pointer font-semibold">Review notification recipients ({recipients.length})</summary><ul className="mt-2 max-h-60 overflow-y-auto space-y-1">{recipients.map(row => <li key={row.entryId}>{row.name} — {row.createdAt ? `Created ${new Date(row.createdAt).toLocaleString('en-PH')}` : 'Ready to notify'}</li>)}</ul></details>
++    <form action={action} className="space-y-3" aria-busy={pending}><input type="hidden" name="payrollPeriodId" value={periodId} /><input type="hidden" name="recipientToken" value={token} />
++      <label className="flex gap-2"><input type="checkbox" name="confirmation" value="NOTIFY" required disabled={!remaining || pending} />I reviewed the recipients and confirm creating in-app payslip notifications.</label>
++      <button disabled={pending || !remaining} className="wp-button-primary">{pending ? 'Notifying…' : 'Notify Employees'}</button>
++      {state.error && <p role="alert" className="text-red-700">{state.error}</p>}{state.success && <p role="status" className="text-emerald-800">{state.success}</p>}
++    </form>
++  </div>;
++}
+diff --git a/src/features/payroll/earnings-breakdown.ts b/src/features/payroll/earnings-breakdown.ts
+new file mode 100644
+index 0000000..21679cc
+--- /dev/null
++++ b/src/features/payroll/earnings-breakdown.ts
+@@ -0,0 +1,8 @@
++/** Read immutable recorded lines only. Missing historical detail stays unavailable. */
++export function payrollEarningsBreakdown(value: unknown) {
++  const snapshot = value as { statutory?: { reviewedInput?: { additionalEarnings?: Array<{ id: string; kind: string; amount: string; description?: string }> } } } | null;
++  const rows = snapshot?.statutory?.reviewedInput?.additionalEarnings;
++  if (!Array.isArray(rows)) return null;
++  if (rows.some(row => !row || typeof row.id !== 'string' || typeof row.kind !== 'string' || typeof row.amount !== 'string' || !/^\d+(\.\d{1,2})?$/.test(row.amount))) return null;
++  return rows.map(row => ({ id: row.id, description: row.description ?? row.kind.replaceAll('_', ' '), kind: row.kind, amount: row.amount }));
++}
+diff --git a/src/features/payroll/earnings.ts b/src/features/payroll/earnings.ts
+new file mode 100644
+index 0000000..034c1cd
+--- /dev/null
++++ b/src/features/payroll/earnings.ts
+@@ -0,0 +1,80 @@
++import { createHash } from 'node:crypto';
++import { Prisma, Role } from '@prisma/client';
++import { z } from 'zod';
++import { prisma } from '@/lib/db/prisma';
++import { PayrollError } from './domain';
++import { parseStatutoryInput, statutoryInputSchema, categoryKinds } from './statutory-inputs';
++import { lockPayrollEmployee, lockPayrollPeriod, payrollTransaction, type PayrollDb } from './transactions';
++import { jsonValue } from './statutory-integration';
++
++export const earningsVersion = (payload: unknown) => createHash('sha256').update(JSON.stringify(payload)).digest('hex');
++const earningSchema = statutoryInputSchema.shape.additionalEarnings.element.extend({
++  description: z.string().trim().min(1).max(200),
++  category: z.enum(['OVERTIME', 'BONUS', 'COMMISSION', 'ALLOWANCE', 'THIRTEENTH_MONTH', 'OTHER']),
++  supportingReference: z.string().trim().min(1).max(300),
++  qualificationReference: z.string().trim().min(1).max(500),
++});
++export type EarningInput = z.input<typeof earningSchema>;
++export function validateCustomEarning(value: unknown) {
++  const parsed = earningSchema.safeParse(value);
++  if (!parsed.success) throw new PayrollError('INVALID_EARNING', 'Enter a description, positive PHP amount, supporting reference and approved payroll classification evidence.');
++  const row = parsed.data;
++  if (row.id === 'BASIC_SALARY' || !new Prisma.Decimal(row.amount).gt(0)) throw new PayrollError('INVALID_EARNING', 'An earning requires a unique reference and an amount greater than zero.');
++  if (!categoryKinds[row.category].includes(row.kind)) throw new PayrollError('UNSUPPORTED_CLASSIFICATION', 'The approved classification does not match this earning type. Reimbursements and unclassified payments require separate review.');
++  return row;
++}
++
++type ChangeInput = { organizationId: string; actorUserId: string; employeeId: string; payrollPeriodId: string; expectedVersion: string; reason: string; confirmRecalculation: boolean };
++/** Explicitly release only this unfinished entry's reservations, retaining its entire old snapshot. */
++async function invalidateDraft(tx: Prisma.TransactionClient, input: ChangeInput, payDate: Date) {
++  const entry = await tx.payrollEntry.findFirst({ where: { organizationId: input.organizationId, payrollPeriodId: input.payrollPeriodId, employeeId: input.employeeId }, include: { statutoryPosting: true } });
++  if (!entry) return null;
++  if (entry.status === 'FINALIZED') throw new PayrollError('IMMUTABLE', 'Finalized earnings cannot be changed.');
++  if (!input.confirmRecalculation) throw new PayrollError('CONFIRMATION_REQUIRED', 'Confirm that this unfinished calculation must be generated and reviewed again.');
++  if (!entry.statutoryPosting) throw new PayrollError('UNSUPPORTED_HISTORY', 'This historical entry has no verified ledger. Use the existing adjustment review process.');
++  if (await tx.payrollStatutoryPosting.count({ where: { organizationId: input.organizationId, employeeId: input.employeeId, payrollEntryId: { not: entry.id }, payDate: { gte: payDate } } })) throw new PayrollError('DEPENDENT_PAYROLL', 'A later payroll depends on this calculation. Resolve it before recalculating this period.');
++  await tx.payrollContributionAllocation.deleteMany({ where: { postingId: entry.statutoryPosting.id } });
++  await tx.payrollStatutoryPosting.delete({ where: { id: entry.statutoryPosting.id } });
++  await tx.payrollEntry.delete({ where: { id: entry.id } });
++  return jsonValue(entry);
++}
++
++export async function changePayrollEarning(input: ChangeInput & { operation: 'SAVE' | 'REMOVE' | 'RECALCULATE'; earning?: unknown; earningId?: string; agencyReview?: { monthlySssRemuneration: string; monthlyPagIbigFundSalary: string; agencyBasisReference: string } }, db: PayrollDb = prisma) {
++  if (!input.reason.trim()) throw new PayrollError('REFERENCE_REQUIRED', 'A reason or supporting reference is required.');
++  const earning = input.operation === 'SAVE' ? validateCustomEarning(input.earning) : null;
++  return payrollTransaction(db, async tx => {
++    if (!await tx.user.findFirst({ where: { id: input.actorUserId, organizationId: input.organizationId, role: { in: [Role.HR_ADMIN, Role.ORGANIZATION_ADMIN] } } })) throw new PayrollError('FORBIDDEN', 'Unauthorized to manage earnings.');
++    await lockPayrollPeriod(tx, input.organizationId, input.payrollPeriodId);
++    await lockPayrollEmployee(tx, input.organizationId, input.employeeId);
++    const period = await tx.payrollPeriod.findFirst({ where: { id: input.payrollPeriodId, organizationId: input.organizationId } });
++    if (!period) throw new PayrollError('NOT_FOUND', 'Payroll period unavailable.');
++    if (period.status === 'FINALIZED') throw new PayrollError('IMMUTABLE', 'Finalized earnings cannot be changed.');
++    if (!await tx.employee.findFirst({ where: { id: input.employeeId, organizationId: input.organizationId, employeeStatus: 'ACTIVE' } })) throw new PayrollError('NOT_FOUND', 'Employee unavailable in this organization.');
++    const stored = await tx.payrollStatutoryInput.findUnique({ where: { organizationId_employeeId_payrollPeriodId: { organizationId: input.organizationId, employeeId: input.employeeId, payrollPeriodId: period.id } } });
++    if (!stored) throw new PayrollError('SETUP_REQUIRED', 'Verify this employee’s statutory setup in Advanced Settings before adding earnings.');
++    if (earningsVersion(stored.payload) !== input.expectedVersion) throw new PayrollError('STALE_INPUT', 'Payroll inputs changed or this request was already submitted. Refresh before continuing.');
++    const payload = parseStatutoryInput(stored.payload);
++    if (input.operation !== 'RECALCULATE') {
++      if (!input.agencyReview?.agencyBasisReference.trim()) throw new PayrollError('SETUP_REQUIRED', 'Reverify the SSS remuneration and Pag-IBIG fund salary including these earnings.');
++      Object.assign(payload, input.agencyReview);
++    }
++    const rows = payload.additionalEarnings;
++    const prior = rows.find(row => row.id === (earning?.id ?? input.earningId));
++    if (input.operation === 'REMOVE' && !prior) throw new PayrollError('NOT_FOUND', 'Earning not found.');
++    if (earning) {
++      // Reference uniqueness spans this employee's periods, protecting against repeat payments.
++      const history = await tx.payrollStatutoryInput.findMany({ where: { organizationId: input.organizationId, employeeId: input.employeeId } });
++      const normalize = (s: string) => s.trim().toLowerCase();
++      for (const record of history) {
++        const items = parseStatutoryInput(record.payload).additionalEarnings;
++        if (items.some(row => (record.payrollPeriodId !== period.id || row.id !== earning.id) && row.supportingReference && normalize(row.supportingReference) === normalize(earning.supportingReference))) throw new PayrollError('DUPLICATE_EARNING', 'This supporting reference is already recorded for the employee. Use a unique approved payment reference.');
++      }
++      payload.additionalEarnings = [...rows.filter(row => row.id !== earning.id), { ...earning, createdById: prior?.createdById ?? input.actorUserId, updatedById: input.actorUserId }];
++    } else if (input.operation === 'REMOVE') payload.additionalEarnings = rows.filter(row => row.id !== input.earningId);
++    parseStatutoryInput(payload);
++    const previousEntry = await invalidateDraft(tx, input, period.payDate);
++    await tx.payrollInputRevision.create({ data: { organizationId: input.organizationId, employeeId: input.employeeId, payrollPeriodId: period.id, actorUserId: input.actorUserId, reason: input.reason.trim(), before: stored.payload as Prisma.InputJsonObject, after: jsonValue(payload), ...(previousEntry ? { previousEntry } : {}) } });
++    await tx.payrollStatutoryInput.update({ where: { id: stored.id }, data: { payload: jsonValue(payload), reviewedById: input.actorUserId } });
++    return { requiresGeneration: true };
++  });
++}
+diff --git a/src/features/payroll/leave-evidence.ts b/src/features/payroll/leave-evidence.ts
+new file mode 100644
+index 0000000..ba92ab2
+--- /dev/null
++++ b/src/features/payroll/leave-evidence.ts
+@@ -0,0 +1,8 @@
++import { createHash } from 'node:crypto';
++import type { Prisma } from '@prisma/client';
++
++type LeaveFact = { attendanceDate: Date; chargeUnits: Prisma.Decimal; leaveRequest: { id: string; leaveTypeId: string; leavePaidSnapshot: boolean } };
++export function payrollLeaveEvidence(days: LeaveFact[]) {
++  const facts = days.map(day => [day.attendanceDate.toISOString().slice(0, 10), day.chargeUnits.toFixed(4), day.leaveRequest.id, day.leaveRequest.leaveTypeId, day.leaveRequest.leavePaidSnapshot]).sort((a, b) => JSON.stringify(a).localeCompare(JSON.stringify(b)));
++  return 'leave-v1:' + createHash('sha256').update(JSON.stringify(facts)).digest('hex');
++}
+diff --git a/src/features/payroll/notifications.ts b/src/features/payroll/notifications.ts
+new file mode 100644
+index 0000000..ecfb786
+--- /dev/null
++++ b/src/features/payroll/notifications.ts
+@@ -0,0 +1,44 @@
++import { createHash } from 'node:crypto';
++import { Role } from '@prisma/client';
++import { prisma } from '@/lib/db/prisma';
++import { PayrollError } from './domain';
++import { lockPayrollPeriod, payrollTransaction, type PayrollDb } from './transactions';
++
++async function requireActor(db: PayrollDb, organizationId: string, actorUserId: string) {
++  if (!await db.user.findFirst({ where: { id: actorUserId, organizationId, role: { in: [Role.HR_ADMIN, Role.ORGANIZATION_ADMIN] } } })) throw new PayrollError('FORBIDDEN', 'Unauthorized to notify employees.');
++}
++
++export async function previewPayrollNotifications(input: { organizationId: string; actorUserId: string; payrollPeriodId: string }, db: PayrollDb = prisma) {
++  await requireActor(db, input.organizationId, input.actorUserId);
++  const period = await db.payrollPeriod.findFirst({ where: { id: input.payrollPeriodId, organizationId: input.organizationId, status: 'FINALIZED', finalizedAt: { not: null } } });
++  if (!period) throw new PayrollError('NOT_FINALIZED', 'Finalize this payroll period before notifying employees.');
++  const entries = await db.payrollEntry.findMany({ where: { organizationId: input.organizationId, payrollPeriodId: period.id, status: 'FINALIZED' }, include: { employee: { select: { firstName: true, lastName: true } }, notification: true }, orderBy: { id: 'asc' } });
++  const accounts = await db.employeeAccount.findMany({ where: { organizationId: input.organizationId, employeeId: { in: entries.map(entry => entry.employeeId) }, status: 'ACTIVE', employee: { organizationId: input.organizationId, employeeStatus: 'ACTIVE' }, user: { organizationId: input.organizationId, role: 'EMPLOYEE' } }, select: { employeeId: true, userId: true } });
++  const recipients = entries.flatMap(entry => {
++    const account = accounts.find(item => item.employeeId === entry.employeeId);
++    return account ? [{ entryId: entry.id, employeeId: entry.employeeId, userId: account.userId, name: `${entry.employee.firstName} ${entry.employee.lastName}`, createdAt: entry.notification?.createdAt.toISOString() ?? null }] : [];
++  });
++  const token = createHash('sha256').update(JSON.stringify(recipients.map(row => [row.entryId, row.employeeId, row.userId]))).digest('hex');
++  return { periodName: period.name, recipients, skipped: entries.length - recipients.length, token };
++}
++
++export async function notifyPayrollEmployees(input: { organizationId: string; actorUserId: string; payrollPeriodId: string; confirmation: string; recipientToken: string }, db: PayrollDb = prisma) {
++  if (input.confirmation !== 'NOTIFY') throw new PayrollError('CONFIRMATION_REQUIRED', 'Review recipients and explicitly confirm notification.');
++  return payrollTransaction(db, async tx => {
++    await lockPayrollPeriod(tx, input.organizationId, input.payrollPeriodId);
++    const preview = await previewPayrollNotifications(input, tx);
++    if (input.recipientToken !== preview.token) throw new PayrollError('STALE_RECIPIENTS', 'Recipients changed. Refresh and review the recipient list again.');
++    let created = 0;
++    for (const row of preview.recipients) {
++      const result = await tx.payrollNotification.createMany({ data: [{ organizationId: input.organizationId, employeeId: row.employeeId, payrollEntryId: row.entryId, recipientUserId: row.userId, actorUserId: input.actorUserId, message: `Your payslip for ${preview.periodName} is now available. Visit My Payroll to review your earnings, deductions, attendance, and net pay.` }], skipDuplicates: true });
++      created += result.count;
++    }
++    return { created, alreadyCreated: preview.recipients.length - created };
++  });
++}
++
++export async function listPayrollNotifications(input: { organizationId: string; userId: string }, db: PayrollDb = prisma) {
++  const account = await db.employeeAccount.findFirst({ where: { organizationId: input.organizationId, userId: input.userId, status: 'ACTIVE', employee: { organizationId: input.organizationId, employeeStatus: 'ACTIVE' }, user: { role: 'EMPLOYEE', organizationId: input.organizationId } }, select: { employeeId: true } });
++  if (!account) throw new PayrollError('FORBIDDEN', 'Employee payroll access is unavailable.');
++  return db.payrollNotification.findMany({ where: { organizationId: input.organizationId, recipientUserId: input.userId, employeeId: account.employeeId, entry: { status: 'FINALIZED', payrollPeriod: { organizationId: input.organizationId, status: 'FINALIZED', finalizedAt: { not: null } } } }, select: { id: true, message: true, payrollEntryId: true, createdAt: true }, orderBy: { createdAt: 'desc' }, take: 30 });
++}

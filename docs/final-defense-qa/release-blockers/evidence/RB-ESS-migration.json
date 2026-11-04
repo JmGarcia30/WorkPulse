@@ -1,0 +1,8 @@
+{
+  "id": "RB-ESS-migration",
+  "status": "FAIL",
+  "exitCode": 1,
+  "durationMs": 17127,
+  "schema": "batch3_test_25bdf9b395651bbc0ed9b927",
+  "branch": "br-odd-field-azce2cjf"
+}

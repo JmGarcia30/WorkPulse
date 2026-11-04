@@ -1,0 +1,13 @@
+{
+  "capturedAt": "2026-11-02T07:35:06.880Z",
+  "status": "PASS",
+  "linksChecked": 49,
+  "missingLinks": [],
+  "filesScanned": 125,
+  "configuredSecretLeaks": [],
+  "reportedFinalSuiteFailures": [],
+  "harnessSyntaxFailures": [],
+  "knownReleaseBlockersRemain": true,
+  "liveSmtpVerified": false,
+  "productionWrites": 0
+}

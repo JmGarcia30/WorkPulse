@@ -130,6 +130,14 @@ export async function statutoryEntryIssue(db: Prisma.TransactionClient, entry: {
   const posting = await db.payrollStatutoryPosting.findUnique({ where: { payrollEntryId: entry.id }, include: { allocations: true } });
   if (!posting || posting.organizationId !== entry.organizationId || posting.employeeId !== entry.employeeId || posting.allocations.length !== 3 || !isDeepStrictEqual(posting.calculation, snapshot.statutory)) return 'SETUP_REQUIRED: Statutory/tax reservation ledger does not match this entry.';
   const saved = posting.calculation as Prisma.JsonObject;
+  try {
+    const reviewed = parseStatutoryInput(saved.reviewedInput);
+    const input = await db.payrollStatutoryInput.findUnique({ where: { organizationId_employeeId_payrollPeriodId: { organizationId: entry.organizationId, employeeId: entry.employeeId, payrollPeriodId: (snapshot?.payrollPeriod as Prisma.JsonObject)?.id as string } } });
+    if (!input || !isDeepStrictEqual(input.payload, saved.reviewedInput)) return 'SETUP_REQUIRED: Reviewed payroll inputs changed after calculation.';
+    const base = new Prisma.Decimal((snapshot?.calculation as Prisma.JsonObject)?.baseAmount as string);
+    const gross = reviewed.additionalEarnings.reduce((sum, row) => sum.add(row.amount), base);
+    if (!gross.eq(entry.grossAmount)) return 'SETUP_REQUIRED: Base pay and additional earnings do not reconcile to gross pay.';
+  } catch { return 'SETUP_REQUIRED: Earnings reconciliation or reviewed input evidence is incomplete.'; }
   if (saved.grossCompensation !== entry.grossAmount.toFixed(2) || saved.totalDeductions !== entry.totalDeductions.toFixed(2) || saved.netPay !== entry.netAmount.toFixed(2)) return 'SETUP_REQUIRED: Statutory totals do not reconcile to payroll.';
   const allocations = saved.allocations as Prisma.JsonArray, liabilities = saved.monthlyLiabilities as Prisma.JsonArray;
   for (const item of posting.allocations) {

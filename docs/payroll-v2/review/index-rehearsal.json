@@ -1,0 +1,432 @@
+{
+  "passed": true,
+  "branch": "br-lingering-dawn-azrdk13o",
+  "migration": "20261105000100_payroll_v2_index_names",
+  "checks": [
+    "Index correction target is the verified isolated copy",
+    "Injected index migration failure rolls back all renames",
+    "Index migration deploy 1 succeeds",
+    "Index migration deploy 2 succeeds as a no-op",
+    "Every historical index is unchanged",
+    "All 75 original-table fingerprints still match the production snapshot",
+    "Index migration is recorded once with the reviewed checksum",
+    "Read-only Prisma schema diff completes",
+    "No new V2 schema drift remains"
+  ],
+  "migrationHistory": [
+    {
+      "migration_name": "20261105000100_payroll_v2_index_names",
+      "checksum": "7313012a2cb1564877ce75fe650d8789dccec10895231c0be69b82c501fb9b5e"
+    }
+  ],
+  "newIndexes": [
+    {
+      "tablename": "PayrollInputRevision",
+      "indexname": "PayrollInputRevision_organizationId_payrollPeriodId_employe_idx",
+      "indexdef": "CREATE INDEX \"PayrollInputRevision_organizationId_payrollPeriodId_employe_idx\" ON public.\"PayrollInputRevision\" USING btree (\"organizationId\", \"payrollPeriodId\", \"employeeId\")"
+    },
+    {
+      "tablename": "PayrollInputRevision",
+      "indexname": "PayrollInputRevision_pkey",
+      "indexdef": "CREATE UNIQUE INDEX \"PayrollInputRevision_pkey\" ON public.\"PayrollInputRevision\" USING btree (id)"
+    },
+    {
+      "tablename": "PayrollNotification",
+      "indexname": "PayrollNotification_organizationId_recipientUserId_createdA_idx",
+      "indexdef": "CREATE INDEX \"PayrollNotification_organizationId_recipientUserId_createdA_idx\" ON public.\"PayrollNotification\" USING btree (\"organizationId\", \"recipientUserId\", \"createdAt\")"
+    },
+    {
+      "tablename": "PayrollNotification",
+      "indexname": "PayrollNotification_payrollEntryId_key",
+      "indexdef": "CREATE UNIQUE INDEX \"PayrollNotification_payrollEntryId_key\" ON public.\"PayrollNotification\" USING btree (\"payrollEntryId\")"
+    },
+    {
+      "tablename": "PayrollNotification",
+      "indexname": "PayrollNotification_payrollEntryId_organizationId_employeeI_key",
+      "indexdef": "CREATE UNIQUE INDEX \"PayrollNotification_payrollEntryId_organizationId_employeeI_key\" ON public.\"PayrollNotification\" USING btree (\"payrollEntryId\", \"organizationId\", \"employeeId\")"
+    },
+    {
+      "tablename": "PayrollNotification",
+      "indexname": "PayrollNotification_pkey",
+      "indexdef": "CREATE UNIQUE INDEX \"PayrollNotification_pkey\" ON public.\"PayrollNotification\" USING btree (id)"
+    }
+  ],
+  "inheritedSchemaDiffNotApplied": "-- RenameIndex\nALTER INDEX \"EmployeeCompensation_organizationId_employeeId_effectiveFrom_id\" RENAME TO \"EmployeeCompensation_organizationId_employeeId_effectiveFro_idx\";\n\n-- RenameIndex\nALTER INDEX \"OrganizationPayrollPolicy_organizationId_status_effectiveFrom_e\" RENAME TO \"OrganizationPayrollPolicy_organizationId_status_effectiveFr_idx\";\n\n",
+  "preservation": [
+    {
+      "table": "AccountSecurityEvent",
+      "count": 1,
+      "fingerprint": "8f0cfdefb95c9033a7084844dbe2f216"
+    },
+    {
+      "table": "Applicant",
+      "count": 31,
+      "fingerprint": "bd89141fc508f34d3ba6007171b24c40"
+    },
+    {
+      "table": "Application",
+      "count": 26,
+      "fingerprint": "dc3b067ca9d1dbf9b143790331b1a499"
+    },
+    {
+      "table": "ApplicationStatusHistory",
+      "count": 32,
+      "fingerprint": "2eee201893a5d9f69b6160aa0a455b4a"
+    },
+    {
+      "table": "Assessment",
+      "count": 10,
+      "fingerprint": "5b78213f66c99c9a12d81848e93f5acd"
+    },
+    {
+      "table": "AttendanceCorrection",
+      "count": 0,
+      "fingerprint": "d41d8cd98f00b204e9800998ecf8427e"
+    },
+    {
+      "table": "AttendanceEvent",
+      "count": 4,
+      "fingerprint": "5a42e4e3617cd3784bc920d0042b0216"
+    },
+    {
+      "table": "CandidateAccess",
+      "count": 4,
+      "fingerprint": "7a88bfd083c448345915bd2402043566"
+    },
+    {
+      "table": "CandidateEvaluation",
+      "count": 12,
+      "fingerprint": "b84fc5f6674e9988f80917d1092fad09"
+    },
+    {
+      "table": "CompanyRegistration",
+      "count": 1,
+      "fingerprint": "320878c5859b617b334294d0f9bbb5bc"
+    },
+    {
+      "table": "DailyAttendanceRecord",
+      "count": 79,
+      "fingerprint": "40e030470541baf7745c1f2341707e23"
+    },
+    {
+      "table": "Document",
+      "count": 14,
+      "fingerprint": "5b264a1b113c1361d63f8f0b4c6faa65"
+    },
+    {
+      "table": "Employee",
+      "count": 9,
+      "fingerprint": "14ce28349212a62c287c5c72129a9f98"
+    },
+    {
+      "table": "EmployeeAccount",
+      "count": 3,
+      "fingerprint": "f8601798f2045c6166cabd7b1c5f824b"
+    },
+    {
+      "table": "EmployeeAccountAudit",
+      "count": 25,
+      "fingerprint": "a42044f33a0e08c11ee078e566711509"
+    },
+    {
+      "table": "EmployeeClearanceItem",
+      "count": 0,
+      "fingerprint": "d41d8cd98f00b204e9800998ecf8427e"
+    },
+    {
+      "table": "EmployeeCompensation",
+      "count": 1,
+      "fingerprint": "1dd4c0838b55048460d744f34090e517"
+    },
+    {
+      "table": "EmployeeFinalPay",
+      "count": 0,
+      "fingerprint": "d41d8cd98f00b204e9800998ecf8427e"
+    },
+    {
+      "table": "EmployeeFinalPayAudit",
+      "count": 0,
+      "fingerprint": "d41d8cd98f00b204e9800998ecf8427e"
+    },
+    {
+      "table": "EmployeeFinalPayPayment",
+      "count": 0,
+      "fingerprint": "d41d8cd98f00b204e9800998ecf8427e"
+    },
+    {
+      "table": "EmployeeNumberSequence",
+      "count": 1,
+      "fingerprint": "be27c9f5c4b7a2ef8d5e4f92abe40bfb"
+    },
+    {
+      "table": "EmployeeScheduleAssignment",
+      "count": 4,
+      "fingerprint": "794c7c94097870835d13fcf8fa1471bd"
+    },
+    {
+      "table": "EmployeeSeparationAudit",
+      "count": 0,
+      "fingerprint": "d41d8cd98f00b204e9800998ecf8427e"
+    },
+    {
+      "table": "EmployeeSeparationCase",
+      "count": 0,
+      "fingerprint": "d41d8cd98f00b204e9800998ecf8427e"
+    },
+    {
+      "table": "EmployeeSeparationReview",
+      "count": 0,
+      "fingerprint": "d41d8cd98f00b204e9800998ecf8427e"
+    },
+    {
+      "table": "EmployeeStatusHistory",
+      "count": 6,
+      "fingerprint": "1065d48bf6b7409264709a8f545e6808"
+    },
+    {
+      "table": "EmploymentDecisionHistory",
+      "count": 5,
+      "fingerprint": "905ace741fd6802b138b3634edca4e3a"
+    },
+    {
+      "table": "EmploymentRecord",
+      "count": 11,
+      "fingerprint": "866b5b947205ce9d7dd23e8c0a735fda"
+    },
+    {
+      "table": "HrEmailDelivery",
+      "count": 3,
+      "fingerprint": "ab886da6d47646d6c61e50cde679236a"
+    },
+    {
+      "table": "Interview",
+      "count": 17,
+      "fingerprint": "bd00fc1620a284a673233aa97d756193"
+    },
+    {
+      "table": "Job",
+      "count": 12,
+      "fingerprint": "15d3f000981fa5b5c1f8c988cbc5954b"
+    },
+    {
+      "table": "JobRequirement",
+      "count": 11,
+      "fingerprint": "64696280e11013d3036737894b4cd6f8"
+    },
+    {
+      "table": "LeaveCycle",
+      "count": 2,
+      "fingerprint": "6b302135175cdb0481c712a52a23f18a"
+    },
+    {
+      "table": "LeaveDocument",
+      "count": 0,
+      "fingerprint": "d41d8cd98f00b204e9800998ecf8427e"
+    },
+    {
+      "table": "LeaveLedgerEntry",
+      "count": 2,
+      "fingerprint": "7f64668f7dbad9c61efcc4d7ffa27713"
+    },
+    {
+      "table": "LeaveRequest",
+      "count": 1,
+      "fingerprint": "783f6e374910086c80336797b48ba780"
+    },
+    {
+      "table": "LeaveRequestAudit",
+      "count": 6,
+      "fingerprint": "2d87817ddac9a927ae5a9c6c3b908f47"
+    },
+    {
+      "table": "LeaveRequestDay",
+      "count": 1,
+      "fingerprint": "151c4f1d20d912d69b207ded742fbba0"
+    },
+    {
+      "table": "LeaveType",
+      "count": 6,
+      "fingerprint": "57131786030627710ace19ecd8a3eb7e"
+    },
+    {
+      "table": "Offer",
+      "count": 11,
+      "fingerprint": "0d2def69336f7ef25450282b0d37089e"
+    },
+    {
+      "table": "OnboardingProcess",
+      "count": 5,
+      "fingerprint": "ea1b88fc0fb2f9cddeb2a238278594a9"
+    },
+    {
+      "table": "OnboardingTask",
+      "count": 20,
+      "fingerprint": "f4ef008b98873da047f8af0577160165"
+    },
+    {
+      "table": "Organization",
+      "count": 18,
+      "fingerprint": "2f5c9f04c56732d00634721e11e91a7f"
+    },
+    {
+      "table": "OrganizationAdministratorInvitation",
+      "count": 0,
+      "fingerprint": "d41d8cd98f00b204e9800998ecf8427e"
+    },
+    {
+      "table": "OrganizationBranding",
+      "count": 2,
+      "fingerprint": "dfc61caa9787ec21ad109469d1e5f026"
+    },
+    {
+      "table": "OrganizationBrandingAudit",
+      "count": 4,
+      "fingerprint": "0617d18072618ba801646844678a37b0"
+    },
+    {
+      "table": "OrganizationEmailIntegration",
+      "count": 1,
+      "fingerprint": "f8ced61b9fc466e2a59d0a046293f458"
+    },
+    {
+      "table": "OrganizationEmailOAuthAttempt",
+      "count": 0,
+      "fingerprint": "d41d8cd98f00b204e9800998ecf8427e"
+    },
+    {
+      "table": "OrganizationPayrollPolicy",
+      "count": 0,
+      "fingerprint": "d41d8cd98f00b204e9800998ecf8427e"
+    },
+    {
+      "table": "ParsedResume",
+      "count": 5,
+      "fingerprint": "9f5288f8199232a9acdc6b9d072bb0ab"
+    },
+    {
+      "table": "PayrollContributionAllocation",
+      "count": 0,
+      "fingerprint": "d41d8cd98f00b204e9800998ecf8427e"
+    },
+    {
+      "table": "PayrollContributionMonth",
+      "count": 0,
+      "fingerprint": "d41d8cd98f00b204e9800998ecf8427e"
+    },
+    {
+      "table": "PayrollEntry",
+      "count": 0,
+      "fingerprint": "d41d8cd98f00b204e9800998ecf8427e"
+    },
+    {
+      "table": "PayrollPeriod",
+      "count": 7,
+      "fingerprint": "ea8bcbe66cb7a04a40bd66295c5a8cb6"
+    },
+    {
+      "table": "PayrollPolicyLeaveTreatment",
+      "count": 0,
+      "fingerprint": "d41d8cd98f00b204e9800998ecf8427e"
+    },
+    {
+      "table": "PayrollStatutoryInput",
+      "count": 1,
+      "fingerprint": "8a88ee6b48077ae0785a7a51e7bddd61"
+    },
+    {
+      "table": "PayrollStatutoryPosting",
+      "count": 0,
+      "fingerprint": "d41d8cd98f00b204e9800998ecf8427e"
+    },
+    {
+      "table": "PayrollTaxOpening",
+      "count": 0,
+      "fingerprint": "d41d8cd98f00b204e9800998ecf8427e"
+    },
+    {
+      "table": "PlatformAdministrator",
+      "count": 0,
+      "fingerprint": "d41d8cd98f00b204e9800998ecf8427e"
+    },
+    {
+      "table": "PlatformAdministratorSession",
+      "count": 0,
+      "fingerprint": "d41d8cd98f00b204e9800998ecf8427e"
+    },
+    {
+      "table": "PlatformAuthenticationAttempt",
+      "count": 23,
+      "fingerprint": "4e16d2e27f4e7529947c694550125407"
+    },
+    {
+      "table": "PlatformOrganizationAudit",
+      "count": 1,
+      "fingerprint": "117d94163ddc7cc2bcbaf5fad3f421d9"
+    },
+    {
+      "table": "ProbationRecord",
+      "count": 8,
+      "fingerprint": "496a1cc5d40d9d9cfe478653267404f9"
+    },
+    {
+      "table": "RecruitmentDocument",
+      "count": 184,
+      "fingerprint": "e19b3e7c4cb04801e92ceac5a3678b8f"
+    },
+    {
+      "table": "RfidAudit",
+      "count": 43,
+      "fingerprint": "5f63b53b3be54f349f23df8ed2d77b88"
+    },
+    {
+      "table": "RfidCard",
+      "count": 2,
+      "fingerprint": "7dfadd4a2297840e74e17ee5caf86879"
+    },
+    {
+      "table": "RfidKioskSession",
+      "count": 16,
+      "fingerprint": "f476ad321432b3423ec3fca701077dc8"
+    },
+    {
+      "table": "RfidRequestBudget",
+      "count": 8,
+      "fingerprint": "1092cc0455cddc924155d92ef6604cf6"
+    },
+    {
+      "table": "StaffPasswordReset",
+      "count": 0,
+      "fingerprint": "d41d8cd98f00b204e9800998ecf8427e"
+    },
+    {
+      "table": "StaffSession",
+      "count": 14,
+      "fingerprint": "067f00d8c2784842ec1502ed48ed105a"
+    },
+    {
+      "table": "User",
+      "count": 21,
+      "fingerprint": "6a126efeb7b6c1a7256c14c610fd1c05"
+    },
+    {
+      "table": "WorkScheduleBreak",
+      "count": 22,
+      "fingerprint": "3ce52b27664622e074ccc7eda8b0b414"
+    },
+    {
+      "table": "WorkScheduleDay",
+      "count": 49,
+      "fingerprint": "df6b0a72cb931ca3d8f517c064d9ae52"
+    },
+    {
+      "table": "WorkScheduleGroup",
+      "count": 7,
+      "fingerprint": "42e69f4852e2f1882efe2636019db7b3"
+    },
+    {
+      "table": "WorkScheduleVersion",
+      "count": 7,
+      "fingerprint": "80a943ff76f4e8e3c246f35f65d881b7"
+    }
+  ]
+}

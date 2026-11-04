@@ -1,0 +1,8 @@
+{
+  "id": "RB-ESS-verified-migration",
+  "status": "PASS",
+  "exitCode": 0,
+  "durationMs": 27137,
+  "schema": "batch3_test_4a699fb3027dc023f44f5804",
+  "branch": "br-odd-field-azce2cjf"
+}

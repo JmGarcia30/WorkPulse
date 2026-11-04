@@ -54,7 +54,7 @@ export async function runPayrollWorkflow(db: PrismaClient) {
       const ready = await getPayrollReadiness({ ...scope, payrollPeriodId: second.id }, tx);
       check(ready.readiness[0].ready && ready.setup[0].opening?.payDate === '2026-08-01', 'saved setup and verified opening history are reused without entering balances again');
       check((await generatePayroll({ ...scope, payrollPeriodId: second.id }, tx)).createdCount === 1, 'reused configuration passes the actual statutory engine in the next period');
-      const future = await period(tx, scope, '2026-11-01', '2026-11-30');
+      const future = await period(tx, scope, '2027-01-01', '2027-01-31');
       const blocked = await getPayrollReadiness({ ...scope, payrollPeriodId: future.id }, tx);
       check(!blocked.readiness[0].ready && blocked.readiness[0].government.includes('No verified BIR'), 'unverified pay date displays an explicit blocker');
       const changed = await period(tx, scope, '2026-10-01', '2026-10-15', '2026-10-15');

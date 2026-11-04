@@ -1,0 +1,14 @@
+PASS: OrganizationEmailIntegration exists in schema and generated client
+PASS: OrganizationEmailOAuthAttempt exists in schema and generated client
+PASS: HrEmailDelivery exists in schema and generated client
+PASS: EmployeeFinalPay exists in schema and generated client
+PASS: EmployeeFinalPayPayment exists in schema and generated client
+PASS: EmployeeFinalPayAudit exists in schema and generated client
+PASS: Stale cached client is replaced with usable email delegates
+PASS: Replacement is cached for subsequent development requests
+PASS: Compatible client survives module reload without another allocation
+PASS: Cache missing the OAuth-attempt delegate is also replaced
+PASS: Cache predating durable HR email delivery is replaced
+PASS: Cache predating Final Pay delegates is replaced
+PASS: Cold startup uses the current generated client
+13 checks passed; no database queries or writes.

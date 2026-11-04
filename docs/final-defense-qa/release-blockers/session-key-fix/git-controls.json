@@ -1,0 +1,11 @@
+{
+  "capturedAt": "2026-11-02T16:06:54.432Z",
+  "status": "CONFIG_COMMIT_PUSHED_UNDER_FREEZE",
+  "mainCommit": "1749e463da20e27c7b3630eabfbde09831901e9e",
+  "deployedApplicationCommit": "947a14547c3863f0058750c946271d1118fc29fd",
+  "runtimeSourceUnchanged": true,
+  "liveDeployment": "dpl_5P4nncE8EsMb79aKPGNjaexXF4Hm",
+  "repositoryGitDeploymentEnabled": true,
+  "projectIgnoredBuildCommand": "exit 0",
+  "followupScope": "Deployment automation, test expectation and reporting only; no application rebuild"
+}

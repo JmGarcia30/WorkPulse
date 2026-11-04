@@ -2,6 +2,7 @@ import { EmployeeAccountStatus, PayrollEntryStatus, PayrollPeriodStatus, Prisma,
 import { prisma } from '@/lib/db/prisma';
 import { PayrollError } from './domain';
 import { payrollSnapshotBreakdown } from './snapshot-breakdown';
+import { payrollEarningsBreakdown } from './earnings-breakdown';
 
 type PayrollDb = Prisma.TransactionClient | typeof prisma;
 
@@ -85,6 +86,7 @@ function toPayslip(entry: FinalizedEntry) {
       finalizedAt: entry.payrollPeriod.finalizedAt!.toISOString(),
     },
     calculation: {
+      additionalEarnings: payrollEarningsBreakdown(entry.calculationSnapshot),
       basePay: snapshot.calculation!.baseAmount!, grossPay: snapshot.calculation!.grossAmount!,
       totalDeductions: snapshot.calculation!.totalDeductions!, netPay: snapshot.calculation!.netAmount!,
       deductions: {

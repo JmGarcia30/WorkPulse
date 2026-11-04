@@ -152,7 +152,7 @@ test('Each agency uses its own explicitly resolved monthly basis', () => {
 test('Effective dates inclusive; unsupported history and future fail closed', () => {
   assert.equal(sss('10000', { contributionMonth: '2025-01' }).schedule.id, 'SSS-BUSINESS-2025-01');
   assert.equal(calculatePagIbig({ ...context, contributionMonth: '2024-02', monthlyFundSalary: '10000' }).employee.toFixed(2), '200.00');
-  for (const month of ['2024-12', '2026-11', '2027-01']) rejects(() => sss('10000', { contributionMonth: month }), 'UNVERIFIED_SCHEDULE');
+  for (const month of ['2024-12', '2026-12', '2027-01']) rejects(() => sss('10000', { contributionMonth: month }), 'UNVERIFIED_SCHEDULE');
   rejects(() => calculatePhilHealth({ ...context, contributionMonth: '2024-12', monthlyBasicSalary: '20000' }), 'UNVERIFIED_SCHEDULE');
   rejects(() => calculatePagIbig({ ...context, contributionMonth: '2024-01', monthlyFundSalary: '10000' }), 'UNVERIFIED_SCHEDULE');
   for (const month of ['', '2026-00', '2026-13', '2026-1', '2026-01-15', '0000-01']) rejects(() => sss('10000', { contributionMonth: month }), 'INVALID_MONTH');

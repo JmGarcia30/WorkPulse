@@ -1,0 +1,10 @@
+{
+  "id": "IT-RFID",
+  "command": "node docs/final-defense-qa/it-eval/script.cjs test-rfid-attendance.ts",
+  "capturedAt": "2026-11-02T06:19:06.084Z",
+  "durationMs": 91778,
+  "exitCode": 0,
+  "status": "PASS",
+  "schema": "batch3_test_3f2ab557e94ab8c1d1c17d9b",
+  "isolatedPerSuite": true
+}

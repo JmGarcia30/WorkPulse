@@ -1,0 +1,33 @@
+PASS: local profiles unchanged
+PASS: hosted public session template rejected
+PASS: hosted missing session key rejected
+PASS: hosted non-template session key accepted
+PASS: hosted missing environment rejected
+PASS: unknown hosted environment rejected
+PASS: missing expected identity rejected
+PASS: production tuple accepted
+PASS: separate configured endpoint accepted (not proof of deployed Preview)
+PASS: pooled endpoint accepted
+PASS: production target in Preview rejected without disclosing URL
+PASS: production branch with other endpoint rejected without disclosing URL
+PASS: wrong project rejected without disclosing URL
+PASS: different production binding rejected without disclosing URL
+PASS: wrong host rejected without disclosing URL
+PASS: wrong database rejected without disclosing URL
+PASS: schema override rejected without disclosing URL
+PASS: endpoint routing override rejected without disclosing URL
+PASS: duplicate parameter rejected without disclosing URL
+PASS: TLS disabled rejected without disclosing URL
+PASS: malformed URL rejected without disclosing URL
+[WorkPulse Emailer (SMTP)] Sensitive transactional email accepted by SMTP provider.
+PASS: own provider-assigned Production hostname accepted
+PASS: staged hostname supports path tenancy
+PASS: canonical production hostname retained
+PASS: unrelated Vercel deployment rejected
+PASS: nested staged-host tenant rejected
+PASS: forwarded host cannot select staged deployment
+PASS: conflicting forwarded host rejected
+PASS: staged hostname port override rejected
+PASS: Production staging exception unavailable to Preview
+PASS: staged hostname cannot rescue missing root configuration
+{"status":"PASS","checks":48,"databaseWrites":0,"externalMessages":0}

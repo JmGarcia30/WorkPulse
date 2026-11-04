@@ -11,6 +11,32 @@ import { savePayrollStatutoryInput, savePayrollTaxOpening } from './statutory-in
 import { statutoryPayloadFromForm, openingBalancesFromForm } from './setup-form';
 import { reusePayrollSetup } from './reuse';
 import { saveStandardPayrollProfile } from './standard-profile';
+import { changePayrollEarning } from './earnings';
+import { notifyPayrollEmployees } from './notifications';
+
+export async function changePayrollEarningAction(_state: PayrollActionState, form: FormData): Promise<PayrollActionState> {
+  const user = await requireBackOfficeContext();
+  if (!canManagePayroll(user)) return { error: 'Unauthorized to manage earnings.' };
+  const field = (name: string) => String(form.get(name) ?? '').trim();
+  const operation = field('operation');
+  if (!['SAVE', 'REMOVE', 'RECALCULATE'].includes(operation)) return { error: 'Unsupported earning action.' };
+  try {
+    await changePayrollEarning({ organizationId: user.organizationId, actorUserId: user.userId, employeeId: field('employeeId'), payrollPeriodId: field('payrollPeriodId'), expectedVersion: field('expectedVersion'), reason: field('reason'), confirmRecalculation: form.get('confirmRecalculation') === 'CONFIRMED', operation: operation as 'SAVE' | 'REMOVE' | 'RECALCULATE', earningId: field('earningId'), earning: { id: field('earningId'), category: field('category'), kind: field('kind'), amount: field('amount'), description: field('description'), supportingReference: field('supportingReference'), qualificationReference: field('qualificationReference') }, agencyReview: { monthlySssRemuneration: field('monthlySssRemuneration'), monthlyPagIbigFundSalary: field('monthlyPagIbigFundSalary'), agencyBasisReference: field('agencyBasisReference') } });
+    revalidatePath('/dashboard/payroll');
+    return { success: 'Inputs saved. Generate payroll and review the updated calculation before finalizing.' };
+  } catch (error) { return failure(error); }
+}
+
+export async function notifyPayrollEmployeesAction(_state: PayrollActionState, form: FormData): Promise<PayrollActionState> {
+  const user = await requireBackOfficeContext();
+  if (!canManagePayroll(user)) return { error: 'Unauthorized to notify employees.' };
+  try {
+    const result = await notifyPayrollEmployees({ organizationId: user.organizationId, actorUserId: user.userId, payrollPeriodId: String(form.get('payrollPeriodId') ?? ''), confirmation: String(form.get('confirmation') ?? ''), recipientToken: String(form.get('recipientToken') ?? '') });
+    revalidatePath('/dashboard/payroll');
+    revalidatePath('/employee/payroll');
+    return { success: `${result.created} in-app notifications created. ${result.alreadyCreated} already announced.` };
+  } catch (error) { return failure(error); }
+}
 
 export type PayrollActionState = { error?: string; success?: string; setupErrors?: Array<{ employeeNumber: string; employeeName: string; message: string }> };
 const failure = (error: unknown): PayrollActionState => ({ error: error instanceof PayrollError ? error.message : 'The payroll action could not be completed. Please try again.' });

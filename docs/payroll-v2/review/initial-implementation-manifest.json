@@ -1,0 +1,137 @@
+{
+  "baseCommit": "f65eaf34d7aa27b37431f4afa7721c129b26710a",
+  "branch": "feature/payroll-simplification-v2",
+  "patchSha256": "5d3f13c4ea50ebf178db0dd35ed858417259d0a56c86341e3c92441c61263463",
+  "files": [
+    {
+      "path": "prisma/migrations/20261104000100_payroll_simplification_v2/migration.sql",
+      "sha256": "6b4afbe1a1ee126843658d0754d10382e51cf97d158df63798cb5a9cbba0b7f8"
+    },
+    {
+      "path": "prisma/schema.prisma",
+      "sha256": "43f7886b26fbc85192e50e4f53a2493ad0320e2e32cd0598fc78755f03931014"
+    },
+    {
+      "path": "scripts/payroll-v2-browser.cjs",
+      "sha256": "93b7a2068b82efcf912348dbe2515743326ef323567b8e697916c7330ff05407"
+    },
+    {
+      "path": "scripts/payroll-v2-environment.cjs",
+      "sha256": "6d5acacef0a298b1b85f586116b05b0943ab9249f618a2507b30a49bef5b8951"
+    },
+    {
+      "path": "scripts/payroll-v2-review-artifacts.cjs",
+      "sha256": "0fc9e6588c253b8f5d0d4c5d02aee2f5e652e853877c2189469d85f8522bf893"
+    },
+    {
+      "path": "scripts/test-payroll-v2-edges.ts",
+      "sha256": "399d5393f68ff6a5d475fd354ac3ef1c90c17d9de1951ef13428c0cbeaa3f678"
+    },
+    {
+      "path": "scripts/test-payroll-v2.ts",
+      "sha256": "1c5138ad7a1d7c76548549ecac0aadc0e491cd8088b6d160964c962bd212d461"
+    },
+    {
+      "path": "src/app/(dashboard)/dashboard/payroll/page.tsx",
+      "sha256": "524d04bcdfaca30f93563ad52b9e40a8c156eed91ecfe415585f603e814697df"
+    },
+    {
+      "path": "src/app/(employee)/employee/payroll/page.tsx",
+      "sha256": "176e0c1f51a10fded80a1223c8afa239b4ec2f6f0ec292094e4251618c7a3b15"
+    },
+    {
+      "path": "src/components/payroll/EmployeePayrollEntriesTable.tsx",
+      "sha256": "5df3c8471e16333c3da7ff64cb9e1579f76e11f50328aafb20828b8cdb7003fe"
+    },
+    {
+      "path": "src/components/payroll/PayrollEarningsForm.tsx",
+      "sha256": "a11c0087f9cba98ef3025ea48be029bd29937d6a8174f89a9e43a4fcfee961e7"
+    },
+    {
+      "path": "src/components/payroll/PayrollNotifyForm.tsx",
+      "sha256": "2eb7e2052678ce432e02194b53c9af0dd31230e6f380220a6ecd58a6ee56c616"
+    },
+    {
+      "path": "src/components/payroll/PayslipView.tsx",
+      "sha256": "9673f2c7e1f99018ff2825ee5b19820f776709800f339b305fc581845e804901"
+    },
+    {
+      "path": "src/features/payroll/actions.ts",
+      "sha256": "f107667c87734f2dce5f090e9006cea841e0339bb51b8c729c5ef0b90347a49d"
+    },
+    {
+      "path": "src/features/payroll/bir/earnings.ts",
+      "sha256": "87dd52078beef253752d2fb57d090a78f5e1cc1a814036bc98f77de419be5eb0"
+    },
+    {
+      "path": "src/features/payroll/earnings-breakdown.ts",
+      "sha256": "002f762400038c21fffb9ebda77d0896b0586d80f0aecf9546bfec1de2ed2051"
+    },
+    {
+      "path": "src/features/payroll/earnings.ts",
+      "sha256": "73cdce09f396d94878c3b1c510b56c07273ae84b9642fb480e60d2b0c17a97fb"
+    },
+    {
+      "path": "src/features/payroll/leave-evidence.ts",
+      "sha256": "8acc634d3bd5afcfcea2d211b7df253d9d580de71236483e8e29bbac22e62b88"
+    },
+    {
+      "path": "src/features/payroll/notifications.ts",
+      "sha256": "505ed68e651a1e217f5b56a3fb190a482d148ffefca71ea75378c1c40137de23"
+    },
+    {
+      "path": "src/features/payroll/payslip.ts",
+      "sha256": "375287b1832e65d76ad9dcd244e825dd9193d31c96d9dbce67c1d0545965a26f"
+    },
+    {
+      "path": "src/features/payroll/queries.ts",
+      "sha256": "54c2f4133d6803c674eae516d293c1b5a5e081b765b7622007cc7a993466b1e3"
+    },
+    {
+      "path": "src/features/payroll/reuse.ts",
+      "sha256": "3201c2bc08878427d11806ce279b30ddee7254bb7fbe7e855f45a769f2df2eb1"
+    },
+    {
+      "path": "src/features/payroll/review.ts",
+      "sha256": "bcc4c79d2e0435b46b85c52dce4b6c5b1229c4d6b9ac4341d23b46545a4cad17"
+    },
+    {
+      "path": "src/features/payroll/service.ts",
+      "sha256": "3e4bf4ef33128d85b229c5b9393dca268855fb4958f89cd278b665782e73760f"
+    },
+    {
+      "path": "src/features/payroll/statutory-inputs.ts",
+      "sha256": "26abf9bc813b3516051cbbf57fb635e6ae2329f801f35b8270f41885d294d976"
+    },
+    {
+      "path": "src/features/payroll/statutory-integration.ts",
+      "sha256": "c3bfdea2217a4ebd978e223c7f716c177abc32f8024cd460d3ececebfc00fce6"
+    },
+    {
+      "path": "src/lib/db/prisma.ts",
+      "sha256": "1929b0e05ce1064c2291e112ee1b8b47a14d0a0cbc3d14003541dc1a2eb32f2c"
+    }
+  ],
+  "protectedFiles": [
+    {
+      "path": ".env",
+      "sha256": "e683b25719e068642138ef2551f810634534b3a3b4565e90ce4353b039c3ae8e"
+    },
+    {
+      "path": ".env.recovery.local",
+      "sha256": "78fc548c42893aa779aad4f72606a3f7eaff43901efc82bbd43045a5f4350661"
+    },
+    {
+      "path": "docs/final-defense-qa/release-blockers/emergency/browser-baseline.json",
+      "sha256": "b81d99442963bc67709f515a555cccb3d4325d9e61a8bd84244f5f8180dc1675"
+    },
+    {
+      "path": "docs/final-defense-qa/release-blockers/emergency/commit-review.json",
+      "sha256": "35c5e086b1c299a8be80d0cb1c87ee0312177eb6093e0171ba3c151f48a61156"
+    },
+    {
+      "path": "docs/final-defense-qa/release-blockers/session-key-fix/RESULT.md",
+      "sha256": "0e06ddf0247baee60653eee66eada0387694d869d4fe002c65d6d2f92ae8fa50"
+    }
+  ]
+}

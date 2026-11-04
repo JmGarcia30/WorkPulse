@@ -1,0 +1,76 @@
+{
+  "passed": true,
+  "branch": "br-lingering-dawn-azrdk13o",
+  "checks": [
+    "November monthly basic: actual generator succeeds without bypassing readiness",
+    "November monthly basic: manual expected amounts match persisted entry",
+    "November bonus regeneration: actual generator succeeds without bypassing readiness",
+    "November bonus regeneration: manual expected amounts match persisted entry",
+    "November ESS reads the finalized bonus snapshot without recalculation",
+    "New snapshot records the November rule review date",
+    "November first cutoff: actual generator succeeds without bypassing readiness",
+    "November first cutoff: manual expected amounts match persisted entry",
+    "November second cutoff: actual generator succeeds without bypassing readiness",
+    "November second cutoff: manual expected amounts match persisted entry",
+    "Actual stored monthly versus two-cutoff deductions differ by exactly 0.14",
+    "SSS: two cutoff employee allocations equal one November monthly liability",
+    "PHILHEALTH: two cutoff employee allocations equal one November monthly liability",
+    "PAGIBIG: two cutoff employee allocations equal one November monthly liability"
+  ],
+  "amounts": [
+    {
+      "label": "November monthly basic",
+      "expected": {
+        "gross": "35000.00",
+        "deductions": "4526.30",
+        "net": "30473.70"
+      },
+      "actual": {
+        "gross": "35000.00",
+        "deductions": "4526.30",
+        "net": "30473.70"
+      }
+    },
+    {
+      "label": "November bonus regeneration",
+      "expected": {
+        "gross": "37000.00",
+        "deductions": "4826.30",
+        "net": "32173.70"
+      },
+      "actual": {
+        "gross": "37000.00",
+        "deductions": "4826.30",
+        "net": "32173.70"
+      }
+    },
+    {
+      "label": "November first cutoff",
+      "expected": {
+        "gross": "17500.00",
+        "deductions": "2263.08",
+        "net": "15236.92"
+      },
+      "actual": {
+        "gross": "17500.00",
+        "deductions": "2263.08",
+        "net": "15236.92"
+      }
+    },
+    {
+      "label": "November second cutoff",
+      "expected": {
+        "gross": "17500.00",
+        "deductions": "2263.08",
+        "net": "15236.92"
+      },
+      "actual": {
+        "gross": "17500.00",
+        "deductions": "2263.08",
+        "net": "15236.92"
+      }
+    }
+  ],
+  "syntheticFixturesRolledBack": true,
+  "productionEmployeesSelectedForGeneration": false
+}

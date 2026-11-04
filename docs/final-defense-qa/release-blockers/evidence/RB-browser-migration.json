@@ -1,0 +1,8 @@
+{
+  "id": "RB-browser-migration",
+  "status": "PASS",
+  "exitCode": 0,
+  "durationMs": 26287,
+  "schema": "batch3_test_273d18bbef930b7856223c22",
+  "branch": "br-odd-field-azce2cjf"
+}

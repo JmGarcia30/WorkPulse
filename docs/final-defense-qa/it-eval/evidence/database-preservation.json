@@ -1,0 +1,14 @@
+{
+  "capturedAt": "2026-11-02T06:20:23.292Z",
+  "identity": {
+    "read_only": "on",
+    "branch_id": "br-damp-fog-azmmxhga",
+    "endpoint_id": "ep-wild-mud-az8yzifu"
+  },
+  "comparisonBaseline": "Preserved Batch 3 followup recovery public-table fingerprints",
+  "tablesCompared": 73,
+  "changedTables": [],
+  "existingRecoveryPublicUnchanged": true,
+  "publicSchemaMigrationsExecuted": 0,
+  "productionWrites": 0
+}

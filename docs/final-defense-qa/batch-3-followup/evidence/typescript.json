@@ -1,0 +1,8 @@
+{
+  "capturedAt": "2026-11-02T05:23:53.088Z",
+  "id": "typescript",
+  "command": "node node_modules/typescript/bin/tsc --noEmit --incremental false",
+  "status": "PASS",
+  "exitCode": 0,
+  "durationMs": 37911
+}

@@ -1,0 +1,10 @@
+{
+  "id": "IT-routing",
+  "command": "node docs/final-defense-qa/exported-suites.cjs test-platform-routing.cjs",
+  "capturedAt": "2026-11-02T06:28:34.923Z",
+  "durationMs": 12200,
+  "exitCode": 0,
+  "status": "PASS",
+  "schema": "batch3_test_b0ff545553135d18f762b448",
+  "isolatedPerSuite": true
+}

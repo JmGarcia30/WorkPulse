@@ -1,0 +1,36 @@
+✓ Running next.config.ts took 55ms
+PASS 1: HR profile displays own readonly email and role
+PASS 2: Browser name form saves existing User
+PASS 3: Updated name appears on dashboard
+PASS 4: Mobile profile has no page overflow
+PASS 5: Wrong current password keeps existing HR session
+PASS 6: Browser password change signs out HR and revokes session
+PASS 7: New HR password authenticates through normal browser login
+PASS 8: Organization Administrator browser self-profile works
+PASS 9: Browser job creation writes immutable audit
+PASS 10: Existing job edit retains atomic requirements write and adds audit
+PASS 11: Browser publication writes audit
+PASS 12: Browser close writes audit
+PASS 13: Browser confirms and deletes unused draft
+PASS 14: Browser refuses draft with official application
+PASS 15: Staff session cannot open platform audit logs
+[WorkPulse Emailer (SMTP)] Sensitive transactional email accepted by SMTP provider.
+PASS 16: Browser recovery action delivered reset link to receiving SMTP inbox
+PASS 17: Reset page removes bearer fragment from address bar
+PASS 18: Browser reset revokes existing employee session
+PASS 19: Browser refuses reused reset link
+PASS 20: Recovered employee authenticates and reaches ESS
+PASS 21: Employee cannot open HR profile page
+[WorkPulse Emailer (SMTP)] Sensitive transactional email accepted by SMTP provider.
+[WorkPulse Emailer (SMTP)] Sensitive transactional email accepted by SMTP provider.
+[WorkPulse Emailer (SMTP)] Sensitive transactional email accepted by SMTP provider.
+PASS 22: Five real browser password failures record one lockout
+PASS 23: Browser fifth failure delivers owner and HR alerts after response
+PASS 24: Platform normal login opens safe audit viewer
+PASS 25: Audit browser table excludes tenant employee email
+PASS 26: Mobile platform audit confines horizontal scrolling to table
+⨯ Error: FORBIDDEN
+    at j (G:\CAPSTONE\WorkPulse\.next\server\chunks\4632.js:1:417)
+    at async h (G:\CAPSTONE\WorkPulse\.next\server\app\(dashboard)\dashboard\profile\page.js:1:5811) {
+  digest: '3315816819'
+}

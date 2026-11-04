@@ -1,0 +1,10 @@
+{
+  "id": "IT-B1-jobs",
+  "command": "node docs/final-defense-qa/exported-suites.cjs ../docs/final-defense-qa/batch-1/job-regression.cjs",
+  "capturedAt": "2026-11-02T06:24:59.391Z",
+  "durationMs": 19107,
+  "exitCode": 0,
+  "status": "PASS",
+  "schema": "batch3_test_1022aaac0ed32bf20b5486b0",
+  "isolatedPerSuite": true
+}

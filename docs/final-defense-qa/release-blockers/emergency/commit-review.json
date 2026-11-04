@@ -1,5 +1,5 @@
 {
-  "capturedAt": "2026-11-02T15:17:38.114Z",
+  "capturedAt": "2026-11-02T15:19:34.147Z",
   "status": "PASS",
   "branch": "main",
   "stagedFiles": [
@@ -42,6 +42,7 @@
     "docs/final-defense-qa/release-blockers/emergency/backup-verification.json",
     "docs/final-defense-qa/release-blockers/emergency/baseline-browser.cjs",
     "docs/final-defense-qa/release-blockers/emergency/browser-baseline.json",
+    "docs/final-defense-qa/release-blockers/emergency/commit-review.json",
     "docs/final-defense-qa/release-blockers/emergency/diagnostic-live-probe.json",
     "docs/final-defense-qa/release-blockers/emergency/diagnostic-manifest.json",
     "docs/final-defense-qa/release-blockers/emergency/post-migration-old-app-probe.json",

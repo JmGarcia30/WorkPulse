@@ -1,0 +1,8 @@
+{
+  "capturedAt": "2026-11-02T05:25:56.575Z",
+  "id": "build",
+  "command": "node node_modules/next/dist/bin/next build --webpack",
+  "status": "PASS",
+  "exitCode": 0,
+  "durationMs": 90949
+}

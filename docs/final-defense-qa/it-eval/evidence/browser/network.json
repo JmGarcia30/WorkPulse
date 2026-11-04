@@ -1,0 +1,37 @@
+[
+  {
+    "path": "/login",
+    "method": "POST",
+    "status": 200
+  },
+  {
+    "path": "/login",
+    "method": "POST",
+    "status": 200
+  },
+  {
+    "path": "/login",
+    "method": "POST",
+    "status": 200
+  },
+  {
+    "path": "/login",
+    "method": "POST",
+    "status": 200
+  },
+  {
+    "path": "/login",
+    "method": "POST",
+    "status": 200
+  },
+  {
+    "path": "/login",
+    "method": "POST",
+    "status": 200
+  },
+  {
+    "path": "/platform/login",
+    "method": "POST",
+    "status": 200
+  }
+]

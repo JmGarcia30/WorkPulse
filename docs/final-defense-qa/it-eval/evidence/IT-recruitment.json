@@ -1,0 +1,10 @@
+{
+  "id": "IT-recruitment",
+  "command": "node docs/final-defense-qa/it-eval/legacy.cjs test-hiring-postgres.cjs",
+  "capturedAt": "2026-11-02T06:19:00.653Z",
+  "durationMs": 109837,
+  "exitCode": 0,
+  "status": "PASS",
+  "schema": "batch3_test_7555140a8421a6b1e3333ede",
+  "isolatedPerSuite": true
+}

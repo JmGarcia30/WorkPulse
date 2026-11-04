@@ -1,0 +1,8 @@
+{
+  "id": "RB-platform-final-migration",
+  "status": "PASS",
+  "exitCode": 0,
+  "durationMs": 28450,
+  "schema": "batch3_test_1b08c64effa8df542d0bb462",
+  "branch": "br-odd-field-azce2cjf"
+}

@@ -335,7 +335,7 @@ test('Monetary inputs reject binary numbers, missing, negative, subcentavo, nonf
 });
 
 test('Effective date verification, calendar periods and tax payment dates are explicit', () => {
-  for (const payDate of ['2022-12-31', '2026-10-23', '2027-01-01']) rejects(() => assessBirTable({ payDate, frequency: 'MONTHLY', taxableCompensation: '30000' }), 'UNVERIFIED_RULES');
+  for (const payDate of ['2022-12-31', '2026-12-01', '2027-01-01']) rejects(() => assessBirTable({ payDate, frequency: 'MONTHLY', taxableCompensation: '30000' }), 'UNVERIFIED_RULES');
   for (const payDate of ['2026-02-30', '', '2026-1-01']) rejects(() => assessBirTable({ payDate, frequency: 'MONTHLY', taxableCompensation: '30000' }), 'INVALID_DATE');
   rejects(() => calculateBirWithholding({ ...input(), frequency: 'BIWEEKLY' as never }), 'UNSUPPORTED_FREQUENCY');
   rejects(() => calculateBirWithholding({ ...input(), currency: 'USD' as never }), 'UNSUPPORTED_CURRENCY');

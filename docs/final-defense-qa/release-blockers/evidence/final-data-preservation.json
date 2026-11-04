@@ -1,0 +1,13 @@
+{
+  "capturedAt": "2026-11-02T07:35:17.076Z",
+  "status": "PASS",
+  "branch": "br-odd-field-azce2cjf",
+  "existingPublicTablesCompared": 73,
+  "changedTables": [],
+  "newOtpFieldsHaveExpectedDefaults": true,
+  "newPublicTablesEmpty": {
+    "security": 0,
+    "resets": 0
+  },
+  "scope": "Snapshot clone public data; regression fixtures stayed in separate synthetic schemas or rolled back"
+}

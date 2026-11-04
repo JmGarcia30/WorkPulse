@@ -1,0 +1,15 @@
+{
+  "status": "OWNER_REVIEW_REQUIRED",
+  "sourceBranch": "br-hidden-violet-azjl3vam",
+  "sourceEndpoint": "ep-weathered-mouse-azpx765h",
+  "schema": "public",
+  "function": "h10_fail_audit",
+  "arguments": "",
+  "bodyFingerprint": "b74bbdd0572348f92148f597613deac8",
+  "attachedTriggers": 0,
+  "definedInRepositoryMigrations": false,
+  "sourceReference": "scripts/test-h10-1-separation.ts:211",
+  "observedInProductionByReadonlyCatalogQuery": true,
+  "removedOrModified": false,
+  "assessment": "Pre-existing unattached test helper; not introduced by either pending migration. No runtime failure demonstrated; explicit drift disposition required before approving production writes."
+}

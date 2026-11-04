@@ -1,0 +1,31 @@
+{
+  "passed": 26,
+  "checks": [
+    "HR profile displays own readonly email and role",
+    "Browser name form saves existing User",
+    "Updated name appears on dashboard",
+    "Mobile profile has no page overflow",
+    "Wrong current password keeps existing HR session",
+    "Browser password change signs out HR and revokes session",
+    "New HR password authenticates through normal browser login",
+    "Organization Administrator browser self-profile works",
+    "Browser job creation writes immutable audit",
+    "Existing job edit retains atomic requirements write and adds audit",
+    "Browser publication writes audit",
+    "Browser close writes audit",
+    "Browser confirms and deletes unused draft",
+    "Browser refuses draft with official application",
+    "Staff session cannot open platform audit logs",
+    "Browser recovery action delivered reset link to receiving SMTP inbox",
+    "Reset page removes bearer fragment from address bar",
+    "Browser reset revokes existing employee session",
+    "Browser refuses reused reset link",
+    "Recovered employee authenticates and reaches ESS",
+    "Employee cannot open HR profile page",
+    "Five real browser password failures record one lockout",
+    "Browser fifth failure delivers owner and HR alerts after response",
+    "Platform normal login opens safe audit viewer",
+    "Audit browser table excludes tenant employee email",
+    "Mobile platform audit confines horizontal scrolling to table"
+  ]
+}

@@ -1,5 +1,5 @@
 {
-  "capturedAt": "2026-11-02T14:22:53.648Z",
+  "capturedAt": "2026-11-02T15:27:38.251Z",
   "status": "PASS",
   "check": "Chrome unauthenticated existing production login form only",
   "url": "https://work-pulse-omega.vercel.app/saga/login",

@@ -1,0 +1,15 @@
+{
+  "identity": {
+    "database": "neondb",
+    "schema": "public",
+    "read_only": "on",
+    "branch_id": "br-damp-fog-azmmxhga",
+    "endpoint_id": "ep-wild-mud-az8yzifu"
+  },
+  "migrationsVerified": 39,
+  "migrationsExecuted": 0,
+  "providerProject": "late-block-61364102",
+  "providerBranch": "workpulse-ess-design",
+  "primary": false,
+  "default": false
+}

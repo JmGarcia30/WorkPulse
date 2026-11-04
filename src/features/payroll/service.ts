@@ -6,6 +6,7 @@ import { resolvePayrollPolicy, validateResolvedPolicyParameters } from './policy
 import { lockPayrollEmployee, lockPayrollPeriod, payrollTransaction } from './transactions';
 import { calculateIntegratedPayroll, persistIntegratedPayroll, STATUTORY_SNAPSHOT_VERSION } from './statutory-integration';
 import { attendanceReadinessIssue, payrollAttendanceEvidence } from './attendance-evidence';
+import { payrollLeaveEvidence } from './leave-evidence';
 
 type PayrollDb = Prisma.TransactionClient | typeof prisma;
 
@@ -323,6 +324,7 @@ async function generateInTransaction(input: GeneratePayrollInput, db: Prisma.Tra
       attendanceSummary,
       attendanceEvidence: attendanceRequired ? payrollAttendanceEvidence(attendance) : null,
       leaveSummary,
+      leaveEvidence: payrollLeaveEvidence(leaveDays),
     } satisfies Prisma.InputJsonObject;
     const entry = await db.payrollEntry.create({
       data: {

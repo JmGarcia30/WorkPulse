@@ -1,0 +1,13 @@
+{
+  "capturedDate": "2026-11-02",
+  "status": "BLOCKED",
+  "reason": "No confirmed owner-controlled receiving-inbox access or dedicated isolated SMTP profile",
+  "externalRecoveryMessagesTriggered": 0,
+  "externalFiveFailureAlertsTriggered": 0,
+  "inboxReceiptsVerified": 0,
+  "duplicateProtectionLiveVerified": false,
+  "realEmployeesOrOrganizationsContacted": 0,
+  "externalMailAttempts": 0,
+  "evidenceScope": "No live inbox test was attempted; existing offline duplicate-claim and loopback SMTP evidence remains valid only for those scopes",
+  "ownerAction": "Provide dedicated test SMTP credentials via an approved local secret file and controlled receiving inbox access. Use synthetic-only database, one synthetic security-alert recipient, one recovery request and five wrong password attempts; verify inbox bodies and no additional alert on later attempts, plus sender-provider recipient logs. Preview mail is deliberately disabled; run the live test in an explicitly isolated local environment, not by enabling Preview delivery."
+}

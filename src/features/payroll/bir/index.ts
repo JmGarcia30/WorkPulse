@@ -3,4 +3,4 @@ export { calculateBirWithholding, type BirWithholdingInput, type BirStatutoryDed
 export { assessBirTable } from './table';
 export { BirCalculationError } from './validation';
 export type { CashEarning, EarningKind, BenefitHistory } from './earnings';
-export { BIR_ANNEX_E, BENEFIT_RULES, BIR_SOURCES, BIR_VERIFIED_ON, type TaxFrequency } from './rules';
+export { BIR_ANNEX_E, BENEFIT_RULES, BIR_SOURCES, BIR_VERIFIED_ON, BIR_VERIFIED_THROUGH, type TaxFrequency } from './rules';

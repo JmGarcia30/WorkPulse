@@ -140,6 +140,8 @@ export function EmployeePayrollEntriesTable({
             <tr className="border-b border-slate-100 bg-slate-50/75 text-[11px] font-bold uppercase tracking-wider text-slate-500">
               <th className="px-3.5 py-3">Employee</th>
               <th className="px-3 py-3">Compensation</th>
+              <th className="px-3 py-3">Basic Pay</th>
+              <th className="px-3 py-3">Additional Earnings</th>
               <th className="px-3 py-3">Attendance & Leave</th>
               <th className="px-3 py-3 text-right">Gross Pay</th>
               <th className="px-3 py-3 text-right">Deductions</th>
@@ -152,7 +154,7 @@ export function EmployeePayrollEntriesTable({
           <tbody className="divide-y divide-slate-100">
             {paginatedEntries.length === 0 ? (
               <tr>
-                <td colSpan={9} className="py-12 text-center text-slate-400">
+                <td colSpan={11} className="py-12 text-center text-slate-400">
                   <div className="flex flex-col items-center justify-center max-w-sm mx-auto px-4">
                     <div className="rounded-full bg-slate-100 p-3 text-slate-400 mb-3">
                       <FileText className="h-6 w-6" />
@@ -250,6 +252,8 @@ export function EmployeePayrollEntriesTable({
                       </span>
                     </td>
 
+                    <td className="px-3 py-3 whitespace-nowrap">{entry.baseAmountFormatted}</td>
+                    <td className="px-3 py-3">{entry.additionalEarnings ? entry.additionalEarnings.length ? <details><summary className="cursor-pointer font-semibold">{entry.additionalEarnings.length} earnings</summary><ul className="mt-2 space-y-1">{entry.additionalEarnings.map(row => <li key={row.id}>{row.description}: {entry.currency} {row.amount}</li>)}</ul></details> : 'None recorded' : 'Breakdown unavailable'}</td>
                     {/* Attendance & Leave Snapshot */}
                     <td className="px-3 py-3 whitespace-nowrap">
                       {entry.attendanceSummary ? (

@@ -1,0 +1,7 @@
+{
+  "path": "/dashboard/organization/setup",
+  "title": "WorkPulse — Workforce Operations & HR Platform",
+  "state": "complete",
+  "text": "WORKSPACE SETUP\n\nMake WorkPulse yours.\n\nSet your organization's display name, tagline, primary and accent colors, contact details, and logo. These settings belong only to your workspace and can be updated later.\n\nYour workspace: Payroll E2E monthly\n\nPreview public workspace\nOrganization settings\nContinue to HR dashboard\n\nSave the organization details below before continuing to your dashboard. The logo and login image can be added separately.\n\nDisplay name\nTagline\nPrimary color\nAccent color\nAddress\nContact email\nContact phone\nSave branding\n\nOrganization logo\n\nPNG, JPEG, or WebP. Maximum 2 MB.\n\nUpload\n\nLogin image\n\nPNG, JPEG, or WebP. Maximum 5 MB.\n\nUpload",
+  "loginForm": false
+}

@@ -2,7 +2,7 @@ import { Prisma } from '@prisma/client';
 import { BENEFIT_RULES } from './rules';
 import { fail, money, requiredText, type TaxMoney } from './validation';
 
-export type EarningKind = 'BASIC_SALARY' | 'FIXED_ALLOWANCE' | 'OVERTIME' | 'COMMISSION'
+export type EarningKind = 'BASIC_SALARY' | 'FIXED_ALLOWANCE' | 'OVERTIME' | 'COMMISSION' | 'TAXABLE_BONUS'
   | 'THIRTEENTH_MONTH' | 'QUALIFYING_OTHER_BENEFIT' | 'RICE_SUBSIDY' | 'CLOTHING_ALLOWANCE' | 'LAUNDRY_ALLOWANCE';
 export interface CashEarning {
   id: string;
@@ -57,7 +57,8 @@ export function classifyCashEarnings(input: {
     let regularTaxable = new Prisma.Decimal(0), supplementaryTaxable = new Prisma.Decimal(0);
     let deMinimisExempt = new Prisma.Decimal(0), otherBenefitsExempt = new Prisma.Decimal(0), benefitPoolAmount = new Prisma.Decimal(0);
     if (earning.kind === 'BASIC_SALARY' || earning.kind === 'FIXED_ALLOWANCE') regularTaxable = amount;
-    else if (earning.kind === 'OVERTIME' || earning.kind === 'COMMISSION') supplementaryTaxable = amount;
+    // BIR withholding calculator identifies a reviewed taxable bonus as supplementary compensation.
+    else if (earning.kind === 'OVERTIME' || earning.kind === 'COMMISSION' || earning.kind === 'TAXABLE_BONUS') supplementaryTaxable = amount;
     else {
       if (!['RICE_SUBSIDY', 'CLOTHING_ALLOWANCE', 'LAUNDRY_ALLOWANCE', 'THIRTEENTH_MONTH', 'QUALIFYING_OTHER_BENEFIT'].includes(earning.kind)) {
         fail('UNSUPPORTED_CLASSIFICATION', 'Unresolved or unsupported earning classification; no default taxable/exempt assumption.');

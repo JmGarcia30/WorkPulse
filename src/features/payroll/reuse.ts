@@ -16,6 +16,9 @@ export async function reusablePayrollSetup(db: Prisma.TransactionClient, organiz
   const parsed = statutoryInputSchema.safeParse(source.payload);
   if (!parsed.success) return null;
   const payload = parsed.data;
+  // Period-specific payments and deductions must never be copied into a future payment.
+  // Their contribution bases also need fresh review, so basic-only reuse is unavailable.
+  if (payload.additionalEarnings.length || payload.otherNetDeductions.length || !new Prisma.Decimal(payload.unionDues.amount).isZero()) return null;
   if (!new Prisma.Decimal(payload.monthlyPhilHealthBasic).eq(compensation[0].baseRate)) return null;
   return { sourceId: source.id, periodName: source.period.name, payload, evidenceReference: source.evidenceReference };
 }

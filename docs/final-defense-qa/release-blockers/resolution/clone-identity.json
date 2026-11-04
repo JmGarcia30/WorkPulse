@@ -1,0 +1,16 @@
+{
+  "capturedAt": "2026-11-02T12:41:16.589Z",
+  "status": "PASS",
+  "identity": {
+    "project": "late-block-61364102",
+    "branch": "br-odd-field-azce2cjf",
+    "endpoint": "ep-patient-cake-az9urbbj",
+    "database": "neondb",
+    "projectVerification": "requires-provider-mapping"
+  },
+  "providerProjectMapping": "Confirmed independently by Neon get_branch/list_branches",
+  "scope": "Local read-only guard check against rehearsal clone; not Vercel runtime or synthetic-only Preview approval",
+  "productionWrites": 0,
+  "migrationsExecuted": 0,
+  "externalMessages": 0
+}

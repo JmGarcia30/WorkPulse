@@ -1,0 +1,65 @@
+PASS 1: HR_ADMIN repeated incorrect credentials are rejected
+PASS 2: HR_ADMIN concurrent failures stop at the persistent five-attempt budget
+PASS 3: HR_ADMIN exhausted budget blocks even correct password
+PASS 4: HR_ADMIN correct password succeeds after window expiry
+PASS 5: ORGANIZATION_ADMIN repeated incorrect credentials are rejected
+PASS 6: ORGANIZATION_ADMIN concurrent failures stop at the persistent five-attempt budget
+PASS 7: ORGANIZATION_ADMIN exhausted budget blocks even correct password
+PASS 8: ORGANIZATION_ADMIN correct password succeeds after window expiry
+PASS 9: EMPLOYEE repeated incorrect credentials are rejected
+PASS 10: EMPLOYEE concurrent failures stop at the persistent five-attempt budget
+PASS 11: EMPLOYEE exhausted budget blocks even correct password
+PASS 12: EMPLOYEE correct password succeeds after window expiry
+PASS 13: Foreign credentials cannot authenticate in SAGA
+PASS 14: Foreign tenant retains its independent authentication budget
+PASS 15: Unknown identity fails without creating a user
+PASS 16: Overlong bcrypt input is rejected
+PASS 17: Malformed non-string identity is rejected
+PASS 18: Successful concurrent logins do not consume incorrect-password budget
+PASS 19: Tenant-wide cap stops random-identity attacks
+PASS 20: Exhausted tenant cap cannot create unbounded identity budget rows
+PASS 21: HR login action establishes session and preserves SAGA dashboard redirect
+PASS 22: HR session retains existing back-office guard
+PASS 23: Staff cookie retains secure host-only attributes
+PASS 24: Only token hash and scoped ownership are persisted
+PASS 25: Separate logins get independent unpredictable session identities
+PASS 26: Logout performs existing redirect
+PASS 27: Logout removes browser cookie
+PASS 28: Copied JWT is rejected server-side after logout
+PASS 29: Single-session logout preserves another valid browser session
+PASS 30: Missing workspace cannot claim successful browser-only logout
+PASS 31: Failed unscoped logout preserves cookie until revocation can be completed
+PASS 32: Rolled-back password change rolls back its session revocation too
+PASS 33: Valid staff JWT cannot cross tenant boundary
+PASS 34: Foreign-tenant logout cannot revoke another tenant session
+PASS 35: Password change atomically revokes all affected staff sessions
+PASS 36: Copied token fails immediately after password change
+PASS 37: Stale password comparison cannot issue a session after concurrent password change
+PASS 38: Restoring a prior password does not resurrect revoked tokens
+PASS 39: Clearing administrator credentials revokes its existing session
+PASS 40: Role change and restoration cannot resurrect old tokens
+PASS 41: Tenant membership change and restoration revoke the old token permanently
+PASS 42: Employee account disablement rejects existing staff token at shared boundary
+PASS 43: Disabled employee cannot password-authenticate
+PASS 44: Re-enabling employee account cannot resurrect old token
+PASS 45: Employee deactivation revokes the linked staff session
+PASS 46: Reactivating employee does not resurrect the token
+PASS 47: Active employee session still cannot enter HR back office
+PASS 48: Expired server-side session is rejected even with unexpired signed JWT
+PASS 49: Legacy JWT without revocable session identity fails closed
+PASS 50: Signed token without persisted session is rejected
+PASS 51: Expired JWT is rejected
+PASS 52: Malformed token is rejected
+PASS 53: Platform login and existing separate session mechanism still work
+PASS 54: Platform server-side logout remains intact
+PASS 55: Existing authorized HR can still open RFID kiosk
+PASS 56: Kiosk authorization retains kiosk cookie and removes HR cookie
+PASS 57: Kiosk authorization now also revokes copied HR token
+PASS 58: Independent RFID session remains valid after staff revocation
+PASS 59: Application ID alone still cannot authenticate a candidate
+PASS 60: Candidate one-use email proof still creates its separate session
+PASS 61: Verified candidate access still works
+PASS 62: Candidate proof remains non-replayable
+PASS 63: Invalid staff cookie cannot fall back to candidate access
+{"passed":true,"assertions":63}
+[WorkPulse Emailer] Sensitive email email_1793604264055_lb7fmb was not delivered; content was discarded.

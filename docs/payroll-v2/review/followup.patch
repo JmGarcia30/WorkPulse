@@ -1,0 +1,1585 @@
+diff --git a/prisma/migrations/20261104000100_payroll_simplification_v2/migration.sql b/prisma/migrations/20261104000100_payroll_simplification_v2/migration.sql
+index 022efdd..a4ba577 100644
+--- a/prisma/migrations/20261104000100_payroll_simplification_v2/migration.sql
++++ b/prisma/migrations/20261104000100_payroll_simplification_v2/migration.sql
+@@ -1,17 +1,24 @@
+ -- Additive only: existing payroll, compensation, policy and finalized snapshots are untouched.
++-- Pre-release revision: all objects are installed atomically. Production has not applied this migration.
++BEGIN;
+ CREATE TABLE "PayrollNotification" (
+  "id" TEXT PRIMARY KEY, "organizationId" TEXT NOT NULL, "employeeId" TEXT NOT NULL,
+  "payrollEntryId" TEXT NOT NULL UNIQUE, "recipientUserId" TEXT NOT NULL,
+- "actorUserId" TEXT NOT NULL, "message" TEXT NOT NULL, "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+- FOREIGN KEY ("payrollEntryId", "organizationId", "employeeId") REFERENCES "PayrollEntry"("id", "organizationId", "employeeId") ON DELETE RESTRICT ON UPDATE CASCADE
++ "actorUserId" TEXT NOT NULL, "message" TEXT NOT NULL CHECK (length(btrim("message")) > 0), "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
++ FOREIGN KEY ("payrollEntryId", "organizationId", "employeeId") REFERENCES "PayrollEntry"("id", "organizationId", "employeeId") ON DELETE RESTRICT ON UPDATE CASCADE,
++ FOREIGN KEY ("actorUserId", "organizationId") REFERENCES "User"("id", "organizationId") ON DELETE RESTRICT ON UPDATE CASCADE,
++ FOREIGN KEY ("recipientUserId", "organizationId") REFERENCES "User"("id", "organizationId") ON DELETE RESTRICT ON UPDATE CASCADE
+ );
+ CREATE INDEX "PayrollNotification_organizationId_recipientUserId_createdAt_idx" ON "PayrollNotification"("organizationId", "recipientUserId", "createdAt");
+ CREATE UNIQUE INDEX "PayrollNotification_payrollEntryId_organizationId_employeeId_key" ON "PayrollNotification"("payrollEntryId", "organizationId", "employeeId");
+ CREATE TABLE "PayrollInputRevision" (
+  "id" TEXT PRIMARY KEY, "organizationId" TEXT NOT NULL, "employeeId" TEXT NOT NULL,
+- "payrollPeriodId" TEXT NOT NULL, "actorUserId" TEXT NOT NULL, "reason" TEXT NOT NULL,
+- "before" JSONB NOT NULL, "after" JSONB NOT NULL, "previousEntry" JSONB,
+- "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP
++ "payrollPeriodId" TEXT NOT NULL, "actorUserId" TEXT NOT NULL, "reason" TEXT NOT NULL CHECK (length(btrim("reason")) > 0),
++ "before" JSONB NOT NULL CHECK (jsonb_typeof("before") = 'object'), "after" JSONB NOT NULL CHECK (jsonb_typeof("after") = 'object'), "previousEntry" JSONB,
++ "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
++ FOREIGN KEY ("employeeId", "organizationId") REFERENCES "Employee"("id", "organizationId") ON DELETE RESTRICT ON UPDATE CASCADE,
++ FOREIGN KEY ("payrollPeriodId", "organizationId") REFERENCES "PayrollPeriod"("id", "organizationId") ON DELETE RESTRICT ON UPDATE CASCADE,
++ FOREIGN KEY ("actorUserId", "organizationId") REFERENCES "User"("id", "organizationId") ON DELETE RESTRICT ON UPDATE CASCADE
+ );
+ CREATE INDEX "PayrollInputRevision_organizationId_payrollPeriodId_employeeId_idx" ON "PayrollInputRevision"("organizationId", "payrollPeriodId", "employeeId");
+ CREATE FUNCTION "payroll_v2_validate_insert"() RETURNS trigger LANGUAGE plpgsql AS $$
+@@ -20,7 +27,8 @@ BEGIN
+   RAISE EXCEPTION 'Payroll actor is outside authorized tenant';
+  END IF;
+  IF TG_TABLE_NAME='PayrollNotification' THEN
+-  IF NOT EXISTS (SELECT 1 FROM "PayrollEntry" e JOIN "PayrollPeriod" p ON p.id=e."payrollPeriodId"
++  IF NOT EXISTS (SELECT 1 FROM "PayrollEntry" e JOIN "PayrollPeriod" p ON p.id=e."payrollPeriodId" AND p."organizationId"=e."organizationId"
++    JOIN "Employee" employee ON employee.id=e."employeeId" AND employee."organizationId"=e."organizationId" AND employee."employeeStatus"='ACTIVE'
+     JOIN "EmployeeAccount" a ON a."employeeId"=e."employeeId" AND a."organizationId"=e."organizationId"
+     JOIN "User" u ON u.id=a."userId" AND u."organizationId"=e."organizationId"
+     WHERE e.id=NEW."payrollEntryId" AND e.status='FINALIZED' AND p.status='FINALIZED' AND p."finalizedAt" IS NOT NULL
+@@ -41,3 +49,6 @@ CREATE FUNCTION "payroll_v2_immutable"() RETURNS trigger LANGUAGE plpgsql AS $$
+ BEGIN RAISE EXCEPTION 'Payroll audit and notification records are immutable'; END $$;
+ CREATE TRIGGER "PayrollInputRevision_immutable" BEFORE UPDATE OR DELETE ON "PayrollInputRevision" FOR EACH ROW EXECUTE FUNCTION "payroll_v2_immutable"();
+ CREATE TRIGGER "PayrollNotification_immutable" BEFORE UPDATE OR DELETE ON "PayrollNotification" FOR EACH ROW EXECUTE FUNCTION "payroll_v2_immutable"();
++CREATE TRIGGER "PayrollInputRevision_no_truncate" BEFORE TRUNCATE ON "PayrollInputRevision" FOR EACH STATEMENT EXECUTE FUNCTION "payroll_v2_immutable"();
++CREATE TRIGGER "PayrollNotification_no_truncate" BEFORE TRUNCATE ON "PayrollNotification" FOR EACH STATEMENT EXECUTE FUNCTION "payroll_v2_immutable"();
++COMMIT;
+diff --git a/prisma/migrations/20261105000100_payroll_v2_index_names/migration.sql b/prisma/migrations/20261105000100_payroll_v2_index_names/migration.sql
+new file mode 100644
+index 0000000..b511543
+--- /dev/null
++++ b/prisma/migrations/20261105000100_payroll_v2_index_names/migration.sql
+@@ -0,0 +1,10 @@
++-- Normalize only the new V2 indexes to Prisma's 63-byte identifier convention.
++-- Historical table indexes and all payroll rows are unchanged.
++BEGIN;
++ALTER INDEX "PayrollInputRevision_organizationId_payrollPeriodId_employeeId_"
++  RENAME TO "PayrollInputRevision_organizationId_payrollPeriodId_employe_idx";
++ALTER INDEX "PayrollNotification_organizationId_recipientUserId_createdAt_id"
++  RENAME TO "PayrollNotification_organizationId_recipientUserId_createdA_idx";
++ALTER INDEX "PayrollNotification_payrollEntryId_organizationId_employeeId_ke"
++  RENAME TO "PayrollNotification_payrollEntryId_organizationId_employeeI_key";
++COMMIT;
+diff --git a/prisma/schema.prisma b/prisma/schema.prisma
+index f4a304f..9fac7c7 100644
+--- a/prisma/schema.prisma
++++ b/prisma/schema.prisma
+@@ -814,6 +814,9 @@ model User {
+   organizationBrandingAudits   OrganizationBrandingAudit[]
+   payrollPoliciesCreated       OrganizationPayrollPolicy[] @relation("PayrollPolicyCreatedBy")
+   payrollPeriodsFinalized     PayrollPeriod[]              @relation("PayrollPeriodFinalizedBy")
++  payrollNotificationsCreated PayrollNotification[] @relation("PayrollNotificationActor")
++  payrollNotificationsReceived PayrollNotification[] @relation("PayrollNotificationRecipient")
++  payrollInputRevisions PayrollInputRevision[]
+   separationCasesInitiated    EmployeeSeparationCase[]      @relation("SeparationInitiator")
+   separationCasesCancelled    EmployeeSeparationCase[]      @relation("SeparationCanceller")
+   separationNoticeExceptions EmployeeSeparationCase[]      @relation("SeparationNoticeException")
+@@ -1207,6 +1210,7 @@ model EmployeeNumberSequence {
+ }
+ 
+ model Employee {
++  payrollInputRevisions PayrollInputRevision[]
+   rfidCards RfidCard[]
+   rfidAudits RfidAudit[]
+   payrollStatutoryInputs PayrollStatutoryInput[]
+@@ -1356,6 +1360,7 @@ model EmployeeCompensation {
+ }
+ 
+ model PayrollPeriod {
++  inputRevisions PayrollInputRevision[]
+   statutoryInputs PayrollStatutoryInput[]
+   id             String              @id @default(cuid())
+   organizationId String
+@@ -1420,6 +1425,8 @@ model PayrollNotification {
+   message String
+   createdAt DateTime @default(now())
+   entry PayrollEntry @relation(fields: [payrollEntryId, organizationId, employeeId], references: [id, organizationId, employeeId], onDelete: Restrict)
++  actor User @relation("PayrollNotificationActor", fields: [actorUserId, organizationId], references: [id, organizationId], onDelete: Restrict)
++  recipient User @relation("PayrollNotificationRecipient", fields: [recipientUserId, organizationId], references: [id, organizationId], onDelete: Restrict)
+   @@unique([payrollEntryId, organizationId, employeeId])
+   @@index([organizationId, recipientUserId, createdAt])
+ }
+@@ -1436,6 +1443,9 @@ model PayrollInputRevision {
+   after Json
+   previousEntry Json?
+   createdAt DateTime @default(now())
++  employee Employee @relation(fields: [employeeId, organizationId], references: [id, organizationId], onDelete: Restrict)
++  period PayrollPeriod @relation(fields: [payrollPeriodId, organizationId], references: [id, organizationId], onDelete: Restrict)
++  actor User @relation(fields: [actorUserId, organizationId], references: [id, organizationId], onDelete: Restrict)
+   @@index([organizationId, payrollPeriodId, employeeId])
+ }
+ 
+diff --git a/scripts/payroll-v2-environment.cjs b/scripts/payroll-v2-environment.cjs
+index 15f0be6..5c630fb 100644
+--- a/scripts/payroll-v2-environment.cjs
++++ b/scripts/payroll-v2-environment.cjs
+@@ -4,10 +4,11 @@ const { parseEnv } = require('node:util');
+ const { spawn } = require('node:child_process');
+ const { randomBytes, createHash } = require('node:crypto');
+ const { PrismaClient } = require('@prisma/client');
+-const branch = 'br-green-king-azcpyvmo';
+-const profile = parseEnv(fs.readFileSync('.env.payroll-v2.local', 'utf8'));
++const rehearsal = process.argv.includes('--rehearsal');
++const branch = rehearsal ? 'br-lingering-dawn-azrdk13o' : 'br-green-king-azcpyvmo';
++const profile = parseEnv(fs.readFileSync(rehearsal ? '.env.payroll-v2-rehearsal.local' : '.env.payroll-v2.local', 'utf8'));
+ const url = new URL(profile.DATABASE_URL);
+-if (profile.PAYROLL_V2_TEST_BRANCH !== branch || !url.hostname.endsWith('.neon.tech')) throw Error('UNVERIFIED_TEST_PROFILE');
++if ((profile.PAYROLL_V2_TEST_BRANCH ?? profile.PAYROLL_REHEARSAL_BRANCH) !== branch || !url.hostname.endsWith('.neon.tech')) throw Error('UNVERIFIED_TEST_PROFILE');
+ for (const file of ['.env', '.env.recovery.local']) {
+   if (!fs.existsSync(file)) continue;
+   for (const [key, value] of Object.entries(parseEnv(fs.readFileSync(file, 'utf8')))) {
+@@ -24,6 +25,7 @@ async function main() {
+     console.log(JSON.stringify({ isolatedIdentity: identity, project: 'purple-tree-62095489' }));
+   } finally { await db.$disconnect(); }
+   const args = process.argv.slice(2);
++  if (args[0] === '--rehearsal') args.shift();
+   if (args.length) {
+     const child = spawn(process.execPath, args, { env: process.env, stdio: 'inherit' });
+     const code = await new Promise((resolve, reject) => { child.once('error', reject); child.once('exit', resolve); });
+diff --git a/scripts/payroll-v2-final-evidence.cjs b/scripts/payroll-v2-final-evidence.cjs
+new file mode 100644
+index 0000000..d407d2f
+--- /dev/null
++++ b/scripts/payroll-v2-final-evidence.cjs
+@@ -0,0 +1,44 @@
++/* eslint-disable @typescript-eslint/no-require-imports -- Final read-only preservation check on the isolated copy. */
++const fs = require('node:fs');
++const { parseEnv } = require('node:util');
++const { createHash } = require('node:crypto');
++const { PrismaClient } = require('@prisma/client');
++const { fingerprints } = require('./batch0-recovery-environment.cjs');
++const directory = 'docs/payroll-v2/review';
++const source = JSON.parse(fs.readFileSync(`${directory}/production-copy-source.json`, 'utf8'));
++const copy = JSON.parse(fs.readFileSync(`${directory}/production-copy-verified.json`, 'utf8'));
++const initial = JSON.parse(fs.readFileSync(`${directory}/initial-implementation-manifest.json`, 'utf8'));
++const profile = parseEnv(fs.readFileSync('.env.payroll-v2-rehearsal.local', 'utf8'));
++const url = new URL(profile.DATABASE_URL); url.searchParams.set('options', '-c default_transaction_read_only=on');
++const db = new PrismaClient({ datasources: { db: { url: url.href } }, log: [] });
++const digest = value => createHash('sha256').update(value).digest('hex');
++const newTables = ['PayrollNotification', 'PayrollInputRevision'];
++async function main() {
++  const [identity] = await db.$queryRaw`SELECT current_setting('neon.branch_id',true) AS branch_id,current_setting('default_transaction_read_only') AS read_only`;
++  if (identity.branch_id !== 'br-lingering-dawn-azrdk13o' || identity.read_only !== 'on') throw Error('UNVERIFIED_FINAL_READER');
++  const rows = await fingerprints(db, source.baseline.columns);
++  const histories = await db.$queryRaw`SELECT migration_name,checksum,finished_at IS NOT NULL AS finished,rolled_back_at IS NOT NULL AS rolled_back FROM "_prisma_migrations" ORDER BY migration_name,started_at`;
++  const migratedNames = ['20261104000100_payroll_simplification_v2', '20261105000100_payroll_v2_index_names'];
++  const originalHistory = histories.filter(row => !migratedNames.includes(row.migration_name));
++  const migrations = migratedNames.map(name => ({ name, localSha256: digest(fs.readFileSync(`prisma/migrations/${name}/migration.sql`)), records: histories.filter(row => row.migration_name === name) }));
++  const constraints = await db.$queryRaw`SELECT c.relname AS table_name,k.conname,k.contype,k.convalidated,pg_get_constraintdef(k.oid) AS definition FROM pg_constraint k JOIN pg_class c ON c.oid=k.conrelid JOIN pg_namespace n ON n.oid=c.relnamespace WHERE n.nspname='public' ORDER BY c.relname,k.conname`;
++  const triggers = await db.$queryRaw`SELECT c.relname AS table_name,t.tgname,t.tgenabled,pg_get_triggerdef(t.oid) AS definition FROM pg_trigger t JOIN pg_class c ON c.oid=t.tgrelid JOIN pg_namespace n ON n.oid=c.relnamespace WHERE n.nspname='public' AND NOT t.tgisinternal ORDER BY c.relname,t.tgname`;
++  const functions = await db.$queryRaw`SELECT p.proname,p.prosrc FROM pg_proc p JOIN pg_namespace n ON n.oid=p.pronamespace WHERE n.nspname='public' AND p.prorettype='trigger'::regtype ORDER BY p.proname`;
++  const indexes = await db.$queryRaw`SELECT tablename,indexname,indexdef FROM pg_indexes WHERE schemaname='public' ORDER BY tablename,indexname`;
++  const flags = {
++    originalDataUnchanged: JSON.stringify(rows.tables) === JSON.stringify(source.baseline.tables),
++    originalMigrationHistoryUnchanged: JSON.stringify(originalHistory) === JSON.stringify(source.migrations),
++    originalConstraintsUnchanged: JSON.stringify(constraints.filter(row => !newTables.includes(row.table_name))) === JSON.stringify(copy.schema.constraints),
++    originalTriggersUnchanged: JSON.stringify(triggers.filter(row => !newTables.includes(row.table_name))) === JSON.stringify(copy.schema.triggers),
++    originalFunctionsUnchanged: JSON.stringify(functions.filter(row => !row.proname.startsWith('payroll_v2_'))) === JSON.stringify(copy.schema.functions),
++    originalIndexesUnchanged: JSON.stringify(indexes.filter(row => !newTables.includes(row.tablename))) === JSON.stringify(copy.schema.indexes),
++    migrationsRecordedExactlyOnce: migrations.every(m => m.records.length === 1 && m.records[0].finished && !m.records[0].rolled_back && m.records[0].checksum === m.localSha256),
++    protectedUserAndEnvironmentFilesUnchanged: initial.protectedFiles.every(file => digest(fs.readFileSync(file.path)) === file.sha256),
++    uiFilesUnchangedDuringFollowup: initial.files.filter(file => file.path.endsWith('.tsx')).every(file => digest(fs.readFileSync(file.path)) === file.sha256),
++  };
++  const details = { passed: Object.values(flags).every(Boolean), capturedAt: new Date().toISOString(), identity, flags, originalTables: rows.tables.length, originalRows: rows.tables.reduce((sum, row) => sum + row.count, 0), migrations, rowFingerprints: rows.tables, productionWrites: 0, actualProductionPayrollGenerated: false, buildsDuringFollowup: 0, productionCopyContainsPayrollEntries: source.baseline.tables.find(row => row.table === 'PayrollEntry')?.count ?? null };
++  fs.writeFileSync(`${directory}/final-preservation.json`, JSON.stringify(details, null, 2));
++  console.log(JSON.stringify({ passed: details.passed, ...flags, tables: details.originalTables, rows: details.originalRows }));
++  if (!details.passed) process.exitCode = 1;
++}
++main().catch(error => { console.error(error.code || error.message); process.exitCode = 1; }).finally(() => db.$disconnect());
+diff --git a/scripts/payroll-v2-index-review.cjs b/scripts/payroll-v2-index-review.cjs
+new file mode 100644
+index 0000000..f1409ee
+--- /dev/null
++++ b/scripts/payroll-v2-index-review.cjs
+@@ -0,0 +1,48 @@
++/* eslint-disable @typescript-eslint/no-require-imports -- Only the isolated rehearsal branch may mutate. */
++const fs = require('node:fs');
++const path = require('node:path');
++const { parseEnv } = require('node:util');
++const { spawn } = require('node:child_process');
++const { createHash } = require('node:crypto');
++const { PrismaClient } = require('@prisma/client');
++const { fingerprints } = require('./batch0-recovery-environment.cjs');
++const directory = 'docs/payroll-v2/review', privateDirectory = path.resolve('storage/payroll-v2-review');
++const profile = parseEnv(fs.readFileSync('.env.payroll-v2-rehearsal.local', 'utf8'));
++const url = new URL(profile.DATABASE_URL); url.hostname = url.hostname.replace('-pooler.', '.');
++const db = new PrismaClient({ datasources: { db: { url: url.href } }, log: [] });
++const source = JSON.parse(fs.readFileSync(`${directory}/production-copy-source.json`, 'utf8'));
++const migration = '20261105000100_payroll_v2_index_names';
++const sql = fs.readFileSync(`prisma/migrations/${migration}/migration.sql`, 'utf8');
++const checks = [];
++function check(value, label) { if (!value) throw Error(label); checks.push(label); console.log('PASS', label); }
++function run(command, args, env) { return new Promise((resolve, reject) => { const child = spawn(command, args, { env, windowsHide: true, stdio: ['ignore', 'pipe', 'pipe'] }); let out = '', err = ''; child.stdout.on('data', c => { out += c; }); child.stderr.on('data', c => { err += c; }); child.once('error', reject); child.once('exit', code => resolve({ code, out, err })); }); }
++async function indexes() { return db.$queryRaw`SELECT tablename,indexname,indexdef FROM pg_indexes WHERE schemaname='public' ORDER BY tablename,indexname`; }
++async function main() {
++  const [identity] = await db.$queryRaw`SELECT current_setting('neon.branch_id',true) AS branch_id`;
++  check(identity.branch_id === 'br-lingering-dawn-azrdk13o', 'Index correction target is the verified isolated copy');
++  const beforeIndexes = await indexes();
++  const pgEnv = { ...process.env, PGHOST: url.hostname, PGDATABASE: decodeURIComponent(url.pathname.slice(1)), PGUSER: decodeURIComponent(url.username), PGPASSWORD: decodeURIComponent(url.password), PGSSLMODE: 'require' };
++  const failureFile = path.join(privateDirectory, 'index-failure.sql'); fs.writeFileSync(failureFile, sql.replace(/COMMIT;\s*$/, 'SELECT 1/0;\nCOMMIT;'));
++  const failed = await run(path.join(privateDirectory, 'pg-client/psql.exe'), ['--no-psqlrc', '--set=ON_ERROR_STOP=1', '--file=' + failureFile], pgEnv);
++  check(failed.code !== 0 && /division by zero/.test(failed.err) && JSON.stringify(await indexes()) === JSON.stringify(beforeIndexes), 'Injected index migration failure rolls back all renames');
++  const env = { ...process.env, DATABASE_URL: url.href, DIRECT_URL: url.href, VERCEL: '0', VERCEL_ENV: '', NEXT_TELEMETRY_DISABLED: '1' };
++  for (let attempt = 1; attempt <= 2; attempt++) {
++    const result = await run(process.execPath, ['node_modules/prisma/build/index.js', 'migrate', 'deploy'], env);
++    fs.writeFileSync(`${directory}/index-deploy-${attempt}.log`, result.out + result.err);
++    check(result.code === 0 && (attempt !== 2 || /No pending migrations/.test(result.out)), `Index migration deploy ${attempt} succeeds${attempt === 2 ? ' as a no-op' : ''}`);
++  }
++  const afterIndexes = await indexes();
++  const original = rows => rows.filter(row => !['PayrollNotification', 'PayrollInputRevision'].includes(row.tablename));
++  check(JSON.stringify(original(beforeIndexes)) === JSON.stringify(original(afterIndexes)), 'Every historical index is unchanged');
++  const data = await fingerprints(db, source.baseline.columns);
++  check(JSON.stringify(data.tables) === JSON.stringify(source.baseline.tables), 'All 75 original-table fingerprints still match the production snapshot');
++  const history = await db.$queryRaw`SELECT migration_name,checksum FROM "_prisma_migrations" WHERE migration_name=${migration} AND finished_at IS NOT NULL AND rolled_back_at IS NULL`;
++  check(history.length === 1 && history[0].checksum === createHash('sha256').update(sql).digest('hex'), 'Index migration is recorded once with the reviewed checksum');
++  // Use the datasource URL from env, so credentials never appear in command arguments.
++  const diff = await run(process.execPath, ['node_modules/prisma/build/index.js', 'migrate', 'diff', '--from-schema-datasource', 'prisma/schema.prisma', '--to-schema-datamodel', 'prisma/schema.prisma', '--script'], env);
++  fs.writeFileSync(`${directory}/schema-diff.sql`, diff.out); fs.writeFileSync(`${directory}/schema-diff.log`, diff.err);
++  check(diff.code === 0, 'Read-only Prisma schema diff completes');
++  check(!/PayrollNotification|PayrollInputRevision/.test(diff.out), 'No new V2 schema drift remains');
++  fs.writeFileSync(`${directory}/index-rehearsal.json`, JSON.stringify({ passed: true, branch: identity.branch_id, migration, checks, migrationHistory: history, newIndexes: afterIndexes.filter(row => !original([row]).length), inheritedSchemaDiffNotApplied: diff.out, preservation: data.tables }, null, 2));
++}
++main().catch(error => { console.error(error.code || error.message); process.exitCode = 1; }).finally(() => db.$disconnect());
+diff --git a/scripts/payroll-v2-migration-review.cjs b/scripts/payroll-v2-migration-review.cjs
+new file mode 100644
+index 0000000..caa7dbe
+--- /dev/null
++++ b/scripts/payroll-v2-migration-review.cjs
+@@ -0,0 +1,82 @@
++/* eslint-disable @typescript-eslint/no-require-imports -- Migration rehearsal only on the verified isolated production copy. */
++const fs = require('node:fs');
++const path = require('node:path');
++const { parseEnv } = require('node:util');
++const { spawn } = require('node:child_process');
++const { createHash, randomBytes } = require('node:crypto');
++const { PrismaClient } = require('@prisma/client');
++const { fingerprints } = require('./batch0-recovery-environment.cjs');
++const directory = 'docs/payroll-v2/review', privateDirectory = path.resolve('storage/payroll-v2-review');
++const branch = 'br-lingering-dawn-azrdk13o';
++const config = parseEnv(fs.readFileSync('.env.payroll-v2-rehearsal.local', 'utf8'));
++const url = new URL(config.DATABASE_URL); url.hostname = url.hostname.replace('-pooler.', '.');
++const verified = JSON.parse(fs.readFileSync(`${directory}/production-copy-verified.json`, 'utf8'));
++if (config.PAYROLL_REHEARSAL_BRANCH !== branch || !verified.passed || verified.identity.branch_id !== branch || verified.identity.endpoint_id !== url.hostname.split('.')[0]) throw Error('UNVERIFIED_MIGRATION_COPY');
++const db = new PrismaClient({ datasources: { db: { url: url.href } }, log: [] });
++const digest = value => createHash('sha256').update(value).digest('hex');
++const protectedFiles = ['.env', '.env.recovery.local', '.env.payroll-v2.local'];
++const beforeFiles = Object.fromEntries(protectedFiles.map(file => [file, digest(fs.readFileSync(file))]));
++const migration = '20261104000100_payroll_simplification_v2';
++const sql = fs.readFileSync(`prisma/migrations/${migration}/migration.sql`, 'utf8');
++const columns = JSON.parse(fs.readFileSync(`${directory}/production-copy-source.json`, 'utf8')).baseline.columns;
++const results = { checks: [], migration, migrationSha256: digest(sql), branch, productionWrites: 0, commands: [] };
++function check(value, label) { if (!value) throw Error(label); results.checks.push(label); console.log('PASS', label); }
++function run(command, args, options = {}) {
++  return new Promise((resolve, reject) => {
++    const child = spawn(command, args, { env: options.env, windowsHide: true, stdio: ['ignore', 'pipe', 'pipe'] }); let out = '', err = '';
++    child.stdout.on('data', chunk => { out += chunk; }); child.stderr.on('data', chunk => { err += chunk; });
++    child.once('error', reject); child.once('exit', code => resolve({ code, out, err }));
++  });
++}
++const pgEnv = { ...process.env, PGHOST: url.hostname, PGPORT: url.port || '5432', PGDATABASE: decodeURIComponent(url.pathname.slice(1)), PGUSER: decodeURIComponent(url.username), PGPASSWORD: decodeURIComponent(url.password), PGSSLMODE: 'require', PGOPTIONS: '-c statement_timeout=120000' };
++async function psql(file) { return run(path.join(privateDirectory, 'pg-client/psql.exe'), ['--no-psqlrc', '--set=ON_ERROR_STOP=1', '--file=' + file], { env: pgEnv }); }
++async function structure() {
++  return db.$queryRaw`SELECT c.relname AS table_name,k.conname,pg_get_constraintdef(k.oid) AS definition FROM pg_constraint k JOIN pg_class c ON c.oid=k.conrelid JOIN pg_namespace n ON n.oid=c.relnamespace WHERE n.nspname='public' ORDER BY c.relname,k.conname`;
++}
++async function main() {
++  const [identity] = await db.$queryRaw`SELECT current_setting('neon.branch_id',true) AS branch_id,current_setting('neon.endpoint_id',true) AS endpoint_id`;
++  check(identity.branch_id === branch && identity.endpoint_id === verified.identity.endpoint_id, 'Live target is the verified isolated production copy');
++  const resume = process.argv.includes('--resume');
++  if (resume) results.checks.push(...JSON.parse(fs.readFileSync(`${directory}/migration-rehearsal-failure.json`, 'utf8')).checks);
++  const initial = await fingerprints(db, columns), oldConstraints = (await structure()).filter(row => !['PayrollNotification', 'PayrollInputRevision'].includes(row.table_name));
++  check(JSON.stringify(initial.tables) === JSON.stringify(verified.rowFingerprints), 'All copied production records match the restored baseline before rehearsal');
++  const names = await db.$queryRaw`SELECT migration_name FROM "_prisma_migrations" WHERE finished_at IS NOT NULL AND rolled_back_at IS NULL ORDER BY migration_name`;
++  if (!resume) {
++  check(!names.some(row => row.migration_name === migration), 'Payroll V2 migration is unapplied on this copy');
++  const failureFile = path.join(privateDirectory, 'migration-failure-probe.sql');
++  fs.writeFileSync(failureFile, sql.replace(/COMMIT;\s*$/, 'SELECT 1/0;\nCOMMIT;'));
++  const failure = await psql(failureFile);
++  check(failure.code !== 0 && /division by zero/.test(failure.err), 'Injected end-of-migration failure is observed');
++  const [absent] = await db.$queryRaw`SELECT to_regclass('public."PayrollNotification"')::text AS notification,to_regclass('public."PayrollInputRevision"')::text AS revision`;
++  check(absent.notification === null && absent.revision === null && JSON.stringify(await structure()) === JSON.stringify(oldConstraints), 'Failed migration rolls back every new object and leaves original constraints unchanged');
++  const environment = { ...process.env, DATABASE_URL: url.href, DIRECT_URL: url.href, NODE_ENV: 'production', VERCEL: '0', VERCEL_ENV: '', NEXT_TELEMETRY_DISABLED: '1', SESSION_SECRET: randomBytes(48).toString('hex'), SMTP_HOST: '', SMTP_USER: '', SMTP_PASSWORD: '', GMAIL_USER: '', GMAIL_APP_PASSWORD: '' };
++  for (let attempt = 1; attempt <= 2; attempt++) {
++    const applied = await run(process.execPath, ['node_modules/prisma/build/index.js', 'migrate', 'deploy'], { env: environment });
++    fs.writeFileSync(`${directory}/migrate-deploy-${attempt}.log`, applied.out + applied.err);
++    check(applied.code === 0, `Prisma migrate deploy attempt ${attempt} succeeds`);
++    if (attempt === 2) check(/No pending migrations/.test(applied.out), 'Second Prisma deployment is a no-op');
++    results.commands.push({ command: 'prisma migrate deploy', attempt, exitCode: applied.code });
++  }
++  const directReplay = await psql(path.resolve(`prisma/migrations/${migration}/migration.sql`));
++  check(directReplay.code !== 0 && /already exists/.test(directReplay.err), 'Raw SQL replay fails closed instead of hiding schema drift');
++  }
++  const rollbackFile = path.join(privateDirectory, 'rollback-probe.sql');
++  const rollback = fs.readFileSync(`${directory}/rollback-pre-use.sql`, 'utf8').replace(/COMMIT;\s*$/, () => `DO $$ BEGIN IF to_regclass('public."PayrollNotification"') IS NOT NULL OR to_regclass('public."PayrollInputRevision"') IS NOT NULL THEN RAISE EXCEPTION 'rollback objects remain'; END IF; END $$;\nROLLBACK;`);
++  fs.writeFileSync(rollbackFile, rollback);
++  const rollbackResult = await psql(rollbackFile);
++  fs.writeFileSync(`${directory}/rollback-probe.log`, rollbackResult.out + rollbackResult.err);
++  check(rollbackResult.code === 0, 'Pre-use down-migration works transactionally and is rolled back to retain the migrated copy');
++  const after = await fingerprints(db, columns), currentConstraints = await structure();
++  check(JSON.stringify(after.tables) === JSON.stringify(initial.tables), 'All 75 original-table counts and full-row fingerprints remain identical after failure, deploy, retry and rollback probes');
++  check(JSON.stringify(currentConstraints.filter(row => !['PayrollNotification', 'PayrollInputRevision'].includes(row.table_name))) === JSON.stringify(oldConstraints), 'Every original constraint remains unchanged');
++  const constraints = await db.$queryRaw`SELECT c.relname AS table_name,k.conname,k.contype,k.convalidated,pg_get_constraintdef(k.oid) AS definition FROM pg_constraint k JOIN pg_class c ON c.oid=k.conrelid WHERE c.relname IN ('PayrollNotification','PayrollInputRevision') ORDER BY c.relname,k.conname`;
++  const triggers = await db.$queryRaw`SELECT c.relname AS table_name,t.tgname,t.tgenabled,pg_get_triggerdef(t.oid) AS definition FROM pg_trigger t JOIN pg_class c ON c.oid=t.tgrelid WHERE c.relname IN ('PayrollNotification','PayrollInputRevision') AND NOT t.tgisinternal ORDER BY c.relname,t.tgname`;
++  const history = await db.$queryRaw`SELECT migration_name,checksum FROM "_prisma_migrations" WHERE migration_name=${migration} AND finished_at IS NOT NULL AND rolled_back_at IS NULL`;
++  check(history.length === 1 && history[0].checksum === digest(sql), 'Migration history records the reviewed checksum exactly once');
++  check(constraints.every(row => row.convalidated) && constraints.filter(row => row.contype === 'f').length === 6, 'All six new tenant-scoped foreign keys are validated');
++  check(triggers.length === 6 && triggers.every(row => row.tgenabled === 'O'), 'Insert, update/delete and truncate guards are enabled on both new tables');
++  check(protectedFiles.every(file => digest(fs.readFileSync(file)) === beforeFiles[file]), 'Existing environment profiles remain byte-identical');
++  results.passed = true; results.constraints = constraints; results.triggers = triggers; results.migrationHistory = history; results.preservation = after.tables;
++  fs.writeFileSync(`${directory}/migration-rehearsal.json`, JSON.stringify(results, null, 2));
++}
++main().catch(error => { fs.writeFileSync(`${directory}/migration-rehearsal-failure.json`, JSON.stringify({ ...results, error: error.code || error.message }, null, 2)); console.error(error.code || error.message); process.exitCode = 1; }).finally(() => db.$disconnect());
+diff --git a/scripts/payroll-v2-official-evidence.cjs b/scripts/payroll-v2-official-evidence.cjs
+new file mode 100644
+index 0000000..b999018
+--- /dev/null
++++ b/scripts/payroll-v2-official-evidence.cjs
+@@ -0,0 +1,43 @@
++/* eslint-disable @typescript-eslint/no-require-imports -- Public official-source evidence, no WorkPulse credentials. */
++const fs = require('node:fs');
++const path = require('node:path');
++const { spawn } = require('node:child_process');
++const { createServer } = require('node:http');
++const directory = 'docs/payroll-v2/review';
++const pause = ms => new Promise(resolve => setTimeout(resolve, ms));
++async function main() {
++  const server = createServer((req, res) => { res.setHeader('Content-Type', 'application/pdf'); fs.createReadStream(`${directory}/rr29-2025.pdf`).pipe(res); });
++  await new Promise(resolve => server.listen(3142, '127.0.0.1', resolve));
++  const chrome = spawn('C:/Program Files/Google/Chrome/Application/chrome.exe', ['--headless=new', '--disable-gpu', '--no-proxy-server', '--no-first-run', '--disable-background-networking', '--remote-debugging-port=9249', '--user-data-dir=' + path.resolve('storage/payroll-v2-review/public-browser'), 'about:blank'], { windowsHide: true, stdio: 'ignore' });
++  let ws;
++  try {
++    let page;
++    for (let i = 0; i < 50; i++) { try { page = (await (await fetch('http://127.0.0.1:9249/json')).json()).find(p => p.type === 'page'); if (page) break; } catch {} await pause(200); }
++    if (!page) throw Error('PUBLIC_BROWSER_UNAVAILABLE');
++    ws = new WebSocket(page.webSocketDebuggerUrl);
++    await new Promise((resolve, reject) => { ws.onopen = resolve; ws.onerror = reject; });
++    let id = 0; const pending = new Map();
++    ws.onmessage = e => { const r = JSON.parse(e.data); if (r.id && pending.has(r.id)) { const p = pending.get(r.id); pending.delete(r.id); if (r.error) p.reject(Error('CDP_ERROR')); else p.resolve(r.result); } };
++    const send = (method, params = {}) => new Promise((resolve, reject) => { const current = ++id; pending.set(current, { resolve, reject }); ws.send(JSON.stringify({ id: current, method, params })); });
++    await send('Page.enable'); await send('Runtime.enable');
++    await send('Emulation.setDeviceMetricsOverride', { width: 1200, height: 1600, deviceScaleFactor: 1, mobile: false });
++    for (const pageNumber of [1, 2]) {
++      await send('Page.navigate', { url: `http://127.0.0.1:3142/rr29.pdf#page=${pageNumber}&zoom=page-fit` });
++      await pause(2500);
++      if (pageNumber === 2) {
++        await send('Input.dispatchMouseEvent', { type: 'mousePressed', x: 150, y: 350, button: 'left', clickCount: 1 });
++        await send('Input.dispatchMouseEvent', { type: 'mouseReleased', x: 150, y: 350, button: 'left', clickCount: 1 });
++        await pause(800);
++      }
++      const screenshot = await send('Page.captureScreenshot', { format: 'png' }); fs.writeFileSync(`${directory}/rr29-page-${pageNumber}.png`, Buffer.from(screenshot.data, 'base64'));
++    }
++    for (const [name, url] of [['bir-2026-regulations', 'https://www.bir.gov.ph/2026-Revenue-Regulations'], ['bir-2026-circulars', 'https://www.bir.gov.ph/2026-Revenue-Memorandum-Circulars'], ['bir-2025-regulations', 'https://www.bir.gov.ph/2025-Revenue-Regulations']]) {
++      if (process.argv.includes('--pdf-only')) break;
++      await send('Page.navigate', { url }); await pause(7000);
++      const result = await send('Runtime.evaluate', { expression: 'document.body.innerText', returnByValue: true });
++      fs.writeFileSync(`${directory}/${name}.txt`, result.result.value || 'Unavailable');
++      console.log(JSON.stringify({ source: url, characters: (result.result.value || '').length }));
++    }
++  } finally { ws?.close(); chrome.kill(); await new Promise(resolve => server.close(resolve)); }
++}
++main().catch(error => { console.error(error.message); process.exitCode = 1; });
+diff --git a/scripts/payroll-v2-production-copy.cjs b/scripts/payroll-v2-production-copy.cjs
+new file mode 100644
+index 0000000..6f52332
+--- /dev/null
++++ b/scripts/payroll-v2-production-copy.cjs
+@@ -0,0 +1,130 @@
++/* eslint-disable @typescript-eslint/no-require-imports -- Authorized read-only production dump; writes are pinned to a new isolated branch. */
++const fs = require('node:fs');
++const path = require('node:path');
++const { parseEnv } = require('node:util');
++const { spawn } = require('node:child_process');
++const { createHash } = require('node:crypto');
++const { PrismaClient } = require('@prisma/client');
++const { fingerprints } = require('./batch0-recovery-environment.cjs');
++const directory = 'docs/payroll-v2/review';
++const privateDirectory = path.resolve('storage/payroll-v2-review');
++const toolsDirectory = path.join(privateDirectory, 'pg-client');
++const sourceUrl = new URL(parseEnv(fs.readFileSync('.env', 'utf8')).DATABASE_URL);
++const targetProfile = parseEnv(fs.readFileSync('.env.payroll-v2-rehearsal.local', 'utf8'));
++const targetUrl = new URL(targetProfile.DATABASE_URL);
++const sourceBranch = 'br-hidden-violet-azjl3vam', targetBranch = 'br-lingering-dawn-azrdk13o';
++const sourceEndpoint = 'ep-weathered-mouse-azpx765h';
++const normalized = url => url.hostname.replace('-pooler.', '.');
++if (normalized(sourceUrl).split('.')[0] !== sourceEndpoint || targetProfile.PAYROLL_REHEARSAL_BRANCH !== targetBranch || normalized(sourceUrl) === normalized(targetUrl)) throw Error('UNVERIFIED_COPY_TARGET');
++sourceUrl.hostname = normalized(sourceUrl); targetUrl.hostname = normalized(targetUrl);
++sourceUrl.searchParams.set('options', '-c default_transaction_read_only=on -c statement_timeout=300000');
++targetUrl.searchParams.set('connect_timeout', '30');
++const source = new PrismaClient({ datasources: { db: { url: sourceUrl.href } }, log: [] });
++const target = new PrismaClient({ datasources: { db: { url: targetUrl.href } }, log: [] });
++const digest = bytes => createHash('sha256').update(bytes).digest('hex');
++const protectedFiles = ['.env', '.env.recovery.local', '.env.payroll-v2.local'];
++const protectedHashes = () => Object.fromEntries(protectedFiles.map(file => [file, digest(fs.readFileSync(file))]));
++const beforeFiles = protectedHashes();
++function save(name, value) { fs.writeFileSync(`${directory}/${name}.json`, JSON.stringify(value, null, 2)); }
++function pgEnvironment(url, readOnly) {
++  return { ...process.env, PGHOST: url.hostname, PGPORT: url.port || '5432', PGDATABASE: decodeURIComponent(url.pathname.slice(1)), PGUSER: decodeURIComponent(url.username), PGPASSWORD: decodeURIComponent(url.password), PGSSLMODE: 'require', PGCONNECT_TIMEOUT: '30', PGOPTIONS: readOnly ? '-c default_transaction_read_only=on -c statement_timeout=300000' : '-c statement_timeout=300000' };
++}
++function run(name, args, env) {
++  return new Promise((resolve, reject) => {
++    const child = spawn(path.join(toolsDirectory, name + '.exe'), args, { env, windowsHide: true, stdio: ['ignore', 'pipe', 'pipe'] });
++    let stdout = '', stderr = '';
++    child.stdout.on('data', chunk => { stdout += chunk; }); child.stderr.on('data', chunk => { stderr += chunk; });
++    child.once('error', reject); child.once('exit', code => {
++      if (code) { fs.writeFileSync(path.join(privateDirectory, name + '-error.log'), stderr); reject(Error(name.toUpperCase() + '_FAILED_' + code)); }
++      else resolve(stdout);
++    });
++  });
++}
++async function identity(db, branch, readOnly) {
++  const [state] = await db.$queryRaw`SELECT current_database() AS database,current_schema() AS schema,current_setting('neon.branch_id',true) AS branch_id,current_setting('neon.endpoint_id',true) AS endpoint_id,current_setting('default_transaction_read_only') AS read_only`;
++  if (state.branch_id !== branch || state.schema !== 'public' || (readOnly && state.read_only !== 'on')) throw Error('LIVE_COPY_IDENTITY_MISMATCH');
++  return state;
++}
++async function schemaMetadata(db) {
++  return {
++    constraints: await db.$queryRaw`SELECT c.relname AS table_name,k.conname,k.contype,k.convalidated,pg_get_constraintdef(k.oid) AS definition FROM pg_constraint k JOIN pg_class c ON c.oid=k.conrelid JOIN pg_namespace n ON n.oid=c.relnamespace WHERE n.nspname='public' ORDER BY c.relname,k.conname`,
++    triggers: await db.$queryRaw`SELECT c.relname AS table_name,t.tgname,t.tgenabled,pg_get_triggerdef(t.oid) AS definition FROM pg_trigger t JOIN pg_class c ON c.oid=t.tgrelid JOIN pg_namespace n ON n.oid=c.relnamespace WHERE n.nspname='public' AND NOT t.tgisinternal ORDER BY c.relname,t.tgname`,
++    functions: await db.$queryRaw`SELECT p.proname,p.prosrc FROM pg_proc p JOIN pg_namespace n ON n.oid=p.pronamespace WHERE n.nspname='public' AND p.prorettype='trigger'::regtype ORDER BY p.proname`,
++    indexes: await db.$queryRaw`SELECT tablename,indexname,indexdef FROM pg_indexes WHERE schemaname='public' ORDER BY tablename,indexname`,
++    enums: await db.$queryRaw`SELECT t.typname,e.enumlabel,e.enumsortorder FROM pg_type t JOIN pg_enum e ON e.enumtypid=t.oid JOIN pg_namespace n ON n.oid=t.typnamespace WHERE n.nspname='public' ORDER BY t.typname,e.enumsortorder`,
++  };
++}
++async function compareSchema(original, restored) {
++  const differences = [];
++  const normalized = structuredClone(restored);
++  for (const constraint of original.constraints) {
++    const copy = normalized.constraints.find(row => row.table_name === constraint.table_name && row.conname === constraint.conname);
++    if (!copy || JSON.stringify(copy) === JSON.stringify(constraint)) continue;
++    // PostgreSQL's dump/reparse flattens an associative AND group in this existing CHECK.
++    // Permit only this named, otherwise identical expression and prove boundary/null truth equivalence.
++    if (constraint.table_name !== 'WorkScheduleBreak' || constraint.conname !== 'WorkScheduleBreak_range_check'
++      || copy.definition.replace(/[()]/g, '') !== constraint.definition.replace(/[()]/g, '') || /\bOR\b/.test(copy.definition)) continue;
++    const left = constraint.definition.replace(/^CHECK /, ''), right = copy.definition.replace(/^CHECK /, '');
++    const [probe] = await target.$queryRawUnsafe(`SELECT bool_and((${left}) IS NOT DISTINCT FROM (${right})) AS equivalent, count(*)::int AS cases FROM (VALUES (NULL::integer),(-1),(0),(1),(86399),(86400),(86401)) a("startSecond") CROSS JOIN (VALUES (NULL::integer),(-1),(0),(1),(86399),(86400),(86401)) b("endSecond")`);
++    if (!probe.equivalent || probe.cases !== 49) throw Error('CHECK_SEMANTICS_CHANGED');
++    differences.push({ table: constraint.table_name, constraint: constraint.conname, source: constraint.definition, restored: copy.definition, equivalent: true, boundaryAndNullCases: probe.cases });
++    copy.definition = constraint.definition;
++  }
++  return { compatible: JSON.stringify(original) === JSON.stringify(normalized), textIdentical: JSON.stringify(original) === JSON.stringify(restored), differences };
++}
++async function verifyRestored(sourceEvidence, targetIdentity) {
++  const restored = await fingerprints(target, sourceEvidence.baseline.columns);
++  const schema = await schemaMetadata(target);
++  const comparison = await compareSchema(sourceEvidence.schema, schema);
++  const dataMatches = JSON.stringify(restored.tables) === JSON.stringify(sourceEvidence.baseline.tables);
++  const filesUnchanged = JSON.stringify(beforeFiles) === JSON.stringify(protectedHashes());
++  const evidence = { passed: dataMatches && comparison.compatible && filesUnchanged, identity: targetIdentity, sourceReadOnly: true, sourceSnapshotDumpSha256: sourceEvidence.dumpSha256, dataMatches, schemaMatches: comparison.compatible, schemaTextIdentical: comparison.textIdentical, schemaEquivalenceProbes: comparison.differences, protectedFilesUnchanged: filesUnchanged, appTableCount: restored.tables.length, rowFingerprints: restored.tables, schema, rawDumpLocation: 'Ignored private storage only; not included in review artifacts', note: 'Object ownership and ACLs intentionally use isolated database role; app schema/constraints/functions/triggers/indexes/enums and all app rows compared separately.' };
++  save('production-copy-verified', evidence);
++  if (!evidence.passed) throw Error('PRODUCTION_COPY_COMPARISON_FAILED');
++  console.log(JSON.stringify({ passed: true, appTableCount: restored.tables.length, sourceReadOnly: true, targetBranch, dataMatches, schemaMatches: comparison.compatible, schemaTextIdentical: comparison.textIdentical, equivalenceProbes: comparison.differences.length, protectedFilesUnchanged: filesUnchanged }));
++}
++async function main() {
++  const targetIdentity = await identity(target, targetBranch, false);
++  if (process.argv.includes('--verify-restored')) {
++    const saved = JSON.parse(fs.readFileSync(`${directory}/production-copy-source.json`, 'utf8'));
++    if (saved.sourceIdentity.branch_id !== sourceBranch || saved.targetIdentity.branch_id !== targetBranch) throw Error('UNVERIFIED_RESTORED_COPY');
++    return verifyRestored(saved, targetIdentity);
++  }
++  const tables = await target.$queryRaw`SELECT table_name FROM information_schema.tables WHERE table_schema='public' AND table_type='BASE TABLE'`;
++  if (tables.length) throw Error('RESTORE_REQUIRES_NEW_EMPTY_TEST_DATABASE');
++  const dumpPath = path.join(privateDirectory, 'production.dump');
++  let sourceEvidence;
++  if (process.argv.includes('--restore-existing-dump')) {
++    sourceEvidence = JSON.parse(fs.readFileSync(`${directory}/production-copy-source.json`, 'utf8'));
++    if (sourceEvidence.sourceIdentity.branch_id !== sourceBranch || sourceEvidence.targetIdentity.branch_id !== targetBranch || sourceEvidence.dumpSha256 !== digest(fs.readFileSync(dumpPath))) throw Error('UNVERIFIED_EXISTING_DUMP');
++  } else {
++    if (fs.existsSync(dumpPath)) throw Error('PROTECTED_DUMP_ALREADY_EXISTS');
++    await source.$transaction(async tx => {
++    const sourceIdentity = await identity(tx, sourceBranch, true);
++    if (sourceIdentity.endpoint_id !== sourceEndpoint) throw Error('WRONG_PRODUCTION_ENDPOINT');
++    const [snapshot] = await tx.$queryRaw`SELECT pg_export_snapshot() AS snapshot`;
++    const baseline = await fingerprints(tx);
++    const schema = await schemaMetadata(tx);
++    const migrations = await tx.$queryRaw`SELECT migration_name,checksum,finished_at IS NOT NULL AS finished,rolled_back_at IS NOT NULL AS rolled_back FROM "_prisma_migrations" ORDER BY migration_name,started_at`;
++    await run('pg_dump', ['--format=custom', '--compress=6', '--no-owner', '--no-acl', '--schema=public', '--snapshot=' + snapshot.snapshot, '--file=' + dumpPath], pgEnvironment(sourceUrl, true));
++    sourceEvidence = { capturedAt: new Date().toISOString(), sourceIdentity, targetIdentity, snapshotConsistency: 'Production hashes and pg_dump share one exported REPEATABLE READ snapshot', sourceReadOnly: true, productionSqlMutations: 0, baseline, schema, migrations, dumpSha256: digest(fs.readFileSync(dumpPath)), dumpBytes: fs.statSync(dumpPath).size };
++    save('production-copy-source', sourceEvidence);
++    }, { isolationLevel: 'RepeatableRead', timeout: 600000 });
++  }
++  // A schema-filtered dump omits extension installation; restore the source's extension prerequisites first.
++  await identity(source, sourceBranch, true);
++  const extensions = await source.$queryRaw`SELECT e.extname,e.extversion,n.nspname AS schema FROM pg_extension e JOIN pg_namespace n ON n.oid=e.extnamespace WHERE e.extname<>'plpgsql' ORDER BY e.extname`;
++  for (const extension of extensions) {
++    if (!['btree_gist', 'pgcrypto', 'citext', 'uuid-ossp', 'pg_trgm', 'vector'].includes(extension.extname) || extension.schema !== 'public' || !/^[0-9.]+$/.test(extension.extversion)) throw Error('UNREVIEWED_EXTENSION_DEPENDENCY');
++    await identity(target, targetBranch, false);
++    await target.$executeRawUnsafe('CREATE EXTENSION IF NOT EXISTS "' + extension.extname + '" WITH SCHEMA public VERSION \'' + extension.extversion + '\'');
++  }
++  save('production-copy-extensions', { sourceReadOnly: true, targetBranch, extensions, reason: 'Initial all-or-nothing restore identified btree_gist prerequisite; no source rows or schema were modified.' });
++  const listing = await run('pg_restore', ['--list', dumpPath], pgEnvironment(targetUrl, false));
++  const restoreList = path.join(privateDirectory, 'restore.list');
++  // The empty target already has the standard public namespace. Restore every contained app object.
++  fs.writeFileSync(restoreList, listing.split(/\r?\n/).filter(line => !/^\d+;.*\bSCHEMA - public\b/.test(line)).join('\n'));
++  await run('pg_restore', ['--no-owner', '--no-acl', '--single-transaction', '--exit-on-error', '--dbname=' + decodeURIComponent(targetUrl.pathname.slice(1)), '--use-list=' + restoreList, dumpPath], pgEnvironment(targetUrl, false));
++  await verifyRestored(sourceEvidence, targetIdentity);
++}
++main().catch(error => { console.error(error.code || error.message.replace(/postgres(?:ql)?:\/\/\S+/g, '[REDACTED]')); process.exitCode = 1; }).finally(async () => { await source.$disconnect(); await target.$disconnect(); });
+diff --git a/scripts/payroll-v2-review-artifacts.cjs b/scripts/payroll-v2-review-artifacts.cjs
+index f229149..3f11fd7 100644
+--- a/scripts/payroll-v2-review-artifacts.cjs
++++ b/scripts/payroll-v2-review-artifacts.cjs
+@@ -1,12 +1,13 @@
+ /* eslint-disable @typescript-eslint/no-require-imports -- Read-only Git evidence export, no index mutations. */
+ const fs = require('node:fs');
++const pathModule = require('node:path');
+ const { spawnSync } = require('node:child_process');
+ const { createHash } = require('node:crypto');
+ const directory = 'docs/payroll-v2/review';
+ fs.mkdirSync(directory, { recursive: true });
+ const digest = value => createHash('sha256').update(value).digest('hex');
+ function git(args) { const result = spawnSync('git', args, { encoding: 'utf8', maxBuffer: 16 * 1024 * 1024 }); if (result.status > 1) throw Error('GIT_EXPORT_FAILED'); return result.stdout; }
+-const tracked = git(['diff', '--name-only', 'HEAD', '--', 'src', 'prisma']).trim().split(/\r?\n/).filter(Boolean);
++const tracked = git(['diff', '--name-only', 'HEAD', '--', 'src', 'prisma', 'scripts']).trim().split(/\r?\n/).filter(file => file && (!file.startsWith('scripts/') || /payroll/.test(file)));
+ const added = git(['ls-files', '--others', '--exclude-standard', '--', 'src', 'prisma', 'scripts']).trim().split(/\r?\n/).filter(path => path && (/^(src|prisma)\//.test(path) || /scripts\/(payroll-v2|test-payroll-v2)/.test(path)));
+ const scripts = ['scripts/payroll-v2-environment.cjs', 'scripts/payroll-v2-browser.cjs', 'scripts/test-payroll-v2.ts', 'scripts/test-payroll-v2-edges.ts'];
+ const files = [...new Set([...tracked, ...added, ...scripts.filter(path => fs.existsSync(path))])].sort();
+@@ -18,4 +19,39 @@ fs.writeFileSync(`${directory}/${name}.patch`, patch);
+ const protectedFiles = ['.env', '.env.recovery.local', 'docs/final-defense-qa/release-blockers/emergency/browser-baseline.json', 'docs/final-defense-qa/release-blockers/emergency/commit-review.json', 'docs/final-defense-qa/release-blockers/session-key-fix/RESULT.md'];
+ const record = { baseCommit: git(['rev-parse', 'HEAD']).trim(), branch: git(['branch', '--show-current']).trim(), patchSha256: digest(patch), files: files.map(path => ({ path, sha256: digest(fs.readFileSync(path)) })), protectedFiles: protectedFiles.filter(path => fs.existsSync(path)).map(path => ({ path, sha256: digest(fs.readFileSync(path)) })) };
+ fs.writeFileSync(`${directory}/${name}-manifest.json`, JSON.stringify(record, null, 2));
++if (name === 'implementation') {
++  const initial = JSON.parse(fs.readFileSync(`${directory}/initial-implementation-manifest.json`, 'utf8'));
++  const initialPatch = fs.readFileSync(`${directory}/initial-implementation.patch`);
++  const root = 'storage/payroll-v2-review/initial-tree';
++  const marker = `${root}/.reconstructed`;
++  if (!fs.existsSync(marker)) {
++    for (const file of initial.files) {
++      if (!/^(src|prisma|scripts)\//.test(file.path) || file.path.includes('..')) throw Error('UNSAFE_BASELINE_PATH');
++      const target = `${root}/${file.path}`;
++      fs.mkdirSync(pathModule.dirname(target), { recursive: true });
++      const original = spawnSync('git', ['show', `${initial.baseCommit}:${file.path}`], { encoding: 'utf8', maxBuffer: 16 * 1024 * 1024 });
++      if (original.status === 0) fs.writeFileSync(target, original.stdout);
++    }
++    const applied = spawnSync('git', ['apply', '--unsafe-paths', '--directory=' + root, `${directory}/initial-implementation.patch`], { encoding: 'utf8' });
++    if (applied.status !== 0) { fs.writeFileSync('storage/payroll-v2-review/baseline-apply-error.log', applied.stderr); throw Error('BASELINE_RECONSTRUCTION_FAILED'); }
++    fs.writeFileSync(marker, digest(initialPatch));
++  }
++  if (fs.readFileSync(marker, 'utf8') !== digest(initialPatch)) throw Error('BASELINE_PATCH_CHANGED');
++  let delta = '';
++  for (const file of files) {
++    const previous = `${root}/${file}`;
++    const diff = git(['diff', '--no-index', '--binary', '--no-ext-diff', '--', fs.existsSync(previous) ? previous : '/dev/null', file]);
++    delta += diff.replaceAll('a/' + root + '/', 'a/');
++  }
++  fs.writeFileSync(`${directory}/followup.patch`, delta);
++  const verification = spawnSync('git', ['apply', '--reverse', '--check', `${directory}/implementation.patch`], { encoding: 'utf8' });
++  fs.writeFileSync(`${directory}/diff-verification.json`, JSON.stringify({ passed: verification.status === 0, completePatchSha256: digest(patch), followupPatchSha256: digest(delta), initialPatchSha256: digest(initialPatch), completePatchReverseCheck: verification.status, includesUntrackedSourceAndMigrationFiles: true, excludesEnvironmentCredentialsAndProductionRows: true }, null, 2));
++  // tsconfig includes all **/*.ts: do not leave reconstructed comparison sources in the workspace.
++  const cleanupRoot = pathModule.resolve(root);
++  if (pathModule.dirname(cleanupRoot) !== pathModule.resolve('storage/payroll-v2-review')
++    || !cleanupRoot.startsWith(pathModule.resolve('.') + pathModule.sep)
++    || fs.lstatSync(cleanupRoot).isSymbolicLink()) throw Error('UNSAFE_BASELINE_CLEANUP');
++  fs.rmSync(cleanupRoot, { recursive: true });
++  if (verification.status !== 0) throw Error('EXPORTED_PATCH_VERIFICATION_FAILED');
++}
+ console.log(JSON.stringify({ fileCount: files.length, patchSha256: record.patchSha256, baseCommit: record.baseCommit }));
+diff --git a/scripts/test-payroll-bir.ts b/scripts/test-payroll-bir.ts
+new file mode 100644
+index 0000000..4ce5e5b
+--- /dev/null
++++ b/scripts/test-payroll-bir.ts
+@@ -0,0 +1,349 @@
++import assert from 'node:assert/strict';
++import { test } from 'node:test';
++import { Prisma } from '@prisma/client';
++import {
++  assessBirTable, calculateBirWithholding, BirCalculationError,
++  type BirWithholdingInput, type BenefitHistory, type CashEarning, type TaxFrequency,
++} from '../src/features/payroll/bir';
++import { classifyCashEarnings } from '../src/features/payroll/bir/earnings';
++import { allocateContribution, calculateSss, calculatePhilHealth, calculatePagIbig } from '../src/features/payroll/statutory';
++
++const d = (value: string) => new Prisma.Decimal(value);
++const rejects = (fn: () => unknown, code: string) => assert.throws(fn, (error: unknown) => error instanceof BirCalculationError && error.code === code);
++function history(payDate = '2026-09-30'): BenefitHistory {
++  return {
++    organizationId: 'org', employeeId: 'employee', taxYear: payDate.slice(0, 4), paymentMonth: payDate.slice(0, 7),
++    reference: 'complete-ledger-before-payment', completeBeforeCurrentPayment: true,
++    riceExemptUsedThisMonth: '0', laundryExemptUsedThisMonth: '0', clothingExemptUsedThisYear: '0', otherBenefitsGrossPaidYtd: '0',
++  };
++}
++function input(salary = '35000', frequency: TaxFrequency = 'MONTHLY'): BirWithholdingInput {
++  return {
++    organizationId: 'org', employeeId: 'employee', periodId: 'period', currency: 'PHP', frequency,
++    periodStart: '2026-09-01', periodEnd: frequency === 'MONTHLY' ? '2026-09-30' : '2026-09-15',
++    payDate: frequency === 'MONTHLY' ? '2026-09-30' : '2026-09-15',
++    earningsComplete: true, grossCompensation: salary, earnings: [{ id: 'salary', kind: 'BASIC_SALARY', amount: salary }],
++    benefitHistory: history(frequency === 'MONTHLY' ? '2026-09-30' : '2026-09-15'),
++    profile: { residency: 'RESIDENT_CITIZEN_OR_RESIDENT_ALIEN', employment: 'PRIVATE_RANK_AND_FILE_SINGLE_EMPLOYER', minimumWageStatus: 'NOT_MWE', previousEmployerInTaxYear: false, cumulativeMethodAlreadyRequired: false, annualizationRequired: false, finalPayment: false },
++    statutoryDeductions: (['SSS', 'PHILHEALTH', 'PAGIBIG'] as const).map((agency, index) => ({
++      organizationId: 'org', employeeId: 'employee', periodId: 'period', contributionMonth: '2026-09', agency,
++      employeeShare: (frequency === 'MONTHLY' ? ['1750', '875', '200'] : ['875', '437.50', '100'])[index],
++      treatment: 'MANDATORY_EMPLOYEE_SHARE', reference: `${agency}-verified-allocation`,
++    })),
++    unionDues: { amount: '0', reference: 'confirmed-no-union-dues' }, otherNetDeductions: [],
++  };
++}
++function withEarnings(earnings: CashEarning[], overrides: Partial<BirWithholdingInput> = {}) {
++  return { ...input(), earnings, grossCompensation: earnings.reduce((total, item) => total.add(item.amount), d('0')), ...overrides };
++}
++function benefit(kind: CashEarning['kind'], amount: string, id: string = kind): CashEarning {
++  return { id, kind, amount, qualificationReference: 'reviewed-benefit-entitlement' };
++}
++
++// Independent transcription of Annex E fixed amounts at every threshold, plus samples.
++const officialRows: Record<TaxFrequency, readonly (readonly [string, string, string])[]> = {
++  MONTHLY: [
++    ['0', '0.00', '0.00'], ['20833', '0.00', '0.15'], ['33333', '1875.00', '0.20'],
++    ['66667', '8541.80', '0.25'], ['166667', '33541.80', '0.30'], ['666667', '183541.80', '0.35'],
++  ],
++  SEMI_MONTHLY: [
++    ['0', '0.00', '0.00'], ['10417', '0.00', '0.15'], ['16667', '937.50', '0.20'],
++    ['33333', '4270.70', '0.25'], ['83333', '16770.70', '0.30'], ['333333', '91770.70', '0.35'],
++  ],
++};
++for (const frequency of ['MONTHLY', 'SEMI_MONTHLY'] as const) {
++  for (const [index, [threshold, fixedTax, rate]] of officialRows[frequency].entries()) {
++    test(`${frequency} Annex E bracket ${index + 1}: exact threshold and adjacent centavos`, () => {
++      const assess = (amount: string) => assessBirTable({ payDate: '2026-09-30', frequency, taxableCompensation: amount });
++      const at = assess(threshold);
++      assert.equal(at.withholdingTax.toFixed(2), fixedTax);
++      assert.equal(at.bracket.number, index === 1 ? 1 : index + 1);
++      if (index > 0) {
++        const below = assess(d(threshold).sub('0.01').toFixed(2));
++        const aboveCent = assess(d(threshold).add('0.01').toFixed(2));
++        const [previousThreshold, previousFixed, previousRate] = officialRows[frequency][index - 1];
++        assert.equal(below.bracket.number, index);
++        assert(below.unroundedTax.eq(d(previousFixed).add(d(threshold).sub('0.01').sub(previousThreshold).mul(previousRate))));
++        assert.equal(aboveCent.bracket.number, index + 1);
++        assert(aboveCent.unroundedTax.eq(d(fixedTax).add(d('0.01').mul(rate))));
++        assert.equal(below.withholdingTax.toFixed(2), fixedTax);
++        assert.equal(aboveCent.withholdingTax.toFixed(2), fixedTax);
++      }
++      const above = assess(d(threshold).add('1').toFixed(2));
++      assert.equal(above.withholdingTax.toFixed(2), d(fixedTax).add(rate).toFixed(2));
++      assert.equal(above.bracket.number, index + 1);
++      assert.equal(at.tableVersion, 'BIR-RR11-2018-ANNEX-E-2023');
++      assert.equal(at.effectiveFrom, '2023-01-01');
++    });
++  }
++}
++
++for (const [frequency, amount, expected] of [
++  ['MONTHLY', '20000', '0.00'], ['MONTHLY', '30000', '1375.05'], ['MONTHLY', '50000', '5208.40'],
++  ['MONTHLY', '100000', '16875.05'], ['MONTHLY', '200000', '43541.70'], ['MONTHLY', '700000', '195208.35'],
++  ['SEMI_MONTHLY', '10000', '0.00'], ['SEMI_MONTHLY', '15000', '687.45'], ['SEMI_MONTHLY', '25000', '2604.10'],
++  ['SEMI_MONTHLY', '50000', '8437.45'], ['SEMI_MONTHLY', '100000', '21770.80'], ['SEMI_MONTHLY', '350000', '97604.15'],
++] as const) test(`${frequency} bracket sample ${amount}`, () => {
++  assert.equal(assessBirTable({ payDate: '2023-01-01', frequency, taxableCompensation: amount }).withholdingTax.toFixed(2), expected);
++});
++
++for (const [frequency, gross, taxable, expected] of [
++  ['MONTHLY', '42825', '40000', '3208.40'],
++  ['SEMI_MONTHLY', '21412.50', '20000', '1604.10'],
++] as const) test(`${frequency} requested taxable compensation ${taxable} gives ${expected}`, () => {
++  assert.equal(assessBirTable({ payDate: '2026-09-30', frequency, taxableCompensation: taxable }).withholdingTax.toFixed(2), expected);
++  const value = calculateBirWithholding(input(gross, frequency));
++  assert.equal(value.taxableCompensation.toFixed(2), d(taxable).toFixed(2));
++  assert.equal(value.withholdingTax.toFixed(2), expected);
++});
++
++test('Ordinary supplemental calculation selects the REGULAR bracket (RR 11-2018 step 3 / Illustration 9)', () => {
++  const value = assessBirTable({ payDate: '2026-09-30', frequency: 'MONTHLY', taxableCompensation: '165000', supplementaryCompensation: '5000' });
++  assert.equal(value.bracket.number, 4);
++  assert.equal(value.taxableCompensation.toFixed(2), '170000.00');
++  assert.equal(value.withholdingTax.toFixed(2), '34375.05');
++  // Illustration 9 uses 2018 rates and contains inconsistent printed totals; do not treat it as a 2023 numeric oracle.
++  assert.equal(assessBirTable({ payDate: '2026-09-15', frequency: 'SEMI_MONTHLY', taxableCompensation: '15500' }).withholdingTax.toFixed(2), '762.45');
++  // Same taxable input as official Illustration 8, repriced with Annex E (official 2018 tax was 1,016.60).
++});
++
++test('Half-cent final rounding is explicit and independent of Decimal global rounding mode', () => {
++  const previous = Prisma.Decimal.rounding;
++  try {
++    Prisma.Decimal.set({ rounding: Prisma.Decimal.ROUND_DOWN });
++    const value = assessBirTable({ payDate: '2026-09-30', frequency: 'MONTHLY', taxableCompensation: '66667.02' });
++    assert.equal(value.unroundedTax.toString(), '8541.805');
++    assert.equal(value.withholdingTax.toFixed(2), '8541.81');
++    assert.equal(assessBirTable({ payDate: '2026-09-15', frequency: 'SEMI_MONTHLY', taxableCompensation: '10417.10' }).withholdingTax.toFixed(2), '0.02');
++  } finally { Prisma.Decimal.set({ rounding: previous }); }
++});
++
++test('Gross / exemptions / mandatory shares / tax / net reconcile; inputs snapshotted without mutation', () => {
++  const request = input(); const before = JSON.stringify(request);
++  const value = calculateBirWithholding(request);
++  assert.equal(value.employeeStatutoryContributions.toFixed(2), '2825.00');
++  assert.equal(value.taxableCompensation.toFixed(2), '32175.00');
++  assert.equal(value.withholdingTax.toFixed(2), '1701.30');
++  assert.equal(value.netPay.toFixed(2), '30473.70');
++  assert(value.grossCompensation.eq(value.taxableCompensation.add(value.nonTaxableCompensation)));
++  assert(value.grossCompensation.eq(value.netPay.add(value.totalEmployeeDeductions)));
++  assert.deepEqual(value.inputs, request);
++  assert.equal(JSON.stringify(request), before);
++  request.earnings = [];
++  assert.equal((value.inputs.earnings as unknown[]).length, 1);
++});
++
++test('Semi-monthly uses period earnings and actual allocations, not half monthly tax', () => {
++  const value = calculateBirWithholding(input('17500', 'SEMI_MONTHLY'));
++  assert.equal(value.taxableCompensation.toFixed(2), '16087.50');
++  assert.equal(value.withholdingTax.toFixed(2), '850.58');
++  assert(!value.withholdingTax.eq(calculateBirWithholding(input()).withholdingTax.div(2)));
++  const second = input('17500', 'SEMI_MONTHLY');
++  second.periodStart = '2026-09-16'; second.periodEnd = '2026-09-30'; second.payDate = '2026-09-30';
++  assert.equal(calculateBirWithholding(second).withholdingTax.toFixed(2), '850.58');
++});
++
++test('Zero-tax ordinary non-MWE pay is supported after mandatory deductions', () => {
++  assert(calculateBirWithholding(input('20000')).withholdingTax.eq(0));
++  assert(calculateBirWithholding(input('10000', 'SEMI_MONTHLY')).withholdingTax.eq(0));
++});
++
++test('Qualifying benefits are exempt within caps and do not consume the 90,000 pool', () => {
++  const value = calculateBirWithholding(withEarnings([
++    ...input().earnings, benefit('RICE_SUBSIDY', '2500'), benefit('CLOTHING_ALLOWANCE', '8000'), benefit('LAUNDRY_ALLOWANCE', '400'),
++  ]));
++  assert.equal(value.nonTaxableBenefits.toFixed(2), '10900.00');
++  assert.equal(value.withholdingTax.toFixed(2), '1701.30');
++  assert(value.earnings.closingBalances.otherBenefitsGrossPaidYtd.eq(0));
++});
++
++test('Regular fixed allowances remain taxable; overtime and commissions are supplementary', () => {
++  const value = calculateBirWithholding(withEarnings([
++    ...input().earnings, { id: 'fixed', kind: 'FIXED_ALLOWANCE', amount: '1000' },
++    { id: 'ot', kind: 'OVERTIME', amount: '500' }, { id: 'commission', kind: 'COMMISSION', amount: '500' },
++  ]));
++  assert.equal(value.regularTaxableCompensation.toFixed(2), '33175.00');
++  assert.equal(value.supplementaryTaxableCompensation.toFixed(2), '1000.00');
++  assert.equal(value.withholdingTax.toFixed(2), '2001.30');
++});
++
++test('Exhausted 90,000 pool does not tax qualifying de minimis within its own ceilings', () => {
++  const request = withEarnings([
++    ...input().earnings, benefit('RICE_SUBSIDY', '2500'), benefit('CLOTHING_ALLOWANCE', '8000'), benefit('LAUNDRY_ALLOWANCE', '400'),
++    benefit('THIRTEENTH_MONTH', '100'), benefit('QUALIFYING_OTHER_BENEFIT', '100'),
++  ]);
++  request.benefitHistory.otherBenefitsGrossPaidYtd = '90000';
++  const value = calculateBirWithholding(request);
++  assert(value.nonTaxableBenefits.eq('10900'));
++  assert(value.supplementaryTaxableCompensation.eq('200'));
++  assert(value.earnings.closingBalances.otherBenefitsGrossPaidYtd.eq('90200'));
++});
++
++test('Employer counterparts and employer-only EC cannot be labeled as statutory employee deductions', () => {
++  for (const treatment of ['EMPLOYER_SHARE', 'EMPLOYER_ONLY_EC']) {
++    const request = input();
++    request.statutoryDeductions = request.statutoryDeductions.map((item, index) => index ? item : { ...item, treatment: treatment as never });
++    rejects(() => calculateBirWithholding(request), 'UNRESOLVED_STATUTORY');
++  }
++});
++
++test('Excess de minimis and 13th month share one annual pool; excess becomes supplementary', () => {
++  const request = withEarnings([...input().earnings, benefit('THIRTEENTH_MONTH', '1000'), benefit('RICE_SUBSIDY', '3500')]);
++  request.benefitHistory.otherBenefitsGrossPaidYtd = '89000';
++  const value = calculateBirWithholding(request);
++  assert.equal(value.nonTaxableBenefits.toFixed(2), '3500.00');
++  assert.equal(value.supplementaryTaxableCompensation.toFixed(2), '1000.00');
++  assert.equal(value.withholdingTax.toFixed(2), '1851.30');
++  assert.equal(value.earnings.closingBalances.otherBenefitsGrossPaidYtd.toFixed(2), '91000.00');
++});
++
++test('Same-category multiple lines and semi-monthly history cannot duplicate a monthly exemption', () => {
++  const request = withEarnings([...input().earnings, benefit('RICE_SUBSIDY', '1000', 'rice1'), benefit('RICE_SUBSIDY', '1000', 'rice2')]);
++  request.benefitHistory.riceExemptUsedThisMonth = '2000';
++  request.benefitHistory.otherBenefitsGrossPaidYtd = '90000';
++  const value = calculateBirWithholding(request);
++  assert(value.nonTaxableBenefits.eq('500'));
++  assert(value.supplementaryTaxableCompensation.eq('1500'));
++  assert(value.earnings.closingBalances.riceExemptUsedThisMonth.eq('2500'));
++});
++
++for (const [payDate, ruleVersion, rice, clothing, laundry] of [
++  ['2023-01-01', 'RR11-2018', '2000', '6000', '300'],
++  ['2025-02-13', 'RR11-2018', '2000', '6000', '300'],
++  ['2025-02-14', 'RR4-2025', '2000', '7000', '300'],
++  ['2026-01-05', 'RR4-2025', '2000', '7000', '300'],
++  ['2026-01-06', 'RR29-2025', '2500', '8000', '400'],
++  ['2026-10-22', 'RR29-2025', '2500', '8000', '400'],
++]) test(`Benefit amendment effectivity ${payDate}`, () => {
++  const value = classifyCashEarnings({ organizationId: 'org', employeeId: 'employee', payDate, history: history(payDate), earnings: [benefit('RICE_SUBSIDY', '5000'), benefit('CLOTHING_ALLOWANCE', '10000'), benefit('LAUNDRY_ALLOWANCE', '1000')] });
++  assert.equal(value.ruleVersion, ruleVersion);
++  assert.equal(value.lines[0].deMinimisExempt.toFixed(2), d(rice).toFixed(2));
++  assert.equal(value.lines[1].deMinimisExempt.toFixed(2), d(clothing).toFixed(2));
++  assert.equal(value.lines[2].deMinimisExempt.toFixed(2), d(laundry).toFixed(2));
++});
++
++test('Annual clothing exemption is not reset per cutoff or after a ceiling increase', () => {
++  const request = withEarnings([...input().earnings, benefit('CLOTHING_ALLOWANCE', '2000')]);
++  request.benefitHistory.clothingExemptUsedThisYear = '7000';
++  request.benefitHistory.otherBenefitsGrossPaidYtd = '90000';
++  const value = calculateBirWithholding(request);
++  assert(value.nonTaxableBenefits.eq('1000')); assert(value.supplementaryTaxableCompensation.eq('1000'));
++});
++
++test('Union dues reduce the tax base; voluntary savings/loans reduce net only', () => {
++  const request = input(); request.unionDues = { amount: '100', reference: 'union-ledger' };
++  request.otherNetDeductions = [{ id: 'voluntary', amount: '500', reference: 'voluntary-savings' }, { id: 'loan', amount: '500', reference: 'loan' }];
++  const value = calculateBirWithholding(request);
++  assert(value.taxableCompensation.eq('32075')); assert(value.withholdingTax.eq('1686.30'));
++  assert(value.netPay.eq('29388.70')); assert(value.otherNetDeductions.eq('1000'));
++});
++
++test('Every statutory agency must be present, unique, resolved, and scoped to this payment', () => {
++  for (const agency of ['SSS', 'PHILHEALTH', 'PAGIBIG']) {
++    const request = input(); request.statutoryDeductions = request.statutoryDeductions.filter(item => item.agency !== agency);
++    rejects(() => calculateBirWithholding(request), 'UNRESOLVED_STATUTORY');
++  }
++  const request = input();
++  rejects(() => calculateBirWithholding({ ...request, statutoryDeductions: [request.statutoryDeductions[0], request.statutoryDeductions[0], request.statutoryDeductions[2]] }), 'UNRESOLVED_STATUTORY');
++  for (const key of ['organizationId', 'employeeId', 'periodId', 'contributionMonth'] as const) {
++    rejects(() => calculateBirWithholding({ ...request, statutoryDeductions: request.statutoryDeductions.map((item, i) => i ? item : { ...item, [key]: 'wrong' }) }), 'STATUTORY_SCOPE_MISMATCH');
++  }
++  rejects(() => calculateBirWithholding({ ...request, statutoryDeductions: request.statutoryDeductions.map(item => ({ ...item, employeeShare: '0' })) }), 'UNRESOLVED_STATUTORY');
++  rejects(() => calculateBirWithholding({ ...request, statutoryDeductions: undefined as never }), 'UNRESOLVED_STATUTORY');
++});
++
++test('Reviewed statutory exemptions require evidence and zero deduction', () => {
++  const request = input(); request.statutoryDeductions = request.statutoryDeductions.map(item => ({ ...item, employeeShare: '0', treatment: 'REVIEWED_EXEMPT', legalBasis: 'reviewed-agency-exemption' }));
++  assert(calculateBirWithholding(request).employeeStatutoryContributions.eq(0));
++  rejects(() => calculateBirWithholding({ ...request, statutoryDeductions: request.statutoryDeductions.map(item => ({ ...item, legalBasis: '' })) }), 'INCOMPLETE_INPUT');
++  rejects(() => calculateBirWithholding({ ...request, statutoryDeductions: request.statutoryDeductions.map(item => ({ ...item, employeeShare: '1' })) }), 'UNRESOLVED_STATUTORY');
++});
++
++test('Phase 1 mandatory employee allocations feed the preview without employer shares or EC', () => {
++  const request = input('17500', 'SEMI_MONTHLY');
++  const context = { contributionMonth: '2026-09', currency: 'PHP' as const, arrangement: 'PRIVATE_EMPLOYEE_SINGLE_EMPLOYER_FULL_MONTH' as const, coverage: { status: 'MANDATORY' as const } };
++  const monthly = [calculateSss({ ...context, monthlyCompensation: '35000' }), calculatePhilHealth({ ...context, monthlyBasicSalary: '35000' }), calculatePagIbig({ ...context, monthlyFundSalary: '35000' })];
++  request.statutoryDeductions = monthly.map(result => {
++    const allocation = allocateContribution(result, { organizationId: 'org', employeeId: 'employee', frequency: 'SEMI_MONTHLY', slot: 'FIRST', priorAllocations: [] });
++    return { organizationId: 'org', employeeId: 'employee', periodId: 'period', contributionMonth: result.contributionMonth, agency: result.agency, employeeShare: allocation.employee, treatment: 'MANDATORY_EMPLOYEE_SHARE', reference: allocation.allocationKey };
++  });
++  const value = calculateBirWithholding(request);
++  assert(value.employeeStatutoryContributions.eq('1412.50'));
++  assert(value.withholdingTax.eq('850.58'));
++  assert(value.netPay.eq('15236.92'));
++});
++
++test('Explicit zero cash pay with reviewed zero-share coverage is distinguishable from missing pay', () => {
++  const request = input('0');
++  request.statutoryDeductions = request.statutoryDeductions.map(item => ({ ...item, employeeShare: '0', treatment: 'REVIEWED_EXEMPT', legalBasis: 'reviewed-no-deduction-this-period' }));
++  const value = calculateBirWithholding(request);
++  assert(value.grossCompensation.eq(0)); assert(value.withholdingTax.eq(0)); assert(value.netPay.eq(0));
++});
++
++test('Missing history, wrong scope and excessive claimed exemptions fail', () => {
++  const request = input();
++  rejects(() => calculateBirWithholding({ ...request, benefitHistory: undefined as never }), 'INCOMPLETE_BENEFIT_HISTORY');
++  for (const key of ['organizationId', 'employeeId', 'taxYear', 'paymentMonth'] as const) rejects(() => calculateBirWithholding({ ...request, benefitHistory: { ...request.benefitHistory, [key]: 'wrong' } }), 'INCOMPLETE_BENEFIT_HISTORY');
++  rejects(() => calculateBirWithholding({ ...request, benefitHistory: { ...request.benefitHistory, completeBeforeCurrentPayment: false as never } }), 'INCOMPLETE_BENEFIT_HISTORY');
++  rejects(() => calculateBirWithholding({ ...request, benefitHistory: { ...request.benefitHistory, riceExemptUsedThisMonth: '2500.01' } }), 'INVALID_BENEFIT_HISTORY');
++});
++
++test('Unsupported benefits and missing qualification cannot become tax-free compensation', () => {
++  for (const kind of ['NON_TAXABLE', 'UNKNOWN', 'MWE_SALARY', 'RETIREMENT', 'HEALTH_EMERGENCY_ALLOWANCE', 'ACHIEVEMENT_AWARD', 'DEPENDENT_MEDICAL', 'MEAL_ALLOWANCE', 'NONCASH_FRINGE_BENEFIT']) {
++    rejects(() => calculateBirWithholding(withEarnings([...input().earnings, { id: 'unsupported', kind: kind as never, amount: '100' }])), 'UNSUPPORTED_CLASSIFICATION');
++  }
++  rejects(() => calculateBirWithholding(withEarnings([...input().earnings, { id: 'rice', kind: 'RICE_SUBSIDY', amount: '100' }])), 'INCOMPLETE_INPUT');
++  rejects(() => calculateBirWithholding(withEarnings([...input().earnings, ...input().earnings])), 'DUPLICATE_EARNING');
++});
++
++test('MWE, unknown profiles, previous employers and exceptional methods cannot return ordinary zero tax', () => {
++  const request = input('20000');
++  rejects(() => calculateBirWithholding({ ...request, profile: undefined as never }), 'INCOMPLETE_PROFILE');
++  for (const minimumWageStatus of ['MWE', 'UNKNOWN', undefined]) rejects(() => calculateBirWithholding({ ...request, profile: { ...request.profile, minimumWageStatus: minimumWageStatus as never } }), 'UNSUPPORTED_TAX_PROFILE');
++  for (const key of ['previousEmployerInTaxYear', 'cumulativeMethodAlreadyRequired', 'annualizationRequired', 'finalPayment'] as const) {
++    rejects(() => calculateBirWithholding({ ...request, profile: { ...request.profile, [key]: true } as never }), 'EXCEPTIONAL_METHOD_REQUIRED');
++    rejects(() => calculateBirWithholding({ ...request, profile: { ...request.profile, [key]: undefined } as never }), 'INCOMPLETE_PROFILE');
++  }
++  rejects(() => calculateBirWithholding({ ...request, profile: { ...request.profile, residency: 'NONRESIDENT' as never } }), 'UNSUPPORTED_TAX_PROFILE');
++});
++
++test('Current supplemental triggers require cumulative average method, including taxable benefit overflow', () => {
++  rejects(() => calculateBirWithholding(withEarnings([{ id: 'salary', kind: 'BASIC_SALARY', amount: '20000' }, { id: 'ot', kind: 'OVERTIME', amount: '100' }])), 'EXCEPTIONAL_METHOD_REQUIRED');
++  rejects(() => calculateBirWithholding(withEarnings([...input().earnings, { id: 'commission', kind: 'COMMISSION', amount: '35000' }])), 'EXCEPTIONAL_METHOD_REQUIRED');
++  const request = withEarnings([{ id: 'salary', kind: 'BASIC_SALARY', amount: '20000' }, benefit('THIRTEENTH_MONTH', '1')]);
++  request.benefitHistory.otherBenefitsGrossPaidYtd = '90000';
++  rejects(() => calculateBirWithholding(request), 'EXCEPTIONAL_METHOD_REQUIRED');
++});
++
++test('Missing/inconsistent earnings, union dues, net deductions and unsafe balances fail', () => {
++  const request = input();
++  rejects(() => calculateBirWithholding({ ...request, earningsComplete: undefined as never }), 'INCOMPLETE_INPUT');
++  rejects(() => calculateBirWithholding({ ...request, earnings: [] }), 'INCOMPLETE_INPUT');
++  rejects(() => calculateBirWithholding({ ...request, grossCompensation: '35001' }), 'UNRECONCILED_GROSS');
++  rejects(() => calculateBirWithholding({ ...request, unionDues: undefined as never }), 'INCOMPLETE_INPUT');
++  rejects(() => calculateBirWithholding({ ...request, otherNetDeductions: undefined as never }), 'INCOMPLETE_INPUT');
++  const loan = { id: 'loan', amount: '1', reference: 'loan' };
++  rejects(() => calculateBirWithholding({ ...request, otherNetDeductions: [loan, loan] }), 'DUPLICATE_DEDUCTION');
++  rejects(() => calculateBirWithholding({ ...request, otherNetDeductions: [{ ...loan, amount: '35000' }] }), 'INSUFFICIENT_NET_PAY');
++  rejects(() => calculateBirWithholding(input('1000')), 'UNSUPPORTED_DEDUCTION_ALLOCATION');
++});
++
++test('Monetary inputs reject binary numbers, missing, negative, subcentavo, nonfinite and overflow amounts', () => {
++  for (const amount of ['-1', '1.001', 'NaN', 'Infinity', '10000000000', 'invalid']) rejects(() => assessBirTable({ payDate: '2026-09-30', frequency: 'MONTHLY', taxableCompensation: amount }), 'INVALID_MONEY');
++  for (const amount of ['', ' ', undefined, null, 10000]) rejects(() => assessBirTable({ payDate: '2026-09-30', frequency: 'MONTHLY', taxableCompensation: amount as never }), 'INCOMPLETE_INPUT');
++  assert(assessBirTable({ payDate: '2026-09-30', frequency: 'MONTHLY', taxableCompensation: d('30000') }).withholdingTax.eq('1375.05'));
++});
++
++test('Effective date verification, calendar periods and tax payment dates are explicit', () => {
++  for (const payDate of ['2022-12-31', '2026-12-01', '2027-01-01']) rejects(() => assessBirTable({ payDate, frequency: 'MONTHLY', taxableCompensation: '30000' }), 'UNVERIFIED_RULES');
++  for (const payDate of ['2026-02-30', '', '2026-1-01']) rejects(() => assessBirTable({ payDate, frequency: 'MONTHLY', taxableCompensation: '30000' }), 'INVALID_DATE');
++  rejects(() => calculateBirWithholding({ ...input(), frequency: 'BIWEEKLY' as never }), 'UNSUPPORTED_FREQUENCY');
++  rejects(() => calculateBirWithholding({ ...input(), currency: 'USD' as never }), 'UNSUPPORTED_CURRENCY');
++  rejects(() => calculateBirWithholding({ ...input(), periodStart: '2026-09-02' }), 'UNSUPPORTED_PERIOD');
++  rejects(() => calculateBirWithholding({ ...input(), periodStart: '2026-08-01' }), 'UNSUPPORTED_PERIOD');
++  rejects(() => calculateBirWithholding({ ...input(), payDate: '2026-09-15' }), 'UNSUPPORTED_PERIOD');
++  const request = input(); request.payDate = '2026-10-15'; request.benefitHistory = history(request.payDate);
++  assert.equal(calculateBirWithholding(request).assessment.payDate, '2026-10-15');
++  const yearEnd = input(); yearEnd.periodStart = '2025-12-01'; yearEnd.periodEnd = '2025-12-31'; yearEnd.payDate = '2025-12-31';
++  rejects(() => calculateBirWithholding(yearEnd), 'EXCEPTIONAL_METHOD_REQUIRED');
++});
+diff --git a/scripts/test-payroll-statutory.ts b/scripts/test-payroll-statutory.ts
+new file mode 100644
+index 0000000..b9fce2d
+--- /dev/null
++++ b/scripts/test-payroll-statutory.ts
+@@ -0,0 +1,256 @@
++import assert from 'node:assert/strict';
++import { test } from 'node:test';
++import { Prisma } from '@prisma/client';
++import {
++  allocateContribution, calculatePagIbig, calculatePhilHealth, calculateSss,
++  splitPhilHealthPremium, StatutoryContributionError,
++  type ContributionContext, type ContributionResult,
++} from '../src/features/payroll/statutory';
++
++const context: ContributionContext = {
++  contributionMonth: '2026-10', currency: 'PHP',
++  arrangement: 'PRIVATE_EMPLOYEE_SINGLE_EMPLOYER_FULL_MONTH', coverage: { status: 'MANDATORY' },
++};
++const sss = (salary: string, overrides: Partial<ContributionContext> = {}) => calculateSss({ ...context, ...overrides, monthlyCompensation: salary });
++const ph = (salary: string) => calculatePhilHealth({ ...context, monthlyBasicSalary: salary });
++const pi = (salary: string) => calculatePagIbig({ ...context, monthlyFundSalary: salary });
++const decimal = (value: string) => new Prisma.Decimal(value);
++const rejects = (fn: () => unknown, code: string) => assert.throws(fn, (error: unknown) => error instanceof StatutoryContributionError && error.code === code);
++function amounts(value: ContributionResult, ee: string, er: string, ec = '0') {
++  assert.equal(value.employee.toFixed(2), decimal(ee).toFixed(2));
++  assert.equal(value.employer.toFixed(2), decimal(er).toFixed(2));
++  assert.equal(value.employerOnly.toFixed(2), decimal(ec).toFixed(2));
++  assert(value.employerTotal.eq(decimal(er).add(ec)));
++  assert(value.totalRemittance.eq(decimal(ee).add(er).add(ec)));
++}
++
++// Independently transcribed Circular 2024-006 table: MSC, EE total, ER total incl EC, EC.
++// These are published table values, not generated by the calculator formula.
++const officialSssRows = `
++5000 250 510 10
++5500 275 560 10
++6000 300 610 10
++6500 325 660 10
++7000 350 710 10
++7500 375 760 10
++8000 400 810 10
++8500 425 860 10
++9000 450 910 10
++9500 475 960 10
++10000 500 1010 10
++10500 525 1060 10
++11000 550 1110 10
++11500 575 1160 10
++12000 600 1210 10
++12500 625 1260 10
++13000 650 1310 10
++13500 675 1360 10
++14000 700 1410 10
++14500 725 1460 10
++15000 750 1530 30
++15500 775 1580 30
++16000 800 1630 30
++16500 825 1680 30
++17000 850 1730 30
++17500 875 1780 30
++18000 900 1830 30
++18500 925 1880 30
++19000 950 1930 30
++19500 975 1980 30
++20000 1000 2030 30
++20500 1025 2080 30
++21000 1050 2130 30
++21500 1075 2180 30
++22000 1100 2230 30
++22500 1125 2280 30
++23000 1150 2330 30
++23500 1175 2380 30
++24000 1200 2430 30
++24500 1225 2480 30
++25000 1250 2530 30
++25500 1275 2580 30
++26000 1300 2630 30
++26500 1325 2680 30
++27000 1350 2730 30
++27500 1375 2780 30
++28000 1400 2830 30
++28500 1425 2880 30
++29000 1450 2930 30
++29500 1475 2980 30
++30000 1500 3030 30
++30500 1525 3080 30
++31000 1550 3130 30
++31500 1575 3180 30
++32000 1600 3230 30
++32500 1625 3280 30
++33000 1650 3330 30
++33500 1675 3380 30
++34000 1700 3430 30
++34500 1725 3480 30
++35000 1750 3530 30
++`.trim().split('\n').map(line => line.split(' '));
++
++for (const [index, [msc, ee, employerTotal, ec]] of officialSssRows.entries()) {
++  test(`SSS official MSC ${msc}: lower, middle and upper salary boundaries`, () => {
++    const center = decimal(msc);
++    const lower = index === 0 ? decimal('0.01') : center.sub(250);
++    const upper = index === 60 ? decimal('9999999999.99') : center.add('249.99');
++    for (const salary of [lower, center, upper]) {
++      const calculated = sss(salary.toFixed(2));
++      amounts(calculated, ee, decimal(employerTotal).sub(ec).toFixed(2), ec);
++      assert(calculated.assessedBasis!.eq(msc));
++    }
++  });
++}
++
++test('SSS exact EC and MPF transitions; component totals', () => {
++  amounts(sss('14749.99'), '725', '1450', '10');
++  amounts(sss('14750'), '750', '1500', '30');
++  const a = sss('20249.99'), b = sss('20250'), c = sss('34750');
++  assert(a.components[1].employee.eq(0));
++  assert(b.components[0].employee.eq(1000));
++  assert(b.components[1].employee.eq(25));
++  assert(b.components[1].employer.eq(50));
++  assert(c.components[1].employee.eq(750));
++  assert(c.components[1].employer.eq(1500));
++  assert(c.totalRemittance.eq(5280));
++  for (const share of ['employee', 'employer', 'employerOnly'] as const) {
++    assert(c.components.reduce((sum, item) => sum.add(item[share]), decimal('0')).eq(c[share]));
++  }
++});
++
++for (const [salary, ee, er] of [
++  ['0.01', '250', '250'], ['9999.99', '250', '250'], ['10000', '250', '250'],
++  ['10000.01', '250', '250'], ['10000.10', '250', '250.01'],
++  ['10000.20', '250', '250.01'], ['20000', '500', '500'],
++  ['99999.99', '2500', '2500'], ['100000', '2500', '2500'], ['100000.01', '2500', '2500'],
++]) test(`PhilHealth salary ${salary}: floor/ceiling/odd cent`, () => amounts(ph(salary), ee, er));
++
++test('PhilHealth published 2018 rounding examples (rounding only, not obsolete rate)', () => {
++  for (const [total, ee, er] of [['309.375', '154.69', '154.69'], ['698.775', '349.39', '349.39'], ['618.75', '309.37', '309.38']]) {
++    const shares = splitPhilHealthPremium(decimal(total));
++    assert(shares.employee.eq(ee)); assert(shares.employer.eq(er));
++  }
++});
++
++for (const [salary, ee, er] of [
++  ['1000', '10', '20'], ['1499', '14.99', '29.98'], ['1500', '15', '30'],
++  ['1500.50', '30.01', '30.01'], ['8000', '160', '160'], ['9999.50', '199.99', '199.99'],
++  ['10000', '200', '200'], ['10000.01', '200', '200'], ['100000', '200', '200'],
++]) test(`Pag-IBIG Circular 460 rates: salary ${salary}`, () => amounts(pi(salary), ee, er));
++
++test('Pag-IBIG does not invent a fractional-centavo rounding rule', () => {
++  for (const salary of ['1499.99', '1500.01', '9999.99']) rejects(() => pi(salary), 'ROUNDING_UNVERIFIED');
++});
++
++test('Each agency uses its own explicitly resolved monthly basis', () => {
++  amounts(sss('25000'), '1250', '2500', '30');
++  amounts(ph('20000'), '500', '500');
++  amounts(pi('22000'), '200', '200');
++});
++
++test('Effective dates inclusive; unsupported history and future fail closed', () => {
++  assert.equal(sss('10000', { contributionMonth: '2025-01' }).schedule.id, 'SSS-BUSINESS-2025-01');
++  assert.equal(calculatePagIbig({ ...context, contributionMonth: '2024-02', monthlyFundSalary: '10000' }).employee.toFixed(2), '200.00');
++  for (const month of ['2024-12', '2026-12', '2027-01']) rejects(() => sss('10000', { contributionMonth: month }), 'UNVERIFIED_SCHEDULE');
++  rejects(() => calculatePhilHealth({ ...context, contributionMonth: '2024-12', monthlyBasicSalary: '20000' }), 'UNVERIFIED_SCHEDULE');
++  rejects(() => calculatePagIbig({ ...context, contributionMonth: '2024-01', monthlyFundSalary: '10000' }), 'UNVERIFIED_SCHEDULE');
++  for (const month of ['', '2026-00', '2026-13', '2026-1', '2026-01-15', '0000-01']) rejects(() => sss('10000', { contributionMonth: month }), 'INVALID_MONTH');
++});
++
++test('Unresolved coverage and unsupported arrangements/currency fail closed', () => {
++  rejects(() => sss('10000', { coverage: undefined as never }), 'UNRESOLVED_COVERAGE');
++  rejects(() => sss('10000', { coverage: { status: 'UNKNOWN' } as never }), 'UNRESOLVED_COVERAGE');
++  for (const arrangement of ['KASAMBAHAY', 'SELF_EMPLOYED', 'GOVERNMENT', 'PARTIAL_MONTH', 'MULTIPLE_EMPLOYERS', undefined]) {
++    rejects(() => sss('10000', { arrangement: arrangement as never }), 'UNSUPPORTED_ARRANGEMENT');
++  }
++  rejects(() => sss('10000', { currency: 'USD' as never }), 'UNSUPPORTED_CURRENCY');
++});
++
++test('Explicit reviewed exemption is distinguishable from a calculated zero', () => {
++  for (const calculate of [
++    (coverage: ContributionContext['coverage']) => calculateSss({ ...context, coverage, monthlyCompensation: undefined as never }),
++    (coverage: ContributionContext['coverage']) => calculatePhilHealth({ ...context, coverage, monthlyBasicSalary: undefined as never }),
++    (coverage: ContributionContext['coverage']) => calculatePagIbig({ ...context, coverage, monthlyFundSalary: undefined as never }),
++  ]) {
++    const coverage = { status: 'EXEMPT' as const, legalBasis: 'Agency-approved exemption', evidenceReference: 'case-123', reviewedBy: 'reviewer-1' };
++    const calculated = calculate(coverage);
++    assert.equal(calculated.status, 'EXEMPT'); assert.equal(calculated.inputBasis, null);
++    assert.deepEqual(calculated.exemption, coverage); assert(calculated.totalRemittance.eq(0));
++    for (const key of ['legalBasis', 'evidenceReference', 'reviewedBy'] as const) rejects(() => calculate({ ...coverage, [key]: '' }), 'UNRESOLVED_COVERAGE');
++  }
++});
++
++test('Missing/invalid/zero monthly bases never become zero contributions', () => {
++  for (const calculate of [
++    (salary: string) => calculateSss({ ...context, monthlyCompensation: salary }),
++    (salary: string) => calculatePhilHealth({ ...context, monthlyBasicSalary: salary }),
++    (salary: string) => calculatePagIbig({ ...context, monthlyFundSalary: salary }),
++  ]) {
++    for (const salary of ['0', '-1', 'NaN', 'Infinity', '1.001', 'abc', '10000000000']) rejects(() => calculate(salary), 'INVALID_BASIS');
++    for (const salary of ['', ' ', null, undefined, 10000]) rejects(() => calculate(salary as never), 'UNRESOLVED_BASIS');
++  }
++  assert(calculateSss({ ...context, monthlyCompensation: decimal('10000') }).employee.eq(500));
++});
++
++const scope = { organizationId: 'org-1', employeeId: 'employee-1' };
++const first = (monthly: ContributionResult) => allocateContribution(monthly, { ...scope, frequency: 'SEMI_MONTHLY', slot: 'FIRST', priorAllocations: [] });
++
++test('Monthly once; semi-monthly sums to exactly one monthly contribution for every SSS row and odd cent cases', () => {
++  for (const monthly of [...officialSssRows.map(([msc]) => sss(msc)), ph('10000.20'), pi('1500.50')]) {
++    const before = JSON.stringify(monthly);
++    const whole = allocateContribution(monthly, { ...scope, frequency: 'MONTHLY', slot: 'MONTH', priorAllocations: [] });
++    const a = first(monthly);
++    const b = allocateContribution(monthly, { ...scope, frequency: 'SEMI_MONTHLY', slot: 'SECOND', priorAllocations: [a] });
++    for (const share of ['employee', 'employer', 'employerOnly', 'employerTotal', 'totalRemittance'] as const) {
++      assert(whole[share].eq(monthly[share])); assert(a[share].add(b[share]).eq(monthly[share]));
++    }
++    assert.notEqual(a.allocationKey, b.allocationKey);
++    assert.equal(JSON.stringify(monthly), before, 'Inputs and prior snapshots remain unchanged');
++  }
++});
++
++test('Second cutoff reconciles a changed monthly basis; negative corrections require review', () => {
++  const a = first(sss('20000'));
++  const updated = sss('25000');
++  const b = allocateContribution(updated, { ...scope, frequency: 'SEMI_MONTHLY', slot: 'SECOND', priorAllocations: [a] });
++  assert(a.employee.add(b.employee).eq(1250));
++  assert(b.components[1].employee.eq(250));
++  rejects(() => allocateContribution(sss('5000'), { ...scope, frequency: 'SEMI_MONTHLY', slot: 'SECOND', priorAllocations: [a] }), 'INVALID_ALLOCATION');
++});
++
++test('Allocation rejects retries, missing ledger, frequency switches and mismatched scope', () => {
++  const monthly = sss('20000'), a = first(monthly);
++  const request = { ...scope, frequency: 'SEMI_MONTHLY' as const, slot: 'SECOND' as const, priorAllocations: [a] };
++  rejects(() => allocateContribution(monthly, { ...request, slot: 'FIRST' }), 'INVALID_ALLOCATION');
++  rejects(() => allocateContribution(monthly, { ...request, priorAllocations: [] }), 'INVALID_ALLOCATION');
++  rejects(() => allocateContribution(monthly, { ...request, priorAllocations: undefined as never }), 'INVALID_ALLOCATION');
++  rejects(() => allocateContribution(monthly, { ...request, frequency: 'MONTHLY', slot: 'MONTH' }), 'INVALID_ALLOCATION');
++  rejects(() => allocateContribution(monthly, { ...request, frequency: 'BIWEEKLY' as never }), 'INVALID_ALLOCATION');
++  rejects(() => allocateContribution(monthly, { ...request, employeeId: 'employee-2' }), 'INVALID_ALLOCATION');
++  rejects(() => allocateContribution(monthly, { ...request, organizationId: 'org-2' }), 'INVALID_ALLOCATION');
++  rejects(() => allocateContribution(ph('20000'), request), 'INVALID_ALLOCATION');
++  rejects(() => allocateContribution(sss('20000', { contributionMonth: '2026-09' }), request), 'INVALID_ALLOCATION');
++  rejects(() => allocateContribution(monthly, { ...request, priorAllocations: [a, a] }), 'INVALID_ALLOCATION');
++  const b = allocateContribution(monthly, request);
++  rejects(() => allocateContribution(monthly, { ...request, priorAllocations: [a, b] }), 'INVALID_ALLOCATION');
++  const whole = allocateContribution(monthly, { ...scope, frequency: 'MONTHLY', slot: 'MONTH', priorAllocations: [] });
++  rejects(() => allocateContribution(monthly, { ...scope, frequency: 'MONTHLY', slot: 'MONTH', priorAllocations: [whole] }), 'INVALID_ALLOCATION');
++});
++
++test('Allocation rejects corrupt prior money and component lists', () => {
++  const monthly = ph('20000'), a = first(monthly);
++  for (const employee of [decimal('-1'), decimal('NaN'), decimal('1.001')]) {
++    rejects(() => allocateContribution(monthly, { ...scope, frequency: 'SEMI_MONTHLY', slot: 'SECOND', priorAllocations: [{ ...a, components: [{ ...a.components[0], employee }] }] }), 'INVALID_ALLOCATION');
++  }
++  rejects(() => allocateContribution(monthly, { ...scope, frequency: 'SEMI_MONTHLY', slot: 'SECOND', priorAllocations: [{ ...a, components: [] }] }), 'INVALID_ALLOCATION');
++});
++
++test('Decimal global rounding mode does not change statutory results', () => {
++  const mode = Prisma.Decimal.rounding;
++  try {
++    Prisma.Decimal.set({ rounding: Prisma.Decimal.ROUND_UP });
++    amounts(ph('10000.10'), '250', '250.01');
++    assert(first(ph('10000.20')).employer.eq(125));
++  } finally { Prisma.Decimal.set({ rounding: mode }); }
++});
+diff --git a/scripts/test-payroll-v2-november.ts b/scripts/test-payroll-v2-november.ts
+new file mode 100644
+index 0000000..ab4c326
+--- /dev/null
++++ b/scripts/test-payroll-v2-november.ts
+@@ -0,0 +1,53 @@
++import assert from 'node:assert/strict';
++import fs from 'node:fs';
++import { Prisma, PrismaClient } from '@prisma/client';
++import { organization, employee, period, setup } from './test-payroll-integration';
++import { generatePayroll } from '../src/features/payroll/service';
++import { changePayrollEarning, earningsVersion } from '../src/features/payroll/earnings';
++import { movePayrollPeriodToReview, finalizePayrollPeriod } from '../src/features/payroll/review';
++import { getFinalizedPayslipForEmployee } from '../src/features/payroll/payslip';
++const db = new PrismaClient({ log: [] });
++const checks: string[] = [], amounts: unknown[] = [];
++const check = (value: unknown, label: string) => { assert(value, label); checks.push(label); console.log('PASS', label); };
++const rollback = Error('NOVEMBER_REVIEW_ROLLBACK');
++async function main() {
++  const [identity] = await db.$queryRaw<Array<{ branch: string }>>`SELECT current_setting('neon.branch_id',true) AS branch`;
++  assert.equal(identity.branch, 'br-lingering-dawn-azrdk13o');
++  try { await db.$transaction(async tx => {
++    const monthly = await organization(tx), me = await employee(tx, monthly), mp = await period(tx, monthly, '2026-11-01', '2026-11-30');
++    await setup(tx, monthly, me, mp.id, undefined, '2026-11-01');
++    const input = { ...monthly, payrollPeriodId: mp.id };
++    async function generate(scope: typeof input, label: string, expected: { gross: string; deductions: string; net: string }) {
++      const result = await generatePayroll(scope, tx);
++      check(result.createdCount === 1 && result.setupErrors.length === 0, `${label}: actual generator succeeds without bypassing readiness`);
++      const entry = await tx.payrollEntry.findFirstOrThrow({ where: { organizationId: scope.organizationId, payrollPeriodId: scope.payrollPeriodId } });
++      const actual = { gross: entry.grossAmount.toFixed(2), deductions: entry.totalDeductions.toFixed(2), net: entry.netAmount.toFixed(2) };
++      assert.deepEqual(actual, expected); amounts.push({ label, expected, actual }); check(true, `${label}: manual expected amounts match persisted entry`);
++      return entry;
++    }
++    const basic = await generate(input, 'November monthly basic', { gross: '35000.00', deductions: '4526.30', net: '30473.70' });
++    const stored = await tx.payrollStatutoryInput.findFirstOrThrow({ where: { payrollPeriodId: mp.id, employeeId: me.id } });
++    await changePayrollEarning({ ...input, employeeId: me.id, operation: 'SAVE', expectedVersion: earningsVersion(stored.payload), confirmRecalculation: true, reason: 'November taxable bonus approved fixture', earning: { id: 'november-bonus', category: 'BONUS', kind: 'TAXABLE_BONUS', amount: '2000', description: 'November verified taxable bonus', supportingReference: 'NOV-APPROVAL-001', qualificationReference: 'Reviewed taxable supplementary payment' }, agencyReview: { monthlySssRemuneration: '37000', monthlyPagIbigFundSalary: '37000', agencyBasisReference: 'Verified November aggregate agency bases' } }, tx);
++    const bonus = await generate(input, 'November bonus regeneration', { gross: '37000.00', deductions: '4826.30', net: '32173.70' });
++    await movePayrollPeriodToReview(input, tx); await finalizePayrollPeriod({ ...input, confirmation: 'FINALIZE' }, tx);
++    const user = await tx.user.create({ data: { organizationId: monthly.organizationId, role: 'EMPLOYEE', name: 'November synthetic ESS', email: `nov-${me.id}@example.test` } });
++    await tx.employeeAccount.create({ data: { organizationId: monthly.organizationId, employeeId: me.id, userId: user.id, status: 'ACTIVE', activatedAt: new Date(), createdById: monthly.actorUserId } });
++    const ess = await getFinalizedPayslipForEmployee({ organizationId: monthly.organizationId, userId: user.id, entryId: bonus.id }, tx);
++    check(ess.calculation.netPay === '32173.70' && ess.calculation.additionalEarnings?.[0].description === 'November verified taxable bonus', 'November ESS reads the finalized bonus snapshot without recalculation');
++    const statutory = (bonus.calculationSnapshot as Prisma.JsonObject).statutory as Prisma.JsonObject;
++    check(((statutory.bir as Prisma.JsonObject).assessment as Prisma.JsonObject).verifiedOn === '2026-11-05', 'New snapshot records the November rule review date');
++    const semi = await organization(tx), se = await employee(tx, semi, 'SEMI_MONTHLY');
++    const first = await period(tx, semi, '2026-11-01', '2026-11-15'), second = await period(tx, semi, '2026-11-16', '2026-11-30');
++    await setup(tx, semi, se, first.id, undefined, '2026-11-01'); await setup(tx, semi, se, second.id, undefined, '2026-11-01');
++    const firstInput = { ...semi, payrollPeriodId: first.id }, secondInput = { ...semi, payrollPeriodId: second.id };
++    const a = await generate(firstInput, 'November first cutoff', { gross: '17500.00', deductions: '2263.08', net: '15236.92' });
++    await movePayrollPeriodToReview(firstInput, tx); await finalizePayrollPeriod({ ...firstInput, confirmation: 'FINALIZE' }, tx);
++    const b = await generate(secondInput, 'November second cutoff', { gross: '17500.00', deductions: '2263.08', net: '15236.92' });
++    check(basic.totalDeductions.sub(a.totalDeductions.add(b.totalDeductions)).eq('0.14'), 'Actual stored monthly versus two-cutoff deductions differ by exactly 0.14');
++    const allocations = await tx.payrollContributionAllocation.findMany({ where: { posting: { organizationId: semi.organizationId } } });
++    for (const [agency, expected] of [['SSS', '1750'], ['PHILHEALTH', '875'], ['PAGIBIG', '200']]) check(allocations.filter(row => row.agency === agency).reduce((sum, row) => sum.add((row.allocation as Prisma.JsonObject).employee as string), new Prisma.Decimal(0)).eq(expected), `${agency}: two cutoff employee allocations equal one November monthly liability`);
++    throw rollback;
++  }, { timeout: 180000 }); } catch (error) { if (error !== rollback) throw error; }
++  fs.writeFileSync('docs/payroll-v2/review/november-integration.json', JSON.stringify({ passed: true, branch: identity.branch, checks, amounts, syntheticFixturesRolledBack: true, productionEmployeesSelectedForGeneration: false }, null, 2));
++}
++main().catch(error => { console.error(error); process.exitCode = 1; }).finally(() => db.$disconnect());
+diff --git a/scripts/test-payroll-v2-rule-review.ts b/scripts/test-payroll-v2-rule-review.ts
+new file mode 100644
+index 0000000..4f63d49
+--- /dev/null
++++ b/scripts/test-payroll-v2-rule-review.ts
+@@ -0,0 +1,68 @@
++import assert from 'node:assert/strict';
++import fs from 'node:fs';
++import vm from 'node:vm';
++import { Prisma } from '@prisma/client';
++import { assessBirTable, calculateBirWithholding, BIR_VERIFIED_ON, BIR_VERIFIED_THROUGH, type BirWithholdingInput, type CashEarning } from '../src/features/payroll/bir';
++import { calculateSss, calculatePhilHealth, calculatePagIbig } from '../src/features/payroll/statutory';
++const checks: string[] = [], amounts: unknown[] = [];
++const check = (value: unknown, label: string) => { assert(value, label); checks.push(label); console.log('PASS', label); };
++const source = fs.readFileSync('docs/payroll-v2/review/official-wt-calculator.js', 'utf8');
++function officialCalculator(regularTaxable: string, period: 'monthly' | 'semi_monthly') {
++  const result = { value: '' };
++  const sandbox = { document: { getElementById: (id: string) => id === 'payroll_period' ? { value: period } : result }, alert: () => {} };
++  const context = vm.createContext(sandbox);
++  vm.runInContext(source, context, { timeout: 1000 });
++  // Test-only execution of the unmodified official calculator; manual expected values remain constants.
++  vm.runInContext(`getTotalRegular=()=>${regularTaxable};getTotalSupplementary=()=>0;getDailyZero=()=>0;getWeeklyZero=()=>0;getAnnual=()=>0;calculateForm();`, context, { timeout: 1000 });
++  return result.value.replaceAll(',', '');
++}
++function input(frequency: 'MONTHLY' | 'SEMI_MONTHLY' = 'MONTHLY', second = false): BirWithholdingInput {
++  const payDate = frequency === 'MONTHLY' || second ? '2026-11-30' : '2026-11-15';
++  return {
++    organizationId: 'review-org', employeeId: 'review-employee', periodId: 'review-period', currency: 'PHP', frequency,
++    periodStart: second ? '2026-11-16' : '2026-11-01', periodEnd: payDate, payDate, earningsComplete: true,
++    grossCompensation: frequency === 'MONTHLY' ? '35000' : '17500', earnings: [{ id: 'basic', kind: 'BASIC_SALARY', amount: frequency === 'MONTHLY' ? '35000' : '17500' }],
++    benefitHistory: { organizationId: 'review-org', employeeId: 'review-employee', taxYear: '2026', paymentMonth: '2026-11', reference: 'reviewed-prior-history', completeBeforeCurrentPayment: true, riceExemptUsedThisMonth: '0', laundryExemptUsedThisMonth: '0', clothingExemptUsedThisYear: '0', otherBenefitsGrossPaidYtd: '0' },
++    profile: { residency: 'RESIDENT_CITIZEN_OR_RESIDENT_ALIEN', employment: 'PRIVATE_RANK_AND_FILE_SINGLE_EMPLOYER', minimumWageStatus: 'NOT_MWE', previousEmployerInTaxYear: false, cumulativeMethodAlreadyRequired: false, annualizationRequired: false, finalPayment: false },
++    statutoryDeductions: (['SSS', 'PHILHEALTH', 'PAGIBIG'] as const).map((agency, i) => ({ organizationId: 'review-org', employeeId: 'review-employee', periodId: 'review-period', contributionMonth: '2026-11', agency, employeeShare: (frequency === 'MONTHLY' ? ['1750', '875', '200'] : ['875', '437.50', '100'])[i], treatment: 'MANDATORY_EMPLOYEE_SHARE', reference: 'verified-' + agency })),
++    unionDues: { amount: '0', reference: 'verified-none' }, otherNetDeductions: [],
++  };
++}
++function amountCase(label: string, values: BirWithholdingInput, expected: { gross: string; tax: string; deductions: string; net: string; nonTaxableBenefits: string }) {
++  const result = calculateBirWithholding(values);
++  const actual = { gross: result.grossCompensation.toFixed(2), tax: result.withholdingTax.toFixed(2), deductions: result.totalEmployeeDeductions.toFixed(2), net: result.netPay.toFixed(2), nonTaxableBenefits: result.nonTaxableBenefits.toFixed(2) };
++  assert.deepEqual(actual, expected); amounts.push({ label, expected, actual }); check(true, label); return result;
++}
++check(BIR_VERIFIED_ON === '2026-11-05' && BIR_VERIFIED_THROUGH === '2026-11-30', 'Review date is separate from the bounded November payment horizon');
++const monthly = amountCase('November monthly basic', input(), { gross: '35000.00', tax: '1701.30', deductions: '4526.30', net: '30473.70', nonTaxableBenefits: '0.00' });
++const first = amountCase('November first cutoff', input('SEMI_MONTHLY'), { gross: '17500.00', tax: '850.58', deductions: '2263.08', net: '15236.92', nonTaxableBenefits: '0.00' });
++const second = amountCase('November second cutoff', input('SEMI_MONTHLY', true), { gross: '17500.00', tax: '850.58', deductions: '2263.08', net: '15236.92', nonTaxableBenefits: '0.00' });
++check(monthly.assessment.unroundedTax.eq('1701.3') && first.assessment.unroundedTax.eq('850.575'), 'Unrounded manual withholding amounts are 1701.30 monthly and 850.575 per cutoff');
++check(monthly.totalEmployeeDeductions.sub(first.totalEmployeeDeductions.add(second.totalEmployeeDeductions)).eq('0.14'), 'Two semimonthly deductions total 4526.16: exactly 0.14 below monthly deductions');
++check(officialCalculator('32175', 'monthly') === '1701.30' && officialCalculator('16087.50', 'semi_monthly') === '850.58', 'Official BIR JavaScript independently confirms both withholding values and per-payment centavo rounding');
++check(new Prisma.Decimal('32175').mul(12).sub('250000').mul('0.15').eq('20415') && monthly.withholdingTax.mul(12).eq('20415.60') && first.withholdingTax.mul(24).eq('20413.92'), 'Independent twelve-month illustration requires annual reconciliation: tax 20415.00 versus periodic totals 20415.60 / 20413.92');
++const context = { contributionMonth: '2026-11', currency: 'PHP' as const, arrangement: 'PRIVATE_EMPLOYEE_SINGLE_EMPLOYER_FULL_MONTH' as const, coverage: { status: 'MANDATORY' as const } };
++const liabilities = [calculateSss({ ...context, monthlyCompensation: '35000' }), calculatePhilHealth({ ...context, monthlyBasicSalary: '35000' }), calculatePagIbig({ ...context, monthlyFundSalary: '35000' })];
++check(liabilities.map(row => row.employee.toFixed(2)).join(',') === '1750.00,875.00,200.00', 'November agency shares match independently transcribed official amounts');
++check(liabilities[0].employer.eq('3500') && liabilities[0].employerOnly.eq('30'), 'SSS employer counterpart and EC remain separate');
++const bonus = input(); bonus.earnings = [...bonus.earnings, { id: 'bonus', kind: 'TAXABLE_BONUS', amount: '2000' }]; bonus.grossCompensation = '37000';
++amountCase('November taxable bonus', bonus, { gross: '37000.00', tax: '2001.30', deductions: '4826.30', net: '32173.70', nonTaxableBenefits: '0.00' });
++const benefits = input();
++const lines: CashEarning[] = [{ id: 'rice', kind: 'RICE_SUBSIDY', amount: '3000', qualificationReference: 'verified-qualified-rice' }, { id: 'clothing', kind: 'CLOTHING_ALLOWANCE', amount: '8500', qualificationReference: 'verified-qualified-clothing' }, { id: 'laundry', kind: 'LAUNDRY_ALLOWANCE', amount: '450', qualificationReference: 'verified-qualified-laundry' }];
++benefits.earnings = [...benefits.earnings, ...lines]; benefits.grossCompensation = '46950'; benefits.benefitHistory.otherBenefitsGrossPaidYtd = '90000';
++const capped = amountCase('RR29 November caps with exhausted annual pool', benefits, { gross: '46950.00', tax: '1858.80', deductions: '4683.80', net: '42266.20', nonTaxableBenefits: '10900.00' });
++check(capped.earnings.closingBalances.riceExemptUsedThisMonth.eq('2500') && capped.earnings.closingBalances.clothingExemptUsedThisYear.eq('8000') && capped.earnings.closingBalances.laundryExemptUsedThisMonth.eq('400'), 'RR29 rice 2500/month, clothing 8000/year and laundry 400/month caps are enforced');
++const thirteenth = input(); thirteenth.earnings = [...thirteenth.earnings, { id: '13th', kind: 'THIRTEENTH_MONTH', amount: '1000', qualificationReference: 'verified-13th-month-entitlement' }]; thirteenth.grossCompensation = '36000'; thirteenth.benefitHistory.otherBenefitsGrossPaidYtd = '89900';
++amountCase('13th-month shared pool with only 100 remaining', thirteenth, { gross: '36000.00', tax: '1836.30', deductions: '4661.30', net: '31338.70', nonTaxableBenefits: '100.00' });
++for (const unsupported of ['CBA_PRODUCTIVITY', 'MEDICAL_ASSISTANCE', 'CHRISTMAS_GIFT']) {
++  const values = input(); values.earnings = [{ id: 'unsupported', kind: unsupported as CashEarning['kind'], amount: '35000', qualificationReference: 'unimplemented-category' }];
++  assert.throws(() => calculateBirWithholding(values), /unsupported earning classification/i); check(true, `${unsupported} cannot silently use another RR29 exemption`);
++}
++assert.throws(() => calculateBirWithholding({ ...input(), profile: { ...input().profile, annualizationRequired: true as false } }), /separate method/); check(true, 'Annualization remains an explicit blocker');
++assert.throws(() => calculateBirWithholding({ ...input(), benefitHistory: { ...input().benefitHistory, completeBeforeCurrentPayment: false as true } }), /Complete benefit history/); check(true, 'Incomplete benefit history still blocks exemptions');
++for (const payDate of ['2026-12-01', '2027-01-01']) { assert.throws(() => assessBirTable({ payDate, frequency: 'MONTHLY', taxableCompensation: '32175' }), /No verified BIR/); check(true, `${payDate} remains outside the verified BIR window`); }
++assert.throws(() => calculateSss({ ...context, contributionMonth: '2026-12', monthlyCompensation: '35000' }), /No verified/); check(true, 'December agency schedule remains unverified');
++const originalMode = Prisma.Decimal.rounding;
++try { Prisma.Decimal.set({ rounding: Prisma.Decimal.ROUND_DOWN }); assert.equal(calculateBirWithholding(input('SEMI_MONTHLY')).withholdingTax.toFixed(2), '850.58'); } finally { Prisma.Decimal.set({ rounding: originalMode }); }
++check(true, 'Withholding rounding does not depend on global Decimal rounding mode');
++fs.writeFileSync('docs/payroll-v2/review/rule-tests.json', JSON.stringify({ passed: true, checks, amounts, officialReference: { calculator: 'https://web-services.bir.gov.ph/tax_calculator/js/wt_calculator.js', monthly: '1701.30', semimonthly: '850.58' } }, null, 2));
+diff --git a/scripts/test-payroll-v2.ts b/scripts/test-payroll-v2.ts
+index 69eb29e..7946621 100644
+--- a/scripts/test-payroll-v2.ts
++++ b/scripts/test-payroll-v2.ts
+@@ -20,7 +20,7 @@ const rejects = async (fn: () => Promise<unknown>, code: string, label: string)
+ const rollback = Error('PAYROLL_V2_ROLLBACK');
+ async function main() {
+   const [identity] = await db.$queryRaw<Array<{ branch: string }>>`SELECT current_setting('neon.branch_id',true) AS branch`;
+-  assert.equal(identity.branch, 'br-green-king-azcpyvmo');
++  assert.equal(identity.branch, process.argv.includes('--rehearsal') ? 'br-lingering-dawn-azrdk13o' : 'br-green-king-azcpyvmo');
+   await assert.rejects(async () => validateCustomEarning({ id: 'x', kind: 'REIMBURSEMENT', category: 'OTHER', amount: '10', description: 'Travel', supportingReference: 'receipt', qualificationReference: 'unreviewed' }));
+   check(true, 'Unsupported reimbursement classification fails closed');
+   try { await db.$transaction(async tx => {
+@@ -74,17 +74,17 @@ async function main() {
+     await rejects(() => notifyPayrollEmployees({ ...notification, confirmation: '' }, tx), 'CONFIRMATION_REQUIRED', 'Notification requires explicit HR confirmation');
+     check((await notifyPayrollEmployees(notification, tx)).created === 1 && (await notifyPayrollEmployees(notification, tx)).created === 0, 'Notification creation is idempotent');
+     check((await listPayrollNotifications({ organizationId: scope.organizationId, userId: user.id }, tx)).length === 1, 'Employee sees their persistent in-app notification');
+-    async function databaseRejects(work: () => Promise<unknown>, label: string) {
++    async function databaseRejects(work: () => Promise<unknown>, label: string, expected?: RegExp) {
+       await tx.$executeRawUnsafe('SAVEPOINT v2_security_probe');
+       let rejected = false;
+-      try { await work(); } catch { rejected = true; }
++      try { await work(); } catch (error) { rejected = !expected || expected.test(String(error) + JSON.stringify(error)); }
+       await tx.$executeRawUnsafe('ROLLBACK TO SAVEPOINT v2_security_probe');
+       await tx.$executeRawUnsafe('RELEASE SAVEPOINT v2_security_probe');
+       check(rejected, label);
+     }
+     await databaseRejects(() => tx.payrollNotification.updateMany({ where: { payrollEntryId: final.id }, data: { message: 'tampered' } }), 'Database rejects notification record tampering');
+     await databaseRejects(() => tx.payrollInputRevision.updateMany({ where: { organizationId: scope.organizationId }, data: { reason: 'tampered' } }), 'Database rejects revision audit tampering');
+-    await databaseRejects(() => tx.payrollNotification.create({ data: { organizationId: scope.organizationId, employeeId: person.id, payrollEntryId: final.id, recipientUserId: other.actorUserId, actorUserId: scope.actorUserId, message: 'Forbidden recipient' } }), 'Database rejects a recipient who does not own the finalized payslip');
++    await databaseRejects(() => tx.payrollNotification.create({ data: { organizationId: scope.organizationId, employeeId: person.id, payrollEntryId: final.id, recipientUserId: other.actorUserId, actorUserId: scope.actorUserId, message: 'Forbidden recipient' } }), 'Database rejects a recipient who does not own the finalized payslip', /Notification requires an owned finalized payslip/);
+     await rejects(() => listPayrollNotifications({ organizationId: other.organizationId, userId: user.id }, tx), 'FORBIDDEN', 'Foreign tenant cannot retrieve employee notifications');
+     await rejects(async () => changePayrollEarning(await change('SAVE', bonus), tx), 'IMMUTABLE', 'Finalized earnings cannot be edited');
+     await rejects(() => generatePayroll(input, tx), 'FINALIZED', 'Finalized payroll cannot be regenerated');
+@@ -93,6 +93,19 @@ async function main() {
+     check(await reusablePayrollSetup(tx, scope.organizationId, person.id, next) === null, 'Setup reuse cannot copy period-specific earnings to the next payroll');
+     const saved = await tx.payrollStatutoryInput.findFirstOrThrow({ where: { payrollPeriodId: p.id, employeeId: person.id } });
+     await rejects(() => savePayrollStatutoryInput({ ...scope, employeeId: person.id, payrollPeriodId: next.id, payload: saved.payload, evidenceReference: 'Repeated approved payment reference' }, tx), 'DUPLICATE_EARNING', 'Advanced setup also rejects a repeated payment reference in a later period');
++    if (process.argv.includes('--rehearsal')) {
++      await databaseRejects(() => tx.$executeRawUnsafe('TRUNCATE TABLE "PayrollNotification"'), 'Database rejects notification TRUNCATE', /Payroll audit and notification records are immutable/);
++      await databaseRejects(() => tx.$executeRawUnsafe('TRUNCATE TABLE "PayrollInputRevision"'), 'Database rejects revision TRUNCATE', /Payroll audit and notification records are immutable/);
++      await databaseRejects(() => tx.$executeRawUnsafe(`DO $$ BEGIN IF EXISTS (SELECT 1 FROM "PayrollNotification") OR EXISTS (SELECT 1 FROM "PayrollInputRevision") THEN RAISE EXCEPTION 'Payroll V2 rollback refused: retain notification and revision history'; END IF; END $$`), 'Pre-use rollback refuses to discard recorded notification or audit history', /rollback refused/);
++      const standalone = await tx.user.create({ data: { organizationId: scope.organizationId, role: 'HR_ADMIN', name: 'Standalone synthetic audit actor', email: `actor-${person.id}@example.test` } });
++      const audit = { organizationId: scope.organizationId, employeeId: person.id, payrollPeriodId: next.id, actorUserId: standalone.id, reason: 'Audit retention FK fixture', before: {}, after: {} };
++      await tx.payrollInputRevision.create({ data: audit });
++      await databaseRejects(() => tx.user.delete({ where: { id: standalone.id } }), 'Audit actor cannot be deleted through an orphaning parent mutation', /Foreign key constraint|foreign key constraint/);
++      await databaseRejects(() => tx.payrollInputRevision.create({ data: { ...audit, reason: ' ' } }), 'Database rejects a blank audit reason', /check constraint|Check constraint/);
++      await databaseRejects(() => tx.payrollInputRevision.create({ data: { ...audit, before: [] } }), 'Database rejects malformed audit JSON', /check constraint|Check constraint/);
++      await tx.employee.update({ where: { id: person.id }, data: { employeeStatus: 'INACTIVE' } });
++      await databaseRejects(() => tx.payrollNotification.create({ data: { organizationId: scope.organizationId, employeeId: person.id, payrollEntryId: final.id, recipientUserId: user.id, actorUserId: scope.actorUserId, message: 'Inactive employee probe' } }), 'Database rejects notification creation for an inactive employee', /Notification requires an owned finalized payslip/);
++    }
+     throw rollback;
+   }, { timeout: 180_000 }); } catch (error) { if (error !== rollback) throw error; }
+   if (process.argv.includes('--focused')) return;
+@@ -101,4 +114,4 @@ async function main() {
+   report.regressions.workflow = await runPayrollWorkflow(db);
+   report.regressions.phase3 = await runPayrollPhase3(db);
+ }
+-main().then(() => { fs.mkdirSync('docs/payroll-v2', { recursive: true }); fs.writeFileSync(`docs/payroll-v2/${process.argv.includes('--focused') ? 'focused' : 'results'}.json`, JSON.stringify({ passed: true, branch: 'br-green-king-azcpyvmo', ...report }, null, 2)); }).catch(error => { console.error(error); process.exitCode = 1; }).finally(() => db.$disconnect());
++main().then(() => { fs.mkdirSync('docs/payroll-v2', { recursive: true }); const rehearsal = process.argv.includes('--rehearsal'); fs.writeFileSync(rehearsal ? 'docs/payroll-v2/review/security-tests.json' : `docs/payroll-v2/${process.argv.includes('--focused') ? 'focused' : 'results'}.json`, JSON.stringify({ passed: true, branch: rehearsal ? 'br-lingering-dawn-azrdk13o' : 'br-green-king-azcpyvmo', ...report }, null, 2)); }).catch(error => { console.error(error); process.exitCode = 1; }).finally(() => db.$disconnect());
+diff --git a/scripts/test-payroll-workflow.ts b/scripts/test-payroll-workflow.ts
+new file mode 100644
+index 0000000..f79351e
+--- /dev/null
++++ b/scripts/test-payroll-workflow.ts
+@@ -0,0 +1,69 @@
++import assert from 'node:assert/strict';
++import type { PrismaClient } from '@prisma/client';
++import { organization, employee, period, setup } from './test-payroll-integration';
++import { generatePayroll, deletePayrollPeriod } from '../src/features/payroll/service';
++import { movePayrollPeriodToReview, finalizePayrollPeriod } from '../src/features/payroll/review';
++import { getPayrollReadiness } from '../src/features/payroll/readiness';
++import { reusablePayrollSetup, reusePayrollSetup } from '../src/features/payroll/reuse';
++import { saveStandardPayrollProfile } from '../src/features/payroll/standard-profile';
++
++export async function runPayrollWorkflow(db: PrismaClient) {
++  let assertions = 0;
++  const rollback = Error('WORKFLOW_FIXTURE_ROLLBACK');
++  const check = (value: unknown, label: string) => { assert(value, label); assertions++; console.log('WORKFLOW PASS', label); };
++  const rejects = async (fn: () => Promise<unknown>) => { await assert.rejects(fn); assertions++; };
++  try {
++    await db.$transaction(async tx => {
++      const scope = await organization(tx), other = await organization(tx);
++      const person = await employee(tx, scope);
++      const empty = await period(tx, scope, '2026-08-01', '2026-08-31');
++      await rejects(() => movePayrollPeriodToReview({ ...scope, payrollPeriodId: empty.id }, tx));
++      check((await tx.payrollPeriod.findUniqueOrThrow({ where: { id: empty.id } })).status === 'DRAFT', 'empty payroll stays DRAFT after attempted review');
++      await deletePayrollPeriod({ ...scope, payrollPeriodId: empty.id }, tx);
++      check(!await tx.payrollPeriod.findUnique({ where: { id: empty.id } }), 'empty draft remains safely deletable');
++      const first = await period(tx, scope, '2026-08-01', '2026-08-31');
++      const before = await getPayrollReadiness({ ...scope, payrollPeriodId: first.id }, tx);
++      check(!before.readiness[0].ready && before.readiness[0].history.includes('do not assume zero'), 'missing statutory setup and opening history are explicit blockers');
++      const standard = { ...scope, employeeId: person.id, payrollPeriodId: first.id, evidenceReference: 'Synthetic verified basic-only compensation and coverage', confirmations: ['basicOnly', 'coverage', 'taxProfile', 'contributionHistory'], deductionTreatment: 'NET_DEDUCTION', compensationId: person.compensation.id, expectedBaseRate: '35000.00' };
++      await rejects(() => saveStandardPayrollProfile({ ...standard, confirmations: [] }, tx));
++      await rejects(() => saveStandardPayrollProfile({ ...standard, expectedBaseRate: '36000.00' }, tx));
++      await rejects(() => saveStandardPayrollProfile({ ...standard, organizationId: other.organizationId, actorUserId: other.actorUserId }, tx));
++      const standardSaved = await saveStandardPayrollProfile(standard, tx);
++      const standardPayload = standardSaved.payload as Record<string, unknown>;
++      check(standardPayload.monthlySssRemuneration === '35000.00' && standardPayload.monthlyPagIbigFundSalary === '35000.00', 'standard monthly bases derive from salary only after explicit basic-only and coverage review');
++      check(await tx.payrollTaxOpening.count({ where: { employeeId: person.id } }) === 0, 'standard shortcut never invents opening history');
++      check((await generatePayroll({ ...scope, payrollPeriodId: first.id }, tx)).setupErrors.some(e => e.message.includes('opening')), 'standard profile still blocks payroll without verified historical balances');
++      await setup(tx, scope, person, first.id, undefined, '2026-08-01');
++      const generated = await generatePayroll({ ...scope, payrollPeriodId: first.id }, tx);
++      check(generated.createdCount === 1, 'verified employee generates statutory payroll');
++      await movePayrollPeriodToReview({ ...scope, payrollPeriodId: first.id }, tx);
++      await finalizePayrollPeriod({ ...scope, payrollPeriodId: first.id, confirmation: 'FINALIZE' }, tx);
++      await rejects(() => deletePayrollPeriod({ ...scope, payrollPeriodId: first.id }, tx));
++      const second = await period(tx, scope, '2026-09-01', '2026-09-30');
++      const source = await reusablePayrollSetup(tx, scope.organizationId, person.id, second);
++      check(source && source.payload.monthlySssRemuneration === '35000', 'finalized verified setup is offered for the same compensation and year');
++      const reuse = { ...scope, employeeId: person.id, payrollPeriodId: second.id, sourceId: source!.sourceId, confirmed: true };
++      await rejects(() => reusePayrollSetup({ ...reuse, confirmed: false }, tx));
++      await rejects(() => reusePayrollSetup({ ...reuse, sourceId: 'forged-source' }, tx));
++      await rejects(() => reusePayrollSetup({ ...reuse, organizationId: other.organizationId, actorUserId: other.actorUserId }, tx));
++      check(await tx.payrollStatutoryInput.count({ where: { payrollPeriodId: second.id } }) === 0, 'rejected reuse cannot write inputs');
++      await reusePayrollSetup(reuse, tx);
++      const saved = await tx.payrollStatutoryInput.findFirstOrThrow({ where: { payrollPeriodId: second.id } });
++      check(saved.reviewedById === scope.actorUserId && saved.evidenceReference.includes(source!.sourceId), 'reuse preserves source evidence and records the current reviewer');
++      await rejects(() => reusePayrollSetup(reuse, tx));
++      const ready = await getPayrollReadiness({ ...scope, payrollPeriodId: second.id }, tx);
++      check(ready.readiness[0].ready && ready.setup[0].opening?.payDate === '2026-08-01', 'saved setup and verified opening history are reused without entering balances again');
++      check((await generatePayroll({ ...scope, payrollPeriodId: second.id }, tx)).createdCount === 1, 'reused configuration passes the actual statutory engine in the next period');
++      const future = await period(tx, scope, '2027-01-01', '2027-01-31');
++      const blocked = await getPayrollReadiness({ ...scope, payrollPeriodId: future.id }, tx);
++      check(!blocked.readiness[0].ready && blocked.readiness[0].government.includes('No verified BIR'), 'unverified pay date displays an explicit blocker');
++      const changed = await period(tx, scope, '2026-10-01', '2026-10-15', '2026-10-15');
++      await tx.employeeCompensation.update({ where: { id: person.compensation.id }, data: { effectiveFrom: new Date('2026-10-10T00:00:00Z') } });
++      const notReady = await getPayrollReadiness({ ...scope, payrollPeriodId: changed.id }, tx);
++      check(notReady.readiness[0].salary === 'Salary effective date does not cover this payroll period.', 'effective-date mismatch gives an actionable salary message');
++      check(await reusablePayrollSetup(tx, scope.organizationId, person.id, changed) === null, 'salary mismatch prevents reuse');
++      throw rollback;
++    }, { timeout: 180_000 });
++  } catch (error) { if (error !== rollback) throw error; }
++  return { passed: true, assertions, fixturesRolledBack: true };
++}
+diff --git a/src/features/payroll/bir/index.ts b/src/features/payroll/bir/index.ts
+new file mode 100644
+index 0000000..a9b2507
+--- /dev/null
++++ b/src/features/payroll/bir/index.ts
+@@ -0,0 +1,6 @@
++// Phase 2A is deliberately disconnected from live payroll generation/review/payslips.
++export { calculateBirWithholding, type BirWithholdingInput, type BirStatutoryDeduction } from './calculator';
++export { assessBirTable } from './table';
++export { BirCalculationError } from './validation';
++export type { CashEarning, EarningKind, BenefitHistory } from './earnings';
++export { BIR_ANNEX_E, BENEFIT_RULES, BIR_SOURCES, BIR_VERIFIED_ON, BIR_VERIFIED_THROUGH, type TaxFrequency } from './rules';
+diff --git a/src/features/payroll/bir/rules.ts b/src/features/payroll/bir/rules.ts
+new file mode 100644
+index 0000000..6a778ea
+--- /dev/null
++++ b/src/features/payroll/bir/rules.ts
+@@ -0,0 +1,45 @@
++/** Official government rules; no organization percentage overrides. */
++// Review date and bounded payment horizon are different: this is not a statutory sunset.
++// Evidence: docs/payroll-v2/review/RULE-REVIEW.md (official sources captured Nov 4 UTC / Nov 5 local).
++export const BIR_VERIFIED_ON = '2026-11-05';
++export const BIR_VERIFIED_THROUGH = '2026-11-30';
++export const BIR_SOURCES = Object.freeze({
++  regulation: 'https://bir-cdn.bir.gov.ph/local/pdf/RR%20No.%2011-2018.pdf',
++  annexE: 'https://bir-cdn.bir.gov.ph/local/pdf/Annex%20E%20RR%2011-2018.pdf',
++  rr4: 'https://bir-cdn.bir.gov.ph/BIR/pdf/RR%20No.%204-2025.pdf',
++  rr29: 'https://bir-cdn.bir.gov.ph/BIR/pdf/RR%20No.%2029-2025.pdf',
++  rr29Digest: 'https://bir-cdn.bir.gov.ph/BIR/pdf/RR%20No.%2029-2025%20digest%20FINAL.pdf',
++  publicationIndex: 'https://www.bir.gov.ph/2025-Revenue-Regulations',
++  currentRegulations: 'https://www.bir.gov.ph/2026-Revenue-Regulations',
++  currentCirculars: 'https://www.bir.gov.ph/2026-Revenue-Memorandum-Circulars',
++  calculatorSource: 'https://web-services.bir.gov.ph/tax_calculator/js/wt_calculator.js',
++  calculator: 'https://web-services.bir.gov.ph/tax_calculator/wt_calculator.html',
++});
++export type TaxFrequency = 'MONTHLY' | 'SEMI_MONTHLY';
++export interface TaxBracket {
++  threshold: string;
++  fixedTax: string;
++  rate: string;
++}
++const rows = (values: readonly (readonly [string, string, string])[]): readonly Readonly<TaxBracket>[] =>
++  Object.freeze(values.map(([threshold, fixedTax, rate]) => Object.freeze({ threshold, fixedTax, rate })));
++
++export const BIR_ANNEX_E = Object.freeze({
++  version: 'BIR-RR11-2018-ANNEX-E-2023', effectiveFrom: '2023-01-01', verifiedThrough: BIR_VERIFIED_THROUGH,
++  MONTHLY: rows([
++    ['0', '0', '0'], ['20833', '0', '0.15'], ['33333', '1875', '0.20'],
++    ['66667', '8541.80', '0.25'], ['166667', '33541.80', '0.30'], ['666667', '183541.80', '0.35'],
++  ]),
++  SEMI_MONTHLY: rows([
++    ['0', '0', '0'], ['10417', '0', '0.15'], ['16667', '937.50', '0.20'],
++    ['33333', '4270.70', '0.25'], ['83333', '16770.70', '0.30'], ['333333', '91770.70', '0.35'],
++  ]),
++});
++
++// Effectivity = 15 days after BIR website publication (Jan 30 / Dec 22 respectively).
++// Only the cash benefit categories supported by this phase are encoded here.
++export const BENEFIT_RULES = Object.freeze([
++  Object.freeze({ version: 'RR11-2018', effectiveFrom: '2023-01-01', effectiveTo: '2025-02-13', rice: '2000', clothing: '6000', laundry: '300' }),
++  Object.freeze({ version: 'RR4-2025', effectiveFrom: '2025-02-14', effectiveTo: '2026-01-05', rice: '2000', clothing: '7000', laundry: '300' }),
++  Object.freeze({ version: 'RR29-2025', effectiveFrom: '2026-01-06', effectiveTo: BIR_VERIFIED_THROUGH, rice: '2500', clothing: '8000', laundry: '400' }),
++]);
+diff --git a/src/features/payroll/statutory/schedules.ts b/src/features/payroll/statutory/schedules.ts
+new file mode 100644
+index 0000000..01c29e2
+--- /dev/null
++++ b/src/features/payroll/statutory/schedules.ts
+@@ -0,0 +1,52 @@
++/** Government schedules only. Organization payroll policies cannot override these. */
++// Bounded November review of the unchanged ordinary-employee schedules; see RULE-REVIEW.md.
++export const STATUTORY_VERIFIED_THROUGH = '2026-11';
++export const STATUTORY_VERIFIED_ON = '2026-11-05';
++
++export const STATUTORY_SCHEDULES = Object.freeze({
++  SSS: Object.freeze({
++    id: 'SSS-BUSINESS-2025-01', effectiveFrom: '2025-01', verifiedThrough: STATUTORY_VERIFIED_THROUGH,
++    sourceUrls: Object.freeze([
++      'https://www.sss.gov.ph/wp-content/uploads/2024/12/CI-2024-006-Publication.pdf',
++      'https://www.sss.gov.ph/wp-content/uploads/2024/12/Cir-2024-006-Employers-scaled.jpg',
++      'https://www.sss.gov.ph/pay-contribution/',
++    ]),
++    rounding: 'EXACT_PUBLISHED_TABLE',
++  }),
++  PHILHEALTH: Object.freeze({
++    id: 'PHILHEALTH-2025-01', effectiveFrom: '2025-01', verifiedThrough: STATUTORY_VERIFIED_THROUGH,
++    sourceUrls: Object.freeze([
++      'https://www.philhealth.gov.ph/advisories/2025/PA2025-0002.pdf',
++      'https://www.philhealth.gov.ph/circulars/2020/circ2020-0005.pdf',
++      'https://www.philhealth.gov.ph/news/2018/sample_compu.html',
++      'https://pia.gov.ph/news/philhealth-sets-5-premium-contribution-rate-for-2026/',
++    ]),
++    rounding: 'TOTAL_HALF_UP_CENTAVO_EMPLOYER_BEARS_ODD_CENTAVO',
++  }),
++  PAGIBIG: Object.freeze({
++    id: 'PAGIBIG-460-2024-02', effectiveFrom: '2024-02', verifiedThrough: STATUTORY_VERIFIED_THROUGH,
++    sourceUrls: Object.freeze([
++      'https://naro.law.upd.edu.ph/issuances/3217',
++      'https://naro.law.upd.edu.ph/storage/01JQWKTTA92H57M9EWV31W8F1D.pdf',
++    ]),
++    rounding: 'EXACT_CENTAVOS_ONLY_PENDING_AGENCY_ROUNDING_CONFIRMATION',
++  }),
++});
++
++// Compact encoding of every row in Circular 2024-006, not a percentage of actual pay.
++// Lower bounds are inclusive; upper bounds exclusive. First/last rows are open-ended.
++export const SSS_2025_BRACKETS = Object.freeze(Array.from({ length: 61 }, (_, index) => {
++  const msc = 5000 + index * 500;
++  return Object.freeze({
++    lowerInclusive: index === 0 ? '0' : String(msc - 250),
++    upperExclusive: index === 60 ? null : String(msc + 250),
++    monthlySalaryCredit: String(msc),
++    regularSalaryCredit: String(Math.min(msc, 20000)),
++    providentSalaryCredit: String(Math.max(msc - 20000, 0)),
++    employeeRegular: String(Math.min(msc, 20000) / 20),
++    employerRegular: String(Math.min(msc, 20000) / 10),
++    employeeProvident: String(Math.max(msc - 20000, 0) / 20),
++    employerProvident: String(Math.max(msc - 20000, 0) / 10),
++    employerEc: msc < 15000 ? '10' : '30',
++  });
++}));

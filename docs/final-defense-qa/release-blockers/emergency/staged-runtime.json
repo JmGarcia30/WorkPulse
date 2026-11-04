@@ -1,0 +1,14 @@
+{
+  "capturedAt": "2026-11-02T15:25:46.128Z",
+  "status": "FAIL",
+  "deployment": "dpl_27wDq5pqiuxptSRigZZamkaghYTS",
+  "commit": "93a1718d774c9bb32661df04dd3ae52abc45efad",
+  "target": "production",
+  "buildStatus": "READY",
+  "httpStatus": 500,
+  "sessionSecretRejected": true,
+  "identity": null,
+  "liveDiagnosticPreserved": true,
+  "productionBusinessWrites": 0,
+  "promotionPerformed": false
+}

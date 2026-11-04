@@ -1,0 +1,20 @@
+Prisma schema loaded from prisma\schema.prisma
+Datasource "db": PostgreSQL database "neondb", schema "batch3_test_ed973bfdf1b5808c9538c3f4" at "ep-patient-cake-az9urbbj.c-3.ap-southeast-1.aws.neon.tech"
+
+40 migrations found in prisma/migrations
+
+warn The configuration property `package.json#prisma` is deprecated and will be removed in Prisma 7. Please migrate to a Prisma config file (e.g., `prisma.config.ts`).
+For more information, see: https://pris.ly/prisma-config
+
+Environment variables loaded from .env
+Error: P1002
+
+The database server was reached but timed out.
+
+Please try again.
+
+Please make sure your database server is running at the configured address.
+
+Context: Timed out trying to acquire a postgres advisory lock (SELECT pg_advisory_lock(72707369)). Timeout: 10000ms. See https://pris.ly/d/migrate-advisory-locking for details.
+
+

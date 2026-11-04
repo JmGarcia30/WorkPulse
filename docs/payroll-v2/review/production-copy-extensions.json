@@ -1,0 +1,12 @@
+{
+  "sourceReadOnly": true,
+  "targetBranch": "br-lingering-dawn-azrdk13o",
+  "extensions": [
+    {
+      "extname": "btree_gist",
+      "extversion": "1.8",
+      "schema": "public"
+    }
+  ],
+  "reason": "Initial all-or-nothing restore identified btree_gist prerequisite; no source rows or schema were modified."
+}

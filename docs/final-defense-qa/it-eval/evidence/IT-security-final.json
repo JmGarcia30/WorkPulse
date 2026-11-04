@@ -1,0 +1,10 @@
+{
+  "id": "IT-security-final",
+  "command": "node docs/final-defense-qa/it-eval/security-tests.cjs",
+  "capturedAt": "2026-11-02T06:22:38.697Z",
+  "durationMs": 61812,
+  "exitCode": 0,
+  "status": "PASS",
+  "schema": "batch3_test_90c54ebc4ef23bb7495c7957",
+  "isolatedPerSuite": true
+}
