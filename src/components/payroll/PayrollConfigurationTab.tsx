@@ -2,7 +2,8 @@
 
 import React from 'react';
 import type { PayrollStatutorySetupRow } from '@/features/payroll/setup-queries';
-import { PayrollStatutorySetupPanel } from './PayrollStatutorySetupPanel';
+import { PayrollStatutorySetupPanel, TaxOpening } from './PayrollStatutorySetupPanel';
+import { PayrollReuseSetup } from './PayrollReuseSetup';
 import { StandardPayrollProfile } from './StandardPayrollProfile';
 import {
   CompensationForm,
@@ -87,14 +88,14 @@ export function PayrollConfigurationTab({
             <span>Employee Pay Setup</span>
           </div>
           <h2 className="text-base font-bold text-slate-900 mt-1">
-            Employee Compensation Setup
+            1. Employee salary and pay frequency
           </h2>
           <p className="text-xs text-slate-500 mt-0.5">
             Configure monthly or daily base compensation rates and effective appointment dates.
           </p>
         </div>
 
-        <CompensationForm employees={employees} profiles={statutorySetup ?? []} />
+        <details open={!compensations.length}><summary className="cursor-pointer text-sm font-semibold">Add or update salary</summary><CompensationForm employees={employees} profiles={statutorySetup ?? []} /></details>
 
         {/* Existing Compensations Table */}
         <div className="mt-4 pt-4 border-t border-slate-100">
@@ -164,11 +165,13 @@ export function PayrollConfigurationTab({
       </div>
 
       {statutorySetup && selectedPeriod && <StandardPayrollProfile rows={statutorySetup} periodId={selectedPeriod.id} />}
-      <section id="advanced-payroll" className="space-y-4 scroll-mt-6">
-        <h2 className="text-lg font-bold text-slate-900">Advanced Payroll Setup</h2>
+      <section className="space-y-3 rounded-xl border bg-white p-5"><h2 className="font-bold">4. Verified tax and contribution history</h2><p className="text-sm text-slate-600">Existing verified balances remain available across eligible periods. Enter zero only when supported by reviewed records; earlier cutoff contributions must be in the ledger.</p>{statutorySetup && selectedPeriod ? statutorySetup.map(row => <details key={row.id} open={statutorySetup.length === 1}><summary className="cursor-pointer text-sm font-semibold">{row.firstName} {row.lastName} - {row.opening ? 'Verified history saved' : 'History required'}</summary><TaxOpening row={row} payDate={selectedPeriod.payDate.toISOString().slice(0, 10)} /></details>) : <p>Select a payroll period first.</p>}</section>
+      <section className="space-y-3 rounded-xl border bg-white p-5"><h2 className="font-bold">5. Review and confirmation</h2><p className="text-sm text-slate-600">Confirm the saved employee setup, then return to payroll to check readiness and generate. Saving setup does not finalize payroll.</p>{statutorySetup?.map(row => <div key={row.id} className="rounded-lg border p-3 text-sm"><strong>{row.firstName} {row.lastName}</strong><p>Salary: {row.compensation ? row.compensation.currency + ' ' + row.compensation.baseRate + ' / month' : 'Salary setup required'}</p><p>Government coverage: {row.input ? 'Reviewed period inputs saved' : row.reusable ? 'Prior verified setup available for review below' : 'Review required in section 2'}</p><p>Attendance treatment: {row.input ? Object.entries(row.input.companyDeductionTreatment).map(([key, value]) => key + ': ' + value.replaceAll('_', ' ').toLowerCase()).join('; ') : 'Review required in section 3'}</p><p>History: {row.opening ? 'Verified opening history saved for ' + row.opening.payDate : 'Verified history required in section 4'}</p></div>)}{statutorySetup && selectedPeriod && <PayrollReuseSetup rows={statutorySetup} periodId={selectedPeriod.id} />}</section>
+      <details id="advanced-payroll" className="space-y-4 scroll-mt-6">
+        <summary className="cursor-pointer text-lg font-bold text-slate-900">Advanced Payroll Setup</summary>
         <p className="text-sm text-slate-600">Set up verified opening history and agency bases once, then reuse unchanged information in Run Payroll. Review exceptions, contribution eligibility, earnings, tax adjustments and evidence here. Unsupported tax methods remain blocked.</p>
         {statutorySetup && selectedPeriod ? <PayrollStatutorySetupPanel key={selectedPeriod.id} rows={statutorySetup} periodId={selectedPeriod.id} periodName={selectedPeriod.name} payDate={selectedPeriod.payDate.toISOString().slice(0, 10)} /> : <p className="text-sm text-slate-600">Select a draft payroll period in Run Payroll to review government coverage and opening history.</p>}
-      </section>
+      </details>
       {/* 2. Payroll Policy Configuration */}
       <div className="rounded-xl border border-slate-200/80 bg-white p-5 sm:p-6 shadow-2xs space-y-4">
         <div className="border-b border-slate-100 pb-3">

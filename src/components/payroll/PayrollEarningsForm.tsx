@@ -34,8 +34,8 @@ function EarningEditor({ employee, periodId, row }: { employee: EarningsEmployee
 export function PayrollEarningsForm({ employees, periodId }: { employees: EarningsEmployee[]; periodId: string }) {
   const [selected, select] = useState(employees[0]?.id ?? '');
   const employee = employees.find(row => row.id === selected);
-  return <details className="rounded-xl border p-4"><summary className="cursor-pointer text-sm font-semibold">Add Earnings / Manage Earnings</summary>
-    {!employees.length ? <p className="mt-3 text-sm">Verify employee statutory setup in Advanced Settings first.</p> : <div className="mt-4 space-y-4">
+  return <details className="rounded-xl border p-4"><summary className="cursor-pointer text-sm font-semibold">Add Additional Earnings</summary>
+    {!employees.length ? <p className="mt-3 text-sm">Use Fix Setup to verify employee coverage and history first.</p> : <div className="mt-4 space-y-4">
       <label className="grid gap-1 text-sm">Employee<select className={fieldClass} value={selected} onChange={e => select(e.target.value)}>{employees.map(row => <option key={row.id} value={row.id}>{row.name}</option>)}</select></label>
       {employee && <div key={`${employee.id}-${employee.version}`} className="space-y-3">
         {employee.input.additionalEarnings.map(row => <details key={row.id} className="rounded-xl border p-3"><summary className="cursor-pointer text-sm">{row.description ?? row.kind.replaceAll('_', ' ')} · PHP {row.amount} · Edit or remove</summary><div className="mt-3"><EarningEditor employee={employee} periodId={periodId} row={row} /></div></details>)}

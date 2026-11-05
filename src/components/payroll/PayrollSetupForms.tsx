@@ -55,7 +55,7 @@ export function PayrollGenerationForm({ periods, selectedPeriodId, disabled = fa
       <p className="font-bold">Setup required for {state.setupErrors.length} {state.setupErrors.length === 1 ? 'employee' : 'employees'}</p>
       <ul className="mt-2 list-disc space-y-1 pl-5">{state.setupErrors.map(item => <li key={`${item.employeeNumber}-${item.message}`}><span className="font-semibold">{item.employeeNumber} · {item.employeeName}:</span> {item.message}</li>)}</ul>
     </div> : null}
-    <label className="grid gap-1 text-xs font-semibold">Payroll period<select name="payrollPeriodId" disabled={pending} required defaultValue={selectedPeriodId} className="rounded-xl border bg-white px-3 py-2.5 font-normal"><option value="">Select a period</option>{periods.map(period => <option key={period.id} value={period.id}>{period.name}</option>)}</select></label>
+    <label className="grid gap-1 text-xs font-semibold" hidden={periods.length === 1 && !!selectedPeriodId}>Payroll period<select name="payrollPeriodId" disabled={pending} required defaultValue={selectedPeriodId} className="rounded-xl border bg-white px-3 py-2.5 font-normal"><option value="">Select a period</option>{periods.map(period => <option key={period.id} value={period.id}>{period.name}</option>)}</select></label>
     <button disabled={pending || periods.length === 0 || disabled} className="self-end rounded-xl bg-emerald-700 px-5 py-2.5 text-xs font-bold text-white disabled:opacity-50">{pending ? 'Generating…' : 'Generate Payroll'}</button>
   </form>;
 }

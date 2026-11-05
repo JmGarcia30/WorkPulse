@@ -1,8 +1,9 @@
-import Link from 'next/link';
+import { TenantLink as Link } from '@/components/ui/TenantLink';
 import { Banknote, ChevronRight, ReceiptText } from 'lucide-react';
 import { requireEmployeeSelfContext } from '@/features/employee-self-service/context';
 import { listFinalizedPayslipsForEmployee } from '@/features/payroll/payslip';
 import { listPayrollNotifications } from '@/features/payroll/notifications';
+import { PayrollError } from '@/features/payroll/domain';
 
 const formatDateLabel = (value: string) => {
   try {
@@ -22,10 +23,16 @@ const formatCurrency = (value: string, currency: string) =>
 
 export default async function MyPayslipsPage() {
   const context = await requireEmployeeSelfContext();
-  const payslips = await listFinalizedPayslipsForEmployee({
-    organizationId: context.organization.id,
-    userId: context.user.id,
-  });
+  let payslips: Awaited<ReturnType<typeof listFinalizedPayslipsForEmployee>>;
+  try {
+    payslips = await listFinalizedPayslipsForEmployee({
+      organizationId: context.organization.id,
+      userId: context.user.id,
+    });
+  } catch (error) {
+    if (!(error instanceof PayrollError) || !['INVALID_SNAPSHOT', 'FORBIDDEN'].includes(error.code)) throw error;
+    return <section className="space-y-3 rounded-2xl border bg-white p-6"><h1 className="text-2xl font-bold">My Payroll</h1><p role="status">{error.code === 'INVALID_SNAPSHOT' ? 'A finalized payslip has an incomplete record. Please contact HR to review it. Your saved payroll history has not been changed.' : 'Your employee payroll account is not available. Please contact HR to check your employee account link.'}</p></section>;
+  }
 
   const latestPayslip = payslips[0];
   const notifications = await listPayrollNotifications({ organizationId: context.organization.id, userId: context.user.id });

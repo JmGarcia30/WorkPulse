@@ -61,7 +61,7 @@ function PeriodInputs({ row, periodId }: { row: PayrollStatutorySetupRow; period
   </form>;
 }
 
-function TaxOpening({ row, payDate }: { row: PayrollStatutorySetupRow; payDate: string }) {
+export function TaxOpening({ row, payDate }: { row: PayrollStatutorySetupRow; payDate: string }) {
   const [state, action, pending] = useActionState(saveTaxOpeningAction, {});
   const [fields, setFields] = useState<Record<string, string>>({ ...Object.fromEntries(openingFields.map(([key]) => [key, row.opening?.balances[key] ?? ''])), openingPayDate: row.opening?.payDate ?? payDate, evidenceReference: row.opening?.evidence ?? '' });
   const edit = (key: string, value: string) => setFields(current => ({ ...current, [key]: value }));

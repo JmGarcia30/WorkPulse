@@ -20,7 +20,7 @@ export async function getPayrollReadiness(input: { organizationId: string; actor
   const readiness = await Promise.all(rows.map(async row => {
     const records = compensations.filter(c => c.employeeId === row.id), compensation = records.length === 1 ? records[0] : null;
     const salary = records.length === 0 ? 'Salary effective date does not cover this payroll period.' : records.length > 1 ? 'Resolve overlapping salary records.' : null;
-    let government: string | null = row.input ? null : row.reusable ? 'Review and reuse verified setup below.' : 'Verify government coverage, agency bases and tax classification in Advanced Payroll Setup.';
+    let government: string | null = row.input ? null : row.reusable ? 'Review and reuse verified setup below.' : 'Verify government coverage, contribution bases and tax classification in Payroll Settings.';
     try {
       validateTableContext(period.payDate.toISOString().slice(0, 10), compensation?.payFrequency as 'MONTHLY' | 'SEMI_MONTHLY');
       if (compensation && (compensation.compensationType !== 'MONTHLY' || compensation.currency !== 'PHP')) government = 'This compensation arrangement needs a supported statutory calculation method before generation.';
@@ -42,7 +42,7 @@ export async function getPayrollReadiness(input: { organizationId: string; actor
     const attendanceRequired = compensation?.compensationType === 'DAILY' || !!policy && [policy.lateDeductionRule, policy.absenceDeductionRule, policy.undertimeDeductionRule].some(rule => rule !== 'NONE');
     const attendanceIssue = policyResult.error ?? (attendanceRequired ? attendanceReadinessIssue(attendance.filter(d => d.employeeId === row.id), inclusiveCalendarDays(period.periodStart, period.periodEnd)) : null);
     const issues = [salary, government, history, attendanceIssue].filter((v): v is string => !!v);
-    return { employeeId: row.id, employeeName: `${row.firstName} ${row.lastName}`, salary: salary ?? `${compensation?.currency} ${compensation?.baseRate.toFixed(2)} · ${compensation?.payFrequency.replaceAll('_', ' ').toLowerCase()}`, government: government ?? 'Verified period setup', history: history ?? 'Verified opening history saved', attendance: attendanceIssue ?? (attendanceRequired ? 'Attendance resolved' : 'No attendance deduction under current policy'), ready: issues.length === 0, action: issues.join(' ') || 'Generate payroll; calculation and ledger checks follow.' };
+    return { employeeId: row.id, employeeName: `${row.firstName} ${row.lastName}`, salary: salary ?? `${compensation?.currency} ${compensation?.baseRate.toFixed(2)} · ${compensation?.payFrequency.replaceAll('_', ' ').toLowerCase()}`, government: government ?? 'Verified period setup', history: history ?? 'Verified opening history saved', attendance: attendanceIssue ?? (attendanceRequired ? 'Attendance resolved' : 'No attendance deduction under current policy'), ready: issues.length === 0, status: issues.length === 0 ? 'Ready' as const : !compensation || !row.opening || !row.input && !row.reusable ? 'Needs Setup' as const : 'Needs Review' as const, action: issues.join(' ') || 'Generate payroll; calculation and ledger checks follow.' };
   }));
   return { setup: rows, readiness };
 }

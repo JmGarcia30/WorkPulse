@@ -23,6 +23,7 @@ export async function changePayrollEarningAction(_state: PayrollActionState, for
   try {
     await changePayrollEarning({ organizationId: user.organizationId, actorUserId: user.userId, employeeId: field('employeeId'), payrollPeriodId: field('payrollPeriodId'), expectedVersion: field('expectedVersion'), reason: field('reason'), confirmRecalculation: form.get('confirmRecalculation') === 'CONFIRMED', operation: operation as 'SAVE' | 'REMOVE' | 'RECALCULATE', earningId: field('earningId'), earning: { id: field('earningId'), category: field('category'), kind: field('kind'), amount: field('amount'), description: field('description'), supportingReference: field('supportingReference'), qualificationReference: field('qualificationReference') }, agencyReview: { monthlySssRemuneration: field('monthlySssRemuneration'), monthlyPagIbigFundSalary: field('monthlyPagIbigFundSalary'), agencyBasisReference: field('agencyBasisReference') } });
     revalidatePath('/dashboard/payroll');
+    revalidatePath('/dashboard/payroll/settings');
     return { success: 'Inputs saved. Generate payroll and review the updated calculation before finalizing.' };
   } catch (error) { return failure(error); }
 }
@@ -33,6 +34,7 @@ export async function notifyPayrollEmployeesAction(_state: PayrollActionState, f
   try {
     const result = await notifyPayrollEmployees({ organizationId: user.organizationId, actorUserId: user.userId, payrollPeriodId: String(form.get('payrollPeriodId') ?? ''), confirmation: String(form.get('confirmation') ?? ''), recipientToken: String(form.get('recipientToken') ?? '') });
     revalidatePath('/dashboard/payroll');
+    revalidatePath('/dashboard/payroll/settings');
     revalidatePath('/employee/payroll');
     return { success: `${result.created} in-app notifications created. ${result.alreadyCreated} already announced.` };
   } catch (error) { return failure(error); }
@@ -47,6 +49,7 @@ export async function saveStandardPayrollProfileAction(_state: PayrollActionStat
   try {
     await saveStandardPayrollProfile({ organizationId: user.organizationId, actorUserId: user.userId, employeeId: String(form.get('employeeId') ?? ''), payrollPeriodId: String(form.get('payrollPeriodId') ?? ''), evidenceReference: String(form.get('evidenceReference') ?? ''), confirmations: form.getAll('confirmed').map(String), deductionTreatment: String(form.get('deductionTreatment') ?? ''), compensationId: String(form.get('compensationId') ?? ''), expectedBaseRate: String(form.get('expectedBaseRate') ?? '') });
     revalidatePath('/dashboard/payroll');
+    revalidatePath('/dashboard/payroll/settings');
     return { success: 'Standard employee payroll profile saved. Verified opening history is still required before payroll.' };
   } catch (error) { return failure(error); }
 }
@@ -57,6 +60,7 @@ export async function reusePayrollSetupAction(_state: PayrollActionState, form: 
   try {
     await reusePayrollSetup({ organizationId: user.organizationId, actorUserId: user.userId, employeeId: String(form.get('employeeId') ?? ''), payrollPeriodId: String(form.get('payrollPeriodId') ?? ''), sourceId: String(form.get('sourceId') ?? ''), confirmed: form.get('confirmed') === 'CONFIRMED' });
     revalidatePath('/dashboard/payroll');
+    revalidatePath('/dashboard/payroll/settings');
     return { success: 'Verified setup reused for this period. Payroll will check current statutory rules and history during generation.' };
   } catch (error) { return failure(error); }
 }
@@ -67,6 +71,7 @@ export async function saveStatutorySetupAction(_state: PayrollActionState, form:
   try {
     await savePayrollStatutoryInput({ organizationId: user.organizationId, actorUserId: user.userId, employeeId: String(form.get('employeeId') ?? ''), payrollPeriodId: String(form.get('payrollPeriodId') ?? ''), evidenceReference: String(form.get('evidenceReference') ?? ''), payload: statutoryPayloadFromForm(form, user.userId) });
     revalidatePath('/dashboard/payroll');
+    revalidatePath('/dashboard/payroll/settings');
     return { success: 'Reviewed period inputs saved. Generate payroll to run all calculation checks.' };
   } catch (error) { return failure(error); }
 }
@@ -77,6 +82,7 @@ export async function saveTaxOpeningAction(_state: PayrollActionState, form: For
   try {
     await savePayrollTaxOpening({ organizationId: user.organizationId, actorUserId: user.userId, employeeId: String(form.get('employeeId') ?? ''), openingPayDate: String(form.get('openingPayDate') ?? ''), evidenceReference: String(form.get('evidenceReference') ?? ''), balances: openingBalancesFromForm(form) });
     revalidatePath('/dashboard/payroll');
+    revalidatePath('/dashboard/payroll/settings');
     return { success: 'Verified opening history saved. Later payments will use persisted payroll history.' };
   } catch (error) { return failure(error); }
 }
@@ -87,6 +93,7 @@ export async function createCompensationAction(_state: PayrollActionState, formD
   try {
     await createEmployeeCompensation({ organizationId: user.organizationId, actorUserId: user.userId, employeeId: String(formData.get('employeeId') ?? ''), compensationType: String(formData.get('compensationType') ?? ''), baseRate: String(formData.get('baseRate') ?? ''), payFrequency: String(formData.get('payFrequency') ?? ''), currency: String(formData.get('currency') ?? ''), effectiveFrom: String(formData.get('effectiveFrom') ?? '') });
     revalidatePath('/dashboard/payroll');
+    revalidatePath('/dashboard/payroll/settings');
     return { success: 'Compensation record created.' };
   } catch (error) { return failure(error); }
 }
@@ -97,6 +104,7 @@ export async function createPayrollPeriodAction(_state: PayrollActionState, form
   try {
     await createPayrollPeriod({ organizationId: user.organizationId, actorUserId: user.userId, name: String(formData.get('name') ?? ''), periodStart: String(formData.get('periodStart') ?? ''), periodEnd: String(formData.get('periodEnd') ?? ''), payDate: String(formData.get('payDate') ?? '') });
     revalidatePath('/dashboard/payroll');
+    revalidatePath('/dashboard/payroll/settings');
     return { success: 'Payroll period created.' };
   } catch (error) { return failure(error); }
 }
@@ -111,6 +119,7 @@ export async function generatePayrollAction(_state: PayrollActionState, formData
       payrollPeriodId: String(formData.get('payrollPeriodId') ?? ''),
     });
     revalidatePath('/dashboard/payroll');
+    revalidatePath('/dashboard/payroll/settings');
     const unchanged = result.existingCount ? ` ${result.existingCount} existing immutable ${result.existingCount === 1 ? 'entry was' : 'entries were'} unchanged.` : '';
     return {
       success: `${result.createdCount} payroll ${result.createdCount === 1 ? 'entry' : 'entries'} generated.${unchanged}`,
@@ -136,6 +145,7 @@ export async function createPayrollPolicyAction(_state: PayrollActionState, form
       roundingRule: String(formData.get('roundingRule') ?? ''), leaveTreatments,
     });
     revalidatePath('/dashboard/payroll');
+    revalidatePath('/dashboard/payroll/settings');
     return { success: `Payroll policy version ${policy.version} created.` };
   } catch (error) { return failure(error); }
 }
@@ -146,6 +156,7 @@ export async function movePayrollToReviewAction(_state: PayrollActionState, form
   try {
     await movePayrollPeriodToReview({ organizationId: user.organizationId, actorUserId: user.userId, payrollPeriodId: String(formData.get('payrollPeriodId') ?? '') });
     revalidatePath('/dashboard/payroll');
+    revalidatePath('/dashboard/payroll/settings');
     return { success: 'Payroll period moved to review.' };
   } catch (error) { return failure(error); }
 }
@@ -159,6 +170,8 @@ export async function finalizePayrollAction(_state: PayrollActionState, formData
       payrollPeriodId: String(formData.get('payrollPeriodId') ?? ''), confirmation: String(formData.get('confirmation') ?? ''),
     });
     revalidatePath('/dashboard/payroll');
+    revalidatePath('/dashboard/payroll/settings');
+    revalidatePath('/employee/payroll');
     return { success: 'Payroll finalized and locked.' };
   } catch (error) { return failure(error); }
 }
@@ -174,6 +187,7 @@ export async function deletePayrollPeriodAction(_state: PayrollActionState, form
       payrollPeriodId,
     });
     revalidatePath('/dashboard/payroll');
+    revalidatePath('/dashboard/payroll/settings');
     return { success: 'Payroll period deleted successfully.' };
   } catch (error) { return failure(error); }
 }
@@ -188,6 +202,7 @@ export async function deletePayrollPeriodDirectAction(payrollPeriodId: string): 
       payrollPeriodId,
     });
     revalidatePath('/dashboard/payroll');
+    revalidatePath('/dashboard/payroll/settings');
     return { success: 'Payroll period deleted successfully.' };
   } catch (error) {
     return { error: error instanceof PayrollError ? error.message : error instanceof Error ? error.message : 'The payroll period could not be deleted.' };
