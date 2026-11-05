@@ -3,7 +3,6 @@ import { prisma } from '@/lib/db/prisma';
 import { canViewHiringData } from '@/lib/permissions/rbac';
 import { OfferStatus } from '@prisma/client';
 import { ErrorState } from '@/components/ui/ErrorState';
-import { FileText } from 'lucide-react';
 import { HiringPageHeader } from '@/components/hiring/HiringPageHeader';
 import { HiringFilterToolbar, FilterPill } from '@/components/hiring/HiringFilterToolbar';
 import { HiringPagination } from '@/components/hiring/HiringPagination';
@@ -285,12 +284,7 @@ export default async function OffersPage({ searchParams }: OffersPageProps) {
           { label: 'Hiring', href: '/dashboard/hiring/pipeline' },
           { label: 'Offers' },
         ]}
-        title={
-          <div className="flex items-center gap-2">
-            <FileText className="h-5 w-5 text-slate-700" />
-            <span>Offer & Compensation Management Center</span>
-          </div>
-        }
+        title="Offer & Compensation Management Center"
         badge={
           <span className="flex h-5 items-center justify-center rounded-[6px] border-none bg-[#EEEDF1] px-2 text-[11px] font-semibold text-[#282934] tabular-nums">
             {totalCount} Total

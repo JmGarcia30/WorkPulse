@@ -82,13 +82,13 @@ export function RequiresAttentionWidget({ items }: RequiresAttentionWidgetProps)
           {/* Search bar and Category filter */}
           <div className="flex items-center gap-2">
             <div className="relative">
-              <Search className="absolute left-2.5 top-2.5 h-3.5 w-3.5 text-[#C7A759]" />
+              <Search className="absolute left-2.5 top-2.5 h-3.5 w-3.5 text-[#282934]" />
               <input
                 type="text"
                 placeholder="Search..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="h-8 w-36 sm:w-48 rounded-xl border border-slate-200 bg-slate-50/50 pl-8 pr-3 text-xs text-[#282934] placeholder-[#777882] focus:bg-white focus:border-[#C7A759] focus:outline-none transition-colors"
+                className="h-8 w-36 sm:w-48 rounded-xl border border-slate-200 bg-slate-50/50 pl-8 pr-3 text-xs text-[#282934] placeholder-[#777882] focus:bg-white focus:border-[#282934] focus:outline-none transition-colors"
               />
             </div>
 
@@ -97,7 +97,7 @@ export function RequiresAttentionWidget({ items }: RequiresAttentionWidgetProps)
                 aria-label="Filter items by category"
                 value={selectedCategory}
                 onChange={(e) => setSelectedCategory(e.target.value)}
-                className="h-8 rounded-xl border border-slate-200 bg-slate-50/50 px-2.5 text-xs font-medium text-[#282934] focus:bg-white focus:border-[#C7A759] focus:outline-none cursor-pointer"
+                className="h-8 rounded-xl border border-slate-200 bg-slate-50/50 px-2.5 text-xs font-medium text-[#282934] focus:bg-white focus:border-[#282934] focus:outline-none cursor-pointer"
               >
                 {categories.map((c) => (
                   <option key={c} value={c}>
@@ -205,10 +205,10 @@ export function RequiresAttentionWidget({ items }: RequiresAttentionWidgetProps)
                       <td className="py-3 pl-3 text-right whitespace-nowrap">
                         <Link
                           href={item.href}
-                          className="inline-flex items-center gap-1 font-semibold text-[#282934] hover:text-[#C7A759] hover:underline"
+                          className="inline-flex items-center gap-1 font-semibold text-[#282934] hover:underline"
                         >
                           Review
-                          <ArrowRight className="h-3 w-3 text-[#C7A759]" />
+                          <ArrowRight className="h-3 w-3 text-[#282934]" />
                         </Link>
                       </td>
                     </tr>
@@ -226,7 +226,7 @@ export function RequiresAttentionWidget({ items }: RequiresAttentionWidgetProps)
           <span>Showing 10 of {filteredItems.length} pending items</span>
           <Link
             href="/dashboard/employees?needsReview=1"
-            className="font-semibold text-[#282934] hover:text-[#C7A759]"
+            className="font-semibold text-[#282934] hover:underline"
           >
             View All Reviews →
           </Link>

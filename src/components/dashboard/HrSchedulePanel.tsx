@@ -96,7 +96,7 @@ export function HrSchedulePanel({
             type="button"
             onClick={() => setShowAllWeek(!showAllWeek)}
             className={`text-xs font-semibold px-2 py-1 rounded-lg transition-colors ${showAllWeek
-                ? 'bg-[#C7A759] text-[#282934]'
+                ? 'bg-[#282934] text-white'
                 : 'text-[#62636B] hover:text-[#282934] hover:bg-slate-100'
               }`}
           >
@@ -109,7 +109,7 @@ export function HrSchedulePanel({
           <span className="text-sm font-bold text-[#282934]">
             {headerDateLabel}
           </span>
-          <div className="flex items-center gap-1 text-[#C7A759]">
+          <div className="flex items-center gap-1 text-[#282934]">
             <Calendar className="h-4 w-4" />
           </div>
         </div>
@@ -129,21 +129,23 @@ export function HrSchedulePanel({
                   setShowAllWeek(false);
                 }}
                 className={`group relative flex flex-col items-center justify-center py-2 px-1 rounded-xl transition-all ${isSelected
-                    ? 'bg-[#C7A759] text-[#282934] shadow-sm font-semibold'
+                    ? 'bg-[#282934] text-white shadow-sm font-semibold'
+                    : d.isToday
+                    ? 'text-[#282934] font-semibold hover:bg-slate-50'
                     : 'text-[#62636B] hover:text-[#282934] hover:bg-slate-50'
                   }`}
               >
-                <span className={`text-[11px] font-medium tracking-tight ${isSelected ? 'text-[#282934]' : ''}`}>
+                <span className={`text-[11px] font-medium tracking-tight ${isSelected ? 'text-white' : ''}`}>
                   {shortName}
                 </span>
-                <span className={`text-xs font-bold ${isSelected ? 'text-[#282934]' : 'text-[#282934]'}`}>
+                <span className={`text-xs font-bold ${isSelected ? 'text-white' : 'text-[#282934]'}`}>
                   {d.dayNumber}
                 </span>
 
                 {/* Event count indicator dot */}
                 {d.eventCount > 0 && (
                   <span
-                    className={`mt-1 h-1 w-1 rounded-full ${isSelected ? 'bg-emerald-700' : 'bg-emerald-600'
+                    className={`mt-1 h-1 w-1 rounded-full ${isSelected ? 'bg-emerald-400' : 'bg-emerald-600'
                       }`}
                   />
                 )}
@@ -157,7 +159,7 @@ export function HrSchedulePanel({
       <div className="flex-1 my-4 space-y-4 overflow-y-auto max-h-[380px] pr-1">
         {filteredEvents.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-12 text-center text-[#777882]">
-            <Clock className="h-8 w-8 stroke-1 text-[#C7A759] mb-2" />
+            <Clock className="h-8 w-8 stroke-1 text-[#282934] mb-2" />
             <p className="text-sm font-semibold text-[#282934]">
               No scheduled HR activities
             </p>
@@ -192,7 +194,7 @@ export function HrSchedulePanel({
                           {evt.typeLabel}
                         </span>
                       </div>
-                      <ExternalLink className="h-3 w-3 text-[#C7A759] opacity-0 group-hover:opacity-100 transition-opacity" />
+                      <ExternalLink className="h-3 w-3 text-[#282934] opacity-0 group-hover:opacity-100 transition-opacity" />
                     </div>
 
                     <div className="mt-1">
@@ -219,10 +221,10 @@ export function HrSchedulePanel({
         </span>
         <Link
           href="/dashboard/hiring/interviews"
-          className="font-semibold text-[#282934] hover:text-[#C7A759] inline-flex items-center gap-1 transition-colors"
+          className="font-semibold text-[#282934] hover:underline inline-flex items-center gap-1 transition-colors"
         >
           View Interviews
-          <ArrowRight className="h-3 w-3 text-[#C7A759]" />
+          <ArrowRight className="h-3 w-3 text-[#282934]" />
         </Link>
       </div>
     </div>

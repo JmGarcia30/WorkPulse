@@ -3,7 +3,6 @@ import { prisma } from '@/lib/db/prisma';
 import { canViewHiringData } from '@/lib/permissions/rbac';
 import { InterviewStatus, InterviewType } from '@prisma/client';
 import { ErrorState } from '@/components/ui/ErrorState';
-import { Calendar } from 'lucide-react';
 import { HiringPageHeader } from '@/components/hiring/HiringPageHeader';
 import { HiringFilterToolbar, FilterPill } from '@/components/hiring/HiringFilterToolbar';
 import { HiringPagination } from '@/components/hiring/HiringPagination';
@@ -264,12 +263,7 @@ export default async function InterviewsPage({ searchParams }: InterviewsPagePro
           { label: 'Hiring', href: '/dashboard/hiring/pipeline' },
           { label: 'Interviews' },
         ]}
-        title={
-          <div className="flex items-center gap-2">
-            <Calendar className="h-5 w-5 text-slate-700" />
-            <span>Interview Management Center</span>
-          </div>
-        }
+        title="Interview Management Center"
         badge={
           <span className="flex h-5 items-center justify-center rounded-full bg-slate-100 px-2 text-[11px] font-bold text-slate-700 border border-slate-200/80 tabular-nums">
             {totalCount} Total

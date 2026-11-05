@@ -26,7 +26,7 @@ export function DashboardSummaryCards({
         value: presentToday,
         icon: UserCheck,
         href: '/dashboard/attendance',
-        badgeColor: 'text-emerald-700 bg-emerald-50',
+        badgeColor: 'text-[#282934] bg-[rgba(40,41,52,0.08)]',
       },
       {
         title: 'Total Employees',
@@ -34,7 +34,7 @@ export function DashboardSummaryCards({
         value: totalEmployees,
         icon: Users,
         href: '/dashboard/employees',
-        badgeColor: 'text-[#C7A759] bg-[rgba(199,167,89,0.12)]',
+        badgeColor: 'text-[#282934] bg-[rgba(40,41,52,0.08)]',
       },
       {
         title: 'Open Positions',
@@ -42,7 +42,7 @@ export function DashboardSummaryCards({
         value: openPositions,
         icon: Briefcase,
         href: '/dashboard/hiring/jobs',
-        badgeColor: 'text-[#C7A759] bg-[rgba(199,167,89,0.12)]',
+        badgeColor: 'text-[#282934] bg-[rgba(40,41,52,0.08)]',
       },
     ]
     : [
@@ -52,7 +52,7 @@ export function DashboardSummaryCards({
         value: openPositions,
         icon: Briefcase,
         href: '/dashboard/hiring/jobs',
-        badgeColor: 'text-[#C7A759] bg-[rgba(199,167,89,0.12)]',
+        badgeColor: 'text-[#282934] bg-[rgba(40,41,52,0.08)]',
       },
       {
         title: 'Active Candidates',
@@ -60,7 +60,7 @@ export function DashboardSummaryCards({
         value: totalCandidates,
         icon: Users,
         href: '/dashboard/hiring/applicants',
-        badgeColor: 'text-[#C7A759] bg-[rgba(199,167,89,0.12)]',
+        badgeColor: 'text-[#282934] bg-[rgba(40,41,52,0.08)]',
       },
       {
         title: 'Scheduled Interviews',
@@ -68,7 +68,7 @@ export function DashboardSummaryCards({
         value: scheduledInterviews,
         icon: CalendarCheck,
         href: '/dashboard/hiring/interviews',
-        badgeColor: 'text-emerald-700 bg-emerald-50',
+        badgeColor: 'text-[#282934] bg-[rgba(40,41,52,0.08)]',
       },
     ];
 

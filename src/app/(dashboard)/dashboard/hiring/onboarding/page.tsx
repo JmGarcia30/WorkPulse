@@ -3,7 +3,6 @@ import { prisma } from '@/lib/db/prisma';
 import { canViewHiringData } from '@/lib/permissions/rbac';
 import { OnboardingStatus, OnboardingTaskStatus } from '@prisma/client';
 import { ErrorState } from '@/components/ui/ErrorState';
-import { UserCheck } from 'lucide-react';
 import { HiringPageHeader } from '@/components/hiring/HiringPageHeader';
 import { HiringFilterToolbar, FilterPill } from '@/components/hiring/HiringFilterToolbar';
 import { HiringPagination } from '@/components/hiring/HiringPagination';
@@ -215,12 +214,7 @@ export default async function OnboardingManagementPage({
           { label: 'Hiring', href: '/dashboard/hiring/pipeline' },
           { label: 'Onboarding' },
         ]}
-        title={
-          <div className="flex items-center gap-2">
-            <UserCheck className="h-5 w-5 text-slate-700" />
-            <span>Onboarding</span>
-          </div>
-        }
+        title="Onboarding"
         badge={
           <span className="flex h-5 items-center justify-center rounded-full bg-slate-100 px-2 text-[11px] font-bold text-slate-700 border border-slate-200/80 tabular-nums">
             {totalCount} Total

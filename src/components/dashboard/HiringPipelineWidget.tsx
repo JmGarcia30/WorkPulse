@@ -27,7 +27,7 @@ export function HiringPipelineWidget({
 
           <Link
             href="/dashboard/hiring/pipeline"
-            className="flex h-8 w-8 items-center justify-center rounded-lg border border-slate-200 text-[#C7A759] hover:border-[#C7A759] transition-colors"
+            className="flex h-8 w-8 items-center justify-center rounded-lg border border-slate-200 text-[#282934] hover:border-[#282934] transition-colors"
             title="Open complete Hiring Pipeline"
           >
             <ArrowUpRight className="h-4 w-4" />
@@ -52,7 +52,7 @@ export function HiringPipelineWidget({
             className="group block space-y-1.5 transition-colors"
           >
             <div className="flex items-center justify-between text-xs">
-              <span className="font-semibold text-[#282934] group-hover:text-[#C7A759] transition-colors">
+              <span className="font-semibold text-[#282934] group-hover:text-[#282934] transition-colors">
                 {st.label}
               </span>
               <div className="flex items-center gap-2">
@@ -83,7 +83,7 @@ export function HiringPipelineWidget({
         </span>
         <Link
           href="/dashboard/hiring/applicants"
-          className="font-semibold text-[#282934] hover:text-[#C7A759] transition-colors"
+          className="font-semibold text-[#282934] hover:text-[#282934] hover:underline transition-colors"
         >
           View All Applicants →
         </Link>

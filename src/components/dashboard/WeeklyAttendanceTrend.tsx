@@ -111,7 +111,7 @@ export function WeeklyAttendanceTrend({
 
           <Link
             href="/dashboard/attendance"
-            className="flex h-8 w-8 items-center justify-center rounded-lg border border-slate-200 text-[#C7A759] hover:border-[#C7A759] transition-colors"
+            className="flex h-8 w-8 items-center justify-center rounded-lg border border-slate-200 text-[#282934] hover:border-[#282934] transition-colors"
             title="Open attendance trends"
           >
             <ArrowUpRight className="h-4 w-4" />

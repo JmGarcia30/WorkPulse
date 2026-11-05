@@ -58,7 +58,7 @@ export function AttendanceTrackerDonut({
           title="Open attendance module"
         >
           View Details
-          <ArrowUpRight className="h-3.5 w-3.5 text-[#C7A759]" />
+          <ArrowUpRight className="h-3.5 w-3.5 text-[#282934]" />
         </Link>
       </div>
 
