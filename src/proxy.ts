@@ -82,7 +82,9 @@ export async function proxy(request: NextRequest) {
       where: { slug: oldSlug },
       select: { organization: { select: { slug: true } } },
     });
-    if (alias) {
+    // An owned historical alias may be active again. Do not redirect the
+    // canonical careers path to itself or block submissions at that path.
+    if (alias && alias.organization.slug !== oldSlug) {
       if (request.method !== 'GET' && request.method !== 'HEAD') {
         return new NextResponse('This workspace URL has changed. Use the current address.', { status: 409 });
       }
