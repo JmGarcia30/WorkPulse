@@ -4,7 +4,7 @@ import { Prisma } from '@prisma/client';
 import { prisma } from '@/lib/db/prisma';
 import { requirePlatformAdministrator } from '@/features/platform-admin/session';
 
-const synthetic = { OR: [{ slug: { startsWith: 'syn-a-' } }, { slug: { startsWith: 'syn-b-' } }] } as const;
+const synthetic: Prisma.OrganizationWhereInput = { OR: [{ slug: { startsWith: 'syn-a-' } }, { slug: { startsWith: 'syn-b-' } }] };
 export default async function PlatformOrganizations({ searchParams }: { searchParams: Promise<{ view?: string; page?: string; q?: string }> }) {
   await requirePlatformAdministrator();
   const params = await searchParams;

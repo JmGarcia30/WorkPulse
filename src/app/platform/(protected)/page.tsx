@@ -1,9 +1,10 @@
 import Link from 'next/link';
 import { ArrowRight, Building2, BriefcaseBusiness, CalendarDays, FlaskConical, Plus, ShieldCheck } from 'lucide-react';
+import type { Prisma } from '@prisma/client';
 import { requirePlatformAdministrator } from '@/features/platform-admin/session';
 import { prisma } from '@/lib/db/prisma';
 
-const syntheticFilter = { OR: [{ slug: { startsWith: 'syn-a-' } }, { slug: { startsWith: 'syn-b-' } }] } as const;
+const syntheticFilter: Prisma.OrganizationWhereInput = { OR: [{ slug: { startsWith: 'syn-a-' } }, { slug: { startsWith: 'syn-b-' } }] };
 export default async function PlatformOverview() {
   const administrator = await requirePlatformAdministrator();
   const [total, synthetic, careersEnabled, recentCount, organizations, recentAudits] = await Promise.all([
