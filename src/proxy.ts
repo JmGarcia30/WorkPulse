@@ -76,7 +76,7 @@ export async function proxy(request: NextRequest) {
 
   // Old public career links are redirected only for safe navigation. Never
   // accept writes or resolve authentication under a previous tenant identifier.
-  if (classification.kind === 'public' && /^\\/careers\\/[a-z0-9-]+(?:\\/|$)/.test(pathname)) {
+  if (classification.kind === 'public' && pathname.startsWith('/careers/') && /^[a-z0-9-]+$/.test(pathname.split('/')[2])) {
     const oldSlug = pathname.split('/')[2];
     const alias = await prisma.organizationSlugAlias.findUnique({
       where: { slug: oldSlug },
