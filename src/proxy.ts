@@ -84,13 +84,15 @@ export async function proxy(request: NextRequest) {
     });
     // An owned historical alias may be active again. Do not redirect the
     // canonical careers path to itself or block submissions at that path.
+    // Use a temporary redirect: a permanently cached 308 can create loops
+    // when an administrator later restores this historical slug.
     if (alias && alias.organization.slug !== oldSlug) {
       if (request.method !== 'GET' && request.method !== 'HEAD') {
         return new NextResponse('This workspace URL has changed. Use the current address.', { status: 409 });
       }
       const destination = requestUrl(request);
       destination.pathname = '/careers/' + alias.organization.slug + pathname.slice(('/careers/' + oldSlug).length);
-      return NextResponse.redirect(destination, 308);
+      return NextResponse.redirect(destination, 307);
     }
   }
 
@@ -114,7 +116,7 @@ export async function proxy(request: NextRequest) {
         }
         const destination = requestUrl(request);
         destination.pathname = '/w/' + alias.organization.slug + suffix;
-        const response = NextResponse.redirect(destination, 308);
+        const response = NextResponse.redirect(destination, 307);
         response.cookies.delete(pathTenantCookie);
         return response;
       }
@@ -176,7 +178,7 @@ export async function proxy(request: NextRequest) {
           return new NextResponse('This workspace URL has changed. Use the current address.', { status: 409 });
         }
         const destination = new URL(pathname + request.nextUrl.search, tenantOrigin(alias.organization.slug));
-        return NextResponse.redirect(destination, 308);
+        return NextResponse.redirect(destination, 307);
       }
     }
     return new NextResponse('Workspace not found.', { status: 404 });
