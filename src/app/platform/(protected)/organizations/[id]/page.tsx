@@ -38,7 +38,7 @@ export default async function PlatformOrganizationPage({ params }: { params: Pro
     </section>
     <div className="platform-card">
       <div className="platform-card-header"><div><h2 className="platform-card-title">Organization settings</h2><p className="platform-card-description">Edit verified platform metadata or control the public career portal</p></div></div>
-      <div className="px-5 pb-5"><OrganizationManagementForms organization={{ id: org.id, name: org.name, contactEmail: contact?.contactEmail ?? null, timeZone: org.timeZone, careersEnabled: org.careersEnabled }}/></div>
+      <div className="px-5 pb-5"><OrganizationManagementForms organization={{ id: org.id, name: org.name, slug: org.slug, contactEmail: contact?.contactEmail ?? null, timeZone: org.timeZone, careersEnabled: org.careersEnabled }}/></div>
     </div>
     <div className="grid gap-5 lg:grid-cols-[minmax(0,1.3fr)_minmax(280px,.7fr)]">
       <section className="platform-card">
