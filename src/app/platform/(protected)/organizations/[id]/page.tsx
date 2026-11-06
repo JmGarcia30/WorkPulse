@@ -13,11 +13,12 @@ export default async function PlatformOrganizationPage({ params }: { params: Pro
   const { id } = await params;
   const org = await prisma.organization.findUnique({ where: { id }, select: organizationMetadata });
   if (!org) notFound();
-  const [onboarding, contact, audits, registration] = await Promise.all([
+  const [onboarding, contact, audits, registration, previousSlugs] = await Promise.all([
     prisma.organizationAdministratorInvitation.findUnique({ where: { organizationId: id }, select: { email: true, status: true, deliveryStatus: true, expiresAt: true, lastIssuedAt: true, activatedAt: true, revokedAt: true } }),
     prisma.organization.findUnique({ where: { id }, select: { contactEmail: true } }),
     prisma.platformOrganizationAudit.findMany({ where: { organizationId: id }, select: { id: true, action: true, createdAt: true }, orderBy: [{ createdAt: 'desc' }, { id: 'desc' }], take: 10 }),
     prisma.companyRegistration.findUnique({ where: { organizationId: id }, select: { email: true, verifiedAt: true } }),
+    prisma.organizationSlugAlias.findMany({ where: { organizationId: id, slug: { not: org.slug } }, select: { slug: true }, orderBy: [{ createdAt: 'desc' }, { slug: 'asc' }], take: 20 }),
   ]);
   return <div className="platform-section-gap">
     <Link href="/platform/organizations" className="platform-page-back"><ArrowLeft size={14} aria-hidden="true"/> Back to organizations</Link>
@@ -38,7 +39,7 @@ export default async function PlatformOrganizationPage({ params }: { params: Pro
     </section>
     <div className="platform-card">
       <div className="platform-card-header"><div><h2 className="platform-card-title">Organization settings</h2><p className="platform-card-description">Edit verified platform metadata or control the public career portal</p></div></div>
-      <div className="px-5 pb-5"><OrganizationManagementForms organization={{ id: org.id, name: org.name, slug: org.slug, contactEmail: contact?.contactEmail ?? null, timeZone: org.timeZone, careersEnabled: org.careersEnabled }}/></div>
+      <div className="px-5 pb-5"><OrganizationManagementForms organization={{ id: org.id, name: org.name, slug: org.slug, previousSlugs: previousSlugs.map(item => item.slug), contactEmail: contact?.contactEmail ?? null, timeZone: org.timeZone, careersEnabled: org.careersEnabled }}/></div>
     </div>
     <div className="grid gap-5 lg:grid-cols-[minmax(0,1.3fr)_minmax(280px,.7fr)]">
       <section className="platform-card">

@@ -98,7 +98,7 @@ const slugUpdate = z.object({
 
 /**
  * Renaming is a platform operation, not a tenant membership transfer.
- * Old slugs remain reserved and redirect only read-only requests.
+ * Past slugs can be reused by their original tenant only; other tenants cannot claim them.
  * The special SAGA route /saga is not renamed here.
  */
 export async function changeOrganizationSlugAction(_previous: ActionState, form: FormData): Promise<ActionState> {
@@ -112,24 +112,24 @@ export async function changeOrganizationSlugAction(_previous: ActionState, form:
   const { organizationId, nextSlug } = parsed.data;
   try {
     const result = await prisma.$transaction(async tx => {
-      // Serializes concurrent tenant creation and rename attempts for the same new slug.
-      // No cross-organization assignment or reuse of an old alias is permitted.
+      // Serialize concurrent renames for the same organization and claims for the target slug.
+      await tx.$queryRaw`SELECT pg_advisory_xact_lock(hashtextextended(${'organization-slug:' + organizationId}, 0))::text`;
       await tx.$queryRaw`SELECT pg_advisory_xact_lock(hashtextextended(${'workspace-slug:' + nextSlug}, 0))::text`;
-      const org = await tx.organization.findUnique({
-        where: { id: organizationId },
-        select: { slug: true },
-      });
+      const org = await tx.organization.findUnique({ where: { id: organizationId }, select: { slug: true } });
       if (!org) return 'Organization not found.';
       if (org.slug === 'st-aloysius') return 'SAGA uses the protected /saga workspace URL, which cannot be changed here.';
       if (org.slug === nextSlug) return 'This workspace URL is already current.';
-      if (await tx.organization.findUnique({ where: { slug: nextSlug }, select: { id: true } }) ||
-          await tx.organizationSlugAlias.findUnique({ where: { slug: nextSlug }, select: { slug: true } })) {
-        return 'That workspace URL is already in use or reserved by a previous organization URL.';
-      }
-      // An old slug may already have an alias only if it belongs to this organization.
-      await tx.organizationSlugAlias.create({
-        data: { slug: org.slug, organizationId },
-      });
+      const [currentOwner, targetAlias, oldAlias] = await Promise.all([
+        tx.organization.findUnique({ where: { slug: nextSlug }, select: { id: true } }),
+        tx.organizationSlugAlias.findUnique({ where: { slug: nextSlug }, select: { organizationId: true } }),
+        tx.organizationSlugAlias.findUnique({ where: { slug: org.slug }, select: { organizationId: true } }),
+      ]);
+      if (currentOwner && currentOwner.id !== organizationId) return 'That workspace URL belongs to another organization.';
+      if (targetAlias && targetAlias.organizationId !== organizationId) return 'That previous workspace URL belongs to another organization.';
+      if (oldAlias && oldAlias.organizationId !== organizationId) return 'Conflicting previous URL ownership. No changes were made.';
+      // Retain all historical aliases. A previously used slug may become canonical again
+      // for the same tenant, while remaining unavailable to every other tenant.
+      if (!oldAlias) await tx.organizationSlugAlias.create({ data: { slug: org.slug, organizationId } });
       await tx.organization.update({ where: { id: organizationId }, data: { slug: nextSlug } });
       await tx.platformOrganizationAudit.create({
         data: { organizationId, actorAdministratorId: actor.id, action: 'ORGANIZATION_SLUG_CHANGED' },
@@ -141,7 +141,7 @@ export async function changeOrganizationSlugAction(_previous: ActionState, form:
     revalidatePath(`/platform/organizations/${organizationId}`);
     revalidatePath('/workspace-discovery');
     revalidatePath('/careers');
-    return { success: 'Workspace URL updated. Existing records were preserved. Previous read-only links redirect to the new address. Share the new login link with staff.' };
+    return { success: 'Workspace URL updated. Previous addresses remain owned by this organization, and old links redirect to its current address. Share the new login link with staff.' };
   } catch {
     return { error: 'Could not change the workspace URL. Confirm it is unused and try again.' };
   }
