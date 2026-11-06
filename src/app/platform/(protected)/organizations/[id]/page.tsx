@@ -4,6 +4,7 @@ import { organizationMetadata } from '@/features/platform-admin/service';
 import { prisma } from '@/lib/db/prisma';
 import { randomUUID } from 'node:crypto';
 import { OrganizationInvitationControls } from '@/features/platform-admin/onboarding-forms';
+import { OrganizationManagementForms } from '@/features/platform-admin/organization-management-forms';
 
 export default async function PlatformOrganizationPage({ params }: { params: Promise<{ id: string }> }) {
   await requirePlatformAdministrator();
@@ -19,6 +20,7 @@ export default async function PlatformOrganizationPage({ params }: { params: Pro
   return <><h1 className="wp-page-title">{org.name}</h1><dl className="wp-card grid gap-5 p-6 sm:grid-cols-2">
     {Object.entries({ 'Organization ID': org.id, Slug: org.slug, 'Career portal status': org.careersEnabled ? 'Enabled' : 'Disabled', 'Time zone': org.timeZone, Registered: org.createdAt.toISOString().slice(0, 10) }).map(([label, value]) => <div key={label}><dt className="text-sm text-[var(--wp-text-muted)]">{label}</dt><dd className="mt-1 break-all font-medium">{value}</dd></div>)}
   </dl><p className="text-sm text-[var(--wp-text-muted)]">Employee, applicant, payroll and document records require separate workspace authorization.</p>
+  <OrganizationManagementForms organization={{ id: org.id, name: org.name, contactEmail: contact?.contactEmail ?? null, timeZone: org.timeZone, careersEnabled: org.careersEnabled }} />
   <section className="wp-card space-y-4 p-6"><h2 className="wp-section-title">Organization onboarding</h2>
     <p className="text-sm">Contact email: {contact?.contactEmail ?? 'Not recorded for this existing organization'}</p>
     {onboarding ? <>
