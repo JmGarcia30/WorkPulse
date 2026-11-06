@@ -44,7 +44,7 @@ export default async function PlatformOrganizations({ searchParams }: { searchPa
         <label htmlFor="organization-search" className="sr-only">Search organizations by name or workspace slug</label>
         <input id="organization-search" name="q" defaultValue={q} placeholder="Search by name or workspace URL..." className="wp-input w-full max-w-md"/>
         <button type="submit" className="wp-button-secondary">Search</button>
-        {q && <Link className="platform-filter-link" href={url(view)}>Clear</Link>}
+        {q && <Link className="platform-filter-link" href={'/platform/organizations?view=' + view}>Clear</Link>}
       </form>
       {view === 'synthetic' && <p className="mx-6 mb-4 rounded-xl bg-amber-50 px-4 py-3 text-xs leading-6 text-amber-900">These organizations match legacy synthetic test prefixes. Some contain test payroll history. Their records are not deleted, and they are excluded from the default directory.</p>}
       <div className="platform-table-scroll">
