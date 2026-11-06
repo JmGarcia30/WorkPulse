@@ -8,7 +8,7 @@ const labels: Record<string, string> = {
   PASSWORD_RESET_REQUESTED: 'Password recovery requested', PASSWORD_RESET_COMPLETED: 'Password reset completed; sessions revoked',
   SECURITY_ALERT_CLAIMED: 'Security alert delivery claimed', SECURITY_ALERT_ACCEPTED: 'Security alert accepted by SMTP', SECURITY_ALERT_FAILED: 'Security alert delivery failed',
   DRAFT_JOB_DELETED: 'Unused recruitment draft deleted', JOB_CREATED: 'Job created', JOB_UPDATED: 'Job updated', JOB_PUBLISHED: 'Job published', JOB_CLOSED: 'Job closed',
-ORGANIZATION_DETAILS_UPDATED: 'Organization details updated', CAREER_PORTAL_ENABLED: 'Career portal enabled', CAREER_PORTAL_DISABLED: 'Career portal disabled',
+ORGANIZATION_SLUG_CHANGED: 'Workspace URL changed', ORGANIZATION_DETAILS_UPDATED: 'Organization details updated', CAREER_PORTAL_ENABLED: 'Career portal enabled', CAREER_PORTAL_DISABLED: 'Career portal disabled',
   ORGANIZATION_CREATED: 'Organization created', INVITATION_CREATED: 'Administrator invitation created', INVITATION_RESENT: 'Administrator invitation resent', INVITATION_ACTIVATED: 'Administrator invitation activated',
   INVITATION_ISSUED: 'Administrator invitation issued', INVITATION_DELIVERY_FAILED: 'Administrator invitation delivery failed', INVITATION_RESEND: 'Administrator invitation reissued', INVITATION_REVOKE: 'Administrator invitation revoked',
   ACCOUNT_CREATED: 'Employee account created', EMPLOYEE_LINKED: 'Employee account linked', INVITATION_SENT: 'Invitation sent', ACCOUNT_ACTIVATED: 'Account activated', ACCOUNT_DISABLED: 'Account disabled', ACCOUNT_ENABLED: 'Account enabled',

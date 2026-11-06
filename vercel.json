@@ -3,5 +3,5 @@
   "git": {
     "deploymentEnabled": true
   },
-  "buildCommand": "node scripts/platform-slug-release-guard.cjs before && npx prisma migrate deploy && node scripts/platform-slug-release-guard.cjs after && npm run build"
+  "buildCommand": "npm run build"
 }
