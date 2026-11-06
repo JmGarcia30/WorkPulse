@@ -9,7 +9,7 @@ function Feedback({ state }: { state: { error?: string; success?: string } }) {
 }
 export function CreateOrganizationForm({ requestKey }: { requestKey: string }) {
   const [state, action, pending] = useActionState(createOrganizationAction, {});
-  return <form action={action} className="wp-card max-w-xl space-y-5 p-6">
+  return <form action={action} className="space-y-5">
     <input type="hidden" name="requestKey" value={requestKey} />
     <label className="wp-label">Organization name<input className="wp-input mt-2" name="name" minLength={2} maxLength={150} required /></label>
     <label className="wp-label">Workspace slug<input className="wp-input mt-2" name="slug" minLength={2} maxLength={63} pattern="[a-z0-9]+(-[a-z0-9]+)*" autoCapitalize="none" required /></label>

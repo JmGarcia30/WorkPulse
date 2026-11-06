@@ -28,7 +28,7 @@ export function PlatformLoginForm() {
 
 export function PlatformAccountForm({ name, email }: { name: string; email: string }) {
   const [state, action, pending] = useActionState(platformAccountAction, {});
-  return <form action={action} className="wp-card max-w-xl space-y-5 p-6">
+  return <form action={action} className="space-y-5">
     <p className="text-sm break-all">Sign-in email: {email}</p>
     <label className="wp-label">Name<input className="wp-input mt-2" name="name" defaultValue={name} minLength={2} maxLength={100} required autoComplete="name" /></label>
     <PasswordInput name="currentPassword" label="Current password" autoComplete="current-password" />
