@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
-import { classifyRequestHost, databaseSlugForTenant, discoveryOrigin, normalizeHostname, publicOrigin, requestAuthority, rootDomain, usesTemporaryPathTenancy } from '@/lib/tenant/host';
+import { classifyRequestHost, databaseSlugForTenant, discoveryOrigin, normalizeHostname, publicOrigin, requestAuthority, rootDomain, tenantOrigin, usesTemporaryPathTenancy } from '@/lib/tenant/host';
 import { prisma } from '@/lib/db/prisma';
 import { ROUTING_CONTEXT_HEADER, signRoutingContext } from '@/lib/tenant/routing-context';
 
@@ -74,6 +74,24 @@ export async function proxy(request: NextRequest) {
     return NextResponse.next({ request: { headers: cleanRequestHeaders(request) } });
   }
 
+  // Old public career links are redirected only for safe navigation. Never
+  // accept writes or resolve authentication under a previous tenant identifier.
+  if (classification.kind === 'public' && /^\\/careers\\/[a-z0-9-]+(?:\\/|$)/.test(pathname)) {
+    const oldSlug = pathname.split('/')[2];
+    const alias = await prisma.organizationSlugAlias.findUnique({
+      where: { slug: oldSlug },
+      select: { organization: { select: { slug: true } } },
+    });
+    if (alias) {
+      if (request.method !== 'GET' && request.method !== 'HEAD') {
+        return new NextResponse('This workspace URL has changed. Use the current address.', { status: 409 });
+      }
+      const destination = requestUrl(request);
+      destination.pathname = '/careers/' + alias.organization.slug + pathname.slice(('/careers/' + oldSlug).length);
+      return NextResponse.redirect(destination, 308);
+    }
+  }
+
   // Temporary single-host, multi-organization routing. Keep SAGA's existing /saga flow unchanged.
   // The workspace cookie only selects an address; signed routing and persisted sessions enforce authorization.
   if (classification.kind === 'public' && usesTemporaryPathTenancy(host)) {
@@ -83,7 +101,21 @@ export async function proxy(request: NextRequest) {
       const invalid = new Set(['saga', 'st-aloysius', 'platform', 'register', 'w']);
       if (invalid.has(tenantSlug)) return new NextResponse('Workspace not found.', { status: 404 });
       const org = await prisma.organization.findUnique({ where: { slug: tenantSlug }, select: { id: true, slug: true } });
-      if (!org) return new NextResponse('Workspace not found.', { status: 404 });
+      if (!org) {
+        const alias = await prisma.organizationSlugAlias.findUnique({
+          where: { slug: tenantSlug }, select: { organization: { select: { slug: true } } },
+        });
+        if (!alias) return new NextResponse('Workspace not found.', { status: 404 });
+        // Writes must never change tenants through an old URL.
+        if (request.method !== 'GET' && request.method !== 'HEAD') {
+          return new NextResponse('This workspace URL has changed. Use the current address.', { status: 409 });
+        }
+        const destination = requestUrl(request);
+        destination.pathname = '/w/' + alias.organization.slug + suffix;
+        const response = NextResponse.redirect(destination, 308);
+        response.cookies.delete(pathTenantCookie);
+        return response;
+      }
       if (suffix === '/') return pathTenantResponse(request, '/tenant-entry', tenantSlug, org, 'shared-path');
       if (suffix === '/login') return pathTenantResponse(request, '/login', tenantSlug, org, 'shared-path');
       if (suffix === '/forgot-password' || suffix === '/reset-password') return pathTenantResponse(request, suffix, tenantSlug, org, 'shared-path');
@@ -132,7 +164,21 @@ export async function proxy(request: NextRequest) {
   const needsSaga = usesPathTenancy && (pathname === '/saga' || pathname.startsWith('/saga/') || request.cookies.get(pathTenantCookie)?.value === 'saga');
   const slug = classification.kind === 'tenant' ? databaseSlugForTenant(classification.slug) : needsSaga ? 'st-aloysius' : null;
   const organization = slug ? await prisma.organization.findUnique({ where: { slug }, select: { id: true, slug: true } }) : null;
-  if (slug && !organization) return new NextResponse('Workspace not found.', { status: 404 });
+  if (slug && !organization) {
+    if (classification.kind === 'tenant') {
+      const alias = await prisma.organizationSlugAlias.findUnique({
+        where: { slug }, select: { organization: { select: { slug: true } } },
+      });
+      if (alias) {
+        if (request.method !== 'GET' && request.method !== 'HEAD') {
+          return new NextResponse('This workspace URL has changed. Use the current address.', { status: 409 });
+        }
+        const destination = new URL(pathname + request.nextUrl.search, tenantOrigin(alias.organization.slug));
+        return NextResponse.redirect(destination, 308);
+      }
+    }
+    return new NextResponse('Workspace not found.', { status: 404 });
+  }
   const tenantOrganization = classification.kind === 'tenant' ? organization : null;
   if (tenantOrganization && pathname.startsWith('/careers/') && databaseSlugForTenant(pathname.split('/')[2]) !== tenantOrganization.slug) {
     return new NextResponse('Workspace route not found.', { status: 404 });
