@@ -1,20 +1,39 @@
 import Link from 'next/link';
+import { ShieldCheck, LogOut } from 'lucide-react';
 import { requirePlatformAdministrator } from '@/features/platform-admin/session';
 import { platformLogoutAction } from '@/features/platform-admin/actions';
+import { PlatformNavigation } from '@/features/platform-admin/platform-navigation';
+import './platform-admin.css';
 
 export default async function ProtectedPlatformLayout({ children }: { children: React.ReactNode }) {
   const administrator = await requirePlatformAdministrator();
-  return <>
-    <header className="border-b bg-white px-5 py-4"><div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-4">
-      <Link className="font-semibold" href="/platform">WorkPulse · Platform administration</Link>
-      <nav aria-label="Platform administration" className="flex flex-wrap items-center gap-5 text-sm">
-        <Link href="/platform">Organizations</Link><Link href="/platform/settings">My account</Link><Link href="/platform/audit-logs">Audit Logs</Link>
-        <form action={platformLogoutAction}><button className="wp-button-secondary">Sign out</button></form>
-      </nav>
-    </div></header>
-    <main className="mx-auto w-full max-w-6xl space-y-6 px-5 py-8">
-      <p className="text-sm text-[var(--wp-text-muted)]">Signed in as {administrator.name}. Platform access covers organization metadata only.</p>
-      {children}
-    </main>
-  </>;
+  const initials = administrator.name.trim().split(/\s+/).slice(0, 2).map(part => part[0]?.toUpperCase() || '').join('');
+  return <div className="wp-platform-shell">
+    <aside className="wp-platform-sidebar">
+      <Link href="/platform" className="wp-platform-brand">
+        <span className="wp-platform-brandmark" aria-hidden="true"><ShieldCheck size={24} strokeWidth={2}/></span>
+        <span><span className="wp-platform-brand-title">WorkPulse</span><span className="wp-platform-brand-subtitle">Platform Admin</span></span>
+      </Link>
+      <PlatformNavigation />
+      <div className="wp-platform-sidebar-note">
+        <ShieldCheck size={17} aria-hidden="true"/>
+        <span>Organization oversight only. Employee and payroll records remain private to each workspace.</span>
+      </div>
+    </aside>
+    <div className="wp-platform-main">
+      <header className="wp-platform-topbar">
+        <div><p className="wp-platform-topbar-caption">WORKPULSE / ADMINISTRATION</p><p className="wp-platform-topbar-title">Platform control center</p></div>
+        <div className="wp-platform-topbar-actions">
+          <div className="wp-platform-user">
+            <div><p className="wp-platform-user-name">{administrator.name}</p><p className="wp-platform-user-role">System Administrator</p></div>
+            <span className="wp-platform-avatar" aria-hidden="true">{initials || 'SA'}</span>
+          </div>
+          <form action={platformLogoutAction}>
+            <button type="submit" className="wp-platform-signout"><LogOut size={15} aria-hidden="true"/> Sign out</button>
+          </form>
+        </div>
+      </header>
+      <main className="wp-platform-content">{children}</main>
+    </div>
+  </div>;
 }
