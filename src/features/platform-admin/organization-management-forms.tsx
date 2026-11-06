@@ -20,7 +20,7 @@ export function OrganizationManagementForms({ organization }: { organization: Or
   const [details, saveDetails, detailsPending] = useActionState(saveOrganizationDetailsAction, {});
   const [career, saveCareer, careerPending] = useActionState(changeCareerPortalAction, {});
   return <div className="grid gap-4 lg:grid-cols-2">
-    <section className="rounded-2xl border border-[#e7eceb] bg-[#fcfdfc] p-5 space-y-4">
+    <section className="rounded-2xl border border-[#e9ddd8] bg-[#fffaf7] p-5 space-y-4">
       <h2 className="platform-card-title">Edit organization details</h2>
       <p className="platform-card-description">Update your organization name, contact email and time zone. The workspace URL remains unchanged in this release.</p>
       <form action={saveDetails} className="space-y-4">
@@ -39,7 +39,7 @@ export function OrganizationManagementForms({ organization }: { organization: Or
         <button className="wp-button-primary" disabled={detailsPending}>{detailsPending ? 'Saving…' : 'Save organization details'}</button>
       </form>
     </section>
-    <section className="rounded-2xl border border-[#e7eceb] bg-[#fcfdfc] p-5 space-y-4">
+    <section className="rounded-2xl border border-[#e9ddd8] bg-[#fffaf7] p-5 space-y-4">
       <h2 className="platform-card-title">Career portal access</h2>
       <p className="text-sm">Current status: <strong>{organization.careersEnabled ? 'Enabled' : 'Disabled'}</strong></p>
       <p className="platform-card-description">Disabling hides public job listings and blocks new public applications for this organization. It does not delete jobs or existing applications and does not suspend HR or ESS access.</p>

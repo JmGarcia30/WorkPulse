@@ -26,7 +26,7 @@ export default async function PlatformOrganizationPage({ params }: { params: Pro
       <span className={'platform-status ' + (org.careersEnabled ? 'platform-status-on' : 'platform-status-off')}>{org.careersEnabled ? 'Careers enabled' : 'Careers disabled'}</span>
     </div>
     <section className="platform-card">
-      <div className="platform-card-header"><div><h2 className="platform-card-title">Workspace information</h2><p className="platform-card-description">General metadata for this organization</p></div><Building2 size={19} color="#167d77"/></div>
+      <div className="platform-card-header"><div><h2 className="platform-card-title">Workspace information</h2><p className="platform-card-description">General metadata for this organization</p></div><Building2 size={19} color="#7a0000"/></div>
       <dl className="grid gap-5 border-t border-[#f0f1ef] px-6 py-5 sm:grid-cols-2 xl:grid-cols-4">
         {[
           ['Workspace address',org.slug === 'st-aloysius' ? '/saga' : '/w/' + org.slug],
@@ -42,7 +42,7 @@ export default async function PlatformOrganizationPage({ params }: { params: Pro
     </div>
     <div className="grid gap-5 lg:grid-cols-[minmax(0,1.3fr)_minmax(280px,.7fr)]">
       <section className="platform-card">
-        <div className="platform-card-header"><div><h2 className="platform-card-title">HR administrator onboarding</h2><p className="platform-card-description">Initial invitation and registration status</p></div><ShieldCheck size={19} color="#167d77"/></div>
+        <div className="platform-card-header"><div><h2 className="platform-card-title">HR administrator onboarding</h2><p className="platform-card-description">Initial invitation and registration status</p></div><ShieldCheck size={19} color="#7a0000"/></div>
         <div className="space-y-4 px-6 pb-6 text-sm">
           {onboarding ? <>
             <div><p className="text-xs font-semibold text-[#71818e]">Initial HR administrator</p><p className="mt-1 break-all font-semibold">{onboarding.email}</p></div>
@@ -57,7 +57,7 @@ export default async function PlatformOrganizationPage({ params }: { params: Pro
         </div>
       </section>
       <section className="platform-card">
-        <div className="platform-card-header"><div><h2 className="platform-card-title">Recent platform changes</h2><p className="platform-card-description">This organization's recorded administrative actions</p></div><CalendarDays size={18} color="#167d77"/></div>
+        <div className="platform-card-header"><div><h2 className="platform-card-title">Recent platform changes</h2><p className="platform-card-description">This organization's recorded administrative actions</p></div><CalendarDays size={18} color="#7a0000"/></div>
         <div className="px-6 pb-5">
           {audits.length ? <ul className="divide-y divide-[#edf0ef]">{audits.map(audit => <li key={audit.id} className="py-3">
             <p className="text-xs font-semibold">{audit.action.replaceAll('_',' ').toLowerCase()}</p>

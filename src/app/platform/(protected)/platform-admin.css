@@ -1,11 +1,11 @@
 /* WorkPulse platform administration only. HR, ESS and public branding are unchanged. */
 .wp-platform-shell {
   --platform-ink: #282934;
-  --platform-brand: #17324d;
-  --platform-accent: #167d77;
-  --platform-canvas: #faf8f6;
-  --platform-subtle: #f2f5f5;
-  --platform-line: #e9e9e8;
+  --platform-brand: #7a0000;
+  --platform-accent: #9b1717;
+  --platform-canvas: #eeebdd;
+  --platform-subtle: #f7f2ec;
+  --platform-line: #e4ddd5;
   display: grid;
   grid-template-columns: 258px minmax(0, 1fr);
   min-height: 100vh;
@@ -29,6 +29,7 @@
   align-items: center;
   gap: 12px;
   padding: 5px 11px 27px;
+  min-height: 88px;
   color: #fff;
   text-decoration: none;
 }
@@ -52,7 +53,7 @@
 .wp-platform-brand-subtitle {
   display: block;
   margin-top: 5px;
-  color: #afc9cf;
+  color: #eed2cb;
   font-size: 10px;
   font-weight: 650;
   letter-spacing: .11em;
@@ -61,7 +62,7 @@
 .platform-navigation { display: grid; align-content: start; gap: 5px; }
 .platform-navigation-heading {
   margin: 10px 14px 10px;
-  color: #92adbd;
+  color: #e1bbb3;
   font-size: 10px;
   font-weight: 760;
   letter-spacing: .15em;
@@ -73,7 +74,7 @@
   gap: 12px;
   border-radius: 11px;
   padding: 10px 14px;
-  color: #dce8ef;
+  color: #f8e7e1;
   font-size: 13px;
   font-weight: 600;
   text-decoration: none;
@@ -82,7 +83,7 @@
 .platform-navigation-link:hover { background: #ffffff14; color: #fff; }
 .platform-navigation-link-active {
   background: #ffffff1f;
-  box-shadow: inset 3px 0 0 #66c4b8;
+  box-shadow: inset 3px 0 0 #d8b4a0;
   color: #fff;
 }
 .platform-navigation-create {
@@ -100,7 +101,7 @@
   margin-top: auto;
   border-top: 1px solid #ffffff29;
   padding: 18px 10px 5px;
-  color: #b8cfdb;
+  color: #f1d5ce;
   font-size: 11px;
   line-height: 1.6;
 }
@@ -127,7 +128,7 @@
 .wp-platform-user-role { color: #74808a; font-size: 11px; }
 .wp-platform-avatar {
   display: grid; width: 36px; height: 36px; flex: none; place-items: center;
-  border-radius: 12px; background: #dceceb; color: var(--platform-brand); font-size: 12px; font-weight: 790;
+  border-radius: 12px; background: #f5dcd3; color: var(--platform-brand); font-size: 12px; font-weight: 790;
 }
 .wp-platform-signout {
   display: inline-flex; align-items: center; gap: 7px; min-height: 38px;
@@ -160,34 +161,34 @@
 .platform-stat-hint { margin-top: 10px; font-size: 11px; color: #82909c; }
 .platform-stat-icon {
   display: grid; height: 41px; width: 41px; flex: none; place-items: center;
-  border-radius: 12px; background: #e7f2f0; color: var(--platform-accent);
+  border-radius: 12px; background: #faeae5; color: var(--platform-accent);
 }
-.platform-stat-icon-navy { background: #ecf0f5; color: var(--platform-brand); }
+.platform-stat-icon-navy { background: #f7e9e6; color: var(--platform-brand); }
 .platform-stat-icon-amber { background: #fff4e5; color: #95631f; }
 .platform-hero {
   position: relative; overflow: hidden; display: flex; align-items: center;
   justify-content: space-between; gap: 22px; padding: 29px 30px;
-  border-radius: 20px; background: #17324d; color: #fff;
+  border-radius: 20px; background: #7a0000; color: #fff;
 }
 .platform-hero::after {
   position: absolute; right: -70px; bottom: -125px; width: 360px; height: 280px;
   border: 38px solid #ffffff0a; border-radius: 50%; content: ''; pointer-events: none;
 }
 .platform-hero-content { position: relative; z-index: 1; max-width: 660px; }
-.platform-hero-eyebrow { color: #8bd5cb; font-size: 10px; font-weight: 820; letter-spacing: .17em; text-transform: uppercase; }
+.platform-hero-eyebrow { color: #f4cdbe; font-size: 10px; font-weight: 820; letter-spacing: .17em; text-transform: uppercase; }
 .platform-hero-title { margin-top: 10px; font-size: clamp(23px, 2.6vw, 31px); font-weight: 780; letter-spacing: -.04em; line-height: 1.2; }
 .platform-hero-description { margin-top: 9px; max-width: 565px; color: #cfdae2; font-size: 12px; line-height: 1.75; }
 .platform-hero-actions { position: relative; z-index: 1; display: flex; gap: 10px; flex-wrap: wrap; }
-.platform-hero-button { display: inline-flex; align-items: center; gap: 8px; min-height: 42px; border-radius: 11px; background: #fff; padding: 11px 15px; color: #17324d; font-size: 12px; font-weight: 750; text-decoration: none; white-space: nowrap; }
+.platform-hero-button { display: inline-flex; align-items: center; gap: 8px; min-height: 42px; border-radius: 11px; background: #fff; padding: 11px 15px; color: #7a0000; font-size: 12px; font-weight: 750; text-decoration: none; white-space: nowrap; }
 .platform-hero-button-outline { border: 1px solid #ffffff4d; background: #ffffff0c; color: #fff; }
 .platform-hero-button:hover { filter: brightness(.94); }
 .platform-simple-table { width: 100%; border-collapse: collapse; font-size: 12px; text-align: left; }
-.platform-simple-table th { padding: 13px 22px; background: #f9faf9; color: #6e7c86; font-size: 10px; font-weight: 760; letter-spacing: .07em; text-transform: uppercase; }
+.platform-simple-table th { padding: 13px 22px; background: #fcf8f5; color: #6e7c86; font-size: 10px; font-weight: 760; letter-spacing: .07em; text-transform: uppercase; }
 .platform-simple-table td { padding: 15px 22px; vertical-align: middle; border-top: 1px solid #f0f0ef; }
 .platform-simple-table tr:hover td { background: #f9fbfa; }
 .platform-status { display: inline-flex; align-items: center; gap: 6px; border-radius: 7px; padding: 5px 9px; font-size: 11px; font-weight: 700; }
 .platform-status::before { display: block; width: 6px; height: 6px; border-radius: 50%; background: currentColor; content: ''; }
-.platform-status-on { background: #e9f5ee; color: #267a52; }
+.platform-status-on { background: #f1f7f1; color: #267a52; }
 .platform-status-off { background: #f1f2f4; color: #717d86; }
 .platform-table-scroll { overflow-x: auto; border-radius: 0 0 18px 18px; }
 .platform-muted-box { border-radius: 13px; background: #f6f8f8; padding: 15px 16px; color: #586877; font-size: 12px; line-height: 1.75; }
@@ -196,7 +197,7 @@
 .platform-page-back { display: inline-flex; align-items: center; gap: 6px; color: #5c7181; font-size: 12px; font-weight: 700; }
 .platform-page-back:hover { color: var(--platform-accent); }
 .platform-filter-link { display: inline-flex; min-height: 36px; align-items: center; border-radius: 9px; padding: 9px 13px; color: #62717e; font-size: 12px; font-weight: 650; }
-.platform-filter-link[aria-current="page"] { background: #e4efed; color: #176d66; }
+.platform-filter-link[aria-current="page"] { background: #fae7e3; color: #7a0000; }
 .platform-filter-link:hover { background: #f1f5f4; }
 .platform-pill-count { margin-left: 6px; border-radius: 5px; background: #ffffff9c; padding: 2px 5px; font-size: 10px; }
 .platform-empty { padding: 48px 24px; text-align: center; color: #788491; font-size: 12px; }
@@ -225,3 +226,15 @@
   .platform-card-header { padding: 18px 18px 12px; }
   .platform-form-panel { padding: 18px; }
 }
+
+.wp-platform-brand-logo { display: block; width: 188px; height: auto; max-height: 54px; object-fit: contain; object-position: left center; }
+.wp-platform-shell .platform-hero { background: #7a0000; }
+.wp-platform-shell .platform-hero-eyebrow { color: #f8d7cd; }
+.wp-platform-shell .platform-hero-description { color: #f7ddd8; }
+.wp-platform-shell .platform-hero-button { color: #7a0000; }
+.wp-platform-shell .platform-hero-button-outline { color: #fff; }
+.wp-platform-shell .platform-stat-icon { background: #faeae5; color: #7a0000; }
+.wp-platform-shell .platform-status-on { background: #e8f3e8; color: #287341; }
+.wp-platform-shell .wp-button-primary { background: #7a0000; }
+.wp-platform-shell a.platform-soft-link { color: #8b0c0c; }
+.wp-platform-shell .platform-navigation-link-active { border-left-color: #d8b4a0; }
