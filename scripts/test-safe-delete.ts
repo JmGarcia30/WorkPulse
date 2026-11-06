@@ -18,6 +18,19 @@ const db = new PrismaClient();
 const day = (s: string) => new Date(s + 'T00:00:00.000Z');
 
 async function runTests() {
+  // This legacy destructive fixture test must never execute against production.
+  // It creates synthetic tenants and intentionally leaves immutable finalized payroll history.
+  const expectedBranch = process.env.WORKPULSE_SAFE_DELETE_TEST_BRANCH_ID;
+  if (process.env.WORKPULSE_ENABLE_SAFE_DELETE_TEST !== 'ISOLATED_ONLY' || !expectedBranch) {
+    throw new Error('ISOLATED_TEST_OPT_IN_REQUIRED: configure the isolated Neon test branch explicitly.');
+  }
+  const [databaseIdentity] = await db.$queryRaw<Array<{ branchId: string | null }>>`
+    SELECT current_setting('neon.branch_id', true) AS "branchId"
+  `;
+  if (!databaseIdentity?.branchId || databaseIdentity.branchId !== expectedBranch ||
+      databaseIdentity.branchId === 'br-hidden-violet-azjl3vam') {
+    throw new Error('PROTECTED_OR_MISMATCHED_DATABASE: synthetic fixtures will not be created.');
+  }
   console.log('=== Starting WorkPulse Safe Delete Test Suite ===\n');
   let testCount = 0;
   const pass = (msg: string) => {
