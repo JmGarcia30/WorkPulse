@@ -51,7 +51,7 @@ export default async function PlatformOrganizations({ searchParams }: { searchPa
         <table className="platform-simple-table">
           <thead><tr><th scope="col">Organization</th><th scope="col">Workspace URL</th><th scope="col">Career portal</th><th scope="col">Registered</th><th scope="col">Action</th></tr></thead>
           <tbody>{organizations.map(org => <tr key={org.id}>
-            <td><div className="flex items-center gap-3"><div className="grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-[#edf3f4] text-[#17324d]"><Building2 size={17}/></div><span className="font-semibold">{org.name}</span></div></td>
+            <td><div className="flex items-center gap-3"><div className="grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-[#faebe6] text-[#7a0000]"><Building2 size={17}/></div><span className="font-semibold">{org.name}</span></div></td>
             <td className="max-w-[280px] break-all text-[#71808b]">{org.slug === 'st-aloysius' ? '/saga' : '/w/' + org.slug}</td>
             <td><span className={'platform-status ' + (org.careersEnabled ? 'platform-status-on' : 'platform-status-off')}>{org.careersEnabled ? 'Enabled' : 'Disabled'}</span></td>
             <td>{org.createdAt.toISOString().slice(0,10)}</td>

@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { ShieldCheck, LogOut } from 'lucide-react';
+import Image from 'next/image';
 import { requirePlatformAdministrator } from '@/features/platform-admin/session';
 import { platformLogoutAction } from '@/features/platform-admin/actions';
 import { PlatformNavigation } from '@/features/platform-admin/platform-navigation';
@@ -11,8 +12,8 @@ export default async function ProtectedPlatformLayout({ children }: { children: 
   return <div className="wp-platform-shell">
     <aside className="wp-platform-sidebar">
       <Link href="/platform" className="wp-platform-brand">
-        <span className="wp-platform-brandmark" aria-hidden="true"><ShieldCheck size={24} strokeWidth={2}/></span>
-        <span><span className="wp-platform-brand-title">WorkPulse</span><span className="wp-platform-brand-subtitle">Platform Admin</span></span>
+        <Image src="/branding/workpulse-logo-white.png" alt="WorkPulse" width={192} height={45} priority className="wp-platform-brand-logo"/>
+        <span className="sr-only">Platform administration</span>
       </Link>
       <PlatformNavigation />
       <div className="wp-platform-sidebar-note">
