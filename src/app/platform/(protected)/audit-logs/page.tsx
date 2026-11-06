@@ -1,15 +1,22 @@
 import { cookies } from 'next/headers';
+import { ScrollText, ShieldCheck } from 'lucide-react';
 import { prisma } from '@/lib/db/prisma';
 import { PLATFORM_COOKIE, requirePlatformAdministrator } from '@/features/platform-admin/session';
 import { listSafePlatformAudits } from '@/features/account-security/audit-view';
+import { PlatformAuditLogTable } from '@/features/platform-admin/audit-log-table';
 export default async function PlatformAuditLogsPage() {
   await requirePlatformAdministrator();
   const rows = await listSafePlatformAudits(prisma, (await cookies()).get(PLATFORM_COOKIE)?.value);
-  return <section className="space-y-4"><h1 className="text-2xl font-bold">Audit Logs</h1>
-    <p className="text-sm">Latest 100 recorded events across modules. Actor references are pseudonymous. Tenant people, financial amounts, documents and raw audit payloads are excluded. Historical events are shown only where recorded.</p>
-    <div className="overflow-x-auto rounded-xl border bg-white"><table className="w-full min-w-[1000px] text-left text-xs"><caption className="sr-only">Safe system administration audit metadata</caption>
-      <thead><tr>{['Timestamp','Organization','Actor','Module','Action','Affected record type','Outcome','Safe description'].map(h => <th key={h} scope="col" className="p-3">{h}</th>)}</tr></thead>
-      <tbody>{rows.map((r,i) => <tr key={r.reference + r.module + i} className="border-t align-top"><td className="p-3"><time dateTime={r.timestamp}>{r.timestamp}</time></td><td className="p-3">{r.organization}</td><td className="p-3 font-mono">{r.actor}</td><td className="p-3">{r.module}</td><td className="p-3">{r.action}</td><td className="p-3">{r.recordType}</td><td className="p-3">{r.outcome}</td><td className="p-3">{r.description}</td></tr>)}</tbody>
-    </table></div>{rows.length === 0 && <p>No recorded audit events.</p>}
-  </section>;
+  return <div className="platform-section-gap">
+    <div><p className="platform-eyebrow">Security and accountability</p><h1 className="platform-title">Audit Logs</h1>
+      <p className="platform-description">Review recent security and administrative events. Use filters to find important changes without loading every record at once.</p>
+    </div>
+    <div className="platform-card">
+      <div className="platform-card-header"><div><h2 className="platform-card-title">Recent activity</h2><p className="platform-card-description">The latest 100 available metadata events, filtered in this view</p></div><ScrollText size={20} color="#167d77"/></div>
+      <div className="px-5 pb-5"><PlatformAuditLogTable rows={rows}/></div>
+    </div>
+    <div className="platform-muted-box flex items-start gap-3"><ShieldCheck size={19} className="shrink-0 text-[#167d77]"/>
+      <p>Audit history remains in the underlying records. This screen only displays recent metadata. Private employee information, payroll amounts and document contents are excluded.</p>
+    </div>
+  </div>;
 }
