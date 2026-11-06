@@ -49,6 +49,7 @@ export async function initializeOrganization(tx: Prisma.TransactionClient, raw: 
   await lock(tx, 'tenant-login-email:' + input.administratorEmail);
   await lock(tx, 'workspace-slug:' + input.slug);
   if (await tx.organization.findFirst({ where: { slug: { equals: input.slug, mode: 'insensitive' } }, select: { id: true } })) fail('DUPLICATE_WORKSPACE', 'This workspace identifier is already registered. Choose another slug.');
+  if (await tx.organizationSlugAlias.findUnique({ where: { slug: input.slug }, select: { slug: true } })) fail('DUPLICATE_WORKSPACE', 'This workspace identifier is reserved by a previous workspace URL. Choose another slug.');
   if (await tx.user.findFirst({ where: { email: { equals: input.administratorEmail, mode: 'insensitive' } }, select: { id: true } })) fail('EMAIL_IN_USE', 'This HR administrator email is already assigned to a workspace. Use a different email; existing accounts cannot be reassigned.');
   const org = await tx.organization.create({ data: { name: input.name, slug: input.slug, contactEmail: input.contactEmail, timeZone: input.timeZone, careersEnabled: false } });
   const user = await tx.user.create({ data: { organizationId: org.id, email: input.administratorEmail, name: platformName.parse(administrator.name), role: 'HR_ADMIN', passwordHash: administrator.passwordHash } });
