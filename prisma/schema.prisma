@@ -700,6 +700,16 @@ model PlatformOrganizationAudit {
   @@index([organizationId, createdAt])
 }
 
+// Former workspace identifiers remain reserved so old bookmarks cannot switch tenants.
+model OrganizationSlugAlias {
+  slug           String   @id
+  organizationId String
+  createdAt      DateTime @default(now())
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Restrict)
+
+  @@index([organizationId])
+}
+
 model Organization {
   accountSecurityEvents AccountSecurityEvent[]
   staffSessions StaffSession[]
@@ -732,6 +742,7 @@ model Organization {
   emailIntegration        OrganizationEmailIntegration?
   emailOAuthAttempts      OrganizationEmailOAuthAttempt[]
   platformAudits          PlatformOrganizationAudit[]
+  slugAliases             OrganizationSlugAlias[]
   jobs                    Job[]
   employees               Employee[]
   employeeNumberSequences EmployeeNumberSequence[]
