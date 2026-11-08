@@ -1,0 +1,13 @@
+{
+  "schema": "batch3_test_a7fa90928ce17a064fd4dc41",
+  "branch": "br-damp-fog-azmmxhga",
+  "productionAccessed": false,
+  "originalEnvUnchanged": true,
+  "results": [
+    {
+      "name": "01-migrations",
+      "exitCode": 0,
+      "elapsedMs": 3792
+    }
+  ]
+}

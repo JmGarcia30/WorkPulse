@@ -8,6 +8,7 @@ import { EmployeeSelfAccessError, requireEmployeeSelfContext } from '@/features/
 import { getRequestOrganizationBranding } from '@/lib/tenant/server';
 import { TenantTheme } from '@/components/layout/TenantTheme';
 import { EmployeeNav } from '@/components/employee-self-service/EmployeeNav';
+import { TenantLink } from '@/components/ui/TenantLink';
 import { EmployeeHeader } from '@/components/employee-self-service/EmployeeHeader';
 import { TenantLogo } from '@/components/layout/TenantLogo';
 import { ScrollableMainContent } from '@/components/layout/ScrollableMainContent';
@@ -64,6 +65,7 @@ export default async function EmployeeLayout({ children }: { children: React.Rea
 
           <div className="flex-1 overflow-y-auto">
             <EmployeeNav />
+            {context.user.role === 'HR_ADMIN' && <TenantLink href="/dashboard" className="mx-6 my-3 block text-sm text-white underline">Back to HR workspace</TenantLink>}
           </div>
 
           <div className="pl-[26px] pr-3 pb-7">

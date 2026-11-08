@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { TenantLink } from '@/components/ui/TenantLink';
 import { canManageEmploymentLifecycle } from '@/lib/permissions/rbac';
 import { redirect } from 'next/navigation';
 import { EmployeeStatus, EmploymentCategory } from '@prisma/client';
@@ -71,7 +72,7 @@ export default async function EmployeesPage({ searchParams }: EmployeesPageProps
       {/* Page Header */}
       <EmployeeDirectoryHeader totalEmployees={totalOrganizationEmployees} />{canManageEmploymentLifecycle(user) && <Link href="/dashboard/employees/probation-settings" className="inline-block text-sm font-semibold underline">Probation policy settings</Link>}
 
-      <div><Link href={`/api/reports/employees?${exportQuery}`} className="wp-button-secondary" prefetch={false}>Export employee CSV</Link></div>
+      <div className="flex flex-wrap gap-3"><TenantLink href="/dashboard/employees/new" className="wp-button-primary">Add Employee</TenantLink><Link href={`/api/reports/employees?${exportQuery}`} className="wp-button-secondary" prefetch={false}>Export employee CSV</Link></div>
 
       {/* Search & Filter Toolbar */}
       <EmployeeDirectoryFilters

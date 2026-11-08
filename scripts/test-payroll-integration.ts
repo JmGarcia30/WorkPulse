@@ -165,7 +165,7 @@ async function cleanup(db: PrismaClient, scope: Scope) {
     await tx.payrollEntry.deleteMany({ where }); await tx.payrollPeriod.deleteMany({ where });
     await tx.employmentRecord.deleteMany({ where: { employee: where } }); await tx.employeeCompensation.deleteMany({ where });
     await tx.employee.deleteMany({ where }); await tx.application.deleteMany({ where: { job: where } });
-    await tx.job.deleteMany({ where }); await tx.applicant.deleteMany({ where: { id: { in: people.map(item => item.applicantId) } } });
+    await tx.job.deleteMany({ where }); await tx.applicant.deleteMany({ where: { id: { in: people.map(item => item.applicantId).filter((value): value is string => value !== null) } } });
     await tx.user.deleteMany({ where }); await tx.organization.delete({ where: { id: scope.organizationId } });
   });
 }

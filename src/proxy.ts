@@ -123,7 +123,7 @@ export async function proxy(request: NextRequest) {
       if (suffix === '/') return pathTenantResponse(request, '/tenant-entry', tenantSlug, org, 'shared-path');
       if (suffix === '/login') return pathTenantResponse(request, '/login', tenantSlug, org, 'shared-path');
       if (suffix === '/forgot-password' || suffix === '/reset-password') return pathTenantResponse(request, suffix, tenantSlug, org, 'shared-path');
-      if (suffix === '/activate/organization-admin') return pathTenantResponse(request, suffix, tenantSlug, org, 'shared-path');
+      if (suffix === '/activate/organization-admin' || suffix === '/activate/employee') return pathTenantResponse(request, suffix, tenantSlug, org, 'shared-path');
       if (suffix.startsWith('/dashboard') || suffix.startsWith('/employee')) {
         if (!hasSession) {
           const login = requestUrl(request);
@@ -213,6 +213,7 @@ export async function proxy(request: NextRequest) {
       if (suffix === '/') return pathTenantResponse(request, '/tenant-entry', 'saga', organization);
       if (suffix === '/login') return pathTenantResponse(request, '/login', 'saga', organization);
       if (suffix === '/forgot-password' || suffix === '/reset-password') return pathTenantResponse(request, suffix, 'saga', organization);
+      if (suffix === '/activate/employee') return pathTenantResponse(request, suffix, 'saga', organization);
       // Kiosk authentication is independent of the HR session cookie.
       if (suffix === '/attendance-kiosk' || suffix.startsWith('/api/attendance/rfid/')) {
         return pathTenantResponse(request, suffix, 'saga', organization);

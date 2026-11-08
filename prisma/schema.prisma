@@ -8,6 +8,8 @@ datasource db {
 }
 
 enum Role {
+  FINANCE_OFFICER
+  ORGANIZATION_HEAD
   ORGANIZATION_ADMIN
   HR_ADMIN
   HIRING_MANAGER
@@ -21,6 +23,7 @@ enum EmployeeAccountStatus {
 }
 
 enum EmployeeAccountAuditAction {
+  ROLE_CHANGED
   ACCOUNT_CREATED
   EMPLOYEE_LINKED
   INVITATION_SENT
@@ -1235,8 +1238,9 @@ model Employee {
   payrollContributionMonths PayrollContributionMonth[]
   id                  String         @id @default(cuid())
   organizationId      String
-  sourceApplicationId String         @unique
-  applicantId         String
+  sourceApplicationId String?        @unique
+  applicantId         String?
+  registrationKey     String?        @unique
   employeeNumber      String
   firstName           String
   lastName            String
@@ -1248,8 +1252,8 @@ model Employee {
   updatedAt           DateTime       @updatedAt
 
   organization           Organization                 @relation(fields: [organizationId], references: [id], onDelete: Cascade)
-  sourceApplication      Application                  @relation(fields: [sourceApplicationId], references: [id], onDelete: Restrict)
-  applicant              Applicant                    @relation(fields: [applicantId], references: [id], onDelete: Restrict)
+  sourceApplication      Application?                 @relation(fields: [sourceApplicationId], references: [id], onDelete: Restrict)
+  applicant              Applicant?                   @relation(fields: [applicantId], references: [id], onDelete: Restrict)
   createdBy              User                         @relation("EmployeeCreatedBy", fields: [createdById], references: [id])
   employmentRecords      EmploymentRecord[]
   probationRecords       ProbationRecord[]

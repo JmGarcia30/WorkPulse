@@ -1,0 +1,807 @@
+
+G:\CAPSTONE\WorkPulse\docs\final-defense-qa\adapt-legacy.cjs
+   2:12   error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+   2:36   error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+   2:64   error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+   3:14   error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+   5:10   error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  13:12   error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  47:26   error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  55:34   error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  76:119  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  78:10   error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+
+G:\CAPSTONE\WorkPulse\docs\final-defense-qa\batch-1\audit.cjs
+  1:10   error    A `require()` style import is forbidden    @typescript-eslint/no-require-imports
+  1:29   warning  'path' is assigned a value but never used  @typescript-eslint/no-unused-vars
+  1:34   error    A `require()` style import is forbidden    @typescript-eslint/no-require-imports
+  1:68   error    A `require()` style import is forbidden    @typescript-eslint/no-require-imports
+  1:106  error    A `require()` style import is forbidden    @typescript-eslint/no-require-imports
+
+G:\CAPSTONE\WorkPulse\docs\final-defense-qa\batch-1\cleanup.cjs
+  1:12  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  2:16  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  3:26  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  4:29  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+
+G:\CAPSTONE\WorkPulse\docs\final-defense-qa\batch-1\job-regression.cjs
+   1:16  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+   2:25  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+   3:14  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+   6:20  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+   7:27  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+   8:21  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+   9:16  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  10:19  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+
+G:\CAPSTONE\WorkPulse\docs\final-defense-qa\batch-1\validate.cjs
+  1:12  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  2:14  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  3:22  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+
+G:\CAPSTONE\WorkPulse\docs\final-defense-qa\batch-2\audit.cjs
+  1:12  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  1:39  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  2:24  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  3:26  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+
+G:\CAPSTONE\WorkPulse\docs\final-defense-qa\batch-2\cleanup.cjs
+  1:12  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  1:41  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  2:26  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  3:29  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+
+G:\CAPSTONE\WorkPulse\docs\final-defense-qa\batch-2\configuration-review.cjs
+  1:12  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  2:22  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+
+G:\CAPSTONE\WorkPulse\docs\final-defense-qa\batch-2\hosting-compatibility.cjs
+  1:16  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  1:54  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  2:25  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  4:19  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  5:21  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  6:27  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  7:36  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+
+G:\CAPSTONE\WorkPulse\docs\final-defense-qa\batch-2\migration-rehearsal.cjs
+   1:12  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+   1:39  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+   1:70  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+   2:37  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+   3:23  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+   4:26  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+   5:44  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  51:36  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  79:5   error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  79:40  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  81:21  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+
+G:\CAPSTONE\WorkPulse\docs\final-defense-qa\batch-2\prepare-release.cjs
+  1:12  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  1:39  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  1:70  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  2:26  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  3:24  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+
+G:\CAPSTONE\WorkPulse\docs\final-defense-qa\batch-2\validate.cjs
+  1:12  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  1:39  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  2:22  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+
+G:\CAPSTONE\WorkPulse\docs\final-defense-qa\batch-3-followup\audit.cjs
+  1:12  error    A `require()` style import is forbidden    @typescript-eslint/no-require-imports
+  1:32  warning  'path' is assigned a value but never used  @typescript-eslint/no-unused-vars
+  1:39  error    A `require()` style import is forbidden    @typescript-eslint/no-require-imports
+  2:24  error    A `require()` style import is forbidden    @typescript-eslint/no-require-imports
+  3:26  error    A `require()` style import is forbidden    @typescript-eslint/no-require-imports
+
+G:\CAPSTONE\WorkPulse\docs\final-defense-qa\batch-3-followup\browser-run.cjs
+  1:12  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  1:39  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  1:73  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  2:19  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+
+G:\CAPSTONE\WorkPulse\docs\final-defense-qa\batch-3-followup\checks.cjs
+  1:12  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  1:39  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  1:77  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  2:28  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+
+G:\CAPSTONE\WorkPulse\docs\final-defense-qa\batch-3-followup\inspect-browser.cjs
+  1:12  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+
+G:\CAPSTONE\WorkPulse\docs\final-defense-qa\batch-3-followup\readiness-tests.cjs
+  1:16  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  2:60  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  3:29  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  4:33  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  5:62  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+
+G:\CAPSTONE\WorkPulse\docs\final-defense-qa\batch-3-followup\run.cjs
+   2:12  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+   2:39  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+   2:70  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+   3:16  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+   4:28  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+   5:26  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  12:27  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  42:3   error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  66:25  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+
+G:\CAPSTONE\WorkPulse\docs\final-defense-qa\batch-3-followup\target.cjs
+  1:12  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  2:26  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  3:16  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+
+G:\CAPSTONE\WorkPulse\docs\final-defense-qa\batch-3-followup\validate.cjs
+  1:12  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  1:39  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  2:22  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+
+G:\CAPSTONE\WorkPulse\docs\final-defense-qa\batch-3\audit.cjs
+  1:12  error    A `require()` style import is forbidden    @typescript-eslint/no-require-imports
+  1:32  warning  'path' is assigned a value but never used  @typescript-eslint/no-unused-vars
+  1:39  error    A `require()` style import is forbidden    @typescript-eslint/no-require-imports
+  2:24  error    A `require()` style import is forbidden    @typescript-eslint/no-require-imports
+  3:26  error    A `require()` style import is forbidden    @typescript-eslint/no-require-imports
+
+G:\CAPSTONE\WorkPulse\docs\final-defense-qa\batch-3\capture-sources.cjs
+   1:12  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+   1:39  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+   1:78  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  22:33  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+
+G:\CAPSTONE\WorkPulse\docs\final-defense-qa\batch-3\extract-scans.cjs
+  2:12  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  2:39  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  3:48  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+
+G:\CAPSTONE\WorkPulse\docs\final-defense-qa\batch-3\probes.cjs
+  1:16  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  2:20  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  3:60  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  4:78  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  5:33  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  6:62  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  7:78  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  8:65  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  9:28  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+
+G:\CAPSTONE\WorkPulse\docs\final-defense-qa\batch-3\run.cjs
+   2:12  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+   2:39  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+   2:70  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+   3:16  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+   4:28  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+   5:26  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  12:27  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  42:3   error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  66:25  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+
+G:\CAPSTONE\WorkPulse\docs\final-defense-qa\batch-3\validate.cjs
+  1:12  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  1:39  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  2:22  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+
+G:\CAPSTONE\WorkPulse\docs\final-defense-qa\cleanup.cjs
+  1:10  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  1:36  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  2:22  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  3:23  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+
+G:\CAPSTONE\WorkPulse\docs\final-defense-qa\exported-suites.cjs
+   1:16  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+   2:14  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+   3:16  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+   4:1   error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+   5:26  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  25:12  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+
+G:\CAPSTONE\WorkPulse\docs\final-defense-qa\finalize-evidence.cjs
+  1:10  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  1:44  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  1:87  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+
+G:\CAPSTONE\WorkPulse\docs\final-defense-qa\isolated.cjs
+   1:12   error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+   2:25   error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+   3:23   error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+   4:26   error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+   5:44   error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  43:136  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+
+G:\CAPSTONE\WorkPulse\docs\final-defense-qa\it-eval\audit.cjs
+  1:12  error    A `require()` style import is forbidden    @typescript-eslint/no-require-imports
+  1:32  warning  'path' is assigned a value but never used  @typescript-eslint/no-unused-vars
+  1:39  error    A `require()` style import is forbidden    @typescript-eslint/no-require-imports
+  2:24  error    A `require()` style import is forbidden    @typescript-eslint/no-require-imports
+  3:26  error    A `require()` style import is forbidden    @typescript-eslint/no-require-imports
+
+G:\CAPSTONE\WorkPulse\docs\final-defense-qa\it-eval\browser.cjs
+   2:10   error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+   2:34   error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+   2:62   error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+   2:107  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+   2:142  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+   2:180  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+   6:45   error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  15:14   error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  15:52   error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  16:6    error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+
+G:\CAPSTONE\WorkPulse\docs\final-defense-qa\it-eval\checks.cjs
+  1:12  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  1:39  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  1:77  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  2:28  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+
+G:\CAPSTONE\WorkPulse\docs\final-defense-qa\it-eval\fixtures.cjs
+  1:18  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  1:57  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+
+G:\CAPSTONE\WorkPulse\docs\final-defense-qa\it-eval\launch.cjs
+  2:1  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+
+G:\CAPSTONE\WorkPulse\docs\final-defense-qa\it-eval\legacy.cjs
+  2:10  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  2:34  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  2:62  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  8:1   error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+
+G:\CAPSTONE\WorkPulse\docs\final-defense-qa\it-eval\payroll-regressions.cjs
+  1:10  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  1:34  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  1:62  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  1:92  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  2:22  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  3:1   error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  8:22  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+
+G:\CAPSTONE\WorkPulse\docs\final-defense-qa\it-eval\public-preservation.cjs
+  2:10   error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  2:34   error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  2:70   error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  2:103  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+
+G:\CAPSTONE\WorkPulse\docs\final-defense-qa\it-eval\script.cjs
+  1:10  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  1:34  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  1:62  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  1:92  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  3:1   error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  6:1   error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+
+G:\CAPSTONE\WorkPulse\docs\final-defense-qa\it-eval\security-tests.cjs
+   1:10   error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+   1:34   error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+   1:62   error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+   1:92   error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+   2:21   error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+   2:54   error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+   2:89   error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+   4:1    error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  10:14   error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  10:52   error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  11:17   error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  11:76   error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  11:146  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  11:222  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  11:295  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  11:365  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+
+G:\CAPSTONE\WorkPulse\docs\final-defense-qa\it-eval\smtp.cjs
+  1:13  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+
+G:\CAPSTONE\WorkPulse\docs\final-defense-qa\it-eval\validate.cjs
+  1:10  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  1:34  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  5:18  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+
+G:\CAPSTONE\WorkPulse\docs\final-defense-qa\job-check.cjs
+   1:14  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+   2:21  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+   4:16  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+   5:23  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+   6:17  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+   7:14  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+   8:17  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  40:39  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+
+G:\CAPSTONE\WorkPulse\docs\final-defense-qa\local-https.cjs
+  1:10  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  1:35  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  1:64  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  7:9   error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+
+G:\CAPSTONE\WorkPulse\docs\final-defense-qa\offline-adapter.cjs
+   1:12  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+   1:40  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+   3:1   error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  10:1   error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+
+G:\CAPSTONE\WorkPulse\docs\final-defense-qa\preload.cjs
+  1:16  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+
+G:\CAPSTONE\WorkPulse\docs\final-defense-qa\qa-runner.cjs
+   2:12   error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+   3:14   error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+   4:22   error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+   5:24   error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+   6:23   error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  18:561  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  19:28   error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+
+G:\CAPSTONE\WorkPulse\docs\final-defense-qa\release-blockers\adapter.cjs
+   2:10  error    A `require()` style import is forbidden          @typescript-eslint/no-require-imports
+   2:34  error    A `require()` style import is forbidden          @typescript-eslint/no-require-imports
+   2:62  error    A `require()` style import is forbidden          @typescript-eslint/no-require-imports
+   2:86  warning  'createHash' is assigned a value but never used  @typescript-eslint/no-unused-vars
+   2:98  error    A `require()` style import is forbidden          @typescript-eslint/no-require-imports
+   3:9   error    A `require()` style import is forbidden          @typescript-eslint/no-require-imports
+   3:43  error    A `require()` style import is forbidden          @typescript-eslint/no-require-imports
+  25:53  error    A `require()` style import is forbidden          @typescript-eslint/no-require-imports
+
+G:\CAPSTONE\WorkPulse\docs\final-defense-qa\release-blockers\checks.cjs
+  5:10  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  5:34  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  6:26  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+
+G:\CAPSTONE\WorkPulse\docs\final-defense-qa\release-blockers\compatibility.cjs
+  2:10   error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  2:34   error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  2:62   error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  2:92   error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  2:136  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  2:166  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  2:188  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  3:22   error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  5:1    error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  6:57   error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+
+G:\CAPSTONE\WorkPulse\docs\final-defense-qa\release-blockers\drift-details.cjs
+  1:10  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  1:34  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  1:70  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  1:98  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+
+G:\CAPSTONE\WorkPulse\docs\final-defense-qa\release-blockers\drift.cjs
+  1:10   error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  1:34   error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  1:67   error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  1:111  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  1:141  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  1:186  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  1:214  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+
+G:\CAPSTONE\WorkPulse\docs\final-defense-qa\release-blockers\emergency\baseline-browser.cjs
+  2:12  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  2:39  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  2:77  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+
+G:\CAPSTONE\WorkPulse\docs\final-defense-qa\release-blockers\emergency\browser-public.cjs
+  2:10   error    A `require()` style import is forbidden                                @typescript-eslint/no-require-imports
+  2:34   error    A `require()` style import is forbidden                                @typescript-eslint/no-require-imports
+  2:62   error    A `require()` style import is forbidden                                @typescript-eslint/no-require-imports
+  2:110  error    A `require()` style import is forbidden                                @typescript-eslint/no-require-imports
+  8:466  warning  Expected an assignment or function call and instead saw an expression  @typescript-eslint/no-unused-expressions
+
+G:\CAPSTONE\WorkPulse\docs\final-defense-qa\release-blockers\emergency\production-state.cjs
+  2:10   error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  2:34   error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  2:62   error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  2:104  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  2:147  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  2:185  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  3:10   error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  3:48   error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+
+G:\CAPSTONE\WorkPulse\docs\final-defense-qa\release-blockers\emergency\verify-backup.cjs
+  2:10   error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  2:34   error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  2:62   error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  2:107  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  3:10   error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  3:56   error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+
+G:\CAPSTONE\WorkPulse\docs\final-defense-qa\release-blockers\emergency\verify-production-catalog.cjs
+  1:10   error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  1:34   error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  1:62   error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  1:107  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  1:136  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+
+G:\CAPSTONE\WorkPulse\docs\final-defense-qa\release-blockers\environment.cjs
+  1:12  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  1:36  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  3:10  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+
+G:\CAPSTONE\WorkPulse\docs\final-defense-qa\release-blockers\final-preservation.cjs
+  1:10   error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  1:34   error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  1:68   error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  1:106  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  1:151  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  1:179  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  1:215  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+
+G:\CAPSTONE\WorkPulse\docs\final-defense-qa\release-blockers\launch.cjs
+  1:10   error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  1:34   error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  1:67   error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  1:111  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  1:149  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  1:177  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+
+G:\CAPSTONE\WorkPulse\docs\final-defense-qa\release-blockers\prepare-bundles.cjs
+  2:10   error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  2:34   error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  2:68   error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  2:106  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  2:138  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  5:162  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+
+G:\CAPSTONE\WorkPulse\docs\final-defense-qa\release-blockers\rehearsal.cjs
+  1:10   error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  1:34   error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  1:62   error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  1:105  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  1:153  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  1:198  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  2:9    error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  2:45   error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+
+G:\CAPSTONE\WorkPulse\docs\final-defense-qa\release-blockers\resolution\check-startup.cjs
+  2:12  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  2:39  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  2:73  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  3:28  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+
+G:\CAPSTONE\WorkPulse\docs\final-defense-qa\release-blockers\resolution\checks.cjs
+  1:12  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  1:39  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  1:77  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  2:28  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+
+G:\CAPSTONE\WorkPulse\docs\final-defense-qa\release-blockers\resolution\validate.cjs
+  1:12  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  1:39  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  1:78  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  2:11  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+
+G:\CAPSTONE\WorkPulse\docs\final-defense-qa\release-blockers\resolution\verify-clone.cjs
+  3:12  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  3:39  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  3:70  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  4:12  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  4:54  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  5:11  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+
+G:\CAPSTONE\WorkPulse\docs\final-defense-qa\release-blockers\validate.cjs
+  1:10  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  1:34  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  1:67  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  1:99  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+
+G:\CAPSTONE\WorkPulse\docs\final-defense-qa\statutory-check.cjs
+   1:1   error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+   2:14  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+   3:59  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+   4:24  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  21:1   error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+
+G:\CAPSTONE\WorkPulse\docs\final-defense-qa\validate-deliverables.cjs
+  1:10  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  1:34  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  1:62  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  2:18  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+
+G:\CAPSTONE\WorkPulse\docs\payroll-v2\review\official-wt-calculator.js
+    85:14  error    The array literal notation [] is preferable                  @typescript-eslint/no-array-constructor
+   252:10  warning  'getOtherBenefits' is defined but never used                 @typescript-eslint/no-unused-vars
+   499:10  warning  'getPersonalAdditionalExemptions' is defined but never used  @typescript-eslint/no-unused-vars
+   604:6   warning  'sssGsisPagibigNt' is assigned a value but never used        @typescript-eslint/no-unused-vars
+   647:10  warning  'getTotalExemptions' is defined but never used               @typescript-eslint/no-unused-vars
+   973:10  warning  'calculateForm' is defined but never used                    @typescript-eslint/no-unused-vars
+  1017:10  warning  'makeEnableAnnualFields' is defined but never used           @typescript-eslint/no-unused-vars
+  1031:10  warning  'clearForm' is defined but never used                        @typescript-eslint/no-unused-vars
+  1040:10  warning  'tabE' is defined but never used                             @typescript-eslint/no-unused-vars
+  1061:10  warning  'allowNumericOnly' is defined but never used                 @typescript-eslint/no-unused-vars
+  1074:10  warning  'insurancePopper' is defined but never used                  @typescript-eslint/no-unused-vars
+  1091:10  warning  'numFormat' is defined but never used                        @typescript-eslint/no-unused-vars
+
+G:\CAPSTONE\WorkPulse\scripts\batch0-recovery-environment.cjs
+   2:12  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+   3:14  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+   4:22  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+   5:37  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  43:24  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+
+G:\CAPSTONE\WorkPulse\scripts\check-batch0-compatibility.cjs
+  2:12  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  3:16  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  4:14  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  6:34  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+
+G:\CAPSTONE\WorkPulse\scripts\demo-browser.cjs
+   1:12   error    A `require()` style import is forbidden                                @typescript-eslint/no-require-imports
+   9:157  warning  Expected an assignment or function call and instead saw an expression  @typescript-eslint/no-unused-expressions
+  20:91   error    A `require()` style import is forbidden                                @typescript-eslint/no-require-imports
+  20:99   error    A `require()` style import is forbidden                                @typescript-eslint/no-require-imports
+
+G:\CAPSTONE\WorkPulse\scripts\demo-stabilization.cjs
+   2:12  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+   2:39  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+   3:19  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+   4:25  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+   5:18  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+   6:26  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+   7:16  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  33:16  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  63:23  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+
+G:\CAPSTONE\WorkPulse\scripts\execute-batch0-recovery.cjs
+   2:10  error    A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+   3:12  error    A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+   4:15  error    A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+   5:29  error    A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+   6:14  error    A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  80:54  warning  'assertions' is defined but never used   @typescript-eslint/no-unused-vars
+
+G:\CAPSTONE\WorkPulse\scripts\measure-batch0-recovery.cjs
+  2:10  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  2:34  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  3:15  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  4:21  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  5:34  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  6:22  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  7:14  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  8:14  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  9:15  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+
+G:\CAPSTONE\WorkPulse\scripts\performance-audit-browser.cjs
+   2:19   error    A `require()` style import is forbidden                                @typescript-eslint/no-require-imports
+   3:12   error    A `require()` style import is forbidden                                @typescript-eslint/no-require-imports
+   4:14   error    A `require()` style import is forbidden                                @typescript-eslint/no-require-imports
+  16:144  warning  Expected an assignment or function call and instead saw an expression  @typescript-eslint/no-unused-expressions
+
+G:\CAPSTONE\WorkPulse\scripts\performance-audit-preload.cjs
+  2:16  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+
+G:\CAPSTONE\WorkPulse\scripts\performance-audit.cjs
+    2:12   error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+    3:19   error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+    4:25   error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+    5:27   error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+   13:26   error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+   31:50   error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+   38:37   error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+   65:103  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+   89:27   error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  103:19   error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+
+G:\CAPSTONE\WorkPulse\scripts\platform-slug-release-guard.cjs
+  1:26  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+
+G:\CAPSTONE\WorkPulse\scripts\reference\final-ux-employees.ts
+  5:3  warning  'Prisma' is defined but never used  @typescript-eslint/no-unused-vars
+
+G:\CAPSTONE\WorkPulse\scripts\rehearse-isolated-migrations.cjs
+  2:12  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  3:22  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  4:24  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  5:19  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  6:26  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  7:26  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+
+G:\CAPSTONE\WorkPulse\scripts\reproduce-audit.ts
+   4:10  warning  'getGeminiModel' is defined but never used  @typescript-eslint/no-unused-vars
+  80:19  error    Unexpected any. Specify a different type    @typescript-eslint/no-explicit-any
+
+G:\CAPSTONE\WorkPulse\scripts\seed-parsed-resume.ts
+  233:39  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  245:39  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+G:\CAPSTONE\WorkPulse\scripts\summarize-batch0-recovery.cjs
+  1:10  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  1:34  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  2:14  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+
+G:\CAPSTONE\WorkPulse\scripts\test-candidate-onboarding-submission.ts
+   2:32  warning  'OnboardingTaskType' is defined but never used      @typescript-eslint/no-unused-vars
+  22:7   error    'govTask' is never reassigned. Use 'const' instead  prefer-const
+
+G:\CAPSTONE\WorkPulse\scripts\test-candidate-portal-and-rejection.ts
+  7:3  warning  'rejectRecruitmentDocumentAction' is defined but never used  @typescript-eslint/no-unused-vars
+  8:3  warning  'verifyRecruitmentDocumentAction' is defined but never used  @typescript-eslint/no-unused-vars
+
+G:\CAPSTONE\WorkPulse\scripts\test-extraction-units.ts
+  2:8  warning  'fs' is defined but never used    @typescript-eslint/no-unused-vars
+  3:8  warning  'path' is defined but never used  @typescript-eslint/no-unused-vars
+
+G:\CAPSTONE\WorkPulse\scripts\test-pipeline-diagnostics.ts
+  110:17  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+G:\CAPSTONE\WorkPulse\scripts\test-report-export-format.cjs
+  2:16  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  3:25  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  4:61  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+
+G:\CAPSTONE\WorkPulse\scripts\test-safe-delete.ts
+  315:11  warning  'schedGroup1' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+G:\CAPSTONE\WorkPulse\scripts\test-saga-institutional-hiring.ts
+   6:3  warning  'RecruitmentDocumentStatus' is defined but never used  @typescript-eslint/no-unused-vars
+   7:3  warning  'AssessmentType' is defined but never used             @typescript-eslint/no-unused-vars
+   8:3  warning  'AssessmentStatus' is defined but never used           @typescript-eslint/no-unused-vars
+  10:3  warning  'InterviewStatus' is defined but never used            @typescript-eslint/no-unused-vars
+  11:3  warning  'EvaluationRecommendation' is defined but never used   @typescript-eslint/no-unused-vars
+  12:3  warning  'OfferStatus' is defined but never used                @typescript-eslint/no-unused-vars
+  13:3  warning  'OnboardingTaskType' is defined but never used         @typescript-eslint/no-unused-vars
+  14:3  warning  'OnboardingTaskStatus' is defined but never used       @typescript-eslint/no-unused-vars
+  15:3  warning  'OnboardingStatus' is defined but never used           @typescript-eslint/no-unused-vars
+
+G:\CAPSTONE\WorkPulse\scripts\test-sprint2-1-pipeline.ts
+  92:7  error  'appToTransition' is never reassigned. Use 'const' instead  prefer-const
+
+G:\CAPSTONE\WorkPulse\scripts\test-sprint2-2-interviews.ts
+    3:3   warning  'ApplicationStatus' is defined but never used  @typescript-eslint/no-unused-vars
+  239:12  warning  'err' is defined but never used                @typescript-eslint/no-unused-vars
+
+G:\CAPSTONE\WorkPulse\scripts\test-sprint2-3-assessments-offers.ts
+   4:3  warning  'AssessmentType' is defined but never used                @typescript-eslint/no-unused-vars
+   7:3  warning  'ApplicationStatus' is defined but never used             @typescript-eslint/no-unused-vars
+  15:3  warning  'getAvailableOfferTransitions' is defined but never used  @typescript-eslint/no-unused-vars
+
+G:\CAPSTONE\WorkPulse\scripts\test-sprint2-4-onboarding.ts
+  12:3  warning  'getAvailableTaskTransitions' is defined but never used  @typescript-eslint/no-unused-vars
+
+G:\CAPSTONE\WorkPulse\scripts\test-vertical-slice.ts
+  134:19  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+G:\CAPSTONE\WorkPulse\scripts\validate-batch0-build.cjs
+  2:12  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  3:19  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+
+G:\CAPSTONE\WorkPulse\src\app\(dashboard)\dashboard\organization\setup\page.tsx
+  18:89  error  `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`  react/no-unescaped-entities
+
+G:\CAPSTONE\WorkPulse\src\app\platform\(protected)\organizations\[id]\page.tsx
+  61:174  error  `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`  react/no-unescaped-entities
+
+G:\CAPSTONE\WorkPulse\src\app\platform\(protected)\page.tsx
+  14:69   error  Error: Cannot call impure function during render
+
+`Date.now` is an impure function. Calling an impure function can produce unstable results that update unpredictably when the component happens to re-render. (https://react.dev/reference/rules/components-and-hooks-must-be-pure#components-and-hooks-must-be-idempotent).
+
+G:\CAPSTONE\WorkPulse\src\app\platform\(protected)\page.tsx:14:69
+  12 |     prisma.organization.count({ where: syntheticFilter }),
+  13 |     prisma.organization.count({ where: { careersEnabled: true, NOT: syntheticFilter } }),
+> 14 |     prisma.organization.count({ where: { createdAt: { gte: new Date(Date.now() - 30 * 86400000) }, NOT: syntheticFilter } }),
+     |                                                                     ^^^^^^^^^^ Cannot call impure function
+  15 |     prisma.organization.findMany({
+  16 |       where: { NOT: syntheticFilter },
+  17 |       select: { id: true, name: true, slug: true, careersEnabled: true, createdAt: true },  react-hooks/purity
+  32:69   error  `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       react/no-unescaped-entities
+  78:205  error  `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       react/no-unescaped-entities
+
+G:\CAPSTONE\WorkPulse\src\app\product-modules-showcase.tsx
+  4:107  warning  'FileText' is defined but never used  @typescript-eslint/no-unused-vars
+  4:131  warning  'Shield' is defined but never used    @typescript-eslint/no-unused-vars
+
+G:\CAPSTONE\WorkPulse\src\components\careers\CandidatePortalClient.tsx
+  18:3  warning  'HelpCircle' is defined but never used     @typescript-eslint/no-unused-vars
+  20:3  warning  'ArrowRight' is defined but never used     @typescript-eslint/no-unused-vars
+  25:3  warning  'Download' is defined but never used       @typescript-eslint/no-unused-vars
+  26:3  warning  'GraduationCap' is defined but never used  @typescript-eslint/no-unused-vars
+  27:3  warning  'Briefcase' is defined but never used      @typescript-eslint/no-unused-vars
+  28:3  warning  'Layers' is defined but never used         @typescript-eslint/no-unused-vars
+  84:3  warning  'category' is defined but never used       @typescript-eslint/no-unused-vars
+  85:3  warning  'applicantName' is defined but never used  @typescript-eslint/no-unused-vars
+  86:3  warning  'jobTitle' is defined but never used       @typescript-eslint/no-unused-vars
+  87:3  warning  'orgName' is defined but never used        @typescript-eslint/no-unused-vars
+
+G:\CAPSTONE\WorkPulse\src\components\employees\profile\ComplianceTab.tsx
+  3:3  warning  'FileCheck2' is defined but never used   @typescript-eslint/no-unused-vars
+  7:3  warning  'ShieldAlert' is defined but never used  @typescript-eslint/no-unused-vars
+
+G:\CAPSTONE\WorkPulse\src\components\employees\profile\DecisionsAuditTab.tsx
+  2:26  warning  'User' is defined but never used         @typescript-eslint/no-unused-vars
+  2:32  warning  'Calendar' is defined but never used     @typescript-eslint/no-unused-vars
+  2:54  warning  'ShieldCheck' is defined but never used  @typescript-eslint/no-unused-vars
+
+G:\CAPSTONE\WorkPulse\src\components\employees\profile\EmployeeProfileTabs.tsx
+  11:3  warning  'AlertCircle' is defined but never used  @typescript-eslint/no-unused-vars
+
+G:\CAPSTONE\WorkPulse\src\components\employees\profile\EmploymentHistoryTab.tsx
+  2:19  warning  'Briefcase' is defined but never used  @typescript-eslint/no-unused-vars
+  2:30  warning  'Calendar' is defined but never used   @typescript-eslint/no-unused-vars
+
+G:\CAPSTONE\WorkPulse\src\components\employees\profile\OverviewTab.tsx
+  4:3  warning  'Calendar' is defined but never used     @typescript-eslint/no-unused-vars
+  8:3  warning  'Building2' is defined but never used    @typescript-eslint/no-unused-vars
+  9:3  warning  'AlertCircle' is defined but never used  @typescript-eslint/no-unused-vars
+
+G:\CAPSTONE\WorkPulse\src\components\hiring\ApplicationTimeline.tsx
+  12:3  warning  'ShieldCheck' is defined but never used  @typescript-eslint/no-unused-vars
+
+G:\CAPSTONE\WorkPulse\src\components\hiring\AssessmentResultModal.tsx
+  39:20  warning  'setMaxScore' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+G:\CAPSTONE\WorkPulse\src\components\hiring\CandidateLifecycleStepper.tsx
+  7:3  warning  'Search' is defined but never used    @typescript-eslint/no-unused-vars
+  9:3  warning  'Calendar' is defined but never used  @typescript-eslint/no-unused-vars
+
+G:\CAPSTONE\WorkPulse\src\components\hiring\CandidateOnboardingSection.tsx
+  29:3  warning  'FileText' is defined but never used      @typescript-eslint/no-unused-vars
+  38:3  warning  'ExternalLink' is defined but never used  @typescript-eslint/no-unused-vars
+
+G:\CAPSTONE\WorkPulse\src\components\hiring\OnboardingTaskUploadModal.tsx
+  10:39  warning  'FileText' is defined but never used  @typescript-eslint/no-unused-vars
+
+G:\CAPSTONE\WorkPulse\src\components\hiring\ParsedResumeSection.tsx
+  141:3   warning  'jobRequirements' is defined but never used          @typescript-eslint/no-unused-vars
+  146:23  warning  'setLocalParsed' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+G:\CAPSTONE\WorkPulse\src\features\platform-admin\organization-management-forms.tsx
+  66:93   error  `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`  react/no-unescaped-entities
+  81:110  error  `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`  react/no-unescaped-entities
+
+G:\CAPSTONE\WorkPulse\src\features\platform-admin\subscription-demo.tsx
+   5:47   warning  'CreditCard' is defined but never used                           @typescript-eslint/no-unused-vars
+  35:181  error    `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`  react/no-unescaped-entities
+
+G:\CAPSTONE\WorkPulse\storage\hiring-policy\edit.cjs
+  1:10  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+
+G:\CAPSTONE\WorkPulse\storage\hiring-policy\finalize.cjs
+  1:10  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  1:32  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  1:69  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+
+G:\CAPSTONE\WorkPulse\storage\hiring-policy\save-progress.cjs
+  1:10  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  1:32  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+
+G:\CAPSTONE\WorkPulse\storage\hiring-policy\test-edit.cjs
+  1:10  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+
+G:\CAPSTONE\WorkPulse\storage\hiring-policy\ui-edit.cjs
+  1:10  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+
+G:\CAPSTONE\WorkPulse\storage\integration-check\candidate.cjs
+   2:16  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+   2:56  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+   3:1   error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  49:18  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  50:18  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  77:48  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+
+G:\CAPSTONE\WorkPulse\storage\integration-check\inspect.cjs
+   1:10   error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+   1:32   error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+   1:73   error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+   1:107  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  16:30   error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+
+G:\CAPSTONE\WorkPulse\storage\integration-check\release.cjs
+  1:12  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  2:12  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  3:16  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+
+G:\CAPSTONE\WorkPulse\storage\integration-check\run.cjs
+  1:12  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  1:44  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  2:16  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+
+G:\CAPSTONE\WorkPulse\storage\loading-consistency\finalize.cjs
+   1:10  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+   1:33  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  19:1   error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  19:82  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+
+G:\CAPSTONE\WorkPulse\storage\payroll-v2-recovery\prepare-backup.cjs
+  1:12  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+
+✖ 539 problems (463 errors, 76 warnings)
+  3 errors and 0 warnings potentially fixable with the `--fix` option.

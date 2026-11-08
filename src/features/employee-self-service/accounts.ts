@@ -1,4 +1,7 @@
 import 'server-only';
+import { EmployeeAccountError } from './errors';
+export { EmployeeAccountError } from './errors';
+import { assertEmployeeAccountManager, provisionEmployeeAccountInTransaction } from './provisioning';
 
 import { hash } from 'bcryptjs';
 import {
@@ -15,23 +18,10 @@ import {
   createEmployeeInvitation,
   isActivationTokenFormatValid,
 } from './activation';
-import { publicOrigin } from '@/lib/tenant/host';
+import { workspaceActivationOrigin } from '@/features/platform-admin/onboarding';
 import { disableEmployeeAccountInTransaction } from './account-state';
 
-export class EmployeeAccountError extends Error {
-  constructor(public readonly code: string, message: string) {
-    super(message);
-    this.name = 'EmployeeAccountError';
-  }
-}
 
-function normalizeLoginEmail(value: string) {
-  const email = value.trim().toLowerCase();
-  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) || email.length > 320) {
-    throw new EmployeeAccountError('INVALID_EMAIL', 'The employee contact email is not a valid login email.');
-  }
-  return email;
-}
 
 async function appendAuditWithRetry(data: Prisma.EmployeeAccountAuditUncheckedCreateInput) {
   let lastError: unknown;
@@ -64,7 +54,7 @@ async function assertProvisioningActor(organizationId: string, actorUserId: stri
   if (!actor) throw new EmployeeAccountError('UNAUTHORIZED', 'Unauthorized to manage employee accounts.');
 }
 
-async function deliverInvitation(input: {
+export async function deliverEmployeeInvitation(input: {
   accountId: string;
   organizationId: string;
   actorUserId: string;
@@ -75,15 +65,19 @@ async function deliverInvitation(input: {
   expiresAt: Date;
   resent: boolean;
 }) {
-  const baseUrl = publicOrigin().replace(/\/$/, '');
-  const activationUrl = `${baseUrl}/activate/employee#token=${encodeURIComponent(input.token)}`;
-  const delivery = await sendEmployeeActivationEmail({
+  let delivery: { success:boolean; mode:string };
+  try {
+    const organization = await prisma.organization.findUniqueOrThrow({ where:{ id:input.organizationId },select:{ slug:true } });
+    const baseUrl = workspaceActivationOrigin(organization.slug).replace(/\/$/, '');
+    const activationUrl = `${baseUrl}/activate/employee#token=${encodeURIComponent(input.token)}`;
+    delivery = await sendEmployeeActivationEmail({
     to: input.email,
     employeeName: input.employeeName,
     organizationName: input.organizationName,
     activationUrl,
     expiresAt: input.expiresAt,
-  });
+    });
+  } catch { delivery = { success:false,mode:'UNAVAILABLE' }; }
   const action = delivery.success
     ? input.resent
       ? EmployeeAccountAuditAction.INVITATION_RESENT
@@ -120,68 +114,10 @@ export async function provisionEmployeeAccount(input: {
   const invitation = createEmployeeInvitation();
   try {
     const provisioned = await prisma.$transaction(async (tx) => {
-      const employee = await tx.employee.findFirst({
-        where: { id: input.employeeId, organizationId: input.organizationId },
-        select: {
-          id: true,
-          firstName: true,
-          lastName: true,
-          email: true,
-          employeeStatus: true,
-          organization: { select: { name: true } },
-          employmentRecords: {
-            where: {
-              effectiveFrom: { lte: new Date() },
-              OR: [{ effectiveTo: null }, { effectiveTo: { gt: new Date() } }],
-            },
-            select: { id: true },
-            take: 1,
-          },
-          employeeAccount: { select: { id: true } },
-        },
-      });
-      if (!employee) throw new EmployeeAccountError('NOT_FOUND', 'Employee not found or access denied.');
-      if (employee.employeeStatus !== EmployeeStatus.ACTIVE || employee.employmentRecords.length === 0) {
-        throw new EmployeeAccountError('INACTIVE_EMPLOYEE', 'Only an active employee with a current employment record can receive an account.');
-      }
-      if (employee.employeeAccount) throw new EmployeeAccountError('DUPLICATE_ACCOUNT', 'This employee already has an account.');
-      const email = normalizeLoginEmail(employee.email);
-      const user = await tx.user.create({
-        data: {
-          organizationId: input.organizationId,
-          name: `${employee.firstName} ${employee.lastName}`,
-          email,
-          passwordHash: null,
-          role: Role.EMPLOYEE,
-        },
-      });
-      const account = await tx.employeeAccount.create({
-        data: {
-          organizationId: input.organizationId,
-          userId: user.id,
-          employeeId: employee.id,
-          status: EmployeeAccountStatus.INVITED,
-          activationTokenHash: invitation.hash,
-          activationTokenExpiresAt: invitation.expiresAt,
-          invitedAt: new Date(),
-          createdById: input.actorUserId,
-        },
-      });
-      await tx.employeeAccountAudit.createMany({
-        data: [
-          { organizationId: input.organizationId, employeeAccountId: account.id, actorUserId: input.actorUserId, action: EmployeeAccountAuditAction.ACCOUNT_CREATED },
-          { organizationId: input.organizationId, employeeAccountId: account.id, actorUserId: input.actorUserId, action: EmployeeAccountAuditAction.EMPLOYEE_LINKED },
-        ],
-      });
-      return {
-        accountId: account.id,
-        email,
-        employeeName: `${employee.firstName} ${employee.lastName}`,
-        organizationName: employee.organization.name,
-      };
+      return provisionEmployeeAccountInTransaction(tx, { ...input, role: Role.EMPLOYEE, invitation });
     }, { isolationLevel: Prisma.TransactionIsolationLevel.Serializable });
 
-    const delivery = await deliverInvitation({
+    const delivery = await deliverEmployeeInvitation({
       ...provisioned,
       organizationId: input.organizationId,
       actorUserId: input.actorUserId,
@@ -206,7 +142,9 @@ export async function provisionEmployeeAccount(input: {
 export async function resendEmployeeInvitation(input: { organizationId: string; accountId: string; actorUserId: string }) {
   await assertProvisioningActor(input.organizationId, input.actorUserId);
   const invitation = createEmployeeInvitation();
-  const account = await prisma.employeeAccount.update({
+  const account = await prisma.$transaction(async tx => {
+    await assertEmployeeAccountManager(tx,input);
+    return tx.employeeAccount.update({
     where: { id: input.accountId, organizationId: input.organizationId, status: EmployeeAccountStatus.INVITED },
     data: { activationTokenHash: invitation.hash, activationTokenExpiresAt: invitation.expiresAt, invitedAt: new Date() },
     select: {
@@ -215,8 +153,9 @@ export async function resendEmployeeInvitation(input: { organizationId: string; 
       employee: { select: { firstName: true, lastName: true } },
       organization: { select: { name: true } },
     },
-  }).catch(() => { throw new EmployeeAccountError('NOT_INVITED', 'The invited account was not found.'); });
-  return deliverInvitation({
+    });
+  });
+  return deliverEmployeeInvitation({
     accountId: account.id,
     organizationId: input.organizationId,
     actorUserId: input.actorUserId,
@@ -229,7 +168,7 @@ export async function resendEmployeeInvitation(input: { organizationId: string; 
   });
 }
 
-export async function activateEmployeeAccount(input: { token: string; password: string; passwordConfirmation: string }) {
+export async function activateEmployeeAccount(input: { token: string; password: string; passwordConfirmation: string; organizationId?: string }) {
   const raw = input.token.trim();
   const byteLength = Buffer.byteLength(input.password, 'utf8');
   if (!isActivationTokenFormatValid(raw)) throw new EmployeeAccountError('INVALID_ACTIVATION', 'This activation link is invalid or expired.');
@@ -238,7 +177,7 @@ export async function activateEmployeeAccount(input: { token: string; password: 
   const passwordHash = await hash(input.password, 12);
   const now = new Date();
   return prisma.$transaction(async (tx) => {
-    const activated = await activateEmployeeAccountInTransaction(tx, { token: raw, passwordHash, now });
+    const activated = await activateEmployeeAccountInTransaction(tx, { token: raw, passwordHash, now, organizationId:input.organizationId });
     if (!activated) throw new EmployeeAccountError('INVALID_ACTIVATION', 'This activation link is invalid or expired.');
     return { success: true as const };
   }, { isolationLevel: Prisma.TransactionIsolationLevel.Serializable });
@@ -249,6 +188,7 @@ export async function disableEmployeeAccount(input: { organizationId: string; ac
   const reason = input.reason.trim();
   if (!reason || reason.length > 2000) throw new EmployeeAccountError('INVALID_REASON', 'A disable reason is required.');
   return prisma.$transaction(async (tx) => {
+    await assertEmployeeAccountManager(tx,input);
     return disableEmployeeAccountInTransaction(tx, { ...input, reason, now: new Date() });
   });
 }
@@ -257,6 +197,7 @@ export async function enableEmployeeAccount(input: { organizationId: string; acc
   await assertProvisioningActor(input.organizationId, input.actorUserId);
   const invitation = createEmployeeInvitation();
   const result = await prisma.$transaction(async (tx) => {
+    await assertEmployeeAccountManager(tx,input);
     const existing = await tx.employeeAccount.findFirst({
       where: { id: input.accountId, organizationId: input.organizationId, status: EmployeeAccountStatus.DISABLED, employee: { employeeStatus: EmployeeStatus.ACTIVE } },
       include: { user: true, employee: true, organization: true },
@@ -273,7 +214,7 @@ export async function enableEmployeeAccount(input: { organizationId: string; acc
     return { existing, activated };
   });
   if (result.activated) return { active: true, delivered: false, audited: true };
-  const delivery = await deliverInvitation({
+  const delivery = await deliverEmployeeInvitation({
     accountId: result.existing.id,
     organizationId: input.organizationId,
     actorUserId: input.actorUserId,

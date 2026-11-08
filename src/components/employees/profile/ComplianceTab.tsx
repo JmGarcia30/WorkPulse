@@ -1,10 +1,8 @@
 import React from 'react';
 import {
-  FileCheck2,
   CheckCircle2,
   XCircle,
   ExternalLink,
-  ShieldAlert,
   ClipboardList,
   FileSignature,
 } from 'lucide-react';
@@ -12,7 +10,7 @@ import { TenantLink } from '@/components/ui/TenantLink';
 import { formatStatusLabel } from '@/lib/ui/format-status';
 
 interface ComplianceTabProps {
-  sourceApplicationId: string;
+  sourceApplicationId: string | null;
   offer: {
     status: string;
     contractExecutedAt: Date | null;
@@ -223,16 +221,16 @@ export function ComplianceTab({
         <div>
           <h3 className="text-sm font-bold text-slate-900">Upstream Hiring Traceability</h3>
           <p className="text-xs text-slate-500 mt-0.5">
-            Inspect the original candidate application, interview notes, and assessment evaluations.
+            {sourceApplicationId ? 'Inspect the original candidate application, interview notes, and assessment evaluations.' : 'Registered directly as an existing employee. No recruitment or candidate onboarding record is required.'}
           </p>
         </div>
-        <TenantLink
+        {sourceApplicationId && <TenantLink
           href={`/dashboard/hiring/applicants/${sourceApplicationId}`}
           className="inline-flex items-center gap-1.5 rounded-lg bg-[var(--tenant-primary)] px-3.5 py-2 text-xs font-semibold text-[var(--tenant-primary-foreground)] shadow-2xs hover:brightness-95 transition"
         >
           View Hiring Record
           <ExternalLink className="h-3.5 w-3.5" />
-        </TenantLink>
+        </TenantLink>}
       </div>
     </div>
   );

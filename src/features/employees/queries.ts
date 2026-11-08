@@ -219,7 +219,7 @@ export async function getOrganizationEmployeeById(
     tab === undefined || tab === 'account' ? db.employeeAccount.findFirst({
       where: { employeeId, organizationId },
       include: {
-        user: { select: { email: true } },
+        user: { select: { email: true, role: true } },
         audits: { orderBy: { createdAt: 'desc' }, take: 10 },
       },
     }) : Promise.resolve(null),

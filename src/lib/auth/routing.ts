@@ -1,5 +1,6 @@
 import { Role } from '@prisma/client';
+import { isSelfServiceOnlyRole } from './access-roles';
 
 export function landingPathForRole(role: Role) {
-  return role === Role.EMPLOYEE ? '/employee' : '/dashboard';
+  return isSelfServiceOnlyRole(role) ? '/employee' : '/dashboard';
 }

@@ -1,3 +1,4 @@
+import { employeeAccessRoles } from '@/lib/auth/access-roles';
 import { createHash } from 'node:crypto';
 import { Role } from '@prisma/client';
 import { prisma } from '@/lib/db/prisma';
@@ -13,7 +14,7 @@ export async function previewPayrollNotifications(input: { organizationId: strin
   const period = await db.payrollPeriod.findFirst({ where: { id: input.payrollPeriodId, organizationId: input.organizationId, status: 'FINALIZED', finalizedAt: { not: null } } });
   if (!period) throw new PayrollError('NOT_FINALIZED', 'Finalize this payroll period before notifying employees.');
   const entries = await db.payrollEntry.findMany({ where: { organizationId: input.organizationId, payrollPeriodId: period.id, status: 'FINALIZED' }, include: { employee: { select: { firstName: true, lastName: true } }, notification: true }, orderBy: { id: 'asc' } });
-  const accounts = await db.employeeAccount.findMany({ where: { organizationId: input.organizationId, employeeId: { in: entries.map(entry => entry.employeeId) }, status: 'ACTIVE', employee: { organizationId: input.organizationId, employeeStatus: 'ACTIVE' }, user: { organizationId: input.organizationId, role: 'EMPLOYEE' } }, select: { employeeId: true, userId: true } });
+  const accounts = await db.employeeAccount.findMany({ where: { organizationId: input.organizationId, employeeId: { in: entries.map(entry => entry.employeeId) }, status: 'ACTIVE', employee: { organizationId: input.organizationId, employeeStatus: 'ACTIVE' }, user: { organizationId: input.organizationId, role: { in: employeeAccessRoles } } }, select: { employeeId: true, userId: true } });
   const recipients = entries.flatMap(entry => {
     const account = accounts.find(item => item.employeeId === entry.employeeId);
     return account ? [{ entryId: entry.id, employeeId: entry.employeeId, userId: account.userId, name: `${entry.employee.firstName} ${entry.employee.lastName}`, createdAt: entry.notification?.createdAt.toISOString() ?? null }] : [];
@@ -38,7 +39,7 @@ export async function notifyPayrollEmployees(input: { organizationId: string; ac
 }
 
 export async function listPayrollNotifications(input: { organizationId: string; userId: string }, db: PayrollDb = prisma) {
-  const account = await db.employeeAccount.findFirst({ where: { organizationId: input.organizationId, userId: input.userId, status: 'ACTIVE', employee: { organizationId: input.organizationId, employeeStatus: 'ACTIVE' }, user: { role: 'EMPLOYEE', organizationId: input.organizationId } }, select: { employeeId: true } });
+  const account = await db.employeeAccount.findFirst({ where: { organizationId: input.organizationId, userId: input.userId, status: 'ACTIVE', employee: { organizationId: input.organizationId, employeeStatus: 'ACTIVE' }, user: { role: { in: employeeAccessRoles }, organizationId: input.organizationId } }, select: { employeeId: true } });
   if (!account) throw new PayrollError('FORBIDDEN', 'Employee payroll access is unavailable.');
   return db.payrollNotification.findMany({ where: { organizationId: input.organizationId, recipientUserId: input.userId, employeeId: account.employeeId, entry: { status: 'FINALIZED', payrollPeriod: { organizationId: input.organizationId, status: 'FINALIZED', finalizedAt: { not: null } } } }, select: { id: true, message: true, payrollEntryId: true, createdAt: true }, orderBy: { createdAt: 'desc' }, take: 30 });
 }

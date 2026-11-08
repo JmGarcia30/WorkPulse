@@ -1,3 +1,4 @@
+import { isSelfServiceOnlyRole } from '@/lib/auth/access-roles';
 import { NextResponse } from 'next/server';
 import { Role } from '@prisma/client';
 import { requireEmployeeSelfContext } from '@/features/employee-self-service/context';
@@ -14,7 +15,7 @@ export async function GET(_request: Request, { params }: { params: Promise<{ id:
   if (!document) return new NextResponse('Not found', { status: 404 });
   const hr = user.role === Role.ORGANIZATION_ADMIN || user.role === Role.HR_ADMIN;
   let own = false;
-  if (user.role === Role.EMPLOYEE) {
+  if (isSelfServiceOnlyRole(user.role)) {
     try {
       const context = await requireEmployeeSelfContext();
       own = context.organization.id === document.organizationId && context.employee.id === document.employeeId;

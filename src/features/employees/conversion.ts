@@ -1,3 +1,4 @@
+import { createEmployeeWithEmployment } from './records';
 import { resolveHiringDocumentPolicy } from '@/features/hiring/document-policy';
 import { prisma } from '@/lib/db/prisma';
 import {
@@ -259,29 +260,35 @@ async function convertInTransaction(
   const legacyHired = application.status === ApplicationStatus.HIRED;
   const hireDate = legacyHired ? application.history[0]?.createdAt ?? now : now;
   const sequenceYear = hireDate.getUTCFullYear();
-  const sequence = await tx.employeeNumberSequence.upsert({
-    where: {
-      organizationId_year: {
+  let employeeNumber = '';
+  await tx.$queryRaw`SELECT pg_advisory_xact_lock(hashtextextended(${`employee-registration:${input.organizationId}`},0))::text`;
+  for (let allocation = 0; allocation < 1000; allocation++) {
+    const sequence = await tx.employeeNumberSequence.upsert({
+      where: {
+        organizationId_year: {
+          organizationId: input.organizationId,
+          year: sequenceYear,
+        },
+      },
+      create: {
         organizationId: input.organizationId,
         year: sequenceYear,
+        nextValue: 2,
       },
-    },
-    create: {
-      organizationId: input.organizationId,
-      year: sequenceYear,
-      nextValue: 2,
-    },
-    update: { nextValue: { increment: 1 } },
-    select: { nextValue: true },
-  });
-  const employeeNumber = formatEmployeeNumber(
-    normalizeEmployeeNumberPrefix(
-      application.job.organization.employeeNumberPrefix,
-      application.job.organization.slug
-    ),
-    sequenceYear,
-    sequence.nextValue - 1
-  );
+      update: { nextValue: { increment: 1 } },
+      select: { nextValue: true },
+    });
+    employeeNumber = formatEmployeeNumber(
+      normalizeEmployeeNumberPrefix(
+        application.job.organization.employeeNumberPrefix,
+        application.job.organization.slug
+      ),
+      sequenceYear,
+      sequence.nextValue - 1
+    );
+    if (!await tx.employee.findFirst({ where:{ organizationId:input.organizationId,employeeNumber:{ equals:employeeNumber,mode:'insensitive' } },select:{ id:true } })) break;
+    if (allocation === 999) throw new Error('Employee number allocation requires review.');
+  }
 
   if (!legacyHired) {
     await tx.application.update({
@@ -298,8 +305,8 @@ async function convertInTransaction(
     });
   }
 
-  const employee = await tx.employee.create({
-    data: {
+  const { employee, employmentRecord } = await createEmployeeWithEmployment(tx, {
+    employee: {
       organizationId: input.organizationId,
       sourceApplicationId: application.id,
       applicantId: draft.applicant.id,
@@ -311,11 +318,7 @@ async function convertInTransaction(
       employeeStatus: EmployeeStatus.ACTIVE,
       createdById: input.actorUserId,
     },
-  });
-
-  const employmentRecord = await tx.employmentRecord.create({
-    data: {
-      employeeId: employee.id,
+    employment: {
       jobId: draft.employment.jobId,
       acceptedOfferId: draft.employment.acceptedOfferId,
       jobTitle: draft.employment.jobTitle,

@@ -1,4 +1,5 @@
 import 'server-only';
+import { isSelfServiceOnlyRole } from './access-roles';
 import { createHash } from 'node:crypto';
 import { compare } from 'bcryptjs';
 import { EmployeeAccountStatus, EmployeeStatus, Prisma, PrismaClient, Role } from '@prisma/client';
@@ -16,7 +17,7 @@ export const staffUserSelection = {
 type StaffUser = Prisma.UserGetPayload<{ select: typeof staffUserSelection }>;
 
 export function staffAccountAvailable(user: StaffUser) {
-  if (user.role !== Role.EMPLOYEE) return true;
+  if (!isSelfServiceOnlyRole(user.role) && !(user.role === Role.HR_ADMIN && user.employeeAccount)) return true;
   const account = user.employeeAccount;
   return !!account && account.status === EmployeeAccountStatus.ACTIVE && account.organizationId === user.organizationId
     && account.employee.organizationId === user.organizationId && account.employee.employeeStatus === EmployeeStatus.ACTIVE;

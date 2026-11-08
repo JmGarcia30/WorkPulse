@@ -1,12 +1,9 @@
 import React from 'react';
 import {
   Briefcase,
-  Calendar,
   Clock,
   ExternalLink,
   ShieldCheck,
-  Building2,
-  AlertCircle,
   FileText,
   BadgeAlert,
 } from 'lucide-react';
@@ -17,7 +14,7 @@ import type { ProbationReviewSummary } from '@/features/employees/domain';
 
 interface OverviewTabProps {
   employeeId: string;
-  sourceApplicationId: string;
+  sourceApplicationId: string | null;
   currentRecord: {
     jobTitle: string;
     department: string;
@@ -229,7 +226,7 @@ export function OverviewTab({
           </div>
 
           <div className="space-y-2.5">
-            <TenantLink
+            {sourceApplicationId && <TenantLink
               href={`/dashboard/hiring/applicants/${sourceApplicationId}`}
               className="flex items-center justify-between rounded-lg border border-slate-200/90 bg-white p-3 text-xs font-semibold text-slate-700 shadow-2xs hover:bg-slate-50 hover:text-slate-900 transition"
             >
@@ -238,7 +235,7 @@ export function OverviewTab({
                 <span>View Original Hiring Application</span>
               </div>
               <ExternalLink className="h-3.5 w-3.5 text-slate-400" />
-            </TenantLink>
+            </TenantLink>}
 
             <TenantLink
               href={`/dashboard/attendance/${employeeId}`}

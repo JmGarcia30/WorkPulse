@@ -1,3 +1,4 @@
+import { employeeAccessRoles } from '@/lib/auth/access-roles';
 import { EmployeeAccountStatus, PayrollEntryStatus, PayrollPeriodStatus, Prisma, Role } from '@prisma/client';
 import { prisma } from '@/lib/db/prisma';
 import { PayrollError } from './domain';
@@ -127,7 +128,7 @@ export async function getFinalizedPayslipForAdmin(input: { organizationId: strin
 
 async function activeEmployeeForUser(organizationId: string, userId: string, db: PayrollDb) {
   const account = await db.employeeAccount.findFirst({
-    where: { organizationId, userId, status: EmployeeAccountStatus.ACTIVE, user: { role: Role.EMPLOYEE, organizationId }, employee: { organizationId, employeeStatus: 'ACTIVE' } },
+    where: { organizationId, userId, status: EmployeeAccountStatus.ACTIVE, user: { role: { in: employeeAccessRoles }, organizationId }, employee: { organizationId, employeeStatus: 'ACTIVE' } },
     select: { employeeId: true },
   });
   if (!account) throw new PayrollError('FORBIDDEN', 'Employee payroll access is unavailable.');

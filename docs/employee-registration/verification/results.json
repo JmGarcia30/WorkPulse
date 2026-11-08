@@ -1,0 +1,83 @@
+{
+  "schema": "batch3_test_a7fa90928ce17a064fd4dc41",
+  "branch": "br-damp-fog-azmmxhga",
+  "productionAccessed": false,
+  "originalEnvUnchanged": true,
+  "results": [
+    {
+      "name": "01-migrations",
+      "exitCode": 0,
+      "elapsedMs": 39611
+    },
+    {
+      "name": "02-registration-and-roles",
+      "exitCode": 1,
+      "elapsedMs": 77861
+    },
+    {
+      "name": "regression-test-h4-employee-self-service",
+      "exitCode": 0,
+      "elapsedMs": 29750
+    },
+    {
+      "name": "regression-test-h5-leave-management",
+      "exitCode": 0,
+      "elapsedMs": 99889
+    },
+    {
+      "name": "regression-test-h3-attendance",
+      "exitCode": 0,
+      "elapsedMs": 25049
+    },
+    {
+      "name": "regression-test-rfid-attendance",
+      "exitCode": 0,
+      "elapsedMs": 97219
+    },
+    {
+      "name": "regression-test-s1-saas-shell",
+      "exitCode": 0,
+      "elapsedMs": 349
+    },
+    {
+      "name": "regression-test-hiring-policy",
+      "exitCode": 0,
+      "elapsedMs": 938
+    },
+    {
+      "name": "regression-payroll",
+      "exitCode": 0,
+      "elapsedMs": 213029
+    },
+    {
+      "name": "03-typescript",
+      "exitCode": 0,
+      "elapsedMs": 9052
+    },
+    {
+      "name": "04-prisma-validation",
+      "exitCode": 0,
+      "elapsedMs": 1334
+    },
+    {
+      "name": "05-changed-eslint",
+      "exitCode": 0,
+      "elapsedMs": 4367
+    },
+    {
+      "name": "06-full-eslint",
+      "exitCode": 1,
+      "elapsedMs": 24446
+    },
+    {
+      "name": "07-production-build",
+      "exitCode": 0,
+      "elapsedMs": 118698
+    },
+    {
+      "name": "08-schema-diff",
+      "exitCode": 2,
+      "elapsedMs": 8130
+    }
+  ]
+}

@@ -1,5 +1,5 @@
 import React from 'react';
-import { KeyRound, Shield, History, UserCheck } from 'lucide-react';
+import { Shield } from 'lucide-react';
 import { EmployeeAccountPanel } from '@/components/employee-self-service/EmployeeAccountPanel';
 import { formatStatusLabel } from '@/lib/ui/format-status';
 
@@ -12,6 +12,7 @@ export interface AuditItem {
 }
 
 interface EssAccountTabProps {
+  canManageAccount?: boolean;
   employeeId: string;
   contactEmail: string;
   employeeActive: boolean;
@@ -44,11 +45,13 @@ export function EssAccountTab({
   employeeActive,
   account,
   audits = [],
+  canManageAccount = true,
 }: EssAccountTabProps) {
   return (
     <div className="space-y-6">
       {/* 1. Reuse existing EmployeeAccountPanel */}
       <EmployeeAccountPanel
+        canManageAccount={canManageAccount}
         employeeId={employeeId}
         contactEmail={contactEmail}
         employeeActive={employeeActive}

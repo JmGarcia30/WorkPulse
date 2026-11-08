@@ -3,6 +3,7 @@
 import { redirect } from 'next/navigation';
 import { revalidatePath } from 'next/cache';
 import { getSession } from '@/lib/auth/session';
+import { requireRequestTenant, requestWorkspacePath } from '@/lib/tenant/server';
 import {
   activateEmployeeAccount,
   disableEmployeeAccount,
@@ -59,11 +60,12 @@ export async function enableEmployeeAccountAction(accountId: string, employeeId:
 }
 
 export async function activateEmployeeAccountAction(input: { token: string; password: string; passwordConfirmation: string }) {
+  const tenant = await requireRequestTenant();
   try {
-    await activateEmployeeAccount(input);
+    await activateEmployeeAccount({ ...input,organizationId:tenant.organizationId });
   } catch (error) {
     if (error instanceof EmployeeAccountError && (error.code === 'PASSWORD_MISMATCH' || error.code === 'INVALID_PASSWORD')) return failure(error);
     return { error: 'This activation link is invalid or expired.', code: 'INVALID_ACTIVATION' };
   }
-  redirect('/login?activated=1');
+  redirect(await requestWorkspacePath('/login?activated=1'));
 }

@@ -16,6 +16,9 @@ import { EmploymentHistoryTab } from '@/components/employees/profile/EmploymentH
 import { DecisionsAuditTab } from '@/components/employees/profile/DecisionsAuditTab';
 import { ComplianceTab } from '@/components/employees/profile/ComplianceTab';
 import { EssAccountTab } from '@/components/employees/profile/EssAccountTab';
+import { EmployeeAccessRoleForm, ExistingEmployeeAccountLinkForm } from '@/features/employees/registration-form';
+import { prisma } from '@/lib/db/prisma';
+import { employeeAccessRoles } from '@/lib/auth/access-roles';
 
 interface EmployeeProfilePageProps {
   params: Promise<{ employeeId: string }>;
@@ -60,6 +63,7 @@ export default async function EmployeeProfilePage({
 
   const employee = await getOrganizationEmployeeById(user.organizationId, employeeId, activeTab);
   if (!employee) notFound();
+  const existingAccounts=activeTab==='account'&&user.role==='ORGANIZATION_ADMIN'&&!employee.employeeAccount ? await prisma.user.findMany({where:{organizationId:user.organizationId,role:{in:employeeAccessRoles},email:{equals:employee.email.trim(),mode:'insensitive'},passwordHash:{not:null},employeeAccount:null},select:{id:true,name:true,email:true,role:true}}):[];
 
   const now = new Date();
   const activeEmployment = employee.employmentRecords.find(
@@ -80,7 +84,7 @@ export default async function EmployeeProfilePage({
     : null;
 
   const offer = employee.employmentRecords.find((record) => record.acceptedOffer)?.acceptedOffer;
-  const onboarding = employee.sourceApplication.onboarding;
+  const onboarding = employee.sourceApplication?.onboarding;
   const requiredTasks = onboarding?.tasks.filter((task) => task.isRequired) ?? [];
   const satisfiedTasks = requiredTasks.filter(
     (task) => task.status === 'VERIFIED' || task.status === 'WAIVED'
@@ -193,7 +197,11 @@ export default async function EmployeeProfilePage({
         )}
 
         {activeTab === 'account' && (
+          <><p className="mb-4 text-sm">System access role: {employee.employeeAccount?.user.role.replaceAll('_',' ') ?? 'No account'}. Job title: {shown.jobTitle}.</p>
+          {user.role === 'ORGANIZATION_ADMIN' && employee.employeeAccount && <div className="mb-5"><EmployeeAccessRoleForm employeeId={employee.id} currentRole={employee.employeeAccount.user.role} active={employee.employeeStatus === 'ACTIVE' && employee.employeeAccount.status === 'ACTIVE'}/></div>}
+          {user.role==='ORGANIZATION_ADMIN'&&!employee.employeeAccount&&existingAccounts.length>0&&<ExistingEmployeeAccountLinkForm employeeId={employee.id} accounts={existingAccounts}/>}
           <EssAccountTab
+            canManageAccount={user.role === 'ORGANIZATION_ADMIN' || !employee.employeeAccount || employee.employeeAccount.user.role === 'EMPLOYEE'}
             employeeId={employee.id}
             contactEmail={employee.email}
             employeeActive={employee.employeeStatus === EmployeeStatus.ACTIVE}
@@ -212,7 +220,7 @@ export default async function EmployeeProfilePage({
                 : null
             }
             audits={employee.employeeAccount?.audits ?? []}
-          />
+          /></>
         )}
       </div>
     </div>

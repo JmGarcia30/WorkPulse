@@ -1,9 +1,9 @@
 import { createHash, randomBytes } from 'node:crypto';
+import { hasEmployeeSelfRole } from '@/lib/auth/access-roles';
 import {
   EmployeeAccountAuditAction,
   EmployeeAccountStatus,
   Prisma,
-  Role,
 } from '@prisma/client';
 
 export const INVITATION_LIFETIME_MS = 24 * 60 * 60 * 1000;
@@ -27,7 +27,7 @@ export function isActivationTokenFormatValid(token: string) {
 
 export async function activateEmployeeAccountInTransaction(
   tx: Prisma.TransactionClient,
-  input: { token: string; passwordHash: string; now: Date },
+  input: { token: string; passwordHash: string; now: Date; organizationId?: string },
 ) {
   const account = await tx.employeeAccount.findUnique({
     where: { activationTokenHash: hashActivationToken(input.token) },
@@ -35,10 +35,11 @@ export async function activateEmployeeAccountInTransaction(
   });
   if (
     !account ||
+    (input.organizationId !== undefined && account.organizationId !== input.organizationId) ||
     account.status !== EmployeeAccountStatus.INVITED ||
     !account.activationTokenExpiresAt ||
     account.activationTokenExpiresAt <= input.now ||
-    account.user.role !== Role.EMPLOYEE ||
+    !hasEmployeeSelfRole(account.user.role) ||
     account.employee.employeeStatus !== 'ACTIVE' ||
     account.user.organizationId !== account.organizationId ||
     account.employee.organizationId !== account.organizationId

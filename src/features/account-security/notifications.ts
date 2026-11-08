@@ -1,4 +1,5 @@
 import 'server-only';
+import { hasEmployeeSelfRole, isSelfServiceOnlyRole } from '@/lib/auth/access-roles';
 import { createHash } from 'node:crypto';
 import { Prisma, type PrismaClient } from '@prisma/client';
 import { sendEmail } from '@/lib/email';
@@ -12,7 +13,7 @@ export const verifiedStaffSelection = {
 type VerifiedStaff = Prisma.UserGetPayload<{ select: typeof verifiedStaffSelection }>;
 export function hasVerifiedMailbox(user: VerifiedStaff) {
   if (!user.passwordHash) return false;
-  if (user.role === 'EMPLOYEE') return !!user.employeeAccount?.activatedAt && user.employeeAccount.status === 'ACTIVE'
+  if (isSelfServiceOnlyRole(user.role) || (hasEmployeeSelfRole(user.role) && user.employeeAccount)) return !!user.employeeAccount?.activatedAt && user.employeeAccount.status === 'ACTIVE'
     && user.employeeAccount.organizationId === user.organizationId && user.employeeAccount.employee.organizationId === user.organizationId && user.employeeAccount.employee.employeeStatus === 'ACTIVE';
   const invitation = user.organizationInvitation, registration = user.organization.companyRegistration;
   return !!(invitation?.activatedAt && invitation.status === 'ACTIVATED' && invitation.email === user.email)

@@ -22,7 +22,7 @@ export async function requestStaffPasswordReset(db: PrismaClient, organizationId
   const result = await db.$transaction(async tx => {
     await tx.$queryRaw`SELECT id FROM "User" WHERE email=${email.data} AND "organizationId"=${organizationId} FOR UPDATE`;
     const user = await tx.user.findFirst({ where: { organizationId, email: email.data }, select: verifiedStaffSelection });
-    if (!user || !['HR_ADMIN','ORGANIZATION_ADMIN','EMPLOYEE'].includes(user.role) || !hasVerifiedMailbox(user)) return null;
+    if (!user || !['HR_ADMIN','ORGANIZATION_ADMIN','EMPLOYEE','FINANCE_OFFICER','ORGANIZATION_HEAD'].includes(user.role) || !hasVerifiedMailbox(user)) return null;
     const now = new Date();
     // One issuance/delivery per 15-minute window, including a failed/ambiguous send.
     if (await tx.staffPasswordReset.findFirst({ where: { userId: user.id, organizationId, createdAt: { gt: new Date(now.getTime() - 15 * 60 * 1000) } }, select: { tokenHash: true } })) return null;
@@ -52,7 +52,7 @@ export async function resetStaffPassword(db: PrismaClient, organizationId: strin
     await tx.$queryRaw`SELECT id FROM "User" WHERE id=${initial.userId} AND "organizationId"=${organizationId} FOR UPDATE`;
     const reset = await tx.staffPasswordReset.findFirst({ where: { tokenHash, organizationId, userId: initial.userId, consumedAt: null, expiresAt: { gt: new Date() } } });
     const user = await tx.user.findFirst({ where: { id: initial.userId, organizationId }, select: verifiedStaffSelection });
-    if (!reset || !user || !['HR_ADMIN','ORGANIZATION_ADMIN','EMPLOYEE'].includes(user.role) || !hasVerifiedMailbox(user)) throw invalid();
+    if (!reset || !user || !['HR_ADMIN','ORGANIZATION_ADMIN','EMPLOYEE','FINANCE_OFFICER','ORGANIZATION_HEAD'].includes(user.role) || !hasVerifiedMailbox(user)) throw invalid();
     await tx.staffPasswordReset.updateMany({ where: { userId: user.id, organizationId, consumedAt: null }, data: { consumedAt: new Date() } });
     await tx.user.update({ where: { id: user.id, organizationId }, data: { passwordHash } });
     await tx.staffSession.deleteMany({ where: { userId: user.id, organizationId } });

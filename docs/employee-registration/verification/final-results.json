@@ -1,0 +1,43 @@
+{
+  "schema": "batch3_test_a7fa90928ce17a064fd4dc41",
+  "branch": "br-damp-fog-azmmxhga",
+  "productionAccessed": false,
+  "originalEnvUnchanged": true,
+  "results": [
+    {
+      "name": "01-migrations",
+      "exitCode": 0,
+      "elapsedMs": 3989
+    },
+    {
+      "name": "role-payslip-access",
+      "exitCode": 0,
+      "elapsedMs": 17279
+    },
+    {
+      "name": "03-typescript",
+      "exitCode": 0,
+      "elapsedMs": 5462
+    },
+    {
+      "name": "04-prisma-validation",
+      "exitCode": 0,
+      "elapsedMs": 1221
+    },
+    {
+      "name": "05-changed-eslint",
+      "exitCode": 0,
+      "elapsedMs": 4009
+    },
+    {
+      "name": "07-production-build",
+      "exitCode": 0,
+      "elapsedMs": 45390
+    },
+    {
+      "name": "08-schema-diff",
+      "exitCode": 2,
+      "elapsedMs": 5609
+    }
+  ]
+}

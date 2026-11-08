@@ -1,0 +1,21 @@
+{
+  "passed": true,
+  "checks": [
+    "Employee Management exposes Add Employee to authorized HR",
+    "Regular HR registration form offers Employee role only",
+    "Browser registration atomically saves employee/employment/account without recruitment",
+    "Regular HR cannot access the management-role editor",
+    "Real activation page activates the test-issued invitation without a second authentication system",
+    "Activated Employee signs in to personal ESS",
+    "Organization Administrator changes access role through the actual account tab",
+    "Promoted HR account retains the HR workspace",
+    "Same HR account accesses personal ESS and can return to HR",
+    "No uncaught browser runtime errors"
+  ],
+  "productionBuild": true,
+  "realServerActions": true,
+  "productionAccessed": false,
+  "emailSent": false,
+  "activationFixture": "fresh test-issued invitation for the synthetic registered account",
+  "schema": "batch3_test_a7fa90928ce17a064fd4dc41"
+}

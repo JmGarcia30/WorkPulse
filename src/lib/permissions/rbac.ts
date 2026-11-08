@@ -1,4 +1,5 @@
 import { Role } from '@prisma/client';
+import { hasEmployeeSelfRole } from '@/lib/auth/access-roles';
 import { UserSessionPayload } from '@/lib/auth/session';
 
 export function canManageJobs(user: UserSessionPayload | null): boolean {
@@ -118,7 +119,7 @@ export function canCorrectAttendance(user: UserSessionPayload | null): boolean {
 }
 
 export function canAccessEmployeeSelfService(user: UserSessionPayload | null): boolean {
-  return user?.role === Role.EMPLOYEE;
+  return !!user && hasEmployeeSelfRole(user.role);
 }
 
 export function canViewOwnProfile(user: UserSessionPayload | null): boolean {

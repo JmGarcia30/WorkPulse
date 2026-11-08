@@ -15,7 +15,7 @@ export function ActivationForm() {
     // React Strict Mode replays effects in development. Never overwrite an already
     // captured secret after the first pass removes the fragment from the URL.
     token.current = retainActivationToken(window.location.hash, token.current);
-    if (window.location.hash) window.history.replaceState(null, '', '/activate/employee');
+    if (window.location.hash) window.history.replaceState(null, '', window.location.pathname + window.location.search);
   }, []);
 
   return <form onSubmit={(event) => {

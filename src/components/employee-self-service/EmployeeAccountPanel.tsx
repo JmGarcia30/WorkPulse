@@ -7,6 +7,7 @@ import { formatStatusLabel } from '@/lib/ui/format-status';
 import { Loader2, X } from 'lucide-react';
 
 interface Props {
+  canManageAccount?: boolean;
   employeeId: string;
   contactEmail: string;
   employeeActive: boolean;
@@ -31,7 +32,7 @@ const explanations: Record<AccountAction, string> = {
 };
 const timestamp = (value: string) => new Intl.DateTimeFormat('en-PH', { dateStyle: 'medium', timeStyle: 'short', timeZone: 'UTC' }).format(new Date(value));
 
-export function EmployeeAccountPanel({ employeeId, contactEmail, employeeActive, account }: Props) {
+export function EmployeeAccountPanel({ employeeId, contactEmail, employeeActive, account, canManageAccount = true }: Props) {
   const [message, setMessage] = useState<{ text: string; error: boolean } | null>(null);
   const [pending, startTransition] = useTransition();
   const [mode, setMode] = useState<AccountAction | null>(null);
@@ -66,13 +67,14 @@ export function EmployeeAccountPanel({ employeeId, contactEmail, employeeActive,
       {account?.disabledReason && <div className="sm:col-span-3"><dt className="text-[var(--wp-text-muted)]">Reason</dt><dd>{account.disabledReason}</dd></div>}
     </dl>
     {!mode && feedback}
-    <div className="mt-5 flex flex-wrap gap-2 border-t pt-4">
+    {!canManageAccount && <p className="mt-4 text-sm">An Organization Administrator manages this access-role account.</p>}
+    {canManageAccount && <div className="mt-5 flex flex-wrap gap-2 border-t pt-4">
       {!account && <button type="button" disabled={pending || !employeeActive} onClick={() => open('CREATE')} className="wp-button-primary">Create Employee Account</button>}
       {account?.status === 'INVITED' && <button type="button" disabled={pending} onClick={() => open('RESEND')} className="wp-button-secondary">Resend Invitation</button>}
       {account && account.status !== 'DISABLED' && <button type="button" disabled={pending} onClick={() => open('DISABLE')} className="wp-button-secondary text-[var(--wp-danger)]">Disable Account</button>}
       {account?.status === 'DISABLED' && <button type="button" disabled={pending || !employeeActive} onClick={() => open('ENABLE')} className="wp-button-primary">Enable Account</button>}
-    </div>
-    {mode && <DialogFrame label={titles[mode]} onClose={close} busy={pending}>
+    </div>}
+    {mode && canManageAccount && <DialogFrame label={titles[mode]} onClose={close} busy={pending}>
       <div className="w-full max-w-lg space-y-4 p-5">
         <div className="flex items-start justify-between gap-4"><h3 className="wp-section-title">{titles[mode]}</h3><button type="button" disabled={pending} onClick={close} aria-label="Close dialog" className="flex h-10 w-10 shrink-0 items-center justify-center rounded-md border"><X className="h-4 w-4" /></button></div>
         <p className="text-sm text-[var(--wp-text-muted)]">{explanations[mode]}</p>

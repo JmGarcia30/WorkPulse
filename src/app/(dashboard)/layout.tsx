@@ -1,4 +1,7 @@
 import './workspace.css';
+import { isSelfServiceOnlyRole } from '@/lib/auth/access-roles';
+import { prisma } from '@/lib/db/prisma';
+import { TenantLink } from '@/components/ui/TenantLink';
 import { poppins } from '@/lib/fonts';
 import { redirect } from 'next/navigation';
 import { LogOut } from 'lucide-react';
@@ -20,9 +23,10 @@ export default async function DashboardLayout({ children }: { children: React.Re
   } catch {
     redirect('/login');
   }
-  if (user.role === Role.EMPLOYEE) redirect('/employee');
+  if (isSelfServiceOnlyRole(user.role)) redirect('/employee');
   const brand = await getRequestOrganizationBranding(user.organizationId);
   if (!brand) redirect('/login');
+  const personalAccount = user.role === Role.HR_ADMIN ? await prisma.employeeAccount.findFirst({ where:{ organizationId:user.organizationId,userId:user.userId,status:'ACTIVE',employee:{ employeeStatus:'ACTIVE' } },select:{ id:true } }) : null;
   const initials = user.name
     .split(' ')
     .map((n) => n[0])
@@ -61,6 +65,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
           <div className="wp-sidebar-divider mx-6 my-3.5" aria-hidden="true" />
           <div className="flex-1 overflow-y-auto">
             <DashboardSidebarNav orgSlug={brand.slug} role={user.role} />
+            {personalAccount && <TenantLink href="/employee" className="mx-6 my-3 block text-sm text-white underline">My Employee Self-Service</TenantLink>}
           </div>
           <div className="pl-[26px] pr-3 pb-7">
             <div className="flex items-center gap-2.5">

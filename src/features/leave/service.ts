@@ -1,3 +1,4 @@
+import { hasEmployeeSelfRole } from '@/lib/auth/access-roles';
 import {
   EmployeeStatus,
   LeaveAttendanceSyncStatus,
@@ -27,7 +28,7 @@ async function requireCurrentLeaveActor(tx: Tx, input: { organizationId: string;
   const actor = await tx.user.findFirst({ where: { id: input.actorUserId, organizationId: input.organizationId }, select: { role: true, employeeAccount: { select: { status: true, organizationId: true, employeeId: true, employee: { select: { employeeStatus: true, organizationId: true } } } } } });
   if (actor?.role === 'ORGANIZATION_ADMIN' || actor?.role === 'HR_ADMIN') return;
   const account = actor?.employeeAccount;
-  if (actor?.role !== 'EMPLOYEE' || !account || account.status !== 'ACTIVE' || account.employeeId !== input.employeeId || account.organizationId !== input.organizationId || account.employee.organizationId !== input.organizationId || account.employee.employeeStatus !== 'ACTIVE') throw new LeaveError(code, 'Current employee eligibility is required.');
+  if ((!actor || !hasEmployeeSelfRole(actor.role)) || !account || account.status !== 'ACTIVE' || account.employeeId !== input.employeeId || account.organizationId !== input.organizationId || account.employee.organizationId !== input.organizationId || account.employee.employeeStatus !== 'ACTIVE') throw new LeaveError(code, 'Current employee eligibility is required.');
 }
 
 async function requireHr(tx: Tx, organizationId: string, actorUserId: string) {
@@ -270,7 +271,7 @@ export async function submitLeaveRequest(input: {
   if (!reason || reason.length > 2000) throw new LeaveError('INVALID_REASON', 'A leave reason is required.');
   const operation = async (tx: Tx) => {
     const actor = await tx.user.findFirst({ where: { id: input.actorUserId, organizationId: input.organizationId }, select: { role: true, employeeAccount: { select: { employeeId: true, status: true } } } });
-    const employeeSelf = actor?.role === Role.EMPLOYEE && actor.employeeAccount?.status === 'ACTIVE' && actor.employeeAccount.employeeId === input.employeeId;
+    const employeeSelf = actor && hasEmployeeSelfRole(actor.role) && actor.employeeAccount?.status === 'ACTIVE' && actor.employeeAccount.employeeId === input.employeeId;
     const backOffice = actor?.role === Role.ORGANIZATION_ADMIN || actor?.role === Role.HR_ADMIN;
     if (!employeeSelf && !backOffice) throw new LeaveError('FORBIDDEN', 'Unauthorized to submit this leave request.');
     const [employee, type, organization] = await Promise.all([

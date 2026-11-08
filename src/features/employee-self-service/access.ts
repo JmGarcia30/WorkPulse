@@ -1,4 +1,5 @@
 import { EmployeeAccountStatus, EmployeeStatus, Prisma, Role } from '@prisma/client';
+import { hasEmployeeSelfRole } from '@/lib/auth/access-roles';
 import type { UserSessionPayload } from '@/lib/auth/session';
 
 export interface EmployeeSelfContext {
@@ -47,7 +48,7 @@ export async function resolveEmployeeSelfContext(session: UserSessionPayload | n
       },
     },
   });
-  if (!user || user.role !== Role.EMPLOYEE || user.role !== session.role || user.organizationId !== session.organizationId) {
+  if (!user || !hasEmployeeSelfRole(user.role) || user.role !== session.role || user.organizationId !== session.organizationId || (user.role === Role.HR_ADMIN && !user.employeeAccount)) {
     throw new EmployeeSelfAccessError('FORBIDDEN');
   }
   const account = user.employeeAccount;
