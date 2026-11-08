@@ -24,9 +24,7 @@ export function SubscriptionPlanEditor({ plan }: { plan: Plan }) {
           <input className="wp-input mt-2" name="yearly" inputMode="decimal" defaultValue={pesoInput(plan.yearlyPriceMinor)} required/>
         </label>
       </div>
-      <label className="wp-label">Employee limit (blank = unrestricted)
-        <input className="wp-input mt-2" name="maxEmployees" inputMode="numeric" defaultValue={plan.maxEmployees ?? ''}/>
-      </label>
+      <p className="text-xs text-[#71808b]">Employee limits are not enforced in this release and will be configured after the approved plan rules are finalized.</p>
       <fieldset className="space-y-3">
         <legend className="text-sm font-semibold">Included Pro-level capabilities</legend>
         {([['aiResumeParsing','AI resume parsing'],['advancedAnalytics','Advanced analytics'],['gmailIntegration','Gmail integration'],['customBranding','Custom branding']] as const).map(([field,label]) =>

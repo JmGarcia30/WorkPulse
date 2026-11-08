@@ -50,7 +50,6 @@ export default async function OrganizationSubscriptionPage() {
         </div>
         <ul className="mt-5 space-y-2 text-sm">
           <li>Core HR, recruitment, attendance, leave, payroll and ESS</li>
-          <li>Employee limit: {plan.maxEmployees ?? 'Not restricted'}</li>
           {plan.aiResumeParsing && <li>AI resume parsing</li>}
           {plan.advancedAnalytics && <li>Advanced analytics</li>}
           {plan.gmailIntegration && <li>Gmail integration</li>}
