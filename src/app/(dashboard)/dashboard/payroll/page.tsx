@@ -99,7 +99,8 @@ export default async function PayrollPage({ searchParams }: { searchParams: Prom
             {selectedEntry.issueMessage && <p role="alert" className="text-sm text-amber-900">{selectedEntry.issueMessage}</p>}
             {selectedEntry.canViewPayslip && <TenantLink className="inline-block text-sm font-semibold underline" href={`/dashboard/payroll/payslips/${selectedEntry.id}`}>View / Print Finalized Payslip</TenantLink>}
           </div> : <p className="mt-2 text-sm text-slate-600">No calculated entry yet. Check setup and select Calculate Selected Employee above.</p>}
-          <p className="mt-3 text-xs text-slate-600">For safety, payroll finalization still checks the entire cutoff and all eligible employees. Finish any remaining employee calculations and use Review and Finalize below.</p>
+          <p className="mt-3 text-xs text-slate-600">For safety, finalization checks the entire cutoff and all eligible employees. Calculate remaining employees or resolve their readiness issues before finalizing.</p>
+          {manage && review && <PayrollReviewControls periodId={period.id} periodLabel={period.name} status={period.status} canFinalize={review.canFinalize} hasEntries={data.entries.length > 0} />}
         </div>
         <div className="rounded-xl border p-4">
           <h3 className="text-sm font-bold">4. Notify when payroll is finalized</h3>
