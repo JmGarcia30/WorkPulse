@@ -7,7 +7,7 @@ import { Building2, LayoutDashboard, ScrollText, UserRound, Plus, CreditCard } f
 const items = [
   { href: '/platform', label: 'Overview', icon: LayoutDashboard, exact: true },
   { href: '/platform/organizations', label: 'Organizations', icon: Building2 },
-  { href: '/platform/subscriptions/demo', label: 'Subscription Demo', icon: CreditCard },
+  { href: '/platform/subscriptions', label: 'Subscriptions', icon: CreditCard },
   { href: '/platform/audit-logs', label: 'Audit Logs', icon: ScrollText },
   { href: '/platform/settings', label: 'My Account', icon: UserRound },
 ];
