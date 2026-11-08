@@ -23,18 +23,20 @@ export async function previewPayrollNotifications(input: { organizationId: strin
   return { periodName: period.name, recipients, skipped: entries.length - recipients.length, token };
 }
 
-export async function notifyPayrollEmployees(input: { organizationId: string; actorUserId: string; payrollPeriodId: string; confirmation: string; recipientToken: string }, db: PayrollDb = prisma) {
+export async function notifyPayrollEmployees(input: { organizationId: string; actorUserId: string; payrollPeriodId: string; confirmation: string; recipientToken: string; employeeId?: string }, db: PayrollDb = prisma) {
   if (input.confirmation !== 'NOTIFY') throw new PayrollError('CONFIRMATION_REQUIRED', 'Review recipients and explicitly confirm notification.');
   return payrollTransaction(db, async tx => {
     await lockPayrollPeriod(tx, input.organizationId, input.payrollPeriodId);
     const preview = await previewPayrollNotifications(input, tx);
     if (input.recipientToken !== preview.token) throw new PayrollError('STALE_RECIPIENTS', 'Recipients changed. Refresh and review the recipient list again.');
+    const recipients = input.employeeId ? preview.recipients.filter(row => row.employeeId === input.employeeId) : preview.recipients;
+    if (input.employeeId && recipients.length === 0) throw new PayrollError('NOT_FOUND', 'The selected employee has no eligible finalized payslip recipient.');
     let created = 0;
-    for (const row of preview.recipients) {
+    for (const row of recipients) {
       const result = await tx.payrollNotification.createMany({ data: [{ organizationId: input.organizationId, employeeId: row.employeeId, payrollEntryId: row.entryId, recipientUserId: row.userId, actorUserId: input.actorUserId, message: `Your payslip for ${preview.periodName} is now available. Visit My Payroll to review your earnings, deductions, attendance, and net pay.` }], skipDuplicates: true });
       created += result.count;
     }
-    return { created, alreadyCreated: preview.recipients.length - created };
+    return { created, alreadyCreated: recipients.length - created };
   });
 }
 
