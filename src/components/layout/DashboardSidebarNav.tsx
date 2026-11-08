@@ -105,6 +105,7 @@ export function DashboardSidebarNav({
         href: '/dashboard/organization', label: 'Settings', icon: Settings, sectionPrefix: '/dashboard/settings', children: [
           { href: '/dashboard/organization', label: 'Organization Settings' },
           { href: '/dashboard/settings/email-integration', label: 'Email Integration' },
+          { href: '/dashboard/subscription', label: 'Subscription & Billing' },
           { href: '/dashboard/settings/exit', label: 'Resignation Notice Policy' },
         ]
       }] : [{ href: '/dashboard/organization', label: 'Organization Settings', icon: Settings }]),
