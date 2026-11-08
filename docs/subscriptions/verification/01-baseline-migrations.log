@@ -150,5 +150,5 @@ migrations/
     └─ migration.sql
   └─ 20261106000100_platform_organization_slug_alias/
     └─ migration.sql
-      
+
 All migrations have been successfully applied.

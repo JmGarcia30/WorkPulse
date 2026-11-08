@@ -1,5 +1,5 @@
 ✓ H7 account guard, tenant/employee ownership, ID manipulation, finalized dashboard, missing data, and staff isolation
-prisma:error 
+prisma:error
 Invalid `tx.employeeAccount.create()` invocation in
 G:\CAPSTONE\WorkPulse\scripts\test-h4-employee-self-service.ts:75:32
 
@@ -9,7 +9,7 @@ G:\CAPSTONE\WorkPulse\scripts\test-h4-employee-self-service.ts:75:32
 → 75 await tx.employeeAccount.create(
 Error occurred during query execution:
 ConnectorError(ConnectorError { user_facing_error: None, kind: QueryError(PostgresError { code: "P0001", message: "Cross-tenant employee account link", severity: "ERROR", detail: None, column: None, hint: None }), transient: false })
-prisma:error 
+prisma:error
 Invalid `tx.employeeAccountAudit.update()` invocation in
 G:\CAPSTONE\WorkPulse\scripts\test-h4-employee-self-service.ts:87:37
 

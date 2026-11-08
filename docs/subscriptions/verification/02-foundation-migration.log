@@ -14,5 +14,5 @@ The following migration(s) have been applied:
 migrations/
   └─ 20261108000100_saas_subscription_foundation/
     └─ migration.sql
-      
+
 All migrations have been successfully applied.

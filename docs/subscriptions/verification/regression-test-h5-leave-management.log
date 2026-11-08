@@ -1,4 +1,4 @@
-prisma:error 
+prisma:error
 Invalid `tx.leaveCycle.create()` invocation in
 G:\CAPSTONE\WorkPulse\scripts\test-h5-leave-management.ts:92:70
 
@@ -8,7 +8,7 @@ G:\CAPSTONE\WorkPulse\scripts\test-h5-leave-management.ts:92:70
 → 92 ok(await dbRejected(tx, 'same_type_cycle', () => tx.leaveCycle.create(
 Error occurred during query execution:
 ConnectorError(ConnectorError { user_facing_error: None, kind: QueryError(PostgresError { code: "23P01", message: "conflicting key value violates exclusion constraint \"LeaveCycle_no_overlap\"", severity: "ERROR", detail: Some("Key (\"organizationId\", \"leaveTypeId\", daterange(\"startDate\", \"endDate\" + 1, '[)'::text))=(cmw7vle8v0000uj6ky3uibmnk, cmw7vlibt002juj6kpalj2nwx, [2027-06-01,2028-06-01)) conflicts with existing key (\"organizationId\", \"leaveTypeId\", daterange(\"startDate\", \"endDate\" + 1, '[)'::text))=(cmw7vle8v0000uj6ky3uibmnk, cmw7vlibt002juj6kpalj2nwx, [2027-01-01,2028-01-01))."), column: None, hint: None }), transient: false })
-prisma:error 
+prisma:error
 Invalid `tx.leaveLedgerEntry.create()` invocation in
 G:\CAPSTONE\WorkPulse\scripts\test-h5-leave-management.ts:146:76
 
@@ -17,7 +17,7 @@ G:\CAPSTONE\WorkPulse\scripts\test-h5-leave-management.ts:146:76
   145 ok(grant.amountUnits.equals(5), 'approval initializes the five-unit entitlement');
 → 146 ok(await dbRejected(tx, 'duplicate_grant', () => tx.leaveLedgerEntry.create(
 Unique constraint failed on the fields: (`employeeId`,`leaveTypeId`,`leaveCycleId`,`grantSource`)
-prisma:error 
+prisma:error
 Invalid `tx.leaveLedgerEntry.update()` invocation in
 G:\CAPSTONE\WorkPulse\scripts\test-h5-leave-management.ts:147:74
 
@@ -27,7 +27,7 @@ G:\CAPSTONE\WorkPulse\scripts\test-h5-leave-management.ts:147:74
 → 147 ok(await dbRejected(tx, 'ledger_update', () => tx.leaveLedgerEntry.update(
 Error occurred during query execution:
 ConnectorError(ConnectorError { user_facing_error: None, kind: QueryError(PostgresError { code: "P0001", message: "LeaveLedgerEntry is immutable", severity: "ERROR", detail: None, column: None, hint: None }), transient: false })
-prisma:error 
+prisma:error
 Invalid `tx.leaveLedgerEntry.delete()` invocation in
 G:\CAPSTONE\WorkPulse\scripts\test-h5-leave-management.ts:148:74
 
@@ -37,7 +37,7 @@ G:\CAPSTONE\WorkPulse\scripts\test-h5-leave-management.ts:148:74
 → 148 ok(await dbRejected(tx, 'ledger_delete', () => tx.leaveLedgerEntry.delete(
 Error occurred during query execution:
 ConnectorError(ConnectorError { user_facing_error: None, kind: QueryError(PostgresError { code: "P0001", message: "LeaveLedgerEntry is immutable", severity: "ERROR", detail: None, column: None, hint: None }), transient: false })
-prisma:error 
+prisma:error
 Invalid `tx.leaveLedgerEntry.create()` invocation in
 G:\CAPSTONE\WorkPulse\scripts\test-h5-leave-management.ts:155:76
 
@@ -46,7 +46,7 @@ G:\CAPSTONE\WorkPulse\scripts\test-h5-leave-management.ts:155:76
   154 ok(await rejected(() => reviewLeaveRequest({ organizationId: org.id, actorUserId: hr.id, requestId: personal.id, decision: 'APPROVE', remarks: 'Again' }, tx), 'ALREADY_REVIEWED'), 'double approval is rejected');
 → 155 ok(await dbRejected(tx, 'duplicate_debit', () => tx.leaveLedgerEntry.create(
 Unique constraint failed on the fields: (`leaveRequestId`)
-prisma:error 
+prisma:error
 Invalid `tx.leaveLedgerEntry.create()` invocation in
 G:\CAPSTONE\WorkPulse\scripts\test-h5-leave-management.ts:168:79
 

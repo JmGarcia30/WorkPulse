@@ -32,7 +32,7 @@ RFID PASS 40: RFID respects a pre-existing manual Time In
 RFID PASS 41: explicitly deactivated card is refused
 RFID PASS 42: inactive employee cannot scan even with an active card
 RFID PASS 43: foreign-tenant card cannot identify an employee
-prisma:error 
+prisma:error
 Invalid `prisma.rfidCard.create()` invocation in
 G:\CAPSTONE\WorkPulse\scripts\test-rfid-attendance.ts:111:46
 
@@ -43,7 +43,7 @@ G:\CAPSTONE\WorkPulse\scripts\test-rfid-attendance.ts:111:46
 Foreign key constraint violated on the constraint: `RfidCard_employeeId_organizationId_fkey`
 RFID PASS 46: database composite foreign key rejects cross-tenant assignments
 RFID PASS 47: replacement retains the original card assignment as history
-prisma:error 
+prisma:error
 Invalid `prisma.rfidCard.create()` invocation in
 G:\CAPSTONE\WorkPulse\scripts\test-rfid-attendance.ts:115:46
 
@@ -53,7 +53,7 @@ G:\CAPSTONE\WorkPulse\scripts\test-rfid-attendance.ts:115:46
 → 115 await assert.rejects(() => prisma.rfidCard.create(
 Unique constraint failed on the fields: (`organizationId`,`cardDigest`)
 RFID PASS 48: database partial unique index rejects duplicate active cards
-prisma:error 
+prisma:error
 Invalid `prisma.rfidAudit.update()` invocation in
 G:\CAPSTONE\WorkPulse\scripts\test-rfid-attendance.ts:118:47
 

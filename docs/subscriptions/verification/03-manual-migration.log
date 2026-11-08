@@ -14,5 +14,5 @@ The following migration(s) have been applied:
 migrations/
   └─ 20261108000200_manual_subscription_requests/
     └─ migration.sql
-      
+
 All migrations have been successfully applied.
