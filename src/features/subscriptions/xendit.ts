@@ -4,8 +4,11 @@ import { publicOrigin } from '@/lib/tenant/host';
 
 const endpoint = 'https://api.xendit.co/sessions';
 export function isXenditBillingConfigured() {
-  return !!process.env.XENDIT_SECRET_KEY &&
-    (process.env.NODE_ENV !== 'production' || process.env.WORKPULSE_LIVE_BILLING_ENABLED === 'true');
+  const key = process.env.XENDIT_SECRET_KEY;
+  if (!key || !process.env.XENDIT_WEBHOOK_TOKEN) return false;
+  if (process.env.NODE_ENV !== 'production') return true;
+  // Production must never activate entitlements using a sandbox payment key.
+  return process.env.WORKPULSE_LIVE_BILLING_ENABLED === 'true' && key.startsWith('xnd_production_');
 }
 function auth() {
   if (!isXenditBillingConfigured()) throw new Error('BILLING_GATEWAY_NOT_ENABLED');
