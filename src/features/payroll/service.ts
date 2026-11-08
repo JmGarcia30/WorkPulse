@@ -117,6 +117,8 @@ export interface GeneratePayrollInput {
   organizationId: string;
   actorUserId: string;
   payrollPeriodId: string;
+  /** Optional employee scope; period-wide generation remains the default. */
+  employeeId?: string;
 }
 
 export type PayrollSetupError = {
@@ -149,10 +151,13 @@ async function generateInTransaction(input: GeneratePayrollInput, db: Prisma.Tra
   validateResolvedPolicyParameters(policy);
 
   const employees = await db.employee.findMany({
-    where: { organizationId: input.organizationId, employeeStatus: 'ACTIVE' },
+    where: { organizationId: input.organizationId, employeeStatus: 'ACTIVE', ...(input.employeeId ? { id: input.employeeId } : {}) },
     select: { id: true, employeeNumber: true, firstName: true, lastName: true },
     orderBy: { id: 'asc' },
   });
+  if (input.employeeId && employees.length !== 1) {
+    throw new PayrollError('NOT_FOUND', 'Selected active employee is not available in this organization.');
+  }
   const existing = await db.payrollEntry.findMany({
     where: { organizationId: input.organizationId, payrollPeriodId: period.id },
     select: { id: true, employeeId: true },
