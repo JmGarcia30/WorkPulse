@@ -1,0 +1,122 @@
+{
+  "schema": "subscription_test_66c0b7a1a7f9a07c40bd4396",
+  "productionAccessed": false,
+  "originalEnvironmentUnchanged": true,
+  "results": [
+    {
+      "name": "01-baseline-migrations",
+      "exitCode": 0,
+      "elapsedMs": 46171
+    },
+    {
+      "name": "02-foundation-migration",
+      "exitCode": 0,
+      "elapsedMs": 5572
+    },
+    {
+      "name": "03-manual-migration",
+      "exitCode": 0,
+      "elapsedMs": 6113
+    },
+    {
+      "name": "04-subscription-domain",
+      "exitCode": 0,
+      "elapsedMs": 2377
+    },
+    {
+      "name": "05-subscription-actions-postgres",
+      "exitCode": 0,
+      "elapsedMs": 44784
+    },
+    {
+      "name": "regression-test-s1-saas-shell",
+      "exitCode": 0,
+      "elapsedMs": 475
+    },
+    {
+      "name": "regression-test-h1-employee-core",
+      "exitCode": 1,
+      "elapsedMs": 8725
+    },
+    {
+      "name": "regression-test-h2-employment-probation",
+      "exitCode": 1,
+      "elapsedMs": 9252
+    },
+    {
+      "name": "regression-test-h3-attendance",
+      "exitCode": 1,
+      "elapsedMs": 794
+    },
+    {
+      "name": "regression-test-h4-employee-self-service",
+      "exitCode": 0,
+      "elapsedMs": 35301
+    },
+    {
+      "name": "regression-test-h5-leave-management",
+      "exitCode": 0,
+      "elapsedMs": 101307
+    },
+    {
+      "name": "regression-test-h6-payroll-foundation",
+      "exitCode": 1,
+      "elapsedMs": 12596
+    },
+    {
+      "name": "regression-test-payroll-integration",
+      "exitCode": 0,
+      "elapsedMs": 563
+    },
+    {
+      "name": "regression-test-rfid-attendance",
+      "exitCode": 1,
+      "elapsedMs": 558
+    },
+    {
+      "name": "regression-test-h8-analytics",
+      "exitCode": 0,
+      "elapsedMs": 26002
+    },
+    {
+      "name": "regression-test-hiring-policy",
+      "exitCode": 0,
+      "elapsedMs": 937
+    },
+    {
+      "name": "regression-test-final-ux-hiring",
+      "exitCode": 1,
+      "elapsedMs": 3982
+    },
+    {
+      "name": "regression-test-functional-dashboard-boundary",
+      "exitCode": 0,
+      "elapsedMs": 10819
+    },
+    {
+      "name": "06-typescript",
+      "exitCode": 0,
+      "elapsedMs": 5069
+    },
+    {
+      "name": "07-prisma-validation",
+      "exitCode": 0,
+      "elapsedMs": 1344
+    },
+    {
+      "name": "08-eslint",
+      "exitCode": 1,
+      "elapsedMs": 29971
+    },
+    {
+      "name": "09-production-build",
+      "exitCode": 0,
+      "elapsedMs": 157169
+    },
+    {
+      "name": "10-schema-diff",
+      "exitCode": 2,
+      "elapsedMs": 12566
+    }
+  ]
+}

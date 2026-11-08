@@ -1,55 +1,79 @@
-'use client';
+﻿'use client';
 
 import { useActionState } from 'react';
-import { configureSubscriptionPlanAction, grantSagaComplimentaryProAction } from './actions';
+import { configureSubscriptionPlanAction, grantSagaComplimentaryProAction, requestSubscriptionAction, reviewSubscriptionRequestAction, activateSubscriptionAction, expireSubscriptionAction } from './actions';
 
 type Plan = {
   tier: 'BASIC'|'PRO'; name: string; description: string; monthlyPriceMinor: number|null;
   yearlyPriceMinor: number|null; maxEmployees: number|null; active: boolean;
   aiResumeParsing: boolean; advancedAnalytics: boolean; gmailIntegration: boolean; customBranding: boolean;
 };
-const pesoInput = (minor: number | null) => minor === null ? '0' : (minor / 100).toFixed(2);
+function Feedback({ state }: { state: { error?: string; success?: string } }) {
+  return <>{state.error && <p role="alert" className="text-sm text-red-700">{state.error}</p>}
+    {state.success && <p role="status" className="text-sm text-green-700">{state.success}</p>}</>;
+}
+const pesoInput = (minor: number | null) => minor === null ? '' : (minor / 100).toFixed(2);
 export function SubscriptionPlanEditor({ plan }: { plan: Plan }) {
   const [state, act, pending] = useActionState(configureSubscriptionPlanAction, {});
   return <section className="platform-card p-5">
     <h2 className="platform-card-title">{plan.name} plan</h2>
-    <p className="platform-card-description mt-1">{plan.description}</p>
     <form action={act} className="mt-5 space-y-4">
       <input type="hidden" name="tier" value={plan.tier}/>
+      <label className="wp-label block">Description<textarea className="wp-input mt-2" name="description" defaultValue={plan.description} maxLength={1000} required/></label>
       <div className="grid gap-4 sm:grid-cols-2">
-        <label className="wp-label">Monthly price (PHP)
-          <input className="wp-input mt-2" name="monthly" inputMode="decimal" defaultValue={pesoInput(plan.monthlyPriceMinor)} required/>
-        </label>
-        <label className="wp-label">Yearly price (PHP)
-          <input className="wp-input mt-2" name="yearly" inputMode="decimal" defaultValue={pesoInput(plan.yearlyPriceMinor)} required/>
-        </label>
+        <label className="wp-label">Monthly price (PHP)<input className="wp-input mt-2" name="monthly" inputMode="decimal" defaultValue={pesoInput(plan.monthlyPriceMinor)} placeholder="Not set"/></label>
+        <label className="wp-label">Yearly price (PHP)<input className="wp-input mt-2" name="yearly" inputMode="decimal" defaultValue={pesoInput(plan.yearlyPriceMinor)} placeholder="Not set"/></label>
       </div>
-      <p className="text-xs text-[#71808b]">Employee limits are not enforced in this release and will be configured after the approved plan rules are finalized.</p>
-      <fieldset className="space-y-3">
-        <legend className="text-sm font-semibold">Included Pro-level capabilities</legend>
+      <label className="wp-label block">Employee limit<input className="wp-input mt-2" type="number" min="1" max="999999" name="maxEmployees" defaultValue={plan.maxEmployees ?? ''} placeholder="Not set"/></label>
+      <p className="text-xs text-slate-500">Leave prices and limits blank until approved. Employee limits are recorded for future enforcement; core workforce access stays available during transition.</p>
+      <fieldset className="space-y-3"><legend className="text-sm font-semibold">Optional features included in this plan</legend>
         {([['aiResumeParsing','AI resume parsing'],['advancedAnalytics','Advanced analytics'],['gmailIntegration','Gmail integration'],['customBranding','Custom branding']] as const).map(([field,label]) =>
           <label className="flex items-center gap-2 text-sm" key={field}><input type="checkbox" name={field} value="yes" defaultChecked={plan[field]}/>{label}</label>)}
       </fieldset>
-      <label className="flex items-start gap-2 text-sm">
-        <input type="checkbox" name="active" value="yes" defaultChecked={plan.active}/>
-        <span>Make plan available for purchases after pricing is approved. This does not enable a payment provider.</span>
-      </label>
-      {state.error && <p className="text-sm text-red-700" role="alert">{state.error}</p>}
-      {state.success && <p className="text-sm text-green-700" role="status">{state.success}</p>}
-      <button type="submit" className="wp-button-primary" disabled={pending}>{pending ? 'Saving...' : 'Save plan'}</button>
+      <label className="flex items-start gap-2 text-sm"><input type="checkbox" name="active" value="yes" defaultChecked={plan.active}/>Accept requests for this plan</label>
+      <p className="text-xs text-slate-500">Feature changes apply to current subscriptions. Legacy tenant access is preserved.</p>
+      <Feedback state={state}/><button type="submit" className="wp-button-primary" disabled={pending}>{pending ? 'Saving...' : 'Save plan'}</button>
     </form>
   </section>;
 }
-export function ComplimentarySagaForm({ active }: { active: boolean }) {
+export function SubscriptionRequestForm({ tier, disabled }: { tier: 'BASIC'|'PRO'; disabled: boolean }) {
+  const [state, action, pending] = useActionState(requestSubscriptionAction, {});
+  return <form action={action} className="mt-5 space-y-3"><input type="hidden" name="tier" value={tier}/>
+    <Feedback state={state}/><button type="submit" className="wp-button-primary" disabled={disabled || pending}>{pending ? 'Submitting...' : `Request ${tier === 'PRO' ? 'Pro' : 'Basic'}`}</button>
+  </form>;
+}
+export function ReviewSubscriptionForm({ organizationId, requestId }: { organizationId: string; requestId: string }) {
+  const [state, action, pending] = useActionState(reviewSubscriptionRequestAction, {});
+  return <form action={action} className="mt-3 grid gap-3">
+    <input type="hidden" name="organizationId" value={organizationId}/><input type="hidden" name="requestId" value={requestId}/>
+    <label className="wp-label">Decision<select className="wp-input mt-1" name="decision" defaultValue="" required><option value="" disabled>Select a decision</option><option value="APPROVED">Approve and activate</option><option value="REJECTED">Reject</option></select></label>
+    <label className="wp-label">Duration in months (required for approval)<input className="wp-input mt-1" type="number" min="1" max="120" name="durationMonths" placeholder="Select 1 to 120 months"/></label>
+    <label className="wp-label">Reason / review note (required for rejection)<textarea className="wp-input mt-1" name="reviewNote" maxLength={1000}/></label>
+    <p className="text-xs text-slate-500">Approval activates the requested plan now. Same-plan terms extend from their current expiration; a plan change replaces the current term. Approval records no payment.</p>
+    <Feedback state={state}/><button className="wp-button-primary" disabled={pending}>{pending ? 'Saving...' : 'Record decision'}</button>
+  </form>;
+}
+export function ActivateSubscriptionForm({ organizationId }: { organizationId: string }) {
+  const [state, action, pending] = useActionState(activateSubscriptionAction, {});
+  return <form action={action} className="mt-3 space-y-3"><input type="hidden" name="organizationId" value={organizationId}/>
+    <label className="wp-label block">Plan<select className="wp-input mt-1" name="tier" defaultValue="" required><option value="" disabled>Select plan</option><option value="BASIC">Basic</option><option value="PRO">Pro</option></select></label>
+    <label className="wp-label block">Duration in months<input className="wp-input mt-1" type="number" name="durationMonths" min="1" max="120" required/></label>
+    <label className="wp-label block">Grant reason<textarea className="wp-input mt-1" name="reviewNote" maxLength={1000} required/></label>
+    <label className="flex items-start gap-2 text-sm"><input type="checkbox" name="confirmation" value="CONFIRM_TERM" required/>I authorize this term. Same-plan terms extend the existing expiration; changing plans replaces the current term. No payment is recorded.</label>
+    <Feedback state={state}/><button className="wp-button-primary" disabled={pending}>{pending ? 'Saving...' : 'Activate / extend term'}</button>
+  </form>;
+}
+export function ExpireSubscriptionForm({ organizationId }: { organizationId: string }) {
+  const [state, action, pending] = useActionState(expireSubscriptionAction, {});
+  return <form action={action} className="mt-3 space-y-2"><input type="hidden" name="organizationId" value={organizationId}/><Feedback state={state}/>
+    <button className="platform-soft-link" disabled={pending}>{pending ? 'Checking...' : 'Record elapsed expiration'}</button></form>;
+}
+export function ComplimentarySagaForm({ active, organizationId }: { active: boolean; organizationId: string }) {
   const [state, act, pending] = useActionState(grantSagaComplimentaryProAction, {});
-  return <form action={act} className="mt-4 space-y-3">
+  return <form action={act} className="mt-4 space-y-3"><input type="hidden" name="organizationId" value={organizationId}/>
     <label className="flex items-start gap-2 text-sm"><input type="checkbox" name="confirmation" value="CONFIRM_SAGA_PRO" required/>
       I authorize two years of complimentary Pro access for SAGA with no payment or automatic renewal.
-    </label>
-    {state.error && <p role="alert" className="text-sm text-red-700">{state.error}</p>}
-    {state.success && <p role="status" className="text-sm text-green-700">{state.success}</p>}
-    <button type="submit" disabled={active || pending} className="wp-button-primary">
-      {active ? 'Complimentary Pro already active' : pending ? 'Recording...' : 'Grant SAGA Pro for 2 years'}
-    </button>
+    </label><Feedback state={state}/>
+    <button type="submit" disabled={active || pending} className="wp-button-primary">{active ? 'Complimentary Pro already active' : pending ? 'Recording...' : 'Grant SAGA Pro for 2 years'}</button>
   </form>;
 }

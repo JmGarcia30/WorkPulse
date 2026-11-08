@@ -1,0 +1,18 @@
+{
+  "passed": true,
+  "checks": [
+    "New tenant completes required organization setup without a subscription",
+    "Organization subscription screen renders from database after real login",
+    "Browser Pro selection creates a pending request and grants no entitlement",
+    "Pending request disables duplicate plan requests",
+    "Browser admin approval activates selected duration without recording payment",
+    "Approved plan, duration and expiration appear in tenant workspace",
+    "Browser administrator rejection persists a reviewed request",
+    "Tenant sees rejection reason and retains approved Pro subscription",
+    "No uncaught browser runtime errors in the subscription flow"
+  ],
+  "productionBuild": true,
+  "realServerActions": true,
+  "productionAccessed": false,
+  "schema": "subscription_test_66c0b7a1a7f9a07c40bd4396"
+}

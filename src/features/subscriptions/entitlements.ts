@@ -1,10 +1,10 @@
 import 'server-only';
 import { prisma } from '@/lib/db/prisma';
-import { SubscriptionTier, SubscriptionBillingInterval } from '@prisma/client';
+import { hasFeature } from './domain';
+import { isCurrentEntitlement } from './domain';
 
 export type PaidFeature = 'aiResumeParsing' | 'advancedAnalytics' | 'gmailIntegration' | 'customBranding';
 export { isCurrentEntitlement, subscriptionTerm } from './domain';
-import { isCurrentEntitlement } from './domain';
 export async function getOrganizationEntitlement(organizationId: string) {
   const [record, plans] = await Promise.all([
     prisma.organizationSubscription.findUnique({ where: { organizationId }, include: { plan: true } }),
@@ -16,19 +16,10 @@ export async function requireOrganizationFeature(organizationId: string, feature
   const data = await prisma.organizationSubscription.findUnique({
     where: { organizationId }, include: { plan: true },
   });
-  if (!isCurrentEntitlement(data) || !data?.plan[feature]) {
+  if (!hasFeature(data, feature)) {
     throw new Error('SUBSCRIPTION_FEATURE_UNAVAILABLE');
   }
   return data;
-}
-export function getSubscriptionPrice(
-  plan: { active: boolean; monthlyPriceMinor: number | null; yearlyPriceMinor: number | null },
-  interval: SubscriptionBillingInterval,
-) {
-  const amount = interval === 'MONTHLY' ? plan.monthlyPriceMinor : plan.yearlyPriceMinor;
-  if (!plan.active || amount === null || !Number.isSafeInteger(amount) || amount <= 0)
-    throw new Error('SUBSCRIPTION_PLAN_NOT_FOR_SALE');
-  return amount;
 }
 export const paidFeatureLabels: Record<PaidFeature, string> = {
   aiResumeParsing: 'AI resume parsing',
@@ -36,4 +27,3 @@ export const paidFeatureLabels: Record<PaidFeature, string> = {
   gmailIntegration: 'Gmail integration',
   customBranding: 'Custom branding',
 };
-export const subscriptionTiers: SubscriptionTier[] = ['BASIC', 'PRO'];

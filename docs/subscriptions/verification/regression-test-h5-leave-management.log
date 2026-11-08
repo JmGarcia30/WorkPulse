@@ -1,0 +1,58 @@
+prisma:error 
+Invalid `tx.leaveCycle.create()` invocation in
+G:\CAPSTONE\WorkPulse\scripts\test-h5-leave-management.ts:92:70
+
+  89 await tx.leaveCycle.create({ data: { organizationId: org.id, leaveTypeId: soloType.id, code: '2027', name: '2027', startDate: date('2027-01-01'), endDate: date('2027-12-31') } });
+  90 const soloCycle2028 = await tx.leaveCycle.create({ data: { organizationId: org.id, leaveTypeId: soloType.id, code: '2028', name: '2028', startDate: date('2028-01-01'), endDate: date('2028-12-31') } });
+  91 ok(Boolean(sickCycle), 'different leave-type cycles may overlap');
+→ 92 ok(await dbRejected(tx, 'same_type_cycle', () => tx.leaveCycle.create(
+Error occurred during query execution:
+ConnectorError(ConnectorError { user_facing_error: None, kind: QueryError(PostgresError { code: "23P01", message: "conflicting key value violates exclusion constraint \"LeaveCycle_no_overlap\"", severity: "ERROR", detail: Some("Key (\"organizationId\", \"leaveTypeId\", daterange(\"startDate\", \"endDate\" + 1, '[)'::text))=(cmw7vle8v0000uj6ky3uibmnk, cmw7vlibt002juj6kpalj2nwx, [2027-06-01,2028-06-01)) conflicts with existing key (\"organizationId\", \"leaveTypeId\", daterange(\"startDate\", \"endDate\" + 1, '[)'::text))=(cmw7vle8v0000uj6ky3uibmnk, cmw7vlibt002juj6kpalj2nwx, [2027-01-01,2028-01-01))."), column: None, hint: None }), transient: false })
+prisma:error 
+Invalid `tx.leaveLedgerEntry.create()` invocation in
+G:\CAPSTONE\WorkPulse\scripts\test-h5-leave-management.ts:146:76
+
+  143 await reviewLeaveRequest({ organizationId: org.id, actorUserId: hr.id, requestId: personal.id, decision: 'APPROVE', remarks: 'Approved' }, tx);
+  144 const grant = await tx.leaveLedgerEntry.findFirstOrThrow({ where: { employeeId: employeeA.id, leaveTypeId: sickType.id, leaveCycleId: sickCycle.id, grantSource: 'DEFAULT_CYCLE_ENTITLEMENT' } });
+  145 ok(grant.amountUnits.equals(5), 'approval initializes the five-unit entitlement');
+→ 146 ok(await dbRejected(tx, 'duplicate_grant', () => tx.leaveLedgerEntry.create(
+Unique constraint failed on the fields: (`employeeId`,`leaveTypeId`,`leaveCycleId`,`grantSource`)
+prisma:error 
+Invalid `tx.leaveLedgerEntry.update()` invocation in
+G:\CAPSTONE\WorkPulse\scripts\test-h5-leave-management.ts:147:74
+
+  144 const grant = await tx.leaveLedgerEntry.findFirstOrThrow({ where: { employeeId: employeeA.id, leaveTypeId: sickType.id, leaveCycleId: sickCycle.id, grantSource: 'DEFAULT_CYCLE_ENTITLEMENT' } });
+  145 ok(grant.amountUnits.equals(5), 'approval initializes the five-unit entitlement');
+  146 ok(await dbRejected(tx, 'duplicate_grant', () => tx.leaveLedgerEntry.create({ data: { organizationId: org.id, employeeId: employeeA.id, leaveTypeId: sickType.id, leaveCycleId: sickCycle.id, entryType: LeaveLedgerEntryType.GRANT, amountUnits: 5, reason: 'Duplicate', actorUserId: hr.id, grantSource: 'DEFAULT_CYCLE_ENTITLEMENT' } })), 'duplicate default grant is blocked');
+→ 147 ok(await dbRejected(tx, 'ledger_update', () => tx.leaveLedgerEntry.update(
+Error occurred during query execution:
+ConnectorError(ConnectorError { user_facing_error: None, kind: QueryError(PostgresError { code: "P0001", message: "LeaveLedgerEntry is immutable", severity: "ERROR", detail: None, column: None, hint: None }), transient: false })
+prisma:error 
+Invalid `tx.leaveLedgerEntry.delete()` invocation in
+G:\CAPSTONE\WorkPulse\scripts\test-h5-leave-management.ts:148:74
+
+  145 ok(grant.amountUnits.equals(5), 'approval initializes the five-unit entitlement');
+  146 ok(await dbRejected(tx, 'duplicate_grant', () => tx.leaveLedgerEntry.create({ data: { organizationId: org.id, employeeId: employeeA.id, leaveTypeId: sickType.id, leaveCycleId: sickCycle.id, entryType: LeaveLedgerEntryType.GRANT, amountUnits: 5, reason: 'Duplicate', actorUserId: hr.id, grantSource: 'DEFAULT_CYCLE_ENTITLEMENT' } })), 'duplicate default grant is blocked');
+  147 ok(await dbRejected(tx, 'ledger_update', () => tx.leaveLedgerEntry.update({ where: { id: grant.id }, data: { reason: 'Mutated' } })), 'ledger update is rejected');
+→ 148 ok(await dbRejected(tx, 'ledger_delete', () => tx.leaveLedgerEntry.delete(
+Error occurred during query execution:
+ConnectorError(ConnectorError { user_facing_error: None, kind: QueryError(PostgresError { code: "P0001", message: "LeaveLedgerEntry is immutable", severity: "ERROR", detail: None, column: None, hint: None }), transient: false })
+prisma:error 
+Invalid `tx.leaveLedgerEntry.create()` invocation in
+G:\CAPSTONE\WorkPulse\scripts\test-h5-leave-management.ts:155:76
+
+  152 ok(stableForm.employeeNameSnapshot === 'A Employee' && stableForm.reviewerNameSnapshot === 'H5 HR', 'approved form context remains stable after profile changes');
+  153 await tx.employee.update({ where: { id: employeeA.id }, data: { firstName: 'A' } }); await tx.user.update({ where: { id: hr.id }, data: { name: 'H5 HR' } });
+  154 ok(await rejected(() => reviewLeaveRequest({ organizationId: org.id, actorUserId: hr.id, requestId: personal.id, decision: 'APPROVE', remarks: 'Again' }, tx), 'ALREADY_REVIEWED'), 'double approval is rejected');
+→ 155 ok(await dbRejected(tx, 'duplicate_debit', () => tx.leaveLedgerEntry.create(
+Unique constraint failed on the fields: (`leaveRequestId`)
+prisma:error 
+Invalid `tx.leaveLedgerEntry.create()` invocation in
+G:\CAPSTONE\WorkPulse\scripts\test-h5-leave-management.ts:168:79
+
+  165 const reversal = await tx.leaveLedgerEntry.findFirstOrThrow({ where: { reversesEntryId: debit.id } });
+  166 ok(reversal.amountUnits.equals(debit.amountUnits.negated()), 'cancellation creates exact opposite reversal');
+  167 ok(await rejected(() => cancelApprovedLeave({ organizationId: org.id, actorUserId: hr.id, requestId: sick.id, reason: 'Again' }, tx), 'NOT_APPROVED'), 'second application reversal is blocked');
+→ 168 ok(await dbRejected(tx, 'duplicate_reversal', () => tx.leaveLedgerEntry.create(
+Unique constraint failed on the fields: (`reversesEntryId`)
+H5 Leave Management integration tests passed: 103 assertions.

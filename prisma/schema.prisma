@@ -543,6 +543,7 @@ model PlatformAdministrator {
   organizationInvitations OrganizationAdministratorInvitation[]
   organizationAudits PlatformOrganizationAudit[]
   subscriptionEvents SubscriptionEvent[]
+  reviewedSubscriptionRequests SubscriptionRequest[]
 }
 
 model PlatformAdministratorSession {
@@ -746,6 +747,7 @@ model Organization {
   subscription            OrganizationSubscription?
   subscriptionOrders      SubscriptionOrder[]
   subscriptionEvents      SubscriptionEvent[]
+  subscriptionRequests    SubscriptionRequest[]
   jobs                    Job[]
   employees               Employee[]
   employeeNumberSequences EmployeeNumberSequence[]
@@ -777,6 +779,7 @@ model Organization {
 }
 
 model User {
+  subscriptionRequests SubscriptionRequest[]
   passwordResets StaffPasswordReset[]
   staffSessions StaffSession[]
   rfidKiosks RfidKioskSession[]
@@ -2231,6 +2234,7 @@ enum SubscriptionStatus {
 }
 
 enum SubscriptionSource {
+  MANUAL
   GATEWAY
   COMPLIMENTARY
   LEGACY
@@ -2264,6 +2268,7 @@ model SubscriptionPlan {
   updatedAt         DateTime @updatedAt
   subscriptions     OrganizationSubscription[]
   orders            SubscriptionOrder[]
+  requests          SubscriptionRequest[]
 }
 
 model OrganizationSubscription {
@@ -2277,6 +2282,7 @@ model OrganizationSubscription {
   cancelledAt    DateTime?
   updatedAt      DateTime @updatedAt
   version        Int @default(0)
+  legacyAccess   Boolean @default(false)
   organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Restrict)
   plan           SubscriptionPlan @relation(fields: [planTier], references: [tier], onDelete: Restrict)
 
@@ -2308,17 +2314,50 @@ model SubscriptionOrder {
 
 model SubscriptionEvent {
   id              String @id @default(cuid())
-  organizationId  String
+  organizationId  String?
+  requestId       String?
+  actorUserId     String?
+  details         Json?
   orderId         String?
   actorAdministratorId String?
   action          String
   operationKey    String? @unique
   createdAt       DateTime @default(now())
-  organization    Organization @relation(fields: [organizationId], references: [id], onDelete: Restrict)
+  organization    Organization? @relation(fields: [organizationId], references: [id], onDelete: Restrict)
+  request         SubscriptionRequest? @relation(fields: [requestId], references: [id], onDelete: Restrict)
   order           SubscriptionOrder? @relation(fields: [orderId], references: [id], onDelete: Restrict)
   actorAdministrator PlatformAdministrator? @relation(fields: [actorAdministratorId], references: [id], onDelete: Restrict)
 
   @@index([organizationId, createdAt])
   @@index([orderId, createdAt])
+}
+
+enum SubscriptionRequestStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+model SubscriptionRequest {
+  id                      String @id @default(cuid())
+  organizationId          String
+  planTier                SubscriptionTier
+  status                  SubscriptionRequestStatus @default(PENDING)
+  requestedByUserId       String
+  reviewedByAdministratorId String?
+  reviewNote              String?
+  durationMonths          Int?
+  startsAt                DateTime?
+  endsAt                  DateTime?
+  createdAt               DateTime @default(now())
+  reviewedAt              DateTime?
+  organization            Organization @relation(fields: [organizationId], references: [id], onDelete: Restrict)
+  plan                    SubscriptionPlan @relation(fields: [planTier], references: [tier], onDelete: Restrict)
+  requestedBy             User @relation(fields: [requestedByUserId], references: [id], onDelete: Restrict)
+  reviewedBy              PlatformAdministrator? @relation(fields: [reviewedByAdministratorId], references: [id], onDelete: Restrict)
+  events                  SubscriptionEvent[]
+
+  @@index([organizationId, createdAt])
+  @@index([status, createdAt])
 }
 

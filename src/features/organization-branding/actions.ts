@@ -19,9 +19,15 @@ export async function updateBrandingAction(_: BrandingActionState, formData: For
   try {
     const actor = await requireBackOfficeContext();
     assertBrandingAdmin(actor.role);
-    await requireOrganizationFeature(actor.organizationId, 'customBranding');
     const parsed = organizationBrandingSchema.safeParse(Object.fromEntries(['displayName', 'tagline', 'primaryColor', 'accentColor', 'address', 'contactEmail', 'contactPhone'].map((key) => [key, String(formData.get(key) || '').trim()])));
     if (!parsed.success) return { ok: false, message: parsed.error.issues[0]?.message || 'Check the branding values.' };
+    const current = await prisma.organizationBranding.findUnique({ where: { organizationId: actor.organizationId } });
+    // Initial organization details and unchanged colors are core workspace setup.
+    // Premium access is required only to change the visual theme or upload assets.
+    if (parsed.data.primaryColor !== (current?.primaryColor ?? '#17324D') ||
+        parsed.data.accentColor !== (current?.accentColor ?? '#167D77')) {
+      await requireOrganizationFeature(actor.organizationId, 'customBranding');
+    }
     await prisma.$transaction(async (tx) => {
       await tx.organizationBranding.upsert({ where: { organizationId: actor.organizationId }, create: { organizationId: actor.organizationId, ...parsed.data }, update: parsed.data });
       await tx.organizationBrandingAudit.create({ data: { organizationId: actor.organizationId, actorUserId: actor.userId, action: 'BRANDING_UPDATED', details: { fields: Object.keys(parsed.data) } } });

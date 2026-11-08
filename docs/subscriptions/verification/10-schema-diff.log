@@ -1,0 +1,9 @@
+warn The configuration property `package.json#prisma` is deprecated and will be removed in Prisma 7. Please migrate to a Prisma config file (e.g., `prisma.config.ts`).
+For more information, see: https://pris.ly/prisma-config
+
+
+[*] Changed the `EmployeeCompensation` table
+  [*] Renamed index `EmployeeCompensation_organizationId_employeeId_effectiveFrom_id` to `EmployeeCompensation_organizationId_employeeId_effectiveFro_idx`
+
+[*] Changed the `OrganizationPayrollPolicy` table
+  [*] Renamed index `OrganizationPayrollPolicy_organizationId_status_effectiveFrom_e` to `OrganizationPayrollPolicy_organizationId_status_effectiveFr_idx`

@@ -1,0 +1,24 @@
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: RFID writes require a new disposable fixture schema
+    at assert (G:\CAPSTONE\WorkPulse\scripts\test-rfid-attendance.ts:10:8)
+    at Object.<anonymous> (G:\CAPSTONE\WorkPulse\scripts\test-rfid-attendance.ts:184:361)
+    at Module._compile (node:internal/modules/cjs/loader:1871:14)
+    at Object.transformer (G:\CAPSTONE\WorkPulse\node_modules\tsx\dist\register-C557imBs.cjs:9:3619)
+    at Module.load (node:internal/modules/cjs/loader:1594:32)
+    at Module.<anonymous> (node:internal/modules/cjs/loader:1396:12)
+    at Module._load (G:\CAPSTONE\WorkPulse\scripts\subscription-test-preload.cjs:6:19)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:255:19)
+    at loadCJSModuleWithModuleLoad (node:internal/modules/esm/translators:372:15)
+    at ModuleWrap.<anonymous> (node:internal/modules/esm/translators:244:9) {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: 'subscription_test_66c0b7a1a7f9a07c40bd4396',
+  expected: /^batch3_test_[a-f0-9]{24}$/,
+  operator: 'match',
+  diff: 'simple'
+}
+
+Node.js v24.18.0

@@ -1,0 +1,8 @@
+EmploymentLifecycleError: A non-SAGA renewal or adverse decision needs the agreed policy, HR legal review and action at the agreed period end. Overdue or exceptional arrangements require separate legal review; configuration does not override statutory regularization.
+    at assertGeneralAdverseDecision (G:\CAPSTONE\WorkPulse\.next\subscription-main-baseline\src\features\employees\lifecycle.ts:197:11)
+    at import_prisma.prisma.$transaction.isolationLevel (G:\CAPSTONE\WorkPulse\.next\subscription-main-baseline\src\features\employees\lifecycle.ts:430:9)
+    at async Proxy._transactionWithCallback (G:\CAPSTONE\WorkPulse\node_modules\@prisma\client\src\runtime\getPrismaClient.ts:722:18)
+    at async withSerializableRetry (G:\CAPSTONE\WorkPulse\.next\subscription-main-baseline\src\features\employees\lifecycle.ts:323:14)
+    at async main (G:\CAPSTONE\WorkPulse\.next\subscription-main-baseline\scripts\test-h2-employment-probation.ts:151:5) {
+  code: 'LEGAL_REVIEW_REQUIRED'
+}

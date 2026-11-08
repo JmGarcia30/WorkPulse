@@ -1,0 +1,11 @@
+TypeError: (0 , import_google.Poppins) is not a function
+    at <anonymous> (G:\CAPSTONE\WorkPulse\src\lib\fonts.ts:3:24)
+    at Object.<anonymous> (G:\CAPSTONE\WorkPulse\src\lib\fonts.ts:10:2)
+    at Module._compile (node:internal/modules/cjs/loader:1871:14)
+    at Object.transformer (G:\CAPSTONE\WorkPulse\node_modules\tsx\dist\register-C557imBs.cjs:9:3619)
+    at Module.load (node:internal/modules/cjs/loader:1594:32)
+    at Module.<anonymous> (node:internal/modules/cjs/loader:1396:12)
+    at Module._load (G:\CAPSTONE\WorkPulse\scripts\subscription-test-preload.cjs:6:19)
+    at Module._load (G:\CAPSTONE\WorkPulse\scripts\test-final-ux-hiring.cjs:12:27)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:255:19)
+    at Module.require (node:internal/modules/cjs/loader:1617:12)

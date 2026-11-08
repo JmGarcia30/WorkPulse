@@ -1,0 +1,2 @@
+Subscription domain tests passed: expiry, statuses, legacy and calendar rollovers.
+Manual subscription tests passed: explicit duration validation, two-year leap rollover, optional flags and preserved legacy access.

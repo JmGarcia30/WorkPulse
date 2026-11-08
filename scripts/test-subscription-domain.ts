@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import { isCurrentEntitlement, subscriptionTerm } from '../src/features/subscriptions/domain';
+import { isCurrentEntitlement, subscriptionTerm, subscriptionMonths, hasFeature, effectiveSubscriptionStatus } from '../src/features/subscriptions/domain';
 
 const now = new Date('2026-11-08T10:00:00Z');
 const active = (startsAt: Date | null, endsAt: Date | null, status = 'ACTIVE') =>
@@ -21,3 +21,15 @@ assert.equal(subscriptionTerm(new Date('2028-02-29T12:00:00Z'), 'YEARLY').toISOS
 assert.equal(subscriptionTerm(new Date('2026-11-08T10:00:00Z'), 'YEARLY').toISOString(), '2027-11-08T10:00:00.000Z');
 
 console.log('Subscription domain tests passed: expiry, statuses, legacy and calendar rollovers.');
+
+assert.equal(subscriptionMonths(new Date('2028-02-29T12:00:00Z'), 24).toISOString(), '2030-02-28T12:00:00.000Z');
+for (const invalid of [0, -1, 1.5, NaN, Infinity, 121]) assert.throws(() => subscriptionMonths(now, invalid));
+const plan = { aiResumeParsing: true, advancedAnalytics: false, gmailIntegration: false, customBranding: false };
+const record = { status: 'ACTIVE', startsAt: null, endsAt: now, legacyAccess: false, plan };
+assert.equal(hasFeature(record,'aiResumeParsing',now),false);
+assert.equal(hasFeature({ ...record, legacyAccess:true },'gmailIntegration',now),true);
+assert.equal(hasFeature({ ...record, endsAt:null },'aiResumeParsing',now),true);
+assert.equal(hasFeature({ ...record, endsAt:null },'advancedAnalytics',now),false);
+assert.equal(effectiveSubscriptionStatus(record,now),'EXPIRED');
+assert.equal(effectiveSubscriptionStatus(null,now),'UNASSIGNED');
+console.log('Manual subscription tests passed: explicit duration validation, two-year leap rollover, optional flags and preserved legacy access.');

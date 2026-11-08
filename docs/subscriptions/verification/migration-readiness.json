@@ -1,0 +1,14 @@
+{
+  "schema": "subscription_test_66c0b7a1a7f9a07c40bd4396",
+  "branch": "br-damp-fog-azmmxhga",
+  "migrations": 45,
+  "existingOrganizationUnchanged": true,
+  "legacyAccessBackfilled": true,
+  "pricesAndLimitsUnset": true,
+  "prismaSchemaMatchesMigrations": false,
+  "subscriptionSchemaMatchesMigrations": true,
+  "preexistingSchemaDrift": [
+    "EmployeeCompensation existing payroll index name",
+    "OrganizationPayrollPolicy existing payroll index name"
+  ]
+}

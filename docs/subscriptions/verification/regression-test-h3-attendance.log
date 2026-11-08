@@ -1,0 +1,12 @@
+H3_FAILURE {"recognizedMessages":[]}
+Error: ASSERTION FAILED: H3 requires a disposable Batch 3 schema
+    at assert (G:\CAPSTONE\WorkPulse\scripts\test-h3-attendance.ts:27:25)
+    at main (G:\CAPSTONE\WorkPulse\scripts\test-h3-attendance.ts:74:3)
+    at <anonymous> (G:\CAPSTONE\WorkPulse\scripts\test-h3-attendance.ts:147:1)
+    at Object.<anonymous> (G:\CAPSTONE\WorkPulse\scripts\test-h3-attendance.ts:151:38)
+    at Module._compile (node:internal/modules/cjs/loader:1871:14)
+    at Object.transformer (G:\CAPSTONE\WorkPulse\node_modules\tsx\dist\register-C557imBs.cjs:9:3619)
+    at Module.load (node:internal/modules/cjs/loader:1594:32)
+    at Module.<anonymous> (node:internal/modules/cjs/loader:1396:12)
+    at Module._load (G:\CAPSTONE\WorkPulse\scripts\subscription-test-preload.cjs:6:19)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:255:19)

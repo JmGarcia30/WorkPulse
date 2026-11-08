@@ -1,0 +1,14 @@
+[
+  {
+    "name": "rfid-owned-migrations",
+    "exitCode": 0
+  },
+  {
+    "name": "rfid-owned-regression",
+    "exitCode": 0
+  },
+  {
+    "name": "payroll-current-regressions",
+    "exitCode": 0
+  }
+]

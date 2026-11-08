@@ -1,0 +1,37 @@
+{
+  "schema": "subscription_test_66c0b7a1a7f9a07c40bd4396",
+  "productionAccessed": false,
+  "originalEnvironmentUnchanged": true,
+  "results": [
+    {
+      "name": "final-subscription-domain",
+      "exitCode": 0,
+      "elapsedMs": 298
+    },
+    {
+      "name": "final-subscription-actions",
+      "exitCode": 0,
+      "elapsedMs": 39365
+    },
+    {
+      "name": "final-typescript",
+      "exitCode": 0,
+      "elapsedMs": 34437
+    },
+    {
+      "name": "final-prisma-validation",
+      "exitCode": 0,
+      "elapsedMs": 1327
+    },
+    {
+      "name": "final-changed-eslint",
+      "exitCode": 0,
+      "elapsedMs": 3256
+    },
+    {
+      "name": "final-production-build",
+      "exitCode": 0,
+      "elapsedMs": 69893
+    }
+  ]
+}

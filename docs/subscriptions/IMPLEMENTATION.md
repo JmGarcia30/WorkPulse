@@ -1,42 +1,44 @@
-# WorkPulse SaaS Subscriptions — Implementation Review
+﻿# WorkPulse subscription implementation
 
-## State
-This feature is on a draft branch. DO NOT merge/deploy until migration and end-to-end billing verification are complete.
+Branch: `feature/subscription-admin-continuation`.
+Base: `origin/feature/real-saas-subscriptions-foundation` at `131cb2d8` (draft PR #14). Latest fetched main is `0d7657b2` and is already an ancestor. No main reconciliation merge was necessary. Local payroll recovery changes were preserved.
 
-## Product behavior
-- Organizations compare active Basic/Pro plans from their HR dashboard and initiate Xendit-hosted checkout only after real pricing and live gateway configuration.
-- Platform Admin controls plan prices, feature flags and SAGA's explicit two-year complimentary Pro grant.
-- Active entitlements are tenant-scoped and read from PostgreSQL, not browser state.
-- Server actions enforce AI resume parsing, advanced analytics, Gmail integration and branding features. Core payroll, RFID, leave, HR records and ESS are not disabled.
-- Existing organizations are grandfathered as LEGACY PRO during the migration to prevent service disruption. New tenants do not inherit this grandfathering.
-- Checkout amounts and plan are snapshotted in SubscriptionOrder. One successful payment covers one chosen month/year; automatic recurring debits are NOT implemented.
-- Browser return URL is only informational. Only an authenticated webhook PLUS fresh Xendit session verification can activate an order.
-- SAGA complimentary Pro requires a deliberate Platform Admin grant; no payment details or automatic charges.
+## Current behavior
 
-## Required configuration (never commit values)
-- XENDIT_SECRET_KEY (server only, merchant API key)
-- XENDIT_WEBHOOK_TOKEN (server only, callback verification token)
-- WORKPULSE_LIVE_BILLING_ENABLED=true (explicit production opt-in after review)
-- A verified canonical public HTTPS origin for success/cancel redirects
-- Register webhook URL: https://<your-workpulse-domain>/api/billing/xendit/webhook
-- In production only an xnd_production_ key is accepted; a sandbox key will not turn on live billing.
+- Organization Admin and HR Admin use `/dashboard/subscription` to compare Basic/Pro, request a plan, and view pending/reviewed requests, current access, expiration and tenant history.
+- Platform Admin uses `/platform/subscriptions` to configure descriptions, nullable PHP prices, optional feature permissions and employee limits; approve/reject requests; select explicit durations of 1–120 calendar months; activate/extend terms; inspect organization history; and grant SAGA two years of complimentary Pro.
+- A request never activates access. Approval atomically records the review, manual subscription and audit events. Rejection requires a reason and leaves current access intact.
+- One pending request per organization is enforced by a PostgreSQL partial unique index and tenant transaction locks. Concurrent approvals cannot activate a request twice.
+- Same-plan manual renewals extend from the current expiration. Plan changes replace the term immediately and preserve before/after history. Forms describe this behavior. A repeated direct administrator grant is a new, explicit extension; request approvals and the active SAGA complimentary grant are replay protected.
+- Complimentary SAGA grants last exactly 24 calendar months from grant, including correct leap-year/month-end clamping. All subscription relationships, forms and locks use immutable organization IDs. SAGA's existing protected slug is read only to identify/verify the agreement recipient; no workspace-routing code is changed.
+- Optional server gates cover AI resume parsing, advanced analytics, Gmail integration and branding. Core HR, recruitment, RFID, payroll, leave and ESS remain available during transition.
+- `legacyAccess` is backfilled for preexisting tenants and persists independently of later plan changes and expiry. This intentionally preserves their existing optional features during transition. New tenants require a current subscription whose plan includes each optional feature.
+- Expiration is enforced at the exact timestamp on every optional-feature authorization check, without relying on a scheduler. Pages display the effective expired status immediately. Platform Admin can persist elapsed expirations with an idempotent audit event; activation also persists an elapsed prior term before replacing it.
+- Audit events include actor IDs, request IDs and configuration/term snapshots. PostgreSQL prevents event updates/deletes. Global catalog edits are audited without depending on SAGA's existence.
 
-## Blocking unfinished work
-- Decide and approve Basic/Pro pricing, billing periods, employee caps and included features; both plans default INACTIVE without prices.
-- Confirm Xendit merchant account and payment session product access; validate provider request formats against account configuration.
-- Add proper in-production reconciliation tools for paid-but-conflicting/out-of-order checkouts and webhook retries.
-- Test and enforce employee-count limits before advertising any limits.
-- Define cancellation, expiry grace period, recurring debit mandates, invoice/receipt and refund policies. No automatic recurring charges exist yet.
-- Add onboarding prompts for newly created organizations and a clear upgrade pathway for all disabled features.
-- Validate cross-tenant data access, retries, webhook replay, provider errors, duplicate orders, pending-session expiry, maintenance windows, payment/plan race conditions.
+## Commercial definitions and payments
 
-## Release checks
-1. Backup and fingerprint production metadata; verify database identity. Never modify SAGA's payroll/employees as part of billing migration.
-2. Apply migration to an isolated full-schema test database; check all FK and enum constraints.
-3. Run Prisma validate, TypeScript, ESLint, production build, domain/security tests, and authorized HR/Platform Admin browser tests.
-4. Confirm SAGA and other legacy tenant access remains active (LEGACY PRO backfill) and no demo payment can activate a real plan.
-5. Test gateway sandbox with external provider keys on a nonproduction database, verifying actual webhook and reconciliation behavior.
-6. Obtain merchant credentials, approved prices, customer terms and deployment approval. Roll out cautiously; monitor errors.
+No Basic/Pro prices or employee limits have been invented. Both remain nullable. Pending-definition plans accept requests; Platform Admin can pause requests independently of pricing. Optional feature inclusions are configurable and unset in the unapproved catalog; flags enabled by the automated tests exist only in synthetic test data.
 
-## Demo distinction
-The old Subscription Demo page is browser-only and separate. It does not write subscription/order data or activate entitlements. Never show it as proof of actual gateway integration.
+Employee limits are stored and displayed but deliberately not enforced until the approved definitions and counting/over-limit policy arrive. Final definitions can be entered in the existing admin screen without schema/code changes.
+
+There is no payment gateway integration. The foundation's Xendit adapter and webhook were removed. Manual approvals and complimentary grants never create payment orders, set `paidAt`, or claim payment. The existing main-branch browser-only demo remains separate and cannot activate database entitlements. Reserved order/provider fields remain available for a separately reviewed future PayMongo integration; it must verify provider payment independently before writing any paid record.
+
+## Migration readiness
+
+Keep the original foundation migration unchanged. Apply these in order only after review:
+
+1. `20261108000100_saas_subscription_foundation`: existing plan/subscription/order/event tables, null prices and legacy tenant backfill.
+2. `20261108000200_manual_subscription_requests`: manual source, independent legacy-access flag, requests and review constraints, pending uniqueness, nullable organization IDs for global audit, structured event snapshots and append-only trigger.
+
+The verification runner uses an exact verified non-production Neon branch/endpoint and a new random `subscription_test_*` schema. It applies the baseline migrations, seeds a pre-subscription tenant, then applies both subscription migrations. It verifies the existing organization is unchanged, legacy access is backfilled, prices/limits stay unset, and checks Prisma schema drift. Original `.env` is not replaced. No production migration or deployment is performed.
+
+Do not deploy application code before its additive migrations. Missing subscription tables intentionally fail visibly rather than silently granting new tenants premium access. The first migration's legacy backfill should be scheduled while tenant registration is paused or protected by the release transaction/process so concurrent organization creation has a clearly defined transition boundary.
+
+## Verification
+
+Run `node scripts/verify-subscriptions.cjs` for guarded migration rehearsal, real authorization/actions/PostgreSQL concurrency tests, domain tests, relevant existing regressions, TypeScript, Prisma validation, full lint, schema diff and production build. It writes credential-redacted logs and results to `docs/subscriptions/verification/` and an ignored `.env.subscriptions-test.local` profile. The synthetic schema is retained for local browser validation, not production use. Never substitute the application's production URL.
+
+The action suite uses the real tenant/platform session guards and the real Prisma database. Only Next request adapters (headers/cookies/navigation/revalidation) are supplied by the standalone harness. Browser verification, when recorded, exercises the actual built application and server actions.
+
+See `REPORT.md` and `verification/results.json` for final results and any preexisting regression failures.

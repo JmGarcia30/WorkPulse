@@ -1,0 +1,27 @@
+{
+  "ref": "origin/main",
+  "commit": "0d7657b22dc6ebb34855f0a554f92cf9c95c6f73",
+  "sameIsolatedDatabase": true,
+  "results": [
+    {
+      "name": "test-h1-employee-core",
+      "exitCode": 1
+    },
+    {
+      "name": "test-h2-employment-probation",
+      "exitCode": 1
+    },
+    {
+      "name": "test-h6-payroll-foundation",
+      "exitCode": 1
+    },
+    {
+      "name": "test-final-ux-hiring",
+      "exitCode": 1
+    },
+    {
+      "name": "eslint",
+      "exitCode": 1
+    }
+  ]
+}
