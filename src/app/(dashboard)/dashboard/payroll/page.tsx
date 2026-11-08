@@ -110,7 +110,9 @@ export default async function PayrollPage({ searchParams }: { searchParams: Prom
         </div>
       </div> : <p className="text-sm text-slate-600">Select an employee and a payroll period to start. Payroll Settings is available for first-time salary and statutory setup.</p>}
     </section>
-    <h2 className="text-sm font-bold text-slate-600">Full period controls and advanced review</h2>
+    <details className="rounded-2xl border bg-white p-4 sm:p-6">
+      <summary className="cursor-pointer text-sm font-bold text-[#282934]">Advanced: full-period controls and review</summary>
+      <div className="mt-4 space-y-5">
     <section className={card} aria-labelledby="payroll-period"><h2 id="payroll-period" className="font-semibold">1. Generate Payroll</h2>
       <form method="get" className="flex flex-wrap items-end gap-3"><label className="grid flex-1 gap-1 text-xs font-semibold">Payroll period<select name="period" defaultValue={period?.id ?? ''} className="min-w-0 rounded-lg border px-3 py-2 text-sm">{!periods.length && <option value="">No periods yet</option>}{periods.map(row => <option key={row.id} value={row.id}>{row.name} · {row.status}</option>)}</select></label><button className="wp-button-secondary">Select period</button></form>
       {period && <dl className="grid grid-cols-2 gap-3 text-sm sm:grid-cols-4">{[['Start date', formatPayrollDate(period.periodStart)], ['End date', formatPayrollDate(period.periodEnd)], ['Scheduled pay date', formatPayrollDate(period.payDate)], ['Status', period.status]].map(([label, value]) => <div key={label}><dt className="text-xs text-slate-500">{label}</dt><dd className="mt-1 font-semibold">{value}</dd></div>)}</dl>}
@@ -132,6 +134,8 @@ export default async function PayrollPage({ searchParams }: { searchParams: Prom
       {editable && <details><summary className="cursor-pointer text-sm font-semibold">Recalculate an unfinished employee entry</summary>{earningsEmployees.filter(row => row.hasEntry).map(row => <details key={row.id} className="mt-3"><summary className="cursor-pointer text-sm">{row.name}</summary><PayrollRecalculateForm employee={row} periodId={period.id} /></details>)}</details>}
     </section>
     <section className={card} aria-labelledby="payroll-notify"><h2 id="payroll-notify" className="font-semibold">3. Notify Employees</h2>{notification && period ? <PayrollNotifyForm periodId={period.id} token={notification.token} recipients={notification.recipients} skipped={notification.skipped} /> : <p className="text-sm text-slate-600">Notifications become available after finalization. Finalized payslips are available in ESS immediately.</p>}</section>
+      </div>
+    </details>
 
   </div>;
 }
