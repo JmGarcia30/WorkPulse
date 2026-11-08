@@ -83,3 +83,9 @@ ALTER TABLE "SubscriptionEvent" ADD CONSTRAINT "SubscriptionEvent_actorAdministr
 INSERT INTO "SubscriptionPlan" ("tier","name","description","aiResumeParsing","advancedAnalytics","gmailIntegration","customBranding","active","updatedAt") VALUES
  ('BASIC','Basic','Core workforce management; prices and limits require approval',false,false,false,false,false,CURRENT_TIMESTAMP),
  ('PRO','Pro','Core workforce management with advanced services; prices require approval',true,true,true,true,false,CURRENT_TIMESTAMP);
+
+-- Grandfather the organizations that existed before billing launch. New registrations
+-- do not receive this legacy entitlement. Records and HR workflows are preserved.
+INSERT INTO "OrganizationSubscription" ("organizationId","planTier","status","source","startsAt","updatedAt")
+ SELECT "id", 'PRO'::"SubscriptionTier", 'ACTIVE'::"SubscriptionStatus", 'LEGACY'::"SubscriptionSource", CURRENT_TIMESTAMP, CURRENT_TIMESTAMP
+ FROM "Organization" ON CONFLICT ("organizationId") DO NOTHING;
