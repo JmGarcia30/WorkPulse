@@ -2,6 +2,7 @@
 
 import { revalidatePath } from 'next/cache';
 import { prisma } from '@/lib/db/prisma';
+import { requireOrganizationFeature } from '@/features/subscriptions/entitlements';
 import { getDocumentStaffContext } from './document-access';
 import { canManageJobs } from '@/lib/permissions/rbac';
 import { localStorageProvider } from '@/lib/storage';
@@ -26,6 +27,9 @@ export async function parseResumeAction(
   if (!user || !canManageJobs(user)) {
     return { error: 'Unauthorized to parse resumes.' };
   }
+
+  try { await requireOrganizationFeature(user.organizationId, 'aiResumeParsing'); }
+  catch { return { error: 'AI resume parsing requires an active plan that includes this feature.' }; }
 
   // 1. Load document with tenant verification
   const document = await prisma.document.findUnique({

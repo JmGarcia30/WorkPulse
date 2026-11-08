@@ -3,6 +3,7 @@
 import { Role } from '@prisma/client';
 import { revalidatePath } from 'next/cache';
 import { prisma } from '@/lib/db/prisma';
+import { requireOrganizationFeature } from '@/features/subscriptions/entitlements';
 import { requireBackOfficeContext } from '@/lib/auth/guards';
 import { localStorageProvider } from '@/lib/storage';
 import { organizationBrandingSchema } from './schema';
@@ -18,6 +19,7 @@ export async function updateBrandingAction(_: BrandingActionState, formData: For
   try {
     const actor = await requireBackOfficeContext();
     assertBrandingAdmin(actor.role);
+    await requireOrganizationFeature(actor.organizationId, 'customBranding');
     const parsed = organizationBrandingSchema.safeParse(Object.fromEntries(['displayName', 'tagline', 'primaryColor', 'accentColor', 'address', 'contactEmail', 'contactPhone'].map((key) => [key, String(formData.get(key) || '').trim()])));
     if (!parsed.success) return { ok: false, message: parsed.error.issues[0]?.message || 'Check the branding values.' };
     await prisma.$transaction(async (tx) => {
@@ -33,6 +35,7 @@ export async function uploadBrandAssetAction(_: BrandingActionState, formData: F
   let uploadedKey: string | null = null;
   try {
     const actor = await requireBackOfficeContext(); assertBrandingAdmin(actor.role);
+    await requireOrganizationFeature(actor.organizationId, 'customBranding');
     const kind = formData.get('kind') === 'loginImage' ? 'loginImage' : 'logo';
     const file = formData.get('file');
     if (!(file instanceof File)) return { ok: false, message: 'Select an image.' };
