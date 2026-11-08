@@ -159,7 +159,7 @@ async function generateInTransaction(input: GeneratePayrollInput, db: Prisma.Tra
     throw new PayrollError('NOT_FOUND', 'Selected active employee is not available in this organization.');
   }
   const existing = await db.payrollEntry.findMany({
-    where: { organizationId: input.organizationId, payrollPeriodId: period.id },
+    where: { organizationId: input.organizationId, payrollPeriodId: period.id, ...(input.employeeId ? { employeeId: input.employeeId } : {}) },
     select: { id: true, employeeId: true },
   });
   const existingEmployeeIds = new Set(existing.map((entry) => entry.employeeId));
