@@ -1,0 +1,17 @@
+{
+  "productionAccessed": false,
+  "branch": "br-damp-fog-azmmxhga",
+  "payrollRecoveryPreserved": true,
+  "results": [
+    {
+      "name": "attendance-clean-migrations",
+      "exitCode": 0,
+      "elapsedMs": 41592
+    },
+    {
+      "name": "attendance-clean-regression",
+      "exitCode": 0,
+      "elapsedMs": 24771
+    }
+  ]
+}

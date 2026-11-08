@@ -1,0 +1,69 @@
+PASS BASIC configuration saves with unset prices and limits
+PASS PRO configuration saves with unset prices and limits
+PASS Plan audit is global and independent of the SAGA tenant
+[WorkPulse timing] branding read: 162.6ms
+[WorkPulse timing] tenant resolution: 163.7ms
+[WorkPulse timing] branding read: 724.1ms
+[WorkPulse timing] tenant resolution: 724.3ms
+[WorkPulse timing] session validation: 444.8ms
+PASS New tenant can complete core organization setup before requesting a plan
+[WorkPulse timing] branding read: 75.0ms
+[WorkPulse timing] tenant resolution: 75.6ms
+[WorkPulse timing] branding read: 80.5ms
+[WorkPulse timing] tenant resolution: 80.9ms
+[WorkPulse timing] session validation: 403.9ms
+PASS New tenant cannot change premium theme colors without entitlement
+[WorkPulse timing] branding read: 76.9ms
+[WorkPulse timing] tenant resolution: 77.2ms
+[WorkPulse timing] branding read: 81.7ms
+[WorkPulse timing] tenant resolution: 82.1ms
+[WorkPulse timing] session validation: 295.1ms
+PASS Organization administrator selects Basic and submits through actual server action
+PASS Forged form tenant ID is ignored; request uses authenticated tenant
+PASS Pending request grants no subscription
+[WorkPulse timing] branding read: 74.3ms
+[WorkPulse timing] tenant resolution: 74.7ms
+[WorkPulse timing] branding read: 80.2ms
+[WorkPulse timing] tenant resolution: 80.4ms
+[WorkPulse timing] session validation: 240.8ms
+PASS Duplicate request rejected across different plans
+[WorkPulse timing] branding read: 73.6ms
+[WorkPulse timing] tenant resolution: 73.7ms
+[WorkPulse timing] branding read: 81.1ms
+[WorkPulse timing] tenant resolution: 81.6ms
+[WorkPulse timing] session validation: 221.4ms
+PASS Independent tenant HR administrator can submit Pro
+PASS Tenant read model isolates request and subscription history
+PASS Tenant session cannot approve a request
+PASS Cross-tenant request ID cannot be reviewed under another organization
+PASS Approval requires an explicit duration
+PASS Rejection requires a reason
+PASS Platform administrator rejects Basic request
+PASS Rejected request grants no subscription
+PASS Concurrent request transactions create exactly one pending request
+PASS Database partial unique index protects against bypassing duplicate checks
+PASS Concurrent approvals activate exactly once
+PASS Approved subscription has exact explicitly selected term and manual source
+PASS Approval creates no payment order or fake paid record
+PASS Real server-side gates accept configured active tenant features
+PASS Another tenant cannot inherit Pro entitlement
+[WorkPulse timing] branding read: 157.9ms
+[WorkPulse timing] tenant resolution: 158.3ms
+[WorkPulse timing] branding read: 161.1ms
+[WorkPulse timing] tenant resolution: 161.2ms
+[WorkPulse timing] session validation: 402.6ms
+PASS Employee, hiring-manager and forged actor tenant cannot request subscriptions
+PASS Platform administrator can explicitly extend an existing term
+PASS Renewal preserves remaining subscription time
+PASS Expired entitlement denied immediately before status-maintenance action
+PASS Expiration persists once with an idempotent audit event
+PASS Basic entitlement enforces configured feature restrictions on the server
+PASS Migration preserves existing tenant legacy access
+PASS SAGA complimentary grant lasts exactly two years and concurrent replay is idempotent
+PASS SAGA grant does not mutate organization or workspace slug
+PASS Legacy feature access survives plan changes and term expiration
+PASS History records previous/new terms, actor and no-payment semantics
+PASS Database rejects audit event modification and deletion
+PASS Subscription relationships remain valid after an independent organization slug change
+PASS Disabled platform administrators cannot grant subscriptions
+{"status":"PASS","checks":38,"scenarios":["BASIC configuration saves with unset prices and limits","PRO configuration saves with unset prices and limits","Plan audit is global and independent of the SAGA tenant","New tenant can complete core organization setup before requesting a plan","New tenant cannot change premium theme colors without entitlement","Organization administrator selects Basic and submits through actual server action","Forged form tenant ID is ignored; request uses authenticated tenant","Pending request grants no subscription","Duplicate request rejected across different plans","Independent tenant HR administrator can submit Pro","Tenant read model isolates request and subscription history","Tenant session cannot approve a request","Cross-tenant request ID cannot be reviewed under another organization","Approval requires an explicit duration","Rejection requires a reason","Platform administrator rejects Basic request","Rejected request grants no subscription","Concurrent request transactions create exactly one pending request","Database partial unique index protects against bypassing duplicate checks","Concurrent approvals activate exactly once","Approved subscription has exact explicitly selected term and manual source","Approval creates no payment order or fake paid record","Real server-side gates accept configured active tenant features","Another tenant cannot inherit Pro entitlement","Employee, hiring-manager and forged actor tenant cannot request subscriptions","Platform administrator can explicitly extend an existing term","Renewal preserves remaining subscription time","Expired entitlement denied immediately before status-maintenance action","Expiration persists once with an idempotent audit event","Basic entitlement enforces configured feature restrictions on the server","Migration preserves existing tenant legacy access","SAGA complimentary grant lasts exactly two years and concurrent replay is idempotent","SAGA grant does not mutate organization or workspace slug","Legacy feature access survives plan changes and term expiration","History records previous/new terms, actor and no-payment semantics","Database rejects audit event modification and deletion","Subscription relationships remain valid after an independent organization slug change","Disabled platform administrators cannot grant subscriptions"]}

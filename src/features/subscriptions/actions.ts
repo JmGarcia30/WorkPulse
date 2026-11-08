@@ -35,10 +35,9 @@ export async function configureSubscriptionPlanAction(_previous: Result, form: F
   try {
     const planTier = value(form, 'tier');
     if (planTier !== 'BASIC' && planTier !== 'PRO') return { error: 'Invalid plan.' };
-    const rawLimit = value(form, 'maxEmployees').trim();
     await configurePlan(prisma, actor.id, {
       tier: planTier, description: value(form, 'description'), monthlyPriceMinor: amount(form, 'monthly'), yearlyPriceMinor: amount(form, 'yearly'),
-      maxEmployees: rawLimit ? Number(rawLimit) : null, active: form.get('active') === 'yes',
+      maxEmployees: null, active: form.get('active') === 'yes',
       aiResumeParsing: form.get('aiResumeParsing') === 'yes', advancedAnalytics: form.get('advancedAnalytics') === 'yes',
       gmailIntegration: form.get('gmailIntegration') === 'yes', customBranding: form.get('customBranding') === 'yes',
     });

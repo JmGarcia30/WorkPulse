@@ -77,6 +77,7 @@ export async function GET(request: Request) {
     });
     return fileResponse(pdf, 'workpulse-analytics-' + range.from + '-to-' + range.to + '.pdf', 'pdf');
   } catch (error) {
+    if (error instanceof Error && error.message==='SUBSCRIPTION_FEATURE_UNAVAILABLE') return fail('Full analytics reports and exports require Pro.',403);
     if (error instanceof AnalyticsFilterError) return fail(error.message, 400);
     return fail('Analytics report could not be generated.', 500);
   }

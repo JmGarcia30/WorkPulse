@@ -2,6 +2,7 @@ import 'server-only';
 import { Prisma, type PrismaClient } from '@prisma/client';
 import { z } from 'zod';
 import { isCurrentEntitlement, subscriptionMonths } from './domain';
+import { approvedPlanConfiguration, approvedPlan } from './approved-plans';
 
 const id = z.string().trim().min(1).max(200);
 const tier = z.enum(['BASIC', 'PRO']);
@@ -31,7 +32,7 @@ export async function configurePlan(db: PrismaClient, administratorId: string, r
     await administrator(tx, administratorId);
     await tx.$queryRaw`SELECT pg_advisory_xact_lock(hashtextextended(${`subscription-plan:${planTier}`},0))::text`;
     const before = await tx.subscriptionPlan.findUniqueOrThrow({ where: { tier: planTier } });
-    const after = await tx.subscriptionPlan.update({ where: { tier: planTier }, data });
+    const after = await tx.subscriptionPlan.update({ where: { tier: planTier }, data: { ...data,...approvedPlanConfiguration(planTier) } });
     await tx.subscriptionEvent.create({ data: { actorAdministratorId: administratorId,
       action: 'PLAN_CONFIGURATION_UPDATED', details: snapshot({ tier: planTier, before, after }) } });
     return after;
@@ -169,5 +170,5 @@ export async function readOrganizationSubscriptions(db: PrismaClient, organizati
     db.subscriptionRequest.findMany({ where: { organizationId }, orderBy: { createdAt: 'desc' }, take: 50 }),
     db.subscriptionEvent.findMany({ where: { organizationId }, orderBy: { createdAt: 'desc' }, take: 100 }),
   ]);
-  return { subscription, plans, requests, events };
+  return { subscription, plans:plans.map(approvedPlan), requests, events };
 }

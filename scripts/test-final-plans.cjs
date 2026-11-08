@@ -1,0 +1,117 @@
+/* eslint-disable @typescript-eslint/no-require-imports -- Exercise real Prisma transactions, sessions and server actions in a verified disposable schema. */
+const assert=require('node:assert/strict'),Module=require('node:module'),{randomBytes}=require('node:crypto');
+require('tsx/cjs');
+assert.match(new URL(process.env.DATABASE_URL).searchParams.get('schema')||'',/^batch3_test_[a-f0-9]{24}$/);
+const {PrismaClient}=require('@prisma/client'),db=new PrismaClient({log:[]});
+const jar=new Map(),context={headers:new Headers({host:'localhost:3000'})},original=Module._load;
+Module._load=function(name,parent,main){
+ if(name==='server-only')return {};
+ if(name==='@/lib/db/prisma')return {prisma:db};
+ if(name==='next/headers')return {headers:async()=>context.headers,cookies:async()=>({get:key=>jar.get(key),set:(key,value)=>jar.set(key,{value}),delete:key=>jar.delete(key)})};
+ if(name==='next/navigation')return {redirect:path=>{throw Error('REDIRECT:'+path);},notFound:()=>{throw Error('NOT_FOUND');}};
+ if(name==='next/cache')return {revalidatePath(){}};
+ return original.call(this,name,parent,main);
+};
+const {auditedJobMutation}=require('../src/features/account-security/job-audit.ts');
+const actions=require('../src/features/hiring/actions.ts');
+const service=require('../src/features/subscriptions/service.ts');
+const {hasFeature,activeJobLimit}=require('../src/features/subscriptions/domain.ts');
+const {readBasicAnalytics}=require('../src/features/analytics/read-model.ts');
+const {getAnalyticsPageData}=require('../src/features/analytics/queries.ts');
+const {createSession}=require('../src/lib/auth/session.ts');
+const checks=[];function ok(value,label){assert.ok(value,label);checks.push(label);console.log('PASS',label);}
+let sequence=0;
+const fields=(organizationId,status='DRAFT')=>({organizationId,title:'Synthetic quota job',slug:'quota-'+randomBytes(6).toString('hex')+'-'+sequence++,department:'Test',employmentType:'Full time',location:'Test',description:'Synthetic test only',responsibilities:'Test',qualifications:'Test',requirements:'Test',status});
+const form=values=>{const data=new FormData();for(const [key,value] of Object.entries(values))data.set(key,String(value));return data;};
+async function main(){
+ const marker=randomBytes(8).toString('hex');
+ const org=await db.organization.create({data:{name:'Synthetic final plans',slug:'final-plans-'+marker}});
+ const other=await db.organization.create({data:{name:'Synthetic isolated tenant',slug:'final-other-'+marker}});
+ const user=await db.user.create({data:{organizationId:org.id,name:'Synthetic HR',email:marker+'@quota.invalid',role:'HR_ADMIN'}});
+ const actor={organizationId:org.id,userId:user.id};
+ const administrator=await db.platformAdministrator.create({data:{name:'Synthetic final plans',email:marker+'@admin.invalid',passwordHash:'not-a-login-password'}});
+ async function login(){jar.clear();context.headers=new Headers({host:org.slug+'.localhost:3000'});await createSession({...actor,role:user.role,name:user.name,email:user.email});}
+ await login();
+ for(const tier of ['BASIC','PRO']){
+  await db.subscriptionPlan.upsert({where:{tier},create:{tier,name:tier,description:'Stale draft',active:true},update:{}});
+  const saved=await service.configurePlan(db,administrator.id,{tier,description:'Stale draft',active:true,monthlyPriceMinor:null,yearlyPriceMinor:null,maxEmployees:1,aiResumeParsing:false,advancedAnalytics:false,gmailIntegration:false,customBranding:false});
+  ok(saved.gmailIntegration&&saved.maxEmployees===null&&saved.monthlyPriceMinor===null&&saved.yearlyPriceMinor===null,tier+' saves Gmail, no employee limits and unset prices');
+  ok(saved.advancedAnalytics===(tier==='PRO')&&saved.aiResumeParsing===(tier==='PRO')&&saved.customBranding===(tier==='PRO'),tier+' saves approved premium permissions');
+ }
+ // Deliberately emulate already-deployed pre-approval catalog flags.
+ await db.subscriptionPlan.update({where:{tier:'BASIC'},data:{gmailIntegration:false,aiResumeParsing:true,advancedAnalytics:true,maxEmployees:1}});
+ await service.activateSubscription(db,administrator.id,{organizationId:org.id,planTier:'BASIC',durationMonths:1,reviewNote:'Synthetic only'});
+ let subscription=await db.organizationSubscription.findUniqueOrThrow({where:{organizationId:org.id},include:{plan:true}});
+ ok(hasFeature(subscription,'gmailIntegration')&&!hasFeature(subscription,'aiResumeParsing')&&!hasFeature(subscription,'advancedAnalytics'),'Stale catalog cannot override approved Basic permissions');
+ const view=await service.readOrganizationSubscriptions(db,org.id);
+ ok(view.plans.every(plan=>plan.maxEmployees===null&&plan.gmailIntegration)&&view.plans.find(plan=>plan.tier==='BASIC').maxActiveJobs===5,'Catalog read model shows final limits and permissions without rewriting stored rows');
+ for(let index=0;index<5;index++)await auditedJobMutation(db,actor,'JOB_CREATED',tx=>tx.job.create({data:fields(org.id,'PUBLISHED')}));
+ ok(await db.job.count({where:{organizationId:org.id,status:'PUBLISHED'}})===5,'Basic allows the first five published jobs');
+ const beforeAudit=await db.accountSecurityEvent.count({where:{organizationId:org.id}});
+ await assert.rejects(()=>auditedJobMutation(db,actor,'JOB_CREATED',tx=>tx.job.create({data:fields(org.id,'PUBLISHED')})),/five simultaneously/);
+ ok(await db.job.count({where:{organizationId:org.id,status:'PUBLISHED'}})===5&&await db.accountSecurityEvent.count({where:{organizationId:org.id}})===beforeAudit,'Sixth publication rolls back job and success audit atomically');
+ const drafts=await Promise.all(['DRAFT','CLOSED','ARCHIVED'].map(status=>db.job.create({data:fields(org.id,status)})));
+ ok((await actions.publishJobAction(drafts[0].id)).error,'Real publish action returns a useful quota error');
+ const JobDetailPage=require('../src/app/(dashboard)/dashboard/hiring/jobs/[jobId]/page.tsx').default;
+ const detail=await JobDetailPage({params:Promise.resolve({jobId:drafts[0].id}),searchParams:Promise.resolve({})});
+ const elements=node=>!node||typeof node!=='object'?[]:Array.isArray(node)?node.flatMap(elements):[node,...elements(node.props?.children),...elements(node.props?.actions)];
+ const publishForm=elements(detail).find(node=>node.type==='form'&&node.props.action?.name==='handlePublish');
+ await assert.rejects(()=>publishForm.props.action(),/REDIRECT:.*error=Basic/);
+ const feedback=await JobDetailPage({params:Promise.resolve({jobId:drafts[0].id}),searchParams:Promise.resolve({error:'Basic allows five simultaneously published job postings.'})});
+ ok(elements(feedback).some(node=>node.props?.role==='alert'&&node.props.children.includes('five')),'Existing job detail form displays publication-limit feedback');
+ await assert.rejects(()=>actions.createJobAction(form({...fields(org.id,'PUBLISHED'),title:'Quota create action'})),/REDIRECT:.*active_job_limit/);
+ ok(!await db.job.findFirst({where:{organizationId:org.id,title:'Quota create action'}}),'Real create action blocks direct published creation with quota feedback');
+ await assert.rejects(()=>actions.createJobAction(form({...fields(org.id),title:'Quota draft action'})),/REDIRECT:.*hiring\/jobs\//);
+ ok(await db.job.findFirst({where:{organizationId:org.id,title:'Quota draft action',status:'DRAFT'}}),'Draft creation remains available at the limit');
+ let published=await db.job.findFirstOrThrow({where:{organizationId:org.id,status:'PUBLISHED'}});
+ ok((await actions.publishJobAction(published.id)).success,'Republishing an already published job does not consume another slot');
+ ok((await actions.closeJobAction(published.id)).success,'Closing a posting frees a slot');
+ const concurrent=await Promise.all(drafts.slice(0,2).map(job=>actions.publishJobAction(job.id)));
+ ok(concurrent.filter(result=>result.success).length===1&&concurrent.filter(result=>result.error).length===1,'Concurrent publishers competing for the fifth slot admit exactly one');
+ ok(await db.job.count({where:{organizationId:org.id,status:'PUBLISHED'}})===5,'Concurrent publication cannot exceed the Basic limit');
+ const foreign=await db.job.create({data:fields(other.id)});
+ ok((await actions.publishJobAction(foreign.id)).error&& (await db.job.findUniqueOrThrow({where:{id:foreign.id}})).status==='DRAFT','Forged cross-tenant job ID cannot be published');
+ const otherUser=await db.user.create({data:{organizationId:other.id,name:'Other HR',email:marker+'@other.invalid',role:'HR_ADMIN'}});
+ await auditedJobMutation(db,{organizationId:other.id,userId:otherUser.id},'JOB_CREATED',tx=>tx.job.create({data:fields(other.id,'PUBLISHED')}));
+ ok(await db.job.count({where:{organizationId:other.id,status:'PUBLISHED'}})===1,'Another tenant has its own publishing allowance');
+ const pending=await service.submitSubscriptionRequest(db,actor,'PRO');
+ ok((await actions.publishJobAction(drafts[2].id)).error,'Pending Pro request does not increase publishing allowance');
+ await service.reviewSubscriptionRequest(db,administrator.id,{organizationId:org.id,requestId:pending.id,decision:'APPROVED',durationMonths:1,reviewNote:'Synthetic unlimited test'});
+ for(let index=0;index<3;index++)await auditedJobMutation(db,actor,'JOB_CREATED',tx=>tx.job.create({data:fields(org.id,'PUBLISHED')}));
+ ok(await db.job.count({where:{organizationId:org.id,status:'PUBLISHED'}})===8,'Active Pro can publish beyond five');
+ await db.organizationSubscription.update({where:{organizationId:org.id},data:{endsAt:new Date(Date.now()-1000)}});
+ ok((await actions.publishJobAction(drafts[2].id)).error,'Expired Pro immediately falls back to five without a maintenance job');
+ ok(await db.job.count({where:{organizationId:org.id,status:'PUBLISHED'}})===8,'Expiration preserves existing published jobs');
+ await auditedJobMutation(db,actor,'JOB_UPDATED',tx=>tx.job.update({where:{id:published.id,organizationId:org.id},data:{title:'Edited existing closed job'}}));
+ const active=await db.job.findFirstOrThrow({where:{organizationId:org.id,status:'PUBLISHED'}});
+ await auditedJobMutation(db,actor,'JOB_UPDATED',tx=>tx.job.update({where:{id:active.id,organizationId:org.id},data:{title:'Edited existing published job'}}));
+ ok((await actions.publishJobAction(active.id)).success,'Existing over-limit published jobs can still be edited and republished');
+ ok((await actions.closeJobAction(active.id)).success,'Over-limit tenants can close existing postings');
+ await service.activateSubscription(db,administrator.id,{organizationId:org.id,planTier:'BASIC',durationMonths:1,reviewNote:'Synthetic analytics test'});
+ const basic=await getAnalyticsPageData();
+ ok(basic.level==='BASIC'&&!('payroll'in basic)&&!('attendance'in basic),'Basic server query returns only workforce analytics');
+ // Fail if the Basic read model even attempts any advanced aggregate/delegate.
+ const restrictedDb={employee:db.employee,$queryRaw:db.$queryRaw.bind(db)};
+ ok((await readBasicAnalytics({...actor,role:'HR_ADMIN'},restrictedDb)).level==='BASIC','Basic analytics reads no payroll, leave, attendance or probation aggregates');
+ const report=require('../src/app/api/reports/analytics/route.ts');
+ ok((await report.GET(new Request('http://localhost/api/reports/analytics'))).status===403,'Direct Basic analytics PDF endpoint is denied on the server');
+ const employeesReport=require('../src/app/api/reports/employees/route.ts');
+ ok((await employeesReport.GET(new Request('http://localhost/api/reports/employees'))).status===200,'Basic retains the existing employee CSV report');
+ const attendanceReport=require('../src/app/api/reports/attendance/route.ts');
+ for(const format of ['csv','pdf'])ok((await attendanceReport.GET(new Request('http://localhost/api/reports/attendance?format='+format))).status===200,'Basic retains the existing attendance '+format.toUpperCase()+' report');
+ await service.activateSubscription(db,administrator.id,{organizationId:org.id,planTier:'PRO',durationMonths:1,reviewNote:'Synthetic full analytics test'});
+ ok((await getAnalyticsPageData()).level==='FULL','Pro keeps the existing full analytics read model');
+ ok((await report.GET(new Request('http://localhost/api/reports/analytics'))).status===200,'Pro can export the existing analytics PDF');
+ await db.organizationSubscription.update({where:{organizationId:org.id},data:{planTier:'BASIC',legacyAccess:true}});
+ ok(activeJobLimit(await db.organizationSubscription.findUniqueOrThrow({where:{organizationId:org.id}}))===5,'Legacy Basic still respects the explicit publishing allowance');
+ ok((await getAnalyticsPageData()).level==='FULL','Existing legacy tenants retain operational feature access');
+ await assert.rejects(()=>auditedJobMutation(db,{organizationId:org.id,userId:otherUser.id},'JOB_CREATED',tx=>tx.job.create({data:fields(org.id)})),/FORBIDDEN/);
+ ok(true,'Persisted foreign actor cannot mutate the tenant');
+ const saga=await db.organization.upsert({where:{slug:'st-aloysius'},create:{name:'Synthetic SAGA',slug:'st-aloysius'},update:{}});
+ await service.grantSagaPro(db,administrator.id,saga.id);
+ subscription=await db.organizationSubscription.findUniqueOrThrow({where:{organizationId:saga.id}});
+ ok(subscription.source==='COMPLIMENTARY'&&activeJobLimit(subscription)===null&&subscription.endsAt.getUTCFullYear()===subscription.startsAt.getUTCFullYear()+2,'SAGA two-year complimentary Pro has unlimited jobs and no payment claim');
+ ok(!await db.subscriptionOrder.count({where:{organizationId:org.id}}),'Plan activation and enforcement create no fake payment orders');
+ require('node:fs').writeFileSync('docs/final-plan-release/verification/final-plan-scenarios.json',JSON.stringify({passed:true,realDatabase:true,checks},null,2));
+}
+main().catch(error=>{console.error('FINAL_PLAN_TEST_FAILURE',error.code||error.name,String(error.message).replace(/postgres(?:ql)?:\/\/\S+/gi,'[REDACTED]'));process.exitCode=1;}).finally(async()=>{Module._load=original;await db.$disconnect();});

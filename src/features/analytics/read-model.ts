@@ -14,7 +14,7 @@ type AttendanceAggregate = { attendanceStatus: string; disposition: string; coun
 
 // Internal, read-only database entry point. The session comes from the server guard,
 // never request parameters. Revalidate the persisted actor before reading any HR data.
-export async function readAnalytics(session: UserSessionPayload | null, db: Prisma.TransactionClient, filters: AnalyticsFilters = {}, asOf = new Date()) {
+async function readAnalyticsData(session: UserSessionPayload | null, db: Prisma.TransactionClient, filters: AnalyticsFilters = {}, asOf = new Date(), level: 'BASIC'|'FULL' = 'FULL') {
   if (!canViewAnalytics(session) || !session) throw new AnalyticsAccessError('Analytics access is unavailable.');
   // A single joined read still validates the persisted actor on every invocation.
   const [actor] = await db.$queryRaw<Array<{ organizationId: string; timeZone: string }>>(Prisma.sql`
@@ -44,6 +44,10 @@ export async function readAnalytics(session: UserSessionPayload | null, db: Pris
   // Type filters consistently use CURRENT employment; historical type is not guessed.
   // Only a category filter requires the current-employment cohort before aggregates.
   const filteredEmployees = range.category ? (await employeesPromise).filter(employee => employee.employmentRecords[0]?.employmentCategory === range.category) : null;
+  if (level === 'BASIC') {
+    const cohort = filteredEmployees ?? await employeesPromise;
+    return { level:'BASIC' as const,range,timeZone:actor.timeZone,workforce:summarizeWorkforce(cohort,range) };
+  }
   const employeeScope: Prisma.EmployeeWhereInput = { organizationId, ...(filteredEmployees ? { id: { in: filteredEmployees.map(employee => employee.id) } } : {}) };
   const attendanceWhere: Prisma.DailyAttendanceRecordWhereInput = {
     organizationId, employee: employeeScope, attendanceDate: { gte: range.fromDate, lte: range.toDate },
@@ -110,9 +114,7 @@ export async function readAnalytics(session: UserSessionPayload | null, db: Pris
 
   const cohort = filteredEmployees ?? employees;
   const attendanceGroups = attendanceTotals.map(group => ({ ...group, _count: { _all: Number(group.count) } }));
-  const countStatus = (status: EmployeeStatus) => cohort.filter(employee => employee.employeeStatus === status).length;
   const active = cohort.filter(employee => employee.employeeStatus === 'ACTIVE');
-  const categoryCount = (category: EmploymentCategory) => active.filter(employee => employee.employmentRecords[0]?.employmentCategory === category).length;
   const probationCases = active.filter(employee => {
     const employment = employee.employmentRecords[0];
     return employment?.employmentStatus === 'PROBATIONARY' && employment.probation?.probationStatus === 'ACTIVE' && employment.probation.decision === 'PENDING';
@@ -151,16 +153,10 @@ export async function readAnalytics(session: UserSessionPayload | null, db: Pris
   }).sort((a, b) => a.date.localeCompare(b.date) || a.employeeNumber.localeCompare(b.employeeNumber));
 
   return {
+    level: 'FULL' as const,
     range: { preset: range.preset, from: range.from, to: range.to, category: range.category ?? 'ALL' },
     asOf: asOf.toISOString(), timeZone: actor.timeZone,
-    workforce: {
-      active: active.length, teaching: categoryCount('TEACHING'), nonTeaching: categoryCount('NON_TEACHING'),
-      probationary: active.filter(employee => employee.employmentRecords[0]?.employmentStatus === 'PROBATIONARY').length,
-      regular: active.filter(employee => employee.employmentRecords[0]?.employmentStatus === 'REGULAR').length,
-      unclassified: active.filter(employee => !employee.employmentRecords[0]).length,
-      inactive: countStatus('INACTIVE'), separated: countStatus('SEPARATED'),
-      conversions: cohort.filter(employee => employee.createdAt >= range.fromInstant && employee.createdAt < range.throughInstant).length,
-    },
+    workforce: summarizeWorkforce(cohort,range),
     attendance: {
       recordedDays: attendanceGroups.reduce((sum, group) => sum + group._count._all, 0),
       presentDays: normalCount('PRESENT'), absentDays: normalCount('ABSENT'), incompleteDays: normalCount('INCOMPLETE'),
@@ -171,7 +167,8 @@ export async function readAnalytics(session: UserSessionPayload | null, db: Pris
       finalizedWorkdays,
       lateLeaders: lateLeaders.map(group => {
         const employee = employees.find(item => item.id === group.employeeId)!;
-        return { employeeNumber: employee.employeeNumber, employeeName: `${employee.firstName} ${employee.lastName}`, count: group._count.employeeId, lateMinutes: group._sum.lateSeconds == null ? null : Number((group._sum.lateSeconds / 60).toFixed(1)) };
+        return {
+          employeeNumber: employee.employeeNumber, employeeName: `${employee.firstName} ${employee.lastName}`, count: group._count.employeeId, lateMinutes: group._sum.lateSeconds == null ? null : Number((group._sum.lateSeconds / 60).toFixed(1)) };
       }),
     },
     leave: {
@@ -202,4 +199,28 @@ export async function readAnalytics(session: UserSessionPayload | null, db: Pris
   };
 }
 
+function summarizeWorkforce(cohort: Array<{employeeStatus:EmployeeStatus;createdAt:Date;employmentRecords:Array<{employmentCategory:EmploymentCategory;employmentStatus:string}>}>,range:{fromInstant:Date;throughInstant:Date}) {
+  const countStatus=(status:EmployeeStatus)=>cohort.filter(employee=>employee.employeeStatus===status).length;
+  const active=cohort.filter(employee=>employee.employeeStatus==='ACTIVE');
+  const categoryCount=(category:EmploymentCategory)=>active.filter(employee=>employee.employmentRecords[0]?.employmentCategory===category).length;
+  return {
+      active: active.length, teaching: categoryCount('TEACHING'), nonTeaching: categoryCount('NON_TEACHING'),
+      probationary: active.filter(employee => employee.employmentRecords[0]?.employmentStatus === 'PROBATIONARY').length,
+      regular: active.filter(employee => employee.employmentRecords[0]?.employmentStatus === 'REGULAR').length,
+      unclassified: active.filter(employee => !employee.employmentRecords[0]).length,
+      inactive: countStatus('INACTIVE'), separated: countStatus('SEPARATED'),
+      conversions: cohort.filter(employee => employee.createdAt >= range.fromInstant && employee.createdAt < range.throughInstant).length,
+  };
+}
+
+export async function readAnalytics(session:UserSessionPayload|null,db:Prisma.TransactionClient,filters:AnalyticsFilters={},asOf=new Date()) {
+  const result=await readAnalyticsData(session,db,filters,asOf,'FULL');
+  if(result.level!=='FULL')throw new AnalyticsAccessError('Full analytics is unavailable.');
+  return result;
+}
+export async function readBasicAnalytics(session:UserSessionPayload|null,db:Prisma.TransactionClient,filters:AnalyticsFilters={},asOf=new Date()) {
+  const result=await readAnalyticsData(session,db,filters,asOf,'BASIC');
+  if(result.level!=='BASIC')throw new AnalyticsAccessError('Basic analytics is unavailable.');
+  return result;
+}
 export type AnalyticsViewModel = Awaited<ReturnType<typeof readAnalytics>>;

@@ -1,0 +1,38 @@
+{
+  "capturedAt": "2026-11-08T16:42:40.799Z",
+  "deploymentId": "dpl_E9K92xTtnPy3CrCs7gufEDC3HhkN",
+  "productionAlias": "work-pulse-omega.vercel.app",
+  "state": "READY",
+  "target": "production",
+  "gitCommit": "f79f8fb698bc8515150422a3f4197dc542776a1e",
+  "gitBranch": "main",
+  "buildCompleted": true,
+  "runtimeWindow": "30m",
+  "runtimeErrors": {
+    "status": "fulfilled",
+    "value": {
+      "content": [
+        {
+          "type": "text",
+          "text": "## Runtime Errors\n\n**Project:** prj_O3lYRwFRzfShyGDhCzek5v0gW4pr\n\nNo runtime errors found in the selected time range."
+        }
+      ],
+      "structuredContent": null,
+      "isError": false
+    }
+  },
+  "errorFatalLogCounts": {
+    "status": "fulfilled",
+    "value": {
+      "content": [
+        {
+          "type": "text",
+          "text": "## Runtime Log Counts\n\n**Project:** prj_O3lYRwFRzfShyGDhCzek5v0gW4pr\n**Grouped by:** requestPath\n**Showing:** Top 25 groups by log count; this may omit other groups.\n\n| requestPath | count |\n|---|---|"
+        }
+      ],
+      "structuredContent": null,
+      "isError": false
+    }
+  },
+  "authenticatedWorkflowsVerified": false
+}

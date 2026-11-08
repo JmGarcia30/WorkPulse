@@ -1,4 +1,5 @@
 import type { SubscriptionBillingInterval } from '@prisma/client';
+import { approvedPlans } from './approved-plans';
 
 export function isCurrentEntitlement(
   record: { status: string; startsAt: Date | null; endsAt: Date | null } | null,
@@ -35,8 +36,16 @@ export const paidFeatureLabels: Record<PaidFeature, string> = {
 export function hasFeature(record: {
   status: string; startsAt: Date | null; endsAt: Date | null; legacyAccess: boolean;
   plan: Record<PaidFeature, boolean>;
+  planTier?: 'BASIC' | 'PRO';
 } | null, feature: PaidFeature, now = new Date()) {
-  return !!record && (record.legacyAccess || (isCurrentEntitlement(record, now) && record.plan[feature]));
+  return !!record && (record.legacyAccess || (isCurrentEntitlement(record, now) &&
+    (record.planTier ? approvedPlans[record.planTier][feature] : record.plan[feature])));
+}
+
+// Pending requests never participate in this decision. Existing over-limit jobs
+// are retained; the mutation boundary blocks only increases in published jobs.
+export function activeJobLimit(record: { planTier: 'BASIC'|'PRO'; status:string; startsAt:Date|null; endsAt:Date|null; legacyAccess:boolean } | null, now=new Date()) {
+  return record?.planTier === 'PRO' && (isCurrentEntitlement(record,now) || record.legacyAccess) ? null : approvedPlans.BASIC.maxActiveJobs;
 }
 
 export function effectiveSubscriptionStatus(record: Parameters<typeof isCurrentEntitlement>[0], now = new Date()) {

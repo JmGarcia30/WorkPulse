@@ -1,0 +1,144 @@
+[WorkPulse timing] branding read: 155.2ms
+[WorkPulse timing] tenant resolution: 157.3ms
+[WorkPulse timing] branding read: 745.7ms
+[WorkPulse timing] tenant resolution: 745.9ms
+[WorkPulse timing] session validation: 490.9ms
+PASS Authorized HR registers an existing employee through the real server action
+PASS Direct registration creates no applicant, application, job or hiring records and ignores forged tenant input
+PASS Required employment details and registration audit commit with the employee
+PASS Employee has exactly one securely linked invited account and no preset password
+PASS Registration does not invent payroll compensation, statutory setup or opening balances
+PASS Activation bearer is not returned in the registration response
+PASS Activation email identifies the organization workspace and retains the token only in the fragment
+PASS Activation service rejects a valid invitation used for another organization
+PASS Shared-path employee invitations resolve an unauthenticated tenant activation route
+PASS SAGA employee activation reuses the existing protected workspace routing
+PASS Repeated registration key returns the original employee without a second invitation
+PASS Changed replay payload and case-insensitive duplicate email/number are rejected
+PASS Concurrent submissions create exactly one employee/account
+PASS Existing activation service is single-use and the normal login authenticates the account
+[WorkPulse timing] branding read: 74.7ms
+[WorkPulse timing] tenant resolution: 75.0ms
+[WorkPulse timing] session validation: 444.8ms
+PASS Activated employee accesses only the linked personal ESS record
+[WorkPulse timing] branding read: 75.4ms
+[WorkPulse timing] tenant resolution: 75.7ms
+PASS Tenant session cannot be used in another workspace
+[WorkPulse timing] branding read: 74.6ms
+[WorkPulse timing] tenant resolution: 74.9ms
+[WorkPulse timing] branding read: 161.4ms
+[WorkPulse timing] tenant resolution: 161.6ms
+[WorkPulse timing] session validation: 241.8ms
+PASS Regular HR cannot assign HR_ADMIN
+[WorkPulse timing] branding read: 73.6ms
+[WorkPulse timing] tenant resolution: 73.8ms
+[WorkPulse timing] branding read: 80.7ms
+[WorkPulse timing] tenant resolution: 81.1ms
+[WorkPulse timing] session validation: 222.3ms
+PASS Regular HR cannot assign FINANCE_OFFICER
+[WorkPulse timing] branding read: 80.8ms
+[WorkPulse timing] tenant resolution: 81.0ms
+[WorkPulse timing] branding read: 84.9ms
+[WorkPulse timing] tenant resolution: 85.3ms
+[WorkPulse timing] session validation: 246.7ms
+PASS Regular HR cannot assign ORGANIZATION_HEAD
+[WorkPulse timing] branding read: 73.5ms
+[WorkPulse timing] tenant resolution: 73.6ms
+[WorkPulse timing] branding read: 84.2ms
+[WorkPulse timing] tenant resolution: 84.5ms
+[WorkPulse timing] session validation: 226.3ms
+PASS Regular HR cannot assign ORGANIZATION_ADMIN
+[WorkPulse timing] branding read: 73.9ms
+[WorkPulse timing] tenant resolution: 74.1ms
+[WorkPulse timing] branding read: 80.4ms
+[WorkPulse timing] tenant resolution: 80.5ms
+[WorkPulse timing] session validation: 244.0ms
+PASS Regular HR cannot change access roles even when manipulating the server action
+[WorkPulse timing] branding read: 74.3ms
+[WorkPulse timing] tenant resolution: 74.4ms
+[WorkPulse timing] branding read: 81.4ms
+[WorkPulse timing] tenant resolution: 81.8ms
+[WorkPulse timing] session validation: 222.7ms
+PASS Organization Administrator changes the role and revokes prior sessions atomically
+[WorkPulse timing] branding read: 74.2ms
+[WorkPulse timing] tenant resolution: 74.5ms
+[WorkPulse timing] branding read: 80.1ms
+[WorkPulse timing] tenant resolution: 80.2ms
+[WorkPulse timing] session validation: 401.5ms
+[WorkPulse timing] branding read: 80.1ms
+[WorkPulse timing] tenant resolution: 80.3ms
+[WorkPulse timing] session validation: 321.0ms
+PASS HR administrator uses the same account for HR access and personal ESS
+PASS Existing disable-account action cannot let regular HR disable a management-role account
+[WorkPulse timing] branding read: 160.7ms
+[WorkPulse timing] tenant resolution: 160.9ms
+[WorkPulse timing] session validation: 322.8ms
+PASS HR_ADMIN activation and personal ESS use existing authentication
+[WorkPulse timing] branding read: 80.1ms
+[WorkPulse timing] tenant resolution: 80.3ms
+[WorkPulse timing] session validation: 322.8ms
+PASS FINANCE_OFFICER activation and personal ESS use existing authentication
+[WorkPulse timing] branding read: 80.9ms
+[WorkPulse timing] tenant resolution: 81.1ms
+[WorkPulse timing] session validation: 322.2ms
+[WorkPulse timing] branding read: 80.6ms
+[WorkPulse timing] tenant resolution: 80.8ms
+[WorkPulse timing] session validation: 374.6ms
+PASS FINANCE_OFFICER receives no HR/payroll/unfinished workspace privileges
+[WorkPulse timing] branding read: 82.0ms
+[WorkPulse timing] tenant resolution: 83.6ms
+[WorkPulse timing] branding read: 147.7ms
+[WorkPulse timing] tenant resolution: 147.9ms
+[WorkPulse timing] session validation: 295.6ms
+[WorkPulse timing] branding read: 74.1ms
+[WorkPulse timing] tenant resolution: 74.4ms
+[WorkPulse timing] branding read: 80.3ms
+[WorkPulse timing] tenant resolution: 80.4ms
+[WorkPulse timing] session validation: 320.5ms
+[WorkPulse timing] branding read: 85.5ms
+[WorkPulse timing] tenant resolution: 85.6ms
+[WorkPulse timing] session validation: 444.1ms
+PASS ORGANIZATION_HEAD activation and personal ESS use existing authentication
+[WorkPulse timing] branding read: 81.3ms
+[WorkPulse timing] tenant resolution: 81.5ms
+[WorkPulse timing] session validation: 321.5ms
+[WorkPulse timing] branding read: 80.4ms
+[WorkPulse timing] tenant resolution: 80.5ms
+[WorkPulse timing] session validation: 325.9ms
+PASS ORGANIZATION_HEAD receives no HR/payroll/unfinished workspace privileges
+[WorkPulse timing] branding read: 74.5ms
+[WorkPulse timing] tenant resolution: 74.7ms
+[WorkPulse timing] branding read: 81.4ms
+[WorkPulse timing] tenant resolution: 81.7ms
+[WorkPulse timing] session validation: 293.7ms
+[WorkPulse timing] branding read: 74.4ms
+[WorkPulse timing] tenant resolution: 74.7ms
+[WorkPulse timing] branding read: 80.9ms
+[WorkPulse timing] tenant resolution: 81.1ms
+[WorkPulse timing] session validation: 321.1ms
+PASS Pending invitations cannot be promoted and regular HR cannot rotate management invitation tokens
+PASS Expired and replaced activation tokens cannot activate an account
+PASS Existing invitation resend still works for ordinary employees
+PASS Inactive employee registration creates a disabled account and sends no invitation
+PASS Explicit existing-HR linking preserves one account, password and access role
+[WorkPulse timing] branding read: 81.1ms
+[WorkPulse timing] tenant resolution: 81.3ms
+[WorkPulse timing] session validation: 324.3ms
+PASS Previously existing HR account gains only its explicitly linked personal ESS record
+[WorkPulse timing] branding read: 147.7ms
+[WorkPulse timing] tenant resolution: 147.8ms
+[WorkPulse timing] branding read: 160.0ms
+[WorkPulse timing] tenant resolution: 160.3ms
+[WorkPulse timing] session validation: 223.1ms
+PASS Organization Administrator can link an existing account to an employee already in the directory
+PASS Existing-employee linking creates no duplicate user and preserves the password
+PASS Invalid or cross-tenant linking rolls back employee, employment and account together
+PASS Server and database reject cross-tenant role changes and linked-user reassignment
+PASS Role changes preserve the employee link and append before/after audit events
+PASS Existing append-only account audit protection applies to role changes
+PASS Email failure retains the committed invited account with a recoverable warning
+PASS Recruitment conversion still creates one employee and idempotently preserves source/offer/probation records
+PASS Recruitment numbering skips employee numbers already imported by direct registration
+PASS Converted employee retains the existing hiring provenance and probation workflow
+PASS Existing recruitment-created employee reuses the same account provisioning service
+{"passed":true,"scenarios":46}

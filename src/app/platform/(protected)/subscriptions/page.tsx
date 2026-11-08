@@ -1,3 +1,4 @@
+import { approvedPlan } from '@/features/subscriptions/approved-plans';
 ﻿import Link from 'next/link';
 import { prisma } from '@/lib/db/prisma';
 import { requirePlatformAdministrator } from '@/features/platform-admin/session';
@@ -19,8 +20,8 @@ export default async function PlatformSubscriptionsPage({ searchParams }: { sear
   return <div className="platform-section-gap">
     <div className="platform-page-heading"><div><p className="platform-eyebrow">SaaS subscriptions</p><h1 className="platform-title">Subscriptions</h1>
       <p className="platform-description">Configure Basic and Pro, review requests, and manage organization subscription terms.</p></div><Link className="platform-soft-link" href="/platform">Back to overview</Link></div>
-    <p className="platform-muted-box">Administrator approvals and complimentary grants activate access without recording payment. Final prices, feature inclusions and employee limits can be supplied later.</p>
-    <div className="grid gap-5 lg:grid-cols-2">{plans.map(plan => <SubscriptionPlanEditor key={plan.tier} plan={plan}/>)}</div>
+    <p className="platform-muted-box">Administrator approvals and complimentary grants activate access without recording payment. Approved Basic/Pro inclusions apply without employee limits. Prices remain unset until decided.</p>
+    <div className="grid gap-5 lg:grid-cols-2">{plans.map(plan => <SubscriptionPlanEditor key={plan.tier} plan={approvedPlan(plan)}/>)}</div>
     <section className="platform-card p-6"><h2 className="platform-card-title">SAGA complimentary agreement</h2>
       <p className="platform-card-description mt-2">Pro for two calendar years from grant. No payment or automatic renewal.</p>
       {saga ? <><p className="mt-3 text-sm">Current: {saga.subscription?.planTier ?? 'Unassigned'} / {effectiveSubscriptionStatus(saga.subscription)}. Expiration: {saga.subscription?.endsAt?.toISOString().slice(0,10) ?? 'No fixed date'}</p>

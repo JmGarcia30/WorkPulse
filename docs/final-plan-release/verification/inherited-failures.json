@@ -1,0 +1,24 @@
+{
+  "baseCommit": "f79f8fb698bc8515150422a3f4197dc542776a1e",
+  "failures": [
+    {
+      "suite": "scripts/test-h3-attendance.ts",
+      "initialResult": "Failed line 102 in the reused schema because attendanceEvent.count() is schema-wide and existing fixtures were present.",
+      "resolution": "Unchanged suite passed all 39 assertions in a fresh, migrated disposable schema on the same verified nonproduction branch.",
+      "evidence": "attendance-clean-results.json",
+      "applicationChanged": false
+    },
+    {
+      "suite": "scripts/test-report-export-format.cjs",
+      "exitCode": 1,
+      "assertion": "Line 19 expects Response.text() to equal the original BOM-prefixed CSV; Response.text() strips the UTF-8 BOM.",
+      "actual": "CSV text without the initial BOM",
+      "expected": "CSV text with the initial BOM",
+      "unchangedTestBlob": "bee929ae568598a9bab34364c1c60fed25378599",
+      "unchangedExportUtilityBlob": "5e10738633dc1874d02dfb0e6365b23dc5da49df",
+      "baselineEvidence": "git rev-parse f79f8fb:<path> and git hash-object <path> returned the same respective blobs for both files.",
+      "applicationChanged": false,
+      "coverage": "Real Basic employee CSV and attendance CSV/PDF endpoints return 200. Pro analytics PDF returns 200, Basic analytics PDF returns 403."
+    }
+  ]
+}

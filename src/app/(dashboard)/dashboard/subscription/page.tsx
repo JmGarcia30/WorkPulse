@@ -29,8 +29,8 @@ export default async function OrganizationSubscriptionPage() {
     <div className="grid gap-4 md:grid-cols-2">{plans.map(plan => <section key={plan.tier} className="wp-card p-5">
       <h2 className="text-xl font-bold">{plan.name}</h2><p className="mt-2 text-sm">{plan.description}</p>
       <p className="mt-4 text-sm">Monthly: {php(plan.monthlyPriceMinor)} / Yearly: {php(plan.yearlyPriceMinor)}</p>
-      <p className="mt-2 text-sm">Employee limit: {plan.maxEmployees ?? 'Awaiting definition'} (enforcement pending final rules)</p>
-      <ul className="mt-4 space-y-1 text-sm"><li>Core workforce features remain available during transition.</li>
+      <p className="mt-2 text-sm">No employee limits. Active job postings: {plan.maxActiveJobs ?? 'Unlimited'}.</p>
+      <ul className="mt-4 space-y-1 text-sm"><li>Core HR, manual recruitment, attendance, payroll, leave, ESS and exit management. Standard reports and branding.</li>
         {(Object.entries(paidFeatureLabels) as [PaidFeature,string][]).filter(([key]) => plan[key]).map(([key,label]) => <li key={key}>{label}</li>)}</ul>
       {!plan.active && <p className="mt-3 text-sm">Requests for this plan are currently paused.</p>}
       <SubscriptionRequestForm tier={plan.tier} disabled={!plan.active || pending}/>
@@ -43,6 +43,6 @@ export default async function OrganizationSubscriptionPage() {
     <section className="wp-card p-5"><h2 className="text-lg font-bold">Subscription history</h2>
       <ul className="mt-3 space-y-2 text-sm">{events.map(event => <li key={event.id}>{event.createdAt.toISOString()} — {event.action.replaceAll('_',' ')}</li>)}</ul>
       {!events.length && <p className="mt-3 text-sm">No events yet.</p>}</section>
-    <p className="text-xs text-[var(--wp-text-muted)]">Pricing and final plan definitions are awaiting approval. Requests and grants do not create charges or automatic renewals. Employee and payroll records are retained after expiration.</p>
+    <p className="text-xs text-[var(--wp-text-muted)]">Prices are unset. Basic includes workforce summary analytics; Pro includes full analytics and the existing analytics PDF report/export. Requests and grants do not create charges or automatic renewals. Employee and payroll records are retained after expiration.</p>
   </div>;
 }

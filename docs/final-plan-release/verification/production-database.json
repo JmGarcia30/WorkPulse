@@ -1,0 +1,83 @@
+{
+  "capturedAt": "2026-11-08T16:42:08.087Z",
+  "identity": {
+    "project": "late-block-61364102",
+    "branch": "br-hidden-violet-azjl3vam",
+    "endpoint": "ep-weathered-mouse-azpx765h",
+    "database": "neondb",
+    "projectVerification": "provider project/branch/compute mapping checked separately"
+  },
+  "readOnly": true,
+  "successfulMigrations": 47,
+  "committedMigrations": 47,
+  "pending": [],
+  "checksumMismatches": [],
+  "unfinished": [],
+  "columns": [
+    {
+      "table_name": "OrganizationSubscription",
+      "column_name": "legacyAccess",
+      "is_nullable": "NO"
+    },
+    {
+      "table_name": "Employee",
+      "column_name": "sourceApplicationId",
+      "is_nullable": "YES"
+    },
+    {
+      "table_name": "Employee",
+      "column_name": "applicantId",
+      "is_nullable": "YES"
+    },
+    {
+      "table_name": "Employee",
+      "column_name": "registrationKey",
+      "is_nullable": "YES"
+    }
+  ],
+  "roles": [
+    "ORGANIZATION_ADMIN",
+    "HR_ADMIN",
+    "HIRING_MANAGER",
+    "EMPLOYEE",
+    "FINANCE_OFFICER",
+    "ORGANIZATION_HEAD"
+  ],
+  "models": [
+    "EmployeeAccount",
+    "StaffSession",
+    "OrganizationSubscription",
+    "SubscriptionEvent",
+    "SubscriptionPlan",
+    "SubscriptionRequest"
+  ],
+  "accountAvailability": {
+    "hr": 5,
+    "activeEmployee": 4,
+    "platform": 1
+  },
+  "planCatalog": [
+    {
+      "tier": "BASIC",
+      "monthlyPriceMinor": null,
+      "yearlyPriceMinor": null,
+      "maxEmployees": null,
+      "aiResumeParsing": false,
+      "advancedAnalytics": false,
+      "gmailIntegration": false,
+      "customBranding": false,
+      "active": true
+    },
+    {
+      "tier": "PRO",
+      "monthlyPriceMinor": null,
+      "yearlyPriceMinor": null,
+      "maxEmployees": null,
+      "aiResumeParsing": false,
+      "advancedAnalytics": false,
+      "gmailIntegration": false,
+      "customBranding": false,
+      "active": true
+    }
+  ]
+}

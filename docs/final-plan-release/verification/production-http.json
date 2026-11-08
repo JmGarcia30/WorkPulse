@@ -1,0 +1,110 @@
+{
+  "capturedAt": "2026-11-08T16:42:10.837Z",
+  "authenticated": false,
+  "checks": [
+    {
+      "path": "/",
+      "status": 200,
+      "location": null,
+      "html": true,
+      "renderedServerError": false,
+      "elapsedMs": 1349
+    },
+    {
+      "path": "/saga/login",
+      "status": 200,
+      "location": null,
+      "html": true,
+      "renderedServerError": false,
+      "elapsedMs": 2646
+    },
+    {
+      "path": "/platform/login",
+      "status": 200,
+      "location": null,
+      "html": true,
+      "renderedServerError": false,
+      "elapsedMs": 1344
+    },
+    {
+      "path": "/saga/dashboard/employees",
+      "status": 307,
+      "location": "/saga/login?callbackUrl=%2Fsaga%2Fdashboard%2Femployees",
+      "html": false,
+      "renderedServerError": false,
+      "elapsedMs": 1248
+    },
+    {
+      "path": "/saga/dashboard/employees/new",
+      "status": 307,
+      "location": "/saga/login?callbackUrl=%2Fsaga%2Fdashboard%2Femployees%2Fnew",
+      "html": false,
+      "renderedServerError": false,
+      "elapsedMs": 1236
+    },
+    {
+      "path": "/saga/employee",
+      "status": 307,
+      "location": "/saga/login?callbackUrl=%2Fsaga%2Femployee",
+      "html": false,
+      "renderedServerError": false,
+      "elapsedMs": 1243
+    },
+    {
+      "path": "/saga/employee/payroll",
+      "status": 307,
+      "location": "/saga/login?callbackUrl=%2Fsaga%2Femployee%2Fpayroll",
+      "html": false,
+      "renderedServerError": false,
+      "elapsedMs": 1215
+    },
+    {
+      "path": "/saga/dashboard/payroll",
+      "status": 307,
+      "location": "/saga/login?callbackUrl=%2Fsaga%2Fdashboard%2Fpayroll",
+      "html": false,
+      "renderedServerError": false,
+      "elapsedMs": 1345
+    },
+    {
+      "path": "/saga/dashboard/leave",
+      "status": 307,
+      "location": "/saga/login?callbackUrl=%2Fsaga%2Fdashboard%2Fleave",
+      "html": false,
+      "renderedServerError": false,
+      "elapsedMs": 1242
+    },
+    {
+      "path": "/saga/dashboard/attendance",
+      "status": 307,
+      "location": "/saga/login?callbackUrl=%2Fsaga%2Fdashboard%2Fattendance",
+      "html": false,
+      "renderedServerError": false,
+      "elapsedMs": 1358
+    },
+    {
+      "path": "/saga/attendance-kiosk",
+      "status": 200,
+      "location": null,
+      "html": true,
+      "renderedServerError": false,
+      "elapsedMs": 1403
+    },
+    {
+      "path": "/saga/dashboard/subscription",
+      "status": 307,
+      "location": "/saga/login?callbackUrl=%2Fsaga%2Fdashboard%2Fsubscription",
+      "html": false,
+      "renderedServerError": false,
+      "elapsedMs": 1221
+    },
+    {
+      "path": "/platform/subscriptions",
+      "status": 307,
+      "location": "/platform/login",
+      "html": true,
+      "renderedServerError": false,
+      "elapsedMs": 2382
+    }
+  ]
+}

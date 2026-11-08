@@ -1,0 +1,12 @@
+{
+  "productionAccessed": false,
+  "branch": "br-damp-fog-azmmxhga",
+  "payrollRecoveryPreserved": true,
+  "results": [
+    {
+      "name": "subscription-schema-migrations",
+      "exitCode": 0,
+      "elapsedMs": 10825
+    }
+  ]
+}

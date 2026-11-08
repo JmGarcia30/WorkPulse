@@ -1,4 +1,4 @@
-import { notFound } from 'next/navigation';
+import { notFound, redirect } from 'next/navigation';
 import Link from 'next/link';
 import { requireBackOfficeContext } from '@/lib/auth/guards';
 import { prisma } from '@/lib/db/prisma';
@@ -19,12 +19,14 @@ import { DraftJobDeleteForm } from '@/features/account-security/draft-job-form';
 
 interface JobDetailPageProps {
   params: Promise<{ jobId: string }>;
+  searchParams: Promise<{ error?: string }>;
 }
 
-export default async function JobDetailPage({ params }: JobDetailPageProps) {
+export default async function JobDetailPage({ params, searchParams }: JobDetailPageProps) {
   const user = await requireBackOfficeContext();
 
   const { jobId } = await params;
+  const { error } = await searchParams;
 
   // Multi-tenant check: Verify job belongs to user's Organization
   const job = await prisma.job.findFirst({
@@ -48,7 +50,9 @@ export default async function JobDetailPage({ params }: JobDetailPageProps) {
 
   async function handlePublish() {
     'use server';
-    await publishJobAction(jobId);
+    const result = await publishJobAction(jobId);
+    if (result.error) redirect(`/dashboard/hiring/jobs/${jobId}?error=${encodeURIComponent(result.error)}`);
+    redirect(`/dashboard/hiring/jobs/${jobId}`);
   }
 
   async function handleClose() {
@@ -58,6 +62,7 @@ export default async function JobDetailPage({ params }: JobDetailPageProps) {
 
   return (
     <div className="min-w-0 max-w-4xl mx-auto space-y-6 [overflow-wrap:anywhere]">
+      {error && <p role="alert" className="wp-alert-danger">{error.slice(0, 400)}</p>}
       {/* Header Bar with Breadcrumb and Title */}
       <HiringPageHeader
         breadcrumbs={[

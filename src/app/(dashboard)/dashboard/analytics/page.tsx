@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import { redirect } from 'next/navigation';
 import type { ReactNode } from 'react';
-import { getAnalytics } from '@/features/analytics/queries';
+import { getAnalyticsPageData } from '@/features/analytics/queries';
 import { AnalyticsFilterError, type AnalyticsFilters } from '@/features/analytics/date-range';
 import { getBackOfficeReadContext } from '@/lib/auth/guards';
 import { canViewAnalytics } from '@/lib/permissions/rbac';
@@ -31,12 +31,21 @@ export default async function AnalyticsPage({ searchParams }: { searchParams: Pr
   const params = await searchParams;
   let data;
   let filterError: string | null = null;
-  try { data = await getAnalytics(params); }
+  try { data = await getAnalyticsPageData(params); }
   catch (error) {
     if (!(error instanceof AnalyticsFilterError)) throw error;
     filterError = error.message;
-    data = await getAnalytics();
+    data = await getAnalyticsPageData();
   }
+  if(data.level==='BASIC')return <div className="space-y-5">
+    <header><p className="wp-eyebrow">Workforce insights</p><h1 className="wp-page-title mt-1">HR Analytics</h1><p className="mt-2 text-sm">Basic analytics: workforce summary for {data.range.from} to {data.range.to}. Dates use {data.timeZone}.</p></header>
+    {filterError&&<p role="alert" className="wp-alert-danger">{filterError} Showing This Month instead.</p>}
+    <Section title="Workforce Overview" note="Current employee and employment status, using the existing workforce summary calculation."><Summary items={[
+      ['Total employees',data.workforce.active + data.workforce.inactive + data.workforce.separated],['Active',data.workforce.active],['Inactive',data.workforce.inactive],['Separated',data.workforce.separated],
+      ['Teaching',data.workforce.teaching],['Non-teaching',data.workforce.nonTeaching],['Probationary',data.workforce.probationary],['Regular',data.workforce.regular],['New employees in range',data.workforce.conversions],
+    ]}/></Section>
+    <p className="text-sm">Pro includes full attendance, leave, payroll and probation analytics and the existing analytics PDF report/export. Standard employee and attendance reports remain available in their modules.</p>
+  </div>;
   const { range, workforce, attendance, leave, payroll, employment } = data;
   const presetLink = (preset: string) => `/dashboard/analytics?${new URLSearchParams({ preset, category: range.category })}`;
   const exportLink = `/api/reports/analytics?${new URLSearchParams({

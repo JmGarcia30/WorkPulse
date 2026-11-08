@@ -1,0 +1,126 @@
+PASS BASIC saves Gmail, no employee limits and unset prices
+PASS BASIC saves approved premium permissions
+PASS PRO saves Gmail, no employee limits and unset prices
+PASS PRO saves approved premium permissions
+PASS Stale catalog cannot override approved Basic permissions
+PASS Catalog read model shows final limits and permissions without rewriting stored rows
+PASS Basic allows the first five published jobs
+PASS Sixth publication rolls back job and success audit atomically
+[WorkPulse timing] branding read: 162.1ms
+[WorkPulse timing] tenant resolution: 163.2ms
+[WorkPulse timing] session validation: 501.3ms
+PASS Real publish action returns a useful quota error
+[WorkPulse timing] branding read: 80.7ms
+[WorkPulse timing] tenant resolution: 81.0ms
+[WorkPulse timing] branding read: 153.5ms
+[WorkPulse timing] tenant resolution: 153.7ms
+[WorkPulse timing] session validation: 460.6ms
+[WorkPulse timing] branding read: 77.1ms
+[WorkPulse timing] tenant resolution: 77.4ms
+[WorkPulse timing] session validation: 229.8ms
+[WorkPulse timing] branding read: 77.6ms
+[WorkPulse timing] tenant resolution: 78.0ms
+[WorkPulse timing] branding read: 80.6ms
+[WorkPulse timing] tenant resolution: 80.8ms
+[WorkPulse timing] session validation: 241.3ms
+PASS Existing job detail form displays publication-limit feedback
+[WorkPulse timing] branding read: 80.5ms
+[WorkPulse timing] tenant resolution: 80.7ms
+[WorkPulse timing] session validation: 240.8ms
+PASS Real create action blocks direct published creation with quota feedback
+[WorkPulse timing] branding read: 80.8ms
+[WorkPulse timing] tenant resolution: 81.0ms
+[WorkPulse timing] session validation: 240.7ms
+PASS Draft creation remains available at the limit
+[WorkPulse timing] branding read: 80.9ms
+[WorkPulse timing] tenant resolution: 81.2ms
+[WorkPulse timing] session validation: 241.0ms
+PASS Republishing an already published job does not consume another slot
+[WorkPulse timing] branding read: 160.3ms
+[WorkPulse timing] tenant resolution: 160.5ms
+[WorkPulse timing] session validation: 240.7ms
+PASS Closing a posting frees a slot
+[WorkPulse timing] branding read: 81.4ms
+[WorkPulse timing] tenant resolution: 81.7ms
+[WorkPulse timing] branding read: 152.8ms
+[WorkPulse timing] tenant resolution: 153.0ms
+[WorkPulse timing] session validation: 245.9ms
+[WorkPulse timing] session validation: 240.6ms
+PASS Concurrent publishers competing for the fifth slot admit exactly one
+PASS Concurrent publication cannot exceed the Basic limit
+[WorkPulse timing] branding read: 124.9ms
+[WorkPulse timing] tenant resolution: 125.1ms
+[WorkPulse timing] session validation: 228.8ms
+PASS Forged cross-tenant job ID cannot be published
+PASS Another tenant has its own publishing allowance
+[WorkPulse timing] branding read: 77.4ms
+[WorkPulse timing] tenant resolution: 77.6ms
+[WorkPulse timing] session validation: 230.0ms
+PASS Pending Pro request does not increase publishing allowance
+PASS Active Pro can publish beyond five
+[WorkPulse timing] branding read: 76.3ms
+[WorkPulse timing] tenant resolution: 76.5ms
+[WorkPulse timing] session validation: 231.2ms
+PASS Expired Pro immediately falls back to five without a maintenance job
+PASS Expiration preserves existing published jobs
+[WorkPulse timing] branding read: 76.9ms
+[WorkPulse timing] tenant resolution: 77.1ms
+[WorkPulse timing] session validation: 230.1ms
+PASS Existing over-limit published jobs can still be edited and republished
+[WorkPulse timing] branding read: 76.6ms
+[WorkPulse timing] tenant resolution: 76.8ms
+[WorkPulse timing] session validation: 229.5ms
+PASS Over-limit tenants can close existing postings
+[WorkPulse timing] branding read: 153.8ms
+[WorkPulse timing] tenant resolution: 154.1ms
+[WorkPulse timing] branding read: 159.9ms
+[WorkPulse timing] tenant resolution: 160.0ms
+[WorkPulse timing] session validation: 243.0ms
+PASS Basic server query returns only workforce analytics
+PASS Basic analytics reads no payroll, leave, attendance or probation aggregates
+[WorkPulse timing] branding read: 81.1ms
+[WorkPulse timing] tenant resolution: 81.3ms
+[WorkPulse timing] session validation: 240.7ms
+[WorkPulse timing] branding read: 80.8ms
+[WorkPulse timing] tenant resolution: 81.3ms
+[WorkPulse timing] branding read: 238.6ms
+[WorkPulse timing] tenant resolution: 238.7ms
+[WorkPulse timing] session validation: 479.0ms
+PASS Direct Basic analytics PDF endpoint is denied on the server
+[WorkPulse timing] branding read: 80.2ms
+[WorkPulse timing] tenant resolution: 80.4ms
+[WorkPulse timing] session validation: 240.0ms
+PASS Basic retains the existing employee CSV report
+[WorkPulse timing] branding read: 82.8ms
+[WorkPulse timing] tenant resolution: 83.0ms
+[WorkPulse timing] session validation: 239.8ms
+PASS Basic retains the existing attendance CSV report
+[WorkPulse timing] branding read: 80.0ms
+[WorkPulse timing] tenant resolution: 80.2ms
+[WorkPulse timing] session validation: 250.0ms
+PASS Basic retains the existing attendance PDF report
+[WorkPulse timing] branding read: 76.9ms
+[WorkPulse timing] tenant resolution: 77.0ms
+[WorkPulse timing] branding read: 80.2ms
+[WorkPulse timing] tenant resolution: 80.5ms
+[WorkPulse timing] session validation: 230.1ms
+PASS Pro keeps the existing full analytics read model
+[WorkPulse timing] branding read: 148.0ms
+[WorkPulse timing] tenant resolution: 148.1ms
+[WorkPulse timing] session validation: 442.0ms
+[WorkPulse timing] branding read: 75.0ms
+[WorkPulse timing] tenant resolution: 75.5ms
+[WorkPulse timing] branding read: 153.0ms
+[WorkPulse timing] tenant resolution: 153.2ms
+[WorkPulse timing] session validation: 472.3ms
+PASS Pro can export the existing analytics PDF
+PASS Legacy Basic still respects the explicit publishing allowance
+[WorkPulse timing] branding read: 77.6ms
+[WorkPulse timing] tenant resolution: 77.9ms
+[WorkPulse timing] branding read: 80.3ms
+[WorkPulse timing] tenant resolution: 80.6ms
+[WorkPulse timing] session validation: 240.1ms
+PASS Existing legacy tenants retain operational feature access
+PASS Persisted foreign actor cannot mutate the tenant
+PASS SAGA two-year complimentary Pro has unlimited jobs and no payment claim
+PASS Plan activation and enforcement create no fake payment orders

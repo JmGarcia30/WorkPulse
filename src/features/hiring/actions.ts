@@ -16,6 +16,7 @@ import { transitionApplicationStatus, transitionInclude, transitionSource } from
 import { getStageTransitionBlockers } from './stage-prerequisites';
 import { z } from 'zod';
 import { auditedJobMutation } from '@/features/account-security/job-audit';
+import { ActiveJobLimitError } from '@/features/subscriptions/job-limit';
 
 function slugify(text: string): string {
   return text
@@ -116,7 +117,10 @@ export async function createJobAction(formData: FormData): Promise<void> {
         })),
       },
     },
-  }));
+  })).catch(error=>{
+    if(error instanceof ActiveJobLimitError)redirect('/dashboard/hiring/jobs/new?error=active_job_limit');
+    throw error;
+  });
 
   revalidatePath('/dashboard/hiring/jobs');
   redirect(`/dashboard/hiring/jobs/${job.id}`);
@@ -228,13 +232,16 @@ export async function publishJobAction(jobId: string) {
     return { error: 'Job posting not found.' };
   }
 
-  await auditedJobMutation(prisma, user, 'JOB_PUBLISHED', tx => tx.job.update({
+  try { await auditedJobMutation(prisma, user, 'JOB_PUBLISHED', tx => tx.job.update({
     where: { id: jobId, organizationId: user.organizationId },
     data: {
       status: JobStatus.PUBLISHED,
       publishedAt: new Date(),
     },
-  }));
+  })); } catch(error) {
+    if(error instanceof ActiveJobLimitError)return {error:error.message};
+    throw error;
+  }
 
   revalidatePath('/dashboard/hiring/jobs');
   revalidatePath(`/dashboard/hiring/jobs/${jobId}`);

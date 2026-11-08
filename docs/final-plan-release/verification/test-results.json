@@ -1,0 +1,72 @@
+{
+  "productionAccessed": false,
+  "branch": "br-damp-fog-azmmxhga",
+  "payrollRecoveryPreserved": true,
+  "results": [
+    {
+      "name": "final-plan-enforcement",
+      "exitCode": 0,
+      "elapsedMs": 48952
+    },
+    {
+      "name": "subscription-engine",
+      "exitCode": 0,
+      "elapsedMs": 32757
+    },
+    {
+      "name": "subscription-domain",
+      "exitCode": 0,
+      "elapsedMs": 327
+    },
+    {
+      "name": "employee-registration",
+      "exitCode": 0,
+      "elapsedMs": 97158
+    },
+    {
+      "name": "test-employee-role-payslips",
+      "exitCode": 0,
+      "elapsedMs": 16842
+    },
+    {
+      "name": "test-h4-employee-self-service",
+      "exitCode": 0,
+      "elapsedMs": 30014
+    },
+    {
+      "name": "test-h5-leave-management",
+      "exitCode": 0,
+      "elapsedMs": 99322
+    },
+    {
+      "name": "test-h3-attendance",
+      "exitCode": 1,
+      "elapsedMs": 10151
+    },
+    {
+      "name": "test-rfid-attendance",
+      "exitCode": 0,
+      "elapsedMs": 100086
+    },
+    {
+      "name": "test-h8-analytics",
+      "exitCode": 0,
+      "elapsedMs": 22473
+    },
+    {
+      "name": "test-s1-saas-shell",
+      "exitCode": 0,
+      "elapsedMs": 400
+    },
+    {
+      "name": "test-employee-workforce-regressions",
+      "exitCode": 0,
+      "elapsedMs": 174866
+    },
+    {
+      "name": "hiring-policy",
+      "exitCode": 0,
+      "elapsedMs": 904
+    }
+  ]
+}

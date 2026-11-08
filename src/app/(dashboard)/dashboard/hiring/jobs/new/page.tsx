@@ -7,7 +7,7 @@ import { RequirementsBuilder } from '@/components/hiring/RequirementsBuilder';
 import { ArrowLeft, Save, Send } from 'lucide-react';
 import { HiringPageHeader } from '@/components/hiring/HiringPageHeader';
 
-export default async function NewJobPage() {
+export default async function NewJobPage({searchParams}:{searchParams:Promise<{error?:string}>}) {
   const user = await getSession();
   if (!user || !canManageJobs(user)) {
     redirect('/dashboard/hiring/jobs');
@@ -39,6 +39,7 @@ export default async function NewJobPage() {
         description="Fill in job opening details and add structured qualification criteria"
       />
 
+      {(await searchParams).error==='active_job_limit'&&<p role="alert" className="wp-alert-danger">Basic allows five published job postings. Close an existing posting or request Pro. You can still save a draft.</p>}
       <form action={createJobAction} className="space-y-6">
         {/* Basic Information */}
         <div className="rounded-md border border-slate-200 bg-white p-6 space-y-4">

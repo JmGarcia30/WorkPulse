@@ -19,19 +19,19 @@ export function SubscriptionPlanEditor({ plan }: { plan: Plan }) {
     <h2 className="platform-card-title">{plan.name} plan</h2>
     <form action={act} className="mt-5 space-y-4">
       <input type="hidden" name="tier" value={plan.tier}/>
-      <label className="wp-label block">Description<textarea className="wp-input mt-2" name="description" defaultValue={plan.description} maxLength={1000} required/></label>
+      <label className="wp-label block">Approved description<textarea className="wp-input mt-2" name="description" value={plan.description} readOnly/></label>
       <div className="grid gap-4 sm:grid-cols-2">
         <label className="wp-label">Monthly price (PHP)<input className="wp-input mt-2" name="monthly" inputMode="decimal" defaultValue={pesoInput(plan.monthlyPriceMinor)} placeholder="Not set"/></label>
         <label className="wp-label">Yearly price (PHP)<input className="wp-input mt-2" name="yearly" inputMode="decimal" defaultValue={pesoInput(plan.yearlyPriceMinor)} placeholder="Not set"/></label>
       </div>
-      <label className="wp-label block">Employee limit<input className="wp-input mt-2" type="number" min="1" max="999999" name="maxEmployees" defaultValue={plan.maxEmployees ?? ''} placeholder="Not set"/></label>
-      <p className="text-xs text-slate-500">Leave prices and limits blank until approved. Employee limits are recorded for future enforcement; core workforce access stays available during transition.</p>
-      <fieldset className="space-y-3"><legend className="text-sm font-semibold">Optional features included in this plan</legend>
+      <p className="text-sm">No employee limits. Active job postings: {plan.tier === 'BASIC' ? '5' : 'Unlimited'}.</p>
+      <p className="text-xs text-slate-500">Leave prices blank until decided. Both plans include core HR, payroll, attendance, leave, ESS, exit management, manual recruitment, standard reports and Gmail.</p>
+      <fieldset className="space-y-3"><legend className="text-sm font-semibold">Approved plan features</legend>
         {([['aiResumeParsing','AI resume parsing'],['advancedAnalytics','Advanced analytics'],['gmailIntegration','Gmail integration'],['customBranding','Custom branding']] as const).map(([field,label]) =>
-          <label className="flex items-center gap-2 text-sm" key={field}><input type="checkbox" name={field} value="yes" defaultChecked={plan[field]}/>{label}</label>)}
+          <label className="flex items-center gap-2 text-sm" key={field}><input type="checkbox" name={field} value="yes" checked={plan[field]} disabled readOnly/>{label}</label>)}
       </fieldset>
       <label className="flex items-start gap-2 text-sm"><input type="checkbox" name="active" value="yes" defaultChecked={plan.active}/>Accept requests for this plan</label>
-      <p className="text-xs text-slate-500">Feature changes apply to current subscriptions. Legacy tenant access is preserved.</p>
+      <p className="text-xs text-slate-500">Approved feature inclusions are enforced on the server. Legacy tenant access is preserved. Pro includes the existing analytics PDF report/export.</p>
       <Feedback state={state}/><button type="submit" className="wp-button-primary" disabled={pending}>{pending ? 'Saving...' : 'Save plan'}</button>
     </form>
   </section>;
