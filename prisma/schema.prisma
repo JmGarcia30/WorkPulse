@@ -542,6 +542,7 @@ model PlatformAdministrator {
   sessions     PlatformAdministratorSession[]
   organizationInvitations OrganizationAdministratorInvitation[]
   organizationAudits PlatformOrganizationAudit[]
+  subscriptionEvents SubscriptionEvent[]
 }
 
 model PlatformAdministratorSession {
@@ -742,6 +743,9 @@ model Organization {
   emailOAuthAttempts      OrganizationEmailOAuthAttempt[]
   platformAudits          PlatformOrganizationAudit[]
   slugAliases             OrganizationSlugAlias[]
+  subscription            OrganizationSubscription?
+  subscriptionOrders      SubscriptionOrder[]
+  subscriptionEvents      SubscriptionEvent[]
   jobs                    Job[]
   employees               Employee[]
   employeeNumberSequences EmployeeNumberSequence[]
@@ -2207,3 +2211,114 @@ model RecruitmentDocument {
   @@index([status])
   @@index([verifiedById])
 }
+
+enum SubscriptionTier {
+  BASIC
+  PRO
+}
+
+enum SubscriptionBillingInterval {
+  MONTHLY
+  YEARLY
+}
+
+enum SubscriptionStatus {
+  PENDING
+  ACTIVE
+  PAST_DUE
+  EXPIRED
+  CANCELLED
+}
+
+enum SubscriptionSource {
+  GATEWAY
+  COMPLIMENTARY
+  LEGACY
+}
+
+enum SubscriptionOrderStatus {
+  PENDING
+  PAID
+  FAILED
+  CANCELLED
+  EXPIRED
+}
+
+enum SubscriptionPaymentProvider {
+  XENDIT
+  PAYMONGO
+}
+
+model SubscriptionPlan {
+  tier              SubscriptionTier @id
+  name              String
+  description       String
+  monthlyPriceMinor Int?
+  yearlyPriceMinor  Int?
+  maxEmployees      Int?
+  aiResumeParsing   Boolean @default(false)
+  advancedAnalytics Boolean @default(false)
+  gmailIntegration  Boolean @default(false)
+  customBranding    Boolean @default(false)
+  active            Boolean @default(false)
+  updatedAt         DateTime @updatedAt
+  subscriptions     OrganizationSubscription[]
+  orders            SubscriptionOrder[]
+}
+
+model OrganizationSubscription {
+  organizationId String @id
+  planTier       SubscriptionTier
+  status         SubscriptionStatus @default(PENDING)
+  source         SubscriptionSource
+  billingInterval SubscriptionBillingInterval?
+  startsAt       DateTime?
+  endsAt         DateTime?
+  cancelledAt    DateTime?
+  updatedAt      DateTime @updatedAt
+  version        Int @default(0)
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Restrict)
+  plan           SubscriptionPlan @relation(fields: [planTier], references: [tier], onDelete: Restrict)
+
+  @@index([status, endsAt])
+}
+
+model SubscriptionOrder {
+  id              String @id @default(cuid())
+  organizationId  String
+  planTier        SubscriptionTier
+  interval        SubscriptionBillingInterval
+  amountMinor     Int
+  currency        String @default("PHP")
+  status          SubscriptionOrderStatus @default(PENDING)
+  provider        SubscriptionPaymentProvider?
+  providerSessionId String? @unique
+  checkoutUrl     String? @db.Text
+  expiresAt       DateTime?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  paidAt          DateTime?
+  organization    Organization @relation(fields: [organizationId], references: [id], onDelete: Restrict)
+  plan            SubscriptionPlan @relation(fields: [planTier], references: [tier], onDelete: Restrict)
+  events          SubscriptionEvent[]
+
+  @@index([organizationId, createdAt])
+  @@index([status, expiresAt])
+}
+
+model SubscriptionEvent {
+  id              String @id @default(cuid())
+  organizationId  String
+  orderId         String?
+  actorAdministratorId String?
+  action          String
+  operationKey    String? @unique
+  createdAt       DateTime @default(now())
+  organization    Organization @relation(fields: [organizationId], references: [id], onDelete: Restrict)
+  order           SubscriptionOrder? @relation(fields: [orderId], references: [id], onDelete: Restrict)
+  actorAdministrator PlatformAdministrator? @relation(fields: [actorAdministratorId], references: [id], onDelete: Restrict)
+
+  @@index([organizationId, createdAt])
+  @@index([orderId, createdAt])
+}
+
