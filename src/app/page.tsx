@@ -280,7 +280,7 @@ export default function HomePage() {
   return (
     <div className={styles.page}>
       <a href="#main-content" className={styles.skipLink}>Skip to main content</a>
-      <Header workspaceUrl={workspaceUrl} />
+      <LandingNavbar workspaceUrl={workspaceUrl} />
       <main id="main-content">
         <Hero workspaceUrl={workspaceUrl} />
         <Lifecycle />
