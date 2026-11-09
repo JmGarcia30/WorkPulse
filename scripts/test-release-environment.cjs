@@ -16,7 +16,7 @@ function load(file, mocks = {}) {
 async function main() {
   let checks = 0;
   const check = (label, fn) => { fn(); checks++; console.log('PASS:', label); };
-  const { databaseTarget, verifyDatabaseIdentity, assertHostedSessionSecret, productionDatabase: prod } = load('src/lib/db/environment-safety.ts');
+  const { databaseTarget, verifyDatabaseIdentity, assertHostedSessionSecret, productionDatabase: prod, payrollQuickflowPreviewDatabase: quickflow } = load('src/lib/db/environment-safety.ts');
   const clone = { ...prod, branch: 'br-odd-field-azce2cjf', endpoint: 'ep-patient-cake-az9urbbj' };
   function profile(target, environment = 'preview') {
     return { VERCEL: '1', VERCEL_ENV: environment, SESSION_SECRET: 'fixture-only-runtime-session-secret-long-enough', WORKPULSE_DB_PROJECT_ID: target.project,
@@ -31,6 +31,10 @@ async function main() {
   check('unknown hosted environment rejected', () => assert.throws(() => databaseTarget({ VERCEL_ENV: 'staging' })));
   check('missing expected identity rejected', () => assert.throws(() => databaseTarget({ VERCEL_ENV: 'preview' })));
   check('production tuple accepted', () => assert.deepEqual(databaseTarget(profile(prod, 'production')), prod));
+  check('isolated synthetic payroll preview accepted', () => assert.deepEqual(databaseTarget(profile(quickflow)), quickflow));
+  check('synthetic preview prohibited in Production', () => assert.throws(() => databaseTarget(profile(quickflow, 'production')), { message: 'WORKPULSE_DATABASE_IDENTITY_REJECTED' }));
+  check('unapproved synthetic branch blocked', () => { const env = profile(quickflow); env.WORKPULSE_DB_BRANCH_ID = 'br-other-preview'; assert.throws(() => databaseTarget(env), { message: 'WORKPULSE_DATABASE_IDENTITY_REJECTED' }); });
+  check('unapproved synthetic endpoint blocked', () => { const env = profile(quickflow); env.WORKPULSE_DB_ENDPOINT_ID = 'ep-other-preview'; assert.throws(() => databaseTarget(env), { message: 'WORKPULSE_DATABASE_IDENTITY_REJECTED' }); });
   check('separate configured endpoint accepted (not proof of deployed Preview)', () => assert.deepEqual(databaseTarget(profile(clone)), clone));
   check('pooled endpoint accepted', () => { const env = profile(clone); env.DATABASE_URL = env.DATABASE_URL.replace('.c-3.', '-pooler.c-3.'); assert.deepEqual(databaseTarget(env), clone); });
   for (const [label, change] of [
