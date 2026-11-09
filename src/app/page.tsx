@@ -78,17 +78,26 @@ function Hero({ workspaceUrl }: { workspaceUrl: string }) {
           WorkPulse keeps workforce operations connected.
         </p>
         <div className={styles.heroActions}>
-          <Link href="/register" className={styles.primaryButton}>Create your workspace <ArrowRight size={16} aria-hidden="true" /></Link>
+          <div className={styles.heroButtonRow}>
+            <Link href="/register" className={styles.primaryButton}>Create your workspace <ArrowRight size={16} aria-hidden="true" /></Link>
+            <Link href="#lifecycle" className={styles.heroOutlineButton}>See how it works <ArrowRight size={15} aria-hidden="true" /></Link>
+          </div>
           <a href={workspaceUrl} className={styles.heroTextLink}>Find your workspace <ArrowRight size={15} aria-hidden="true" /></a>
         </div>
       </div>
+      <svg className={styles.heroWaves} viewBox="0 0 1440 170" preserveAspectRatio="none" aria-hidden="true" focusable="false">
+        <path fill="#e9cdd0" d="M0 114 C145 70 265 116 385 151 C505 180 624 144 755 112 C883 81 991 108 1100 66 C1226 18 1325 5 1440 0 L1440 170 L0 170Z" />
+        <path fill="#d9adb4" d="M0 149 C152 128 260 142 380 170 L715 170 C892 145 1005 130 1124 93 C1252 53 1362 60 1440 37 L1440 170 L0 170Z" />
+        <path fill="#8c2035" d="M835 170 C984 155 1090 132 1200 91 C1308 51 1374 39 1440 37 L1440 170Z" />
+        <path fill="#690c22" d="M1071 170 C1203 151 1303 98 1440 81 L1440 170Z" />
+      </svg>
     </section>
   );
 }
 
 function Lifecycle() {
   return (
-    <section className={styles.section} id="lifecycle" aria-labelledby="lifecycle-heading">
+    <section className={`${styles.section} ${styles.sectionWhite}`} id="lifecycle" aria-labelledby="lifecycle-heading">
       <div className={styles.sectionHeadingCenter}>
         <p className={styles.eyebrow}>The employee lifecycle on WorkPulse</p>
         <h2 id="lifecycle-heading">A complete workforce platform for HR teams.</h2>
@@ -155,7 +164,7 @@ function HRDashboardPreview() {
 
 function HRSection() {
   return (
-    <section className={styles.section} id="hr" aria-labelledby="hr-heading">
+    <section className={`${styles.section} ${styles.sectionTint}`} id="hr" aria-labelledby="hr-heading">
       <div className={styles.hrLayout}>
         <div className={styles.hrCopy}>
           <p className={styles.eyebrow}>Built for HR</p>
@@ -171,7 +180,7 @@ function HRSection() {
 
 function Modules() {
   return (
-    <section className={`${styles.section} ${styles.modulesSection}`} id="modules" aria-labelledby="modules-heading">
+    <section className={`${styles.section} ${styles.modulesSection} ${styles.sectionWhite}`} id="modules" aria-labelledby="modules-heading">
       <div className={styles.sectionHeadingCenter}>
         <p className={styles.eyebrow}>Explore the platform</p>
         <h2 id="modules-heading">The tools behind every HR workflow.</h2>
@@ -184,7 +193,7 @@ function Modules() {
 
 function Advantages() {
   return (
-    <section className={styles.section} id="features" aria-labelledby="features-heading">
+    <section className={`${styles.section} ${styles.sectionWhite}`} id="features" aria-labelledby="features-heading">
       <div className={styles.sectionHeadingCenter}>
         <p className={styles.eyebrow}>Why HR teams choose WorkPulse</p>
         <h2 id="features-heading">A modern HR platform that makes work simpler.</h2>
@@ -203,7 +212,7 @@ function Advantages() {
 
 function Plans() {
   return (
-    <section className={styles.section} id="plans" aria-labelledby="plans-heading">
+    <section className={`${styles.section} ${styles.sectionTint}`} id="plans" aria-labelledby="plans-heading">
       <div className={styles.sectionHeadingCenter}>
         <p className={styles.eyebrow}>WorkPulse subscriptions</p>
         <h2 id="plans-heading">Plans for growing teams.</h2>
