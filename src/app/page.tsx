@@ -2,61 +2,46 @@ import Link from 'next/link';
 import Image from 'next/image';
 import {
   ArrowRight,
-  CalendarDays,
+  BriefcaseBusiness,
+  CalendarCheck2,
   Check,
   Clock3,
   FileCheck2,
+  FolderOpen,
+  Layers3,
   LockKeyhole,
   Menu,
   ReceiptText,
+  ShieldCheck,
   UsersRound,
+  Zap,
 } from 'lucide-react';
 import { discoveryOrigin } from '@/lib/tenant/host';
 import styles from './landing-clean.module.css';
 
-const journey = [
-  {
-    number: '01',
-    title: 'Hire',
-    description: 'Publish openings, review applications, and move successful candidates into employee records.',
-  },
-  {
-    number: '02',
-    title: 'Manage',
-    description: 'Keep employment details, schedules, and day-to-day employee information organized.',
-  },
-  {
-    number: '03',
-    title: 'Track',
-    description: 'Record attendance, review time logs, and manage leave requests with clear approvals.',
-  },
-  {
-    number: '04',
-    title: 'Pay',
-    description: 'Use verified salary and attendance records to prepare payroll and finalized payslips.',
-  },
+const lifecycle = [
+  { title: 'Hire', text: 'Recruit and onboard employees.', Icon: BriefcaseBusiness },
+  { title: 'Manage', text: 'Keep employee records up to date.', Icon: FolderOpen },
+  { title: 'Track', text: 'Handle attendance, leave, and schedules.', Icon: CalendarCheck2 },
+  { title: 'Pay', text: 'Prepare and review payroll cutoffs.', Icon: ReceiptText },
+  { title: 'Support', text: 'Give employees self-service access.', Icon: UsersRound },
 ] as const;
 
-const capabilities = [
+const advantages = [
   {
-    Icon: UsersRound,
-    title: 'Recruitment and employee records',
-    text: 'Move from job postings and applications to employee profiles without maintaining separate records.',
+    title: 'All-in-one, not add-on',
+    text: 'Core HR, time, leave, and payroll in a single connected platform.',
+    Icon: Layers3,
   },
   {
-    Icon: Clock3,
-    title: 'Attendance and schedules',
-    text: 'Track time records, schedules, late arrivals, and undertime in one place.',
+    title: 'Organization-scoped',
+    text: 'Workspace access and employee data are separated by organization.',
+    Icon: ShieldCheck,
   },
   {
-    Icon: CalendarDays,
-    title: 'Leave management',
-    text: 'Let employees submit requests and give HR a clear approval and balance history.',
-  },
-  {
-    Icon: ReceiptText,
-    title: 'Payroll and payslips',
-    text: 'Review compensation, attendance adjustments, and applicable deductions before finalization.',
+    title: 'Practical for every team',
+    text: 'Clear workflows for HR, with self-service tools for employees.',
+    Icon: Zap,
   },
 ] as const;
 
@@ -66,6 +51,7 @@ const basic = [
   'Up to 5 simultaneously published jobs',
   'Standard reports and Gmail integration',
 ] as const;
+
 const pro = [
   'Everything in Basic',
   'Unlimited published job postings',
@@ -78,28 +64,30 @@ function Header({ workspaceUrl }: { workspaceUrl: string }) {
   return (
     <header className={styles.header}>
       <div className={styles.headerInner}>
-        <Link href="/" className={styles.logoLink} aria-label="WorkPulse home">
-          <Image src="/branding/workpulse-logo.png?v=trans-2" alt="WorkPulse" width={164} height={35} className={styles.logo} priority unoptimized />
+        <Link href="/" className={styles.brand} aria-label="WorkPulse home">
+          <Image src="/branding/workpulse-logo.png?v=trans-2" alt="WorkPulse" width={163} height={34} className={styles.brandLogo} unoptimized priority />
         </Link>
         <nav className={styles.desktopNav} aria-label="Primary navigation">
-          <Link href="#platform">Platform</Link>
           <Link href="#features">Features</Link>
-          <Link href="#teams">For teams</Link>
+          <Link href="#lifecycle">Lifecycle</Link>
+          <Link href="#modules">Modules</Link>
+          <Link href="#security">Security</Link>
           <Link href="#plans">Plans</Link>
         </nav>
         <div className={styles.headerActions}>
-          <a href={workspaceUrl} className={styles.signInLink}>Find workspace</a>
-          <Link href="/register" className={styles.navCta}>Create workspace <ArrowRight size={15} aria-hidden="true" /></Link>
+          <a href={workspaceUrl} className={styles.signInLink}>Find Workspace / Sign In</a>
+          <Link href="/register" className={styles.navButton}>Create Workspace <ArrowRight size={15} aria-hidden="true" /></Link>
         </div>
         <details className={styles.mobileMenu}>
-          <summary aria-label="Open navigation"><Menu size={22} aria-hidden="true" /></summary>
+          <summary aria-label="Open navigation menu"><Menu size={22} aria-hidden="true" /></summary>
           <nav className={styles.mobileLinks} aria-label="Mobile navigation">
-            <Link href="#platform">Platform</Link>
             <Link href="#features">Features</Link>
-            <Link href="#teams">For teams</Link>
+            <Link href="#lifecycle">Lifecycle</Link>
+            <Link href="#modules">Modules</Link>
+            <Link href="#security">Security</Link>
             <Link href="#plans">Plans</Link>
-            <a href={workspaceUrl}>Find workspace / sign in</a>
-            <Link href="/register" className={styles.mobileCta}>Create workspace <ArrowRight size={15} aria-hidden="true" /></Link>
+            <a href={workspaceUrl}>Find Workspace / Sign In</a>
+            <Link href="/register" className={styles.mobileCta}>Create Workspace <ArrowRight size={15} aria-hidden="true" /></Link>
           </nav>
         </details>
       </div>
@@ -109,43 +97,44 @@ function Header({ workspaceUrl }: { workspaceUrl: string }) {
 
 function Hero({ workspaceUrl }: { workspaceUrl: string }) {
   return (
-    <section className={styles.hero} aria-labelledby="hero-heading">
-      <div className={styles.heroPanel}>
-        <div className={styles.heroContent}>
-          <p className={styles.heroEyebrow}>WorkPulse / Workforce management</p>
-          <h1 id="hero-heading" className={styles.heroTitle}>Every part of work.<br /><span>One clear place.</span></h1>
-          <p className={styles.heroDescription}>Bring hiring, employee records, attendance, leave, payroll, and self-service together in a workspace built for your organization.</p>
-          <div className={styles.heroActions}>
-            <Link href="/register" className={styles.heroPrimary}>Create your workspace <ArrowRight size={17} aria-hidden="true" /></Link>
-            <a href={workspaceUrl} className={styles.heroSecondary}>Find your workspace <ArrowRight size={16} aria-hidden="true" /></a>
-          </div>
-        </div>
-        <div className={styles.heroRail} aria-label="WorkPulse capabilities">
-          <span>Recruitment</span>
-          <span>People</span>
-          <span>Attendance &amp; leave</span>
-          <span>Payroll</span>
-          <span>Self-service</span>
+    <section className={styles.hero} aria-labelledby="hero-heading" id="hero">
+      <div className={styles.heroContent}>
+        <p className={styles.heroEyebrow}>
+          <Image src="/branding/workpulse-mark.png" alt="" width={24} height={19} unoptimized aria-hidden="true" />
+          WorkPulse Workforce Management
+        </p>
+        <h1 id="hero-heading" className={styles.heroTitle}>
+          Manage your workforce<br />
+          <span>all in one place.</span>
+        </h1>
+        <p className={styles.heroSubtitle}>
+          From hiring and employee records to attendance, leave, and self-service,
+          WorkPulse keeps workforce operations connected.
+        </p>
+        <div className={styles.heroActions}>
+          <Link href="/register" className={styles.primaryButton}>Create your workspace <ArrowRight size={16} aria-hidden="true" /></Link>
+          <a href={workspaceUrl} className={styles.heroTextLink}>Find your workspace <ArrowRight size={15} aria-hidden="true" /></a>
         </div>
       </div>
     </section>
   );
 }
 
-function Journey() {
+function Lifecycle() {
   return (
-    <section className={styles.journeySection} id="platform" aria-labelledby="journey-heading">
-      <div className={styles.centerIntro}>
-        <p className={styles.eyebrow}>The WorkPulse platform</p>
-        <h2 id="journey-heading">One record, from the first application to the final payslip.</h2>
-        <p>HR tasks are connected because the employee information behind them is connected.</p>
+    <section className={styles.section} id="lifecycle" aria-labelledby="lifecycle-heading">
+      <div className={styles.sectionHeadingCenter}>
+        <p className={styles.eyebrow}>The employee lifecycle on WorkPulse</p>
+        <h2 id="lifecycle-heading">A complete workforce platform for HR teams.</h2>
+        <p>Support every stage of the employee journey with connected, easy-to-use tools.</p>
       </div>
-      <ol className={styles.journeyGrid}>
-        {journey.map((step) => (
-          <li className={styles.journeyStep} key={step.title}>
-            <span className={styles.stepNumber}>{step.number} / 04</span>
-            <h3>{step.title}</h3>
-            <p>{step.description}</p>
+      <ol className={styles.lifecycleGrid}>
+        {lifecycle.map(({ title, text, Icon }, index) => (
+          <li className={styles.lifecycleStep} key={title}>
+            <span className={styles.lifecycleIcon}><Icon size={26} strokeWidth={1.7} aria-hidden="true" /></span>
+            <h3>{title}</h3>
+            <p>{text}</p>
+            {index < lifecycle.length - 1 && <ArrowRight className={styles.lifecycleArrow} size={18} strokeWidth={1.6} aria-hidden="true" />}
           </li>
         ))}
       </ol>
@@ -153,37 +142,45 @@ function Journey() {
   );
 }
 
-function ProductExample() {
+function HRDashboardPreview() {
   return (
-    <div className={styles.preview} aria-label="Illustrative WorkPulse payroll review workflow">
-      <div className={styles.previewToolbar}>
-        <div className={styles.previewIdentity}>
-          <Image src="/branding/workpulse-app-icon.png" alt="" width={24} height={24} />
+    <div className={styles.dashboard} role="img" aria-label="Illustration of a WorkPulse HR workspace with employees, attendance, leave, and payroll in one dashboard">
+      <div className={styles.dashboardTop}>
+        <div className={styles.dashboardLogo}>
+          <Image src="/branding/workpulse-mark.png" alt="" width={27} height={20} unoptimized />
           <strong>WorkPulse</strong>
-          <span>HR workspace</span>
         </div>
-        <span className={styles.previewLabel}>Workflow illustration</span>
+        <span>Illustrative workspace view</span>
       </div>
-      <div className={styles.previewBody}>
-        <aside className={styles.previewSidebar} aria-label="Example workspace modules">
-          <span>Overview</span>
-          <span>Recruitment</span>
-          <span>Employees</span>
-          <span>Attendance</span>
-          <strong>Payroll</strong>
-        </aside>
-        <div className={styles.previewMain}>
-          <div className={styles.previewTopline}>
-            <span>PAYROLL / CUTOFF REVIEW</span>
-            <span className={styles.previewDraft}>Review</span>
+      <div className={styles.dashboardBody}>
+        <div className={styles.dashboardSidebar} aria-hidden="true">
+          <strong>Overview</strong>
+          <span><UsersRound size={14} /> Employees</span>
+          <span><Clock3 size={14} /> Attendance</span>
+          <span><CalendarCheck2 size={14} /> Leave</span>
+          <span><ReceiptText size={14} /> Payroll</span>
+          <span><FolderOpen size={14} /> Reports</span>
+        </div>
+        <div className={styles.dashboardMain}>
+          <div className={styles.dashboardIntro}>
+            <div><span>HR WORKSPACE</span><h3>HR Overview</h3></div>
+            <span className={styles.dashboardPeriod}>Overview</span>
           </div>
-          <h3>From time records to a payslip.</h3>
-          <p>Check each step before payroll is finalized.</p>
-          <div className={styles.previewWorkflow}>
-            <div><span className={styles.previewCheck}><Check size={14} /></span><div><strong>Employee compensation</strong><small>Saved salary and pay frequency</small></div><span>01</span></div>
-            <div><span className={styles.previewCheck}><Check size={14} /></span><div><strong>Attendance and leave</strong><small>Verified cutoff records and adjustments</small></div><span>02</span></div>
-            <div><span className={styles.previewCheck}><Check size={14} /></span><div><strong>Government contributions</strong><small>Applicable rules and reviewed inputs</small></div><span>03</span></div>
-            <div><span className={styles.previewFinal}><FileCheck2 size={15} /></span><div><strong>Finalize and publish</strong><small>Payslip available in employee self-service</small></div><span>04</span></div>
+          <div className={styles.dashboardTiles}>
+            <div><UsersRound size={18}/><strong>Employees</strong><small>People &amp; records</small></div>
+            <div><Clock3 size={18}/><strong>Attendance</strong><small>Daily time logs</small></div>
+            <div><CalendarCheck2 size={18}/><strong>Leave</strong><small>Requests &amp; balance</small></div>
+            <div><ReceiptText size={18}/><strong>Payroll</strong><small>Cutoff review</small></div>
+          </div>
+          <div className={styles.dashboardProgress}>
+            <div><strong>Connected workflow</strong><span>From records to payroll</span></div>
+            <div className={styles.dashboardFlow}>
+              <span><Check size={12} /> Employee records</span>
+              <ArrowRight size={13} aria-hidden="true" />
+              <span><Check size={12} /> Time &amp; leave</span>
+              <ArrowRight size={13} aria-hidden="true" />
+              <span><FileCheck2 size={12} /> Payslips</span>
+            </div>
           </div>
         </div>
       </div>
@@ -191,83 +188,36 @@ function ProductExample() {
   );
 }
 
-function Features() {
+function HRSection() {
   return (
-    <section className={styles.featuresSection} id="features" aria-labelledby="features-heading">
-      <div className={styles.featureLead}>
-        <div>
-          <p className={styles.eyebrow}>Made for the actual work</p>
-          <h2 id="features-heading">Less switching.<br />More clarity.</h2>
+    <section className={styles.section} id="modules" aria-labelledby="hr-heading">
+      <div className={styles.hrLayout}>
+        <div className={styles.hrCopy}>
+          <p className={styles.eyebrow}>Built for HR</p>
+          <h2 id="hr-heading">Give HR the control, visibility, and time to focus on people.</h2>
+          <p>WorkPulse brings your people, processes, and workforce data together, so HR can work across recruitment, attendance, leave, payroll, and employee records.</p>
+          <Link href="/features" className={styles.textCta}>Explore HR features <ArrowRight size={17} aria-hidden="true" /></Link>
         </div>
-        <p>Instead of separate tools for each HR task, WorkPulse gives teams a shared place to manage the employee lifecycle.</p>
-      </div>
-      <div className={styles.featureLayout}>
-        <div className={styles.featureList}>
-          {capabilities.map(({ Icon, title, text }) => (
-            <div className={styles.featureItem} key={title}>
-              <Icon size={21} strokeWidth={1.6} aria-hidden="true" />
-              <div><h3>{title}</h3><p>{text}</p></div>
-            </div>
-          ))}
-        </div>
-        <ProductExample />
+        <HRDashboardPreview />
       </div>
     </section>
   );
 }
 
-function Teams() {
+function Advantages() {
   return (
-    <section className={styles.teamsSection} id="teams" aria-labelledby="teams-heading">
-      <div className={styles.teamsIntro}>
-        <p className={styles.eyebrow}>For everyone in the workflow</p>
-        <h2 id="teams-heading">A clearer day for HR.<br />An easier way for employees.</h2>
+    <section className={styles.section} id="features" aria-labelledby="features-heading">
+      <div className={styles.sectionHeadingCenter}>
+        <p className={styles.eyebrow}>Why HR teams choose WorkPulse</p>
+        <h2 id="features-heading">A modern HR platform that makes work simpler.</h2>
       </div>
-      <div className={styles.teamColumns}>
-        <div>
-          <span className={styles.teamIndex}>01 / HR &amp; Administrators</span>
-          <h3>Keep operations moving.</h3>
-          <p>Manage applications, employee records, attendance, leave approvals, and payroll in one workspace.</p>
-          <ul>
-            <li><Check size={16} /> Central employee records</li>
-            <li><Check size={16} /> Review and approval workflows</li>
-            <li><Check size={16} /> Reports and payroll preparation</li>
-          </ul>
-        </div>
-        <div>
-          <span className={styles.teamIndex}>02 / Employees</span>
-          <h3>Find what you need.</h3>
-          <p>Check personal attendance, request leave, review employment information, and open finalized payslips.</p>
-          <ul>
-            <li><Check size={16} /> Attendance and schedules</li>
-            <li><Check size={16} /> Leave requests and balances</li>
-            <li><Check size={16} /> Finalized payslips</li>
-          </ul>
-        </div>
-      </div>
-    </section>
-  );
-}
-
-function WorkspaceSection({ workspaceUrl }: { workspaceUrl: string }) {
-  return (
-    <section className={styles.workspaceSection} aria-labelledby="workspace-heading">
-      <div className={styles.workspaceInner}>
-        <div>
-          <p className={styles.eyebrowLight}>Organizations, organized</p>
-          <h2 id="workspace-heading">Your organization.<br />Your workspace.</h2>
-          <p>Each organization has its own workspace, team access, settings, and employee records. WorkPulse keeps those boundaries part of the platform.</p>
-          <a href={workspaceUrl} className={styles.workspaceLink}>Find your workspace <ArrowRight size={17} aria-hidden="true" /></a>
-        </div>
-        <div className={styles.workspaceIllustration} aria-hidden="true">
-          <div className={styles.workspaceTop}><LockKeyhole size={19} /><span>Organization workspace</span></div>
-          <div className={styles.workspaceRows}>
-            <div><span>People &amp; records</span><Check size={16} /></div>
-            <div><span>Attendance &amp; leave</span><Check size={16} /></div>
-            <div><span>Payroll &amp; self-service</span><Check size={16} /></div>
+      <div className={styles.advantageGrid}>
+        {advantages.map(({ Icon, title, text }) => (
+          <div className={styles.advantage} key={title}>
+            <Icon size={29} strokeWidth={1.6} aria-hidden="true" />
+            <div><h3>{title}</h3><p>{text}</p></div>
           </div>
-          <p>Access is scoped to your organization.</p>
-        </div>
+        ))}
       </div>
     </section>
   );
@@ -275,41 +225,55 @@ function WorkspaceSection({ workspaceUrl }: { workspaceUrl: string }) {
 
 function Plans() {
   return (
-    <section className={styles.plansSection} id="plans" aria-labelledby="plans-heading">
-      <div className={styles.centerIntro}>
-        <p className={styles.eyebrow}>WorkPulse plans</p>
-        <h2 id="plans-heading">Start with what your team needs.</h2>
-        <p>Core workforce management for every organization. Add advanced tools as your needs grow.</p>
+    <section className={styles.section} id="plans" aria-labelledby="plans-heading">
+      <div className={styles.sectionHeadingCenter}>
+        <p className={styles.eyebrow}>WorkPulse subscriptions</p>
+        <h2 id="plans-heading">Plans for growing teams.</h2>
+        <p>Choose the plan that fits your organization. Pricing and subscription terms are provided on request.</p>
       </div>
       <div className={styles.planGrid}>
         <article className={styles.planCard}>
-          <div className={styles.planTop}><span>01 / BASIC</span><h3>Basic</h3><p>For teams getting their HR operations in one place.</p></div>
-          <ul>{basic.map(item => <li key={item}><Check size={16} aria-hidden="true" />{item}</li>)}</ul>
-          <Link href="/register" className={styles.planLink}>Create workspace <ArrowRight size={16} aria-hidden="true" /></Link>
+          <div className={styles.planHeader}>
+            <span className={styles.planIcon}><Layers3 size={25} strokeWidth={1.8} /></span>
+            <div><h3>Basic</h3><p>Essential HR tools to organize your team.</p></div>
+          </div>
+          <div className={styles.planPrice}>Price available upon request</div>
+          <ul>{basic.map(item => <li key={item}><Check size={16} aria-hidden="true" /><span>{item}</span></li>)}</ul>
+          <Link href="/request-demo" className={styles.planOutlineButton}>Contact for pricing <ArrowRight size={16} aria-hidden="true" /></Link>
         </article>
-        <article className={styles.planCard}>
-          <div className={styles.planTop}><span>02 / PRO</span><h3>Pro</h3><p>For organizations that need more flexibility and insight.</p></div>
-          <ul>{pro.map(item => <li key={item}><Check size={16} aria-hidden="true" />{item}</li>)}</ul>
-          <Link href="/request-demo" className={styles.planLink}>Ask about Pro <ArrowRight size={16} aria-hidden="true" /></Link>
+        <article className={styles.planCardPro}>
+          <div className={styles.planHeader}>
+            <span className={styles.planIcon}><Zap size={25} strokeWidth={1.8} /></span>
+            <div><h3>Pro</h3><p>Advanced capabilities for growing organizations.</p></div>
+          </div>
+          <div className={styles.planPricePro}>Contact for pricing</div>
+          <ul>{pro.map(item => <li key={item}><Check size={16} aria-hidden="true" /><span>{item}</span></li>)}</ul>
+          <Link href="/request-demo" className={styles.planFilledButton}>Contact for pricing <ArrowRight size={16} aria-hidden="true" /></Link>
         </article>
       </div>
-      <p className={styles.planFootnote}>Plan prices and online checkout are not published here. Contact the team for current availability and terms.</p>
     </section>
   );
 }
 
-function Closing() {
+function Security() {
   return (
-    <section className={styles.closingSection}>
-      <div className={styles.closingInner}>
-        <p className={styles.eyebrow}>Get started</p>
-        <h2>Work better, from one place.</h2>
-        <p>Bring your workforce operations together in WorkPulse.</p>
-        <div className={styles.closingActions}>
-          <Link href="/register" className={styles.closingPrimary}>Create your workspace <ArrowRight size={17} aria-hidden="true" /></Link>
-          <Link href="/request-demo" className={styles.closingSecondary}>Request a demo <ArrowRight size={17} aria-hidden="true" /></Link>
-        </div>
+    <section className={styles.securityStrip} id="security" aria-labelledby="security-heading">
+      <LockKeyhole size={21} aria-hidden="true" />
+      <div>
+        <h2 id="security-heading">Separate workspaces. Scoped access.</h2>
+        <p>Employee records stay within their organization&apos;s workspace, with role-based permissions for HR and staff.</p>
       </div>
+      <Link href="/security">About security <ArrowRight size={16} aria-hidden="true" /></Link>
+    </section>
+  );
+}
+
+function FinalCTA() {
+  return (
+    <section className={styles.finalCta} aria-labelledby="final-cta-heading">
+      <h2 id="final-cta-heading">Ready to simplify your HR operations?</h2>
+      <p>Create your WorkPulse workspace and bring your workforce together today.</p>
+      <Link href="/register" className={styles.primaryButton}>Create your workspace <ArrowRight size={16} aria-hidden="true" /></Link>
     </section>
   );
 }
@@ -318,17 +282,17 @@ function Footer({ workspaceUrl }: { workspaceUrl: string }) {
   return (
     <footer className={styles.footer}>
       <div className={styles.footerInner}>
-        <div className={styles.footerBrand}>
-          <Link href="/" aria-label="WorkPulse home"><Image src="/branding/workpulse-logo.png?v=trans-2" alt="WorkPulse" width={170} height={36} unoptimized /></Link>
-          <p>Connected workforce operations, from hiring to employee self-service.</p>
+        <div className={styles.footerIdentity}>
+          <Link href="/" aria-label="WorkPulse home"><Image src="/branding/workpulse-logo.png?v=trans-2" alt="WorkPulse" width={163} height={34} unoptimized /></Link>
+          <p>Workforce management for modern HR teams.</p>
         </div>
-        <nav aria-label="Footer navigation" className={styles.footerLinks}>
-          <div><strong>Explore</strong><Link href="#platform">Platform</Link><Link href="#features">Features</Link><Link href="#plans">Plans</Link></div>
-          <div><strong>Get started</strong><Link href="/register">Create workspace</Link><Link href="/request-demo">Request demo</Link><a href={workspaceUrl}>Find workspace</a></div>
+        <nav aria-label="Footer navigation" className={styles.footerColumns}>
+          <div><strong>Product</strong><Link href="#features">Features</Link><Link href="#modules">Modules</Link><Link href="#lifecycle">Lifecycle</Link><Link href="#plans">Plans</Link></div>
+          <div><strong>Access</strong><Link href="/register">Create workspace</Link><a href={workspaceUrl}>Find workspace</a><Link href="/request-demo">Request demo</Link></div>
           <div><strong>Information</strong><Link href="/security">Security</Link><Link href="/features">All features</Link></div>
         </nav>
       </div>
-      <div className={styles.footerBottom}><span>© {new Date().getFullYear()} WorkPulse</span><span>Built for connected workforce operations.</span></div>
+      <div className={styles.footerBottom}><span>© {new Date().getFullYear()} WorkPulse</span><span>Workforce operations, connected.</span></div>
     </footer>
   );
 }
@@ -337,16 +301,16 @@ export default function HomePage() {
   const workspaceUrl = discoveryOrigin();
   return (
     <div className={styles.page}>
-      <a href="#main-content" className={styles.skipLink}>Skip to content</a>
+      <a href="#main-content" className={styles.skipLink}>Skip to main content</a>
       <Header workspaceUrl={workspaceUrl} />
       <main id="main-content">
         <Hero workspaceUrl={workspaceUrl} />
-        <Journey />
-        <Features />
-        <Teams />
-        <WorkspaceSection workspaceUrl={workspaceUrl} />
+        <Lifecycle />
+        <HRSection />
+        <Advantages />
         <Plans />
-        <Closing />
+        <Security />
+        <FinalCTA />
       </main>
       <Footer workspaceUrl={workspaceUrl} />
     </div>
