@@ -313,3 +313,87 @@
   .dashboardChart { height: 100px; }
   .modulesSection { padding-top: 54px; }
 }
+
+
+/* Wave-hero refinement: the dotted cream texture belongs only to the hero. */
+.page {
+  background: #ffffff;
+  background-image: none;
+}
+.hero {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  background-color: #f7f4eb;
+  background-image: radial-gradient(circle, rgba(122, 0, 0, .12) .72px, transparent .9px);
+  background-size: 24px 24px;
+  padding-bottom: clamp(135px, 16vw, 220px);
+}
+.heroContent {
+  position: relative;
+  z-index: 2;
+}
+.heroWaves {
+  position: absolute;
+  bottom: -1px;
+  left: 0;
+  width: 100%;
+  height: clamp(90px, 11.8vw, 170px);
+  display: block;
+  pointer-events: none;
+  z-index: 1;
+}
+.heroButtonRow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+}
+.heroOutlineButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-height: 48px;
+  padding: 13px 21px;
+  border: 1px solid #9d4350;
+  border-radius: 7px;
+  color: #6b0b20;
+  background: rgba(255,255,255,.7);
+  font-size: 14px;
+  font-weight: 700;
+  transition: color 160ms ease, background-color 160ms ease, border-color 160ms ease;
+}
+.heroOutlineButton:hover { background: #fff; border-color: var(--burgundy); }
+.sectionWhite,
+.sectionTint {
+  position: relative;
+  isolation: isolate;
+}
+.sectionWhite::before,
+.sectionTint::before {
+  content: '';
+  position: absolute;
+  z-index: -1;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  width: 100vw;
+  transform: translateX(-50%);
+  background: #fff;
+  pointer-events: none;
+}
+.sectionTint::before { background: #fcf5f4; }
+.securityStrip { background: #fff; }
+.footer { background: #fff; }
+@media (max-width: 830px) {
+  .hero { padding-bottom: 145px; }
+  .heroWaves { height: 115px; }
+}
+@media (max-width: 640px) {
+  .hero { padding-bottom: 138px; }
+  .heroWaves { height: 95px; }
+  .heroButtonRow { flex-direction: column; width: 100%; }
+  .heroButtonRow a { width: min(100%, 310px); }
+}
