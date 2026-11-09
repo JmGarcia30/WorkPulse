@@ -10,13 +10,14 @@ import {
   FolderOpen,
   Layers3,
   LockKeyhole,
-  Menu,
   ReceiptText,
   ShieldCheck,
   UsersRound,
   Zap,
 } from 'lucide-react';
 import { discoveryOrigin } from '@/lib/tenant/host';
+import { LandingNavbar } from './landing-navbar';
+import { ProductModulesShowcase } from './product-modules-showcase';
 import styles from './landing-clean.module.css';
 
 const lifecycle = [
@@ -59,41 +60,6 @@ const pro = [
   'Advanced analytics and report exports',
   'Custom organization branding',
 ] as const;
-
-function Header({ workspaceUrl }: { workspaceUrl: string }) {
-  return (
-    <header className={styles.header}>
-      <div className={styles.headerInner}>
-        <Link href="/" className={styles.brand} aria-label="WorkPulse home">
-          <Image src="/branding/workpulse-logo.png?v=trans-2" alt="WorkPulse" width={163} height={34} className={styles.brandLogo} unoptimized priority />
-        </Link>
-        <nav className={styles.desktopNav} aria-label="Primary navigation">
-          <Link href="#features">Features</Link>
-          <Link href="#lifecycle">Lifecycle</Link>
-          <Link href="#modules">Modules</Link>
-          <Link href="#security">Security</Link>
-          <Link href="#plans">Plans</Link>
-        </nav>
-        <div className={styles.headerActions}>
-          <a href={workspaceUrl} className={styles.signInLink}>Find Workspace / Sign In</a>
-          <Link href="/register" className={styles.navButton}>Create Workspace <ArrowRight size={15} aria-hidden="true" /></Link>
-        </div>
-        <details className={styles.mobileMenu}>
-          <summary aria-label="Open navigation menu"><Menu size={22} aria-hidden="true" /></summary>
-          <nav className={styles.mobileLinks} aria-label="Mobile navigation">
-            <Link href="#features">Features</Link>
-            <Link href="#lifecycle">Lifecycle</Link>
-            <Link href="#modules">Modules</Link>
-            <Link href="#security">Security</Link>
-            <Link href="#plans">Plans</Link>
-            <a href={workspaceUrl}>Find Workspace / Sign In</a>
-            <Link href="/register" className={styles.mobileCta}>Create Workspace <ArrowRight size={15} aria-hidden="true" /></Link>
-          </nav>
-        </details>
-      </div>
-    </header>
-  );
-}
 
 function Hero({ workspaceUrl }: { workspaceUrl: string }) {
   return (
@@ -150,7 +116,7 @@ function HRDashboardPreview() {
           <Image src="/branding/workpulse-mark.png" alt="" width={27} height={20} unoptimized />
           <strong>WorkPulse</strong>
         </div>
-        <span>Illustrative workspace view</span>
+        <span>Illustrative data</span>
       </div>
       <div className={styles.dashboardBody}>
         <div className={styles.dashboardSidebar} aria-hidden="true">
@@ -167,20 +133,19 @@ function HRDashboardPreview() {
             <span className={styles.dashboardPeriod}>Overview</span>
           </div>
           <div className={styles.dashboardTiles}>
-            <div><UsersRound size={18}/><strong>Employees</strong><small>People &amp; records</small></div>
-            <div><Clock3 size={18}/><strong>Attendance</strong><small>Daily time logs</small></div>
-            <div><CalendarCheck2 size={18}/><strong>Leave</strong><small>Requests &amp; balance</small></div>
-            <div><ReceiptText size={18}/><strong>Payroll</strong><small>Cutoff review</small></div>
+            <div><UsersRound size={18}/><strong>324</strong><small>Employees</small></div>
+            <div><Clock3 size={18}/><strong>98%</strong><small>Attendance</small></div>
+            <div><CalendarCheck2 size={18}/><strong>12</strong><small>On leave</small></div>
+            <div><BriefcaseBusiness size={18}/><strong>6</strong><small>Open roles</small></div>
           </div>
           <div className={styles.dashboardProgress}>
-            <div><strong>Connected workflow</strong><span>From records to payroll</span></div>
-            <div className={styles.dashboardFlow}>
-              <span><Check size={12} /> Employee records</span>
-              <ArrowRight size={13} aria-hidden="true" />
-              <span><Check size={12} /> Time &amp; leave</span>
-              <ArrowRight size={13} aria-hidden="true" />
-              <span><FileCheck2 size={12} /> Payslips</span>
-            </div>
+            <div><strong>Workforce trend</strong><span>Sample dashboard data</span></div>
+            <svg className={styles.dashboardChart} viewBox="0 0 480 104" preserveAspectRatio="none" aria-hidden="true">
+              <defs><linearGradient id="landing-chart-fill" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stopColor="#7a0000" stopOpacity="0.16" /><stop offset="1" stopColor="#7a0000" stopOpacity="0" /></linearGradient></defs>
+              <path d="M0 85 C30 75 52 53 80 62 S126 81 164 61 S215 69 245 48 S292 62 325 43 S377 58 414 26 S460 32 480 14 V104 H0Z" fill="url(#landing-chart-fill)" />
+              <path d="M0 85 C30 75 52 53 80 62 S126 81 164 61 S215 69 245 48 S292 62 325 43 S377 58 414 26 S460 32 480 14" fill="none" stroke="#7a0000" strokeWidth="2.4" strokeLinecap="round" />
+              <circle cx="480" cy="14" r="4.5" fill="#7a0000" />
+            </svg>
           </div>
         </div>
       </div>
@@ -190,7 +155,7 @@ function HRDashboardPreview() {
 
 function HRSection() {
   return (
-    <section className={styles.section} id="modules" aria-labelledby="hr-heading">
+    <section className={styles.section} id="hr" aria-labelledby="hr-heading">
       <div className={styles.hrLayout}>
         <div className={styles.hrCopy}>
           <p className={styles.eyebrow}>Built for HR</p>
@@ -200,6 +165,19 @@ function HRSection() {
         </div>
         <HRDashboardPreview />
       </div>
+    </section>
+  );
+}
+
+function Modules() {
+  return (
+    <section className={`${styles.section} ${styles.modulesSection}`} id="modules" aria-labelledby="modules-heading">
+      <div className={styles.sectionHeadingCenter}>
+        <p className={styles.eyebrow}>Explore the platform</p>
+        <h2 id="modules-heading">The tools behind every HR workflow.</h2>
+        <p>Select a module to see what WorkPulse supports. These previews use illustrative records.</p>
+      </div>
+      <ProductModulesShowcase />
     </section>
   );
 }
@@ -302,12 +280,13 @@ export default function HomePage() {
   return (
     <div className={styles.page}>
       <a href="#main-content" className={styles.skipLink}>Skip to main content</a>
-      <Header workspaceUrl={workspaceUrl} />
+      <LandingNavbar workspaceUrl={workspaceUrl} />
       <main id="main-content">
         <Hero workspaceUrl={workspaceUrl} />
         <Lifecycle />
         <HRSection />
         <Advantages />
+        <Modules />
         <Plans />
         <Security />
         <FinalCTA />
