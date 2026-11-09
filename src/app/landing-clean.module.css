@@ -9,7 +9,22 @@
   --ink: #090909;
   --gray: #676560;
   --border: rgba(106, 74, 53, .17);
+  /* Legacy module showcase variables are retained so its interactive UI stays fully styled. */
+  --maroon: var(--burgundy);
+  --maroon-dark: var(--burgundy-dark);
+  --maroon-subtle: rgba(122, 0, 0, .08);
+  --black: #090909;
+  --white: #fff;
+  --soft: #f8f7f3;
+  --muted: #6b6b6b;
+  --muted-light: #8a8580;
+  --line: #ded9d0;
+  --line-strong: #c8c2b7;
+  --dark-surface: #0a0a0a;
+  --dark-border: rgba(238, 235, 221, .14);
+  --dark-muted: #9e9991;
   --font: 'Satoshi', 'Segoe UI', Arial, sans-serif;
+  --font-sans: var(--font);
   min-height: 100vh;
   width: 100%;
   overflow-x: clip;
