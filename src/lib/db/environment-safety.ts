@@ -8,6 +8,13 @@ export const productionDatabase: DatabaseIdentity = {
   endpoint: 'ep-weathered-mouse-azpx765h', database: 'neondb',
 };
 
+// Dedicated synthetic-data Preview target for the payroll quick-flow review.
+// No Production environment can select this target.
+export const payrollQuickflowPreviewDatabase: DatabaseIdentity = {
+  project: 'purple-tree-62095489', branch: 'br-broad-recipe-az027wby',
+  endpoint: 'ep-shiny-boat-azdvf3sd', database: 'workpulse_preview',
+};
+
 function reject(): never { throw new Error('WORKPULSE_DATABASE_IDENTITY_REJECTED'); }
 
 export function assertHostedSessionSecret(env: Environment = process.env) {
@@ -31,7 +38,11 @@ export function databaseTarget(env: Environment = process.env): DatabaseIdentity
     project: env.WORKPULSE_DB_PROJECT_ID || '', branch: env.WORKPULSE_DB_BRANCH_ID || '',
     endpoint: env.WORKPULSE_DB_ENDPOINT_ID || '', database: env.WORKPULSE_DB_DATABASE || '',
   };
-  if (target.project !== productionDatabase.project || !/^br-[a-z0-9-]+$/.test(target.branch) ||
+  const approvedSyntheticPreview = env.VERCEL_ENV === 'preview' &&
+    Object.keys(payrollQuickflowPreviewDatabase).every(key =>
+      target[key as keyof DatabaseIdentity] === payrollQuickflowPreviewDatabase[key as keyof DatabaseIdentity]);
+  if ((target.project !== productionDatabase.project && !approvedSyntheticPreview) ||
+      !/^br-[a-z0-9-]+$/.test(target.branch) ||
       !/^ep-[a-z0-9-]+$/.test(target.endpoint) || !/^[a-zA-Z0-9_]+$/.test(target.database)) reject();
   if (env.VERCEL_ENV === 'production' && Object.keys(target).some(key =>
     target[key as keyof DatabaseIdentity] !== productionDatabase[key as keyof DatabaseIdentity])) reject();

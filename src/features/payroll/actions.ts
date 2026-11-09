@@ -32,7 +32,7 @@ export async function notifyPayrollEmployeesAction(_state: PayrollActionState, f
   const user = await requireBackOfficeContext();
   if (!canManagePayroll(user)) return { error: 'Unauthorized to notify employees.' };
   try {
-    const result = await notifyPayrollEmployees({ organizationId: user.organizationId, actorUserId: user.userId, payrollPeriodId: String(form.get('payrollPeriodId') ?? ''), confirmation: String(form.get('confirmation') ?? ''), recipientToken: String(form.get('recipientToken') ?? '') });
+    const result = await notifyPayrollEmployees({ organizationId: user.organizationId, actorUserId: user.userId, payrollPeriodId: String(form.get('payrollPeriodId') ?? ''), confirmation: String(form.get('confirmation') ?? ''), recipientToken: String(form.get('recipientToken') ?? ''), employeeId: String(form.get('employeeId') ?? '').trim() || undefined });
     revalidatePath('/dashboard/payroll');
     revalidatePath('/dashboard/payroll/settings');
     revalidatePath('/employee/payroll');
@@ -117,6 +117,7 @@ export async function generatePayrollAction(_state: PayrollActionState, formData
       organizationId: user.organizationId,
       actorUserId: user.userId,
       payrollPeriodId: String(formData.get('payrollPeriodId') ?? ''),
+      employeeId: String(formData.get('employeeId') ?? '').trim() || undefined,
     });
     revalidatePath('/dashboard/payroll');
     revalidatePath('/dashboard/payroll/settings');
