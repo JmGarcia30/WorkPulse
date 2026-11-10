@@ -4,6 +4,7 @@ import { headers } from 'next/headers';
 import Link from 'next/link';
 import { prisma } from '@/lib/db/prisma';
 import { JobStatus } from '@prisma/client';
+import { isJobDeadlinePassed } from '@/features/hiring/job-deadline';
 import { OrganizationHeader } from '@/components/layout/OrganizationHeader';
 import { Search, MapPin, Briefcase, Calendar, ArrowRight } from 'lucide-react';
 import { getOrganizationBranding } from '@/features/organization-branding/read-model';
@@ -80,6 +81,8 @@ export default async function OrganizationCareersPage({
     orderBy: { publishedAt: 'desc' },
   });
 
+  const visibleJobs = jobs.filter(job => !isJobDeadlinePassed(job.closingDate, org.timeZone));
+
   return (
     <TenantTheme branding={branding}>
       <div className="space-y-8 max-w-5xl mx-auto">
@@ -90,7 +93,7 @@ export default async function OrganizationCareersPage({
         <div className="space-y-6">
           <div className="flex flex-col sm:flex-row items-center justify-between gap-4 border-b border-[#E8E2D6] pb-4">
             <h2 className="text-xl font-bold text-[#111111]">
-              Open Positions ({jobs.length})
+              Open Positions ({visibleJobs.length})
             </h2>
 
             <form method="GET" className="flex items-center gap-2 w-full sm:w-auto">
@@ -113,7 +116,7 @@ export default async function OrganizationCareersPage({
             </form>
           </div>
 
-          {jobs.length === 0 ? (
+          {visibleJobs.length === 0 ? (
             <div className="rounded-2xl border border-[#E8E2D6] bg-white p-12 text-center">
               <Briefcase className="mx-auto h-10 w-10 text-[#D9A928]" />
               <h3 className="mt-3 text-sm font-semibold text-[#111111]">
@@ -125,7 +128,7 @@ export default async function OrganizationCareersPage({
             </div>
           ) : (
             <div className="grid gap-4 sm:grid-cols-2">
-              {jobs.map((job) => (
+              {visibleJobs.map((job) => (
                 <div
                   key={job.id}
                   className="flex flex-col justify-between rounded-xl border border-[#E8E2D6] bg-white p-6 hover:border-[#D9A928] transition shadow-xs"
