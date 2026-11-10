@@ -44,7 +44,7 @@ export function ApplicationPipeline({
     } else {
       params.delete('jobId');
     }
-    router.push(`/dashboard/hiring/pipeline?${params.toString()}`);
+    router.push(resolveTenantHref(`/dashboard/hiring/pipeline?${params.toString()}`, pathname));
   };
 
   // Filter applications by search query
