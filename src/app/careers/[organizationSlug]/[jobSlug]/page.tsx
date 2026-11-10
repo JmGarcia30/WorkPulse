@@ -58,7 +58,7 @@ export default async function JobOpeningPage({ params }: JobOpeningPageProps) {
   // Strict Multi-Tenant Security Check: Verify Organization & Job Ownership
   const org = await prisma.organization.findUnique({
     where: { slug: databaseSlugForTenant(organizationSlug) },
-    select: { id: true, name: true, slug: true, careersEnabled: true },
+    select: { id: true, name: true, slug: true, careersEnabled: true, timeZone: true },
   });
 
   if (!org || !org.careersEnabled) {
