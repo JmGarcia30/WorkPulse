@@ -72,7 +72,7 @@ export interface PayrollDashboardEntryItem {
   canViewPayslip: boolean;
   breakdown?: PayrollSnapshotBreakdown;
   additionalEarnings?: ReturnType<typeof payrollEarningsBreakdown>;
-  attendanceMoney: PayrollAttendanceMoneyRow[];
+  attendanceMoney?: PayrollAttendanceMoneyRow[];
 }
 
 export interface PayrollDashboardSummaryKPIs {
