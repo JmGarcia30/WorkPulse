@@ -85,6 +85,7 @@ export default async function AttendancePage({ searchParams }: { searchParams: P
 
     <div className="flex flex-wrap items-center gap-2">
       {canCorrectAttendance(user) && <Link href={await requestWorkspacePath('/dashboard/attendance/rfid')} className="wp-button-secondary">RFID Cards &amp; Kiosk</Link>}
+      {canCorrectAttendance(user) && <Link href={await requestWorkspacePath('/dashboard/attendance/emergency')} className="wp-button-secondary">Emergency Manual Attendance</Link>}
       <Link href={`/api/reports/attendance?${new URLSearchParams([...baseQuery, ['format', 'csv']])}`} prefetch={false} className="wp-button-secondary">Export CSV</Link>
       <Link href={`/api/reports/attendance?${new URLSearchParams([...baseQuery, ['format', 'pdf']])}`} prefetch={false} className="wp-button-secondary">Export PDF</Link>
     </div>

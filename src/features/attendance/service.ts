@@ -392,6 +392,23 @@ export function createManualSubmissionToken(): string {
   return randomUUID();
 }
 
+// PostgreSQL JSONB does not retain client object key order. A stable structural
+// comparison keeps idempotent manual/RFID retries from failing on reordered metadata.
+export function stableAttendanceMetadata(value: unknown): string {
+  const canonical = (item: unknown): unknown => {
+    if (Array.isArray(item)) return item.map(canonical);
+    if (item && typeof item === 'object') {
+      return Object.fromEntries(
+        Object.entries(item as Record<string, unknown>)
+          .sort(([left], [right]) => left.localeCompare(right))
+          .map(([key, field]) => [key, canonical(field)]),
+      );
+    }
+    return item;
+  };
+  return JSON.stringify(canonical(value ?? null));
+}
+
 export type AttendanceEventInput = {
   organizationId: string; actorUserId?: string; employeeId: string; occurredAt: Date;
   direction?: AttendanceDirection | null; source: AttendanceSource; sourceReference: string; metadata?: Prisma.InputJsonValue;
@@ -436,7 +453,7 @@ export async function writeAttendanceEvent(tx: DbClient, input: AttendanceEventI
       event.employeeId !== input.employeeId ||
       event.occurredAt.getTime() !== input.occurredAt.getTime() ||
       event.direction !== input.direction ||
-      JSON.stringify(event.metadata) !== JSON.stringify(input.metadata ?? null)
+      stableAttendanceMetadata(event.metadata) !== stableAttendanceMetadata(input.metadata)
     ) {
       throw new AttendanceError('IDEMPOTENCY_CONFLICT', 'The attendance reference was already used for different event data.');
     }

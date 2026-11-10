@@ -18,6 +18,7 @@ import {
 } from '@/lib/permissions/rbac';
 import { calculateHiringReadiness } from '@/features/hiring/readiness';
 import { ApplicantProfileView } from '@/components/hiring/ApplicantProfileView';
+import { ApplicationArchiveControl } from '@/components/hiring/ApplicationArchiveControl';
 
 interface CandidateProfilePageProps {
   params: Promise<{ applicationId: string }>;
@@ -188,6 +189,7 @@ export default async function CandidateProfilePage({
   return (
     <>
     {['ORGANIZATION_ADMIN', 'HR_ADMIN'].includes(user.role) && <div className="flex gap-4 mb-4">
+      {canManageJob && <ApplicationArchiveControl applicationId={applicationId} name={`${application.applicant.firstName} ${application.applicant.lastName}`} status={application.status} archived={Boolean(application.archivedAt)} />}
       <Link href={await requestWorkspacePath(`/dashboard/hiring/applicants/${applicationId}/email`)} className="text-sm underline">Preview and send HR email</Link>
       <form action={setCandidateAccessRevoked.bind(null, applicationId, true)}><button className="text-sm text-red-700 underline">Revoke candidate access</button></form>
       <form action={setCandidateAccessRevoked.bind(null, applicationId, false)}><button className="text-sm underline">Allow fresh email verification</button></form>

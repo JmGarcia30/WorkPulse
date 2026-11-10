@@ -12,6 +12,7 @@ export interface CandidateCardProps {
   appliedDate?: string;
   status: string;
   statusLabel?: string;
+  archived?: boolean;
   workflowInfo?: string;
   workflowIcon?: 'document' | 'calendar' | 'checklist' | 'award';
   avatarInitials: string;
@@ -28,6 +29,7 @@ export function CandidateCard({
   appliedDate,
   status,
   statusLabel,
+  archived = false,
   workflowInfo,
   workflowIcon = 'checklist',
   avatarInitials,
@@ -99,6 +101,7 @@ export function CandidateCard({
       {/* Middle Row: Status Badge */}
       <div className="mt-3.5">
         <MinimalStatusBadge status={status} label={statusLabel} />
+        {archived && <span className="ml-2 rounded-md bg-slate-200 px-2 py-1 text-[10px] font-semibold text-slate-700">Archived</span>}
       </div>
 
       {/* Body Metadata: Department & Applied Date */}

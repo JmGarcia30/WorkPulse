@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { ApplicationStatus } from '@prisma/client';
 import { STAGE_CONFIG, getAvailableNextStatuses } from '@/features/hiring/pipeline';
 import { StatusChangeDialog } from '@/components/hiring/StatusChangeDialog';
+import { ApplicationArchiveControl } from '@/components/hiring/ApplicationArchiveControl';
 import { DialogFrame } from '@/components/ui/DialogFrame';
 import { Mail, Calendar, ChevronRight, MoreHorizontal, User, Briefcase } from 'lucide-react';
 
@@ -28,9 +29,10 @@ export interface SerializedApplication {
 interface ApplicationCardProps {
   application: SerializedApplication;
   canEditStatus: boolean;
+  canArchive: boolean;
 }
 
-export function ApplicationCard({ application, canEditStatus }: ApplicationCardProps) {
+export function ApplicationCard({ application, canEditStatus, canArchive }: ApplicationCardProps) {
   const [showDialog, setShowDialog] = useState(false);
   const config = STAGE_CONFIG[application.status] || {
     label: application.status,
@@ -132,6 +134,8 @@ export function ApplicationCard({ application, canEditStatus }: ApplicationCardP
             <User className="h-3 w-3 text-slate-400" />
             <span>Profile</span>
           </Link>
+
+          {canArchive && <ApplicationArchiveControl applicationId={application.id} name={fullName} status={application.status} archived={false} />}
 
           {canEditStatus && allowedNext.length > 0 && (
             <button

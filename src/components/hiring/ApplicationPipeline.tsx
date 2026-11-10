@@ -1,7 +1,9 @@
 'use client';
 
 import { useState, useMemo } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
+import Link from 'next/link';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
+import { resolveTenantHref } from '@/lib/tenant/navigation';
 import { ACTIVE_PIPELINE_STAGES, TERMINAL_STAGES } from '@/features/hiring/pipeline';
 import { ApplicationPipelineColumn } from '@/components/hiring/ApplicationPipelineColumn';
 import { SerializedApplication } from '@/components/hiring/ApplicationCard';
@@ -19,6 +21,7 @@ interface ApplicationPipelineProps {
   applications: SerializedApplication[];
   selectedJobId?: string;
   canEditStatus: boolean;
+  canArchive: boolean;
 }
 
 export function ApplicationPipeline({
@@ -26,8 +29,10 @@ export function ApplicationPipeline({
   applications,
   selectedJobId,
   canEditStatus,
+  canArchive,
 }: ApplicationPipelineProps) {
   const router = useRouter();
+  const pathname = usePathname();
   const searchParams = useSearchParams();
   const [activeTab, setActiveTab] = useState<'ACTIVE' | 'TERMINAL'>('ACTIVE');
   const [searchQuery, setSearchQuery] = useState('');
@@ -39,7 +44,7 @@ export function ApplicationPipeline({
     } else {
       params.delete('jobId');
     }
-    router.push(`/dashboard/hiring/pipeline?${params.toString()}`);
+    router.push(resolveTenantHref(`/dashboard/hiring/pipeline?${params.toString()}`, pathname));
   };
 
   // Filter applications by search query
@@ -201,6 +206,7 @@ export function ApplicationPipeline({
                   status={status}
                   applications={applicationsByStatus[status] || []}
                   canEditStatus={canEditStatus}
+                  canArchive={canArchive}
                 />
               ))}
             </div>
@@ -211,11 +217,9 @@ export function ApplicationPipeline({
         <div className="rounded-2xl border border-slate-200/80 bg-slate-50/50 p-4 shadow-2xs space-y-3">
           <div className="flex items-center justify-between pb-1">
             <h3 className="text-xs font-bold uppercase tracking-wider text-slate-500">
-              Terminal Applications Archive
+              Rejected and Withdrawn
             </h3>
-            <p className="text-xs text-slate-400">
-              Candidates who have been rejected or withdrawn from active recruitment
-            </p>
+            <Link href={resolveTenantHref("/dashboard/hiring/applicants?status=ARCHIVED", pathname)} className="text-xs font-semibold text-[#282934] underline">View Archived Applicants</Link>
           </div>
 
           <div className="overflow-x-auto pb-2">
@@ -226,6 +230,7 @@ export function ApplicationPipeline({
                   status={status}
                   applications={applicationsByStatus[status] || []}
                   canEditStatus={canEditStatus}
+                  canArchive={canArchive}
                 />
               ))}
             </div>

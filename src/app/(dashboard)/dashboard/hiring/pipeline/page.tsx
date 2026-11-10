@@ -1,6 +1,6 @@
 import { getSession } from '@/lib/auth/session';
 import { prisma } from '@/lib/db/prisma';
-import { canViewHiringData, canUpdateApplicationStatus } from '@/lib/permissions/rbac';
+import { canViewHiringData, canUpdateApplicationStatus, canManageJobs } from '@/lib/permissions/rbac';
 import { ApplicationPipeline } from '@/components/hiring/ApplicationPipeline';
 import { ErrorState } from '@/components/ui/ErrorState';
 import Link from 'next/link';
@@ -47,11 +47,13 @@ export default async function PipelinePage({ searchParams }: PipelinePageProps) 
         organizationId: user.organizationId,
         id: validJobId,
       },
+      archivedAt: null,
     },
     orderBy: { appliedAt: 'desc' },
     select: {
       id: true,
       status: true,
+      archivedAt: true,
       appliedAt: true,
       applicant: {
         select: {
@@ -114,6 +116,7 @@ export default async function PipelinePage({ searchParams }: PipelinePageProps) 
         applications={serializedApplications}
         selectedJobId={validJobId}
         canEditStatus={canEditStatus}
+        canArchive={canManageJobs(user)}
       />
     </div>
   );
