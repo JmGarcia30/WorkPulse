@@ -243,6 +243,8 @@ async function generateInTransaction(input: GeneratePayrollInput, db: Prisma.Tra
       approvedLeaveDays: attendance.filter((day) => day.disposition === AttendanceDisposition.APPROVED_LEAVE).length,
       lateOccurrences: attendance.filter((day) => (day.lateSeconds ?? 0) > 0).length,
       lateSeconds: attendance.reduce((sum, day) => sum + (day.lateSeconds ?? 0), 0),
+      undertimeSeconds: attendance.reduce((sum, day) => sum + (day.undertimeSeconds ?? 0), 0),
+      undertimeOccurrences: attendance.filter(day => (day.undertimeSeconds ?? 0) > 0).length,
       statusCounts: Object.fromEntries(Object.values(AttendanceStatus).map((status) => [status, attendance.filter((day) => day.attendanceStatus === status).length])),
     };
     const leaveSummary = {
@@ -327,6 +329,8 @@ async function generateInTransaction(input: GeneratePayrollInput, db: Prisma.Tra
       calculation: { baseAmount: amount, payableWorkdays, grossAmount: grossAmount.toFixed(2), totalDeductions: totalDeductions.toFixed(2), netAmount: netAmount.toFixed(2), attendanceAffectsPay: attendanceRequired && !policy.isDefault, leaveAffectsPay: policy.dailyPayBasis === DailyPayBasis.PRESENT_PLUS_PAID_LEAVE },
       statutory: integrated.snapshot,
       attendanceSummary,
+      // Additional display evidence: actual payroll monetary amounts remain authoritative.
+      attendanceRateBasis: { absenceDailyRate: dailyRate?.toFixed(6) ?? null },
       attendanceEvidence: attendanceRequired ? payrollAttendanceEvidence(attendance) : null,
       leaveSummary,
       leaveEvidence: payrollLeaveEvidence(leaveDays),

@@ -3,12 +3,12 @@ import './ess.css';
 import { poppins } from '@/lib/fonts';
 import { redirect } from 'next/navigation';
 import { LogOut } from 'lucide-react';
+import { canReturnFromEssToHr } from '@/lib/auth/access-roles';
 import { logoutAction } from '@/lib/auth/actions';
 import { EmployeeSelfAccessError, requireEmployeeSelfContext } from '@/features/employee-self-service/context';
 import { getRequestOrganizationBranding } from '@/lib/tenant/server';
 import { TenantTheme } from '@/components/layout/TenantTheme';
 import { EmployeeNav } from '@/components/employee-self-service/EmployeeNav';
-import { TenantLink } from '@/components/ui/TenantLink';
 import { EmployeeHeader } from '@/components/employee-self-service/EmployeeHeader';
 import { TenantLogo } from '@/components/layout/TenantLogo';
 import { ScrollableMainContent } from '@/components/layout/ScrollableMainContent';
@@ -29,6 +29,7 @@ export default async function EmployeeLayout({ children }: { children: React.Rea
   if (!brand) redirect('/login');
   const employeeNotifications = await listEmployeeHeaderNotifications();
 
+  const canReturnToHr = canReturnFromEssToHr(context.user.role);
   const fullName = `${context.employee.firstName} ${context.employee.lastName}`.trim();
   const initials = [context.employee.firstName?.[0], context.employee.lastName?.[0]]
     .filter(Boolean)
@@ -66,8 +67,7 @@ export default async function EmployeeLayout({ children }: { children: React.Rea
           <div className="wp-sidebar-divider mx-6 my-3.5" aria-hidden="true" />
 
           <div className="flex-1 overflow-y-auto">
-            <EmployeeNav />
-            {context.user.role === 'HR_ADMIN' && <TenantLink href="/dashboard" className="mx-6 my-3 block text-sm text-white underline">Back to HR workspace</TenantLink>}
+            <EmployeeNav canReturnToHr={canReturnToHr} />
           </div>
 
           <div className="pl-[26px] pr-3 pb-7">
@@ -104,6 +104,7 @@ export default async function EmployeeLayout({ children }: { children: React.Rea
               employeeName={fullName}
               employeeNumber={context.employee.employeeNumber}
               notifications={employeeNotifications}
+              canReturnToHr={canReturnToHr}
             />
 
             {/* Inset horizontal divider (16px on mobile, 24px on desktop) */}

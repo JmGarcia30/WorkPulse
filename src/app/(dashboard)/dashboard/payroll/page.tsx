@@ -8,13 +8,14 @@ import { getPayrollReadiness } from '@/features/payroll/readiness';
 import { earningsVersion } from '@/features/payroll/earnings';
 import { parseStatutoryInput } from '@/features/payroll/statutory-inputs';
 import { previewPayrollNotifications } from '@/features/payroll/notifications';
-import { formatPayrollDate } from '@/features/payroll/formatters';
+import { formatPayrollDate, formatCurrency } from '@/features/payroll/formatters';
 import { PayrollPeriodForm, PayrollGenerationForm, PayrollReviewControls } from '@/components/payroll/PayrollSetupForms';
 import { PayrollReadinessTable } from '@/components/payroll/PayrollReadinessTable';
 import { PayrollReuseSetup } from '@/components/payroll/PayrollReuseSetup';
 import { PayrollConfigurationTab } from '@/components/payroll/PayrollConfigurationTab';
 import { PayrollReviewTable } from '@/components/payroll/PayrollReviewTable';
-import { PayrollEarningsForm, PayrollRecalculateForm } from '@/components/payroll/PayrollEarningsForm';
+import { PayrollEarningsForm, PayrollRecalculateForm, PayrollIncentiveForm } from '@/components/payroll/PayrollEarningsForm';
+import { PayrollAttendanceBreakdown } from '@/components/payroll/PayrollAttendanceBreakdown';
 import { PayrollNotifyForm } from '@/components/payroll/PayrollNotifyForm';
 import { PayrollDeductionBreakdown } from '@/components/payroll/PayrollDeductionBreakdown';
 
@@ -54,11 +55,11 @@ export default async function PayrollPage({ searchParams }: { searchParams: Prom
   }
   return <div className="space-y-5 bg-[#FAF8F6] text-[#282934]">
     <header><h1 className="text-2xl font-bold">Payroll</h1><p className="mt-1 text-sm text-slate-600">Generate payroll, review and finalize, then notify employees.</p>{manage && <TenantLink className="mt-2 inline-block text-sm font-semibold underline" href={`/dashboard/payroll/settings?period=${period?.id ?? ''}`}>Payroll Settings</TenantLink>}</header>
-    <ol aria-label="Payroll workflow" className="grid grid-cols-2 gap-2 text-xs sm:grid-cols-3">{['1. Generate Payroll', '2. Review and Finalize', '3. Notify Employees'].map(label => <li className="rounded-lg border bg-white p-3 font-semibold" key={label}>{label}</li>)}</ol>
+    <ol aria-label="Payroll workflow" className="grid grid-cols-2 gap-2 text-xs sm:grid-cols-3">{['1. Choose Employee & Period', '2. Review Pay & Incentives', '3. Generate & Finalize', '4. Notify Employee'].map(label => <li className="rounded-lg border bg-white p-3 font-semibold" key={label}>{label}</li>)}</ol>
     <section className={card} aria-labelledby="quick-payroll">
       <div>
         <h2 id="quick-payroll" className="text-lg font-bold">Quick Employee Payroll</h2>
-        <p className="mt-1 text-sm text-slate-600">Choose an employee and cutoff. WorkPulse uses verified salary, attendance, statutory inputs and existing payroll rules; it never guesses missing deductions.</p>
+        <p className="mt-1 text-sm text-slate-600">Select an employee and cutoff, review attendance deductions and any incentives, then generate a draft. Statutory deductions use verified Philippine schedules and saved employee records.</p>
       </div>
       <form method="get" className="grid gap-3 sm:grid-cols-[minmax(0,1fr)_minmax(0,1fr)_auto] sm:items-end">
         <label className="grid gap-1 text-xs font-semibold">Pay period
@@ -74,28 +75,40 @@ export default async function PayrollPage({ searchParams }: { searchParams: Prom
         </label>
         <button className="wp-button-secondary" disabled={!periods.length || !employees.length}>Select Employee</button>
       </form>
+      {manage && <details className="rounded-xl border border-[#e8e7e6] p-3 sm:p-4">
+        <summary className="cursor-pointer text-xs font-semibold">Create a new payroll cutoff (start date, end date and pay date)</summary>
+        <p className="mt-2 text-xs text-slate-600">Use the approved payroll dates. Existing cutoff dates cannot be changed once entries are generated. WorkPulse validates allowed monthly and semi-monthly periods.</p>
+        <PayrollPeriodForm />
+      </details>}
       {selectedEmployee && period ? <div className="space-y-4">
         <div className="rounded-xl bg-[#FAF8F6] p-4">
-          <h3 className="text-sm font-bold">1. Review saved pay and attendance</h3>
+          <h3 className="text-sm font-bold">1. Employee salary and payroll dates</h3>
           <p className="mt-1 text-sm">{selectedEmployee.firstName} {selectedEmployee.lastName} · {period.name}</p>
-          <p className="mt-2 text-sm">Saved salary: {applicableCompensation.length === 1 ? `PHP ${applicableCompensation[0].baseRate.toFixed(2)} · ${applicableCompensation[0].payFrequency.replaceAll('_', ' ').toLowerCase()}` : 'Payroll setup required — verify the salary for this cutoff.'}</p>
+          <p className="mt-2 text-sm">Saved base salary: {applicableCompensation.length === 1 ? `PHP ${applicableCompensation[0].baseRate.toFixed(2)} · ${applicableCompensation[0].payFrequency.replaceAll('_', ' ').toLowerCase()}` : 'Payroll setup required — verify the salary for this cutoff.'}</p>
+          <p className="mt-1 text-sm">Cutoff: {formatPayrollDate(period.periodStart)} to {formatPayrollDate(period.periodEnd)} · Pay date: {formatPayrollDate(period.payDate)}</p>
+          <p className="mt-1 text-sm">Cutoff base pay: {selectedEntry?.baseAmountFormatted ?? 'Calculated after draft generation'}</p>
           <p className="mt-1 text-xs text-slate-600">{selectedReadiness ? `${selectedReadiness.status}: ${selectedReadiness.action}` : period.status === 'FINALIZED' ? 'This period has been finalized.' : 'Set up a payroll period before calculation.'}</p>
           {manage && <TenantLink className="mt-2 inline-block text-sm font-semibold underline" href={`/dashboard/payroll/settings?period=${period.id}&employee=${selectedEmployee.id}`}>Review employee payroll setup</TenantLink>}
         </div>
         {editable && <div>
-          <h3 className="text-sm font-bold">2. Calculate pay and approved adjustments</h3>
-          <p className="mt-1 text-xs text-slate-600">Late, undertime, absence, statutory deductions and approved overtime come from verified records and approved inputs, not manually entered totals.</p>
+          <h3 className="text-sm font-bold">2. Attendance adjustments and additional pay</h3>
+          <TenantLink className="mt-2 inline-block text-xs font-semibold underline" href={`/dashboard/attendance/${selectedEmployee.id}`}>View employee attendance report and original records</TenantLink>
+          <p className="mt-1 text-xs text-slate-600">Calculated peso deductions are taken from the saved attendance/payroll record. Overtime and incentives must be approved and classified before calculation.</p>
+          {selectedEntry ? <div className="mt-3"><PayrollAttendanceBreakdown rows={selectedEntry.attendanceMoney ?? []} currency={selectedEntry.currency}/></div> : <p className="mt-2 text-sm text-slate-600">Attendance adjustment amounts will appear after generating the first draft. Verify complete attendance records before calculation.</p>}
+          {selectedEarnings.length > 0 && manage && <div className="mt-4 space-y-2"><h4 className="text-sm font-bold">Incentives / Additional Pay</h4><PayrollIncentiveForm key={`${selectedEarnings[0].id}-${selectedEarnings[0].version}`} employee={selectedEarnings[0]} periodId={period.id}/><PayrollEarningsForm employees={selectedEarnings} periodId={period.id} /></div>}
+          {selectedEarnings.length === 0 && manage && <p className="mt-2 text-sm text-amber-800">To add an incentive, verify the employee&apos;s statutory and payroll history under Payroll Settings first.</p>}
           {manage && <PayrollGenerationForm periods={[period]} selectedPeriodId={period.id} employeeId={selectedEmployee.id} />}
-          {manage && <PayrollEarningsForm employees={selectedEarnings} periodId={period.id} />}
+          
         </div>}
         <div className="rounded-xl border p-4">
-          <h3 className="text-sm font-bold">3. Review the computed payslip</h3>
+          <h3 className="text-sm font-bold">3. Review earnings, statutory deductions and net pay</h3>
           {selectedEntry ? <div className="mt-3 space-y-3">
             <dl className="grid grid-cols-2 gap-3 text-sm sm:grid-cols-4">
               {([['Basic pay', selectedEntry.baseAmountFormatted], ['Gross earnings', selectedEntry.grossAmountFormatted], ['Total deductions', selectedEntry.totalDeductionsFormatted], ['Net pay', selectedEntry.netAmountFormatted]] as const).map(([label, value]) => <div key={label}><dt className="text-xs text-slate-500">{label}</dt><dd className="font-bold">{value}</dd></div>)}
             </dl>
             {selectedEntry.attendanceSummary && <p className="text-xs text-slate-600">Attendance snapshot: {selectedEntry.attendanceSummary.presentDays ?? 0} present · {selectedEntry.attendanceSummary.lateOccurrences ?? 0} late · {selectedEntry.attendanceSummary.absentDays ?? 0} absent. See the recorded undertime deduction below.</p>}
-            {selectedEntry.breakdown && <PayrollDeductionBreakdown breakdown={selectedEntry.breakdown} currency={selectedEntry.currency} status={period.status} />}
+            {selectedEntry.additionalEarnings && <section className="rounded-lg bg-[#faf8f6] p-3"><h4 className="text-xs font-bold">Approved additions</h4>{selectedEntry.additionalEarnings.length ? <dl className="mt-2 space-y-1">{selectedEntry.additionalEarnings.map(item => <div className="flex items-center justify-between gap-2 text-xs" key={item.id}><dt>{item.description}</dt><dd className="font-bold tabular-nums">+ {formatCurrency(item.amount, selectedEntry.currency)}</dd></div>)}</dl> : <p className="mt-1 text-xs text-slate-600">No additional earnings recorded.</p>}</section>}
+            {selectedEntry.breakdown && <details className="rounded-lg border p-3"><summary className="cursor-pointer text-xs font-bold">View statutory deduction calculation and employer contributions</summary><p className="mt-2 text-xs text-slate-600">Employee deductions use verified SSS, PhilHealth, Pag-IBIG and BIR schedules, allocated across cutoffs. Employer shares are not deducted from employee pay.</p><div className="mt-3"><PayrollDeductionBreakdown breakdown={selectedEntry.breakdown} currency={selectedEntry.currency} status={period.status} /></div></details>}
             {selectedEntry.issueMessage && <p role="alert" className="text-sm text-amber-900">{selectedEntry.issueMessage}</p>}
             {selectedEntry.canViewPayslip && <TenantLink className="inline-block text-sm font-semibold underline" href={`/dashboard/payroll/payslips/${selectedEntry.id}`}>View / Print Finalized Payslip</TenantLink>}
           </div> : <p className="mt-2 text-sm text-slate-600">No calculated entry yet. Check setup and select Calculate Selected Employee above.</p>}
@@ -103,7 +116,7 @@ export default async function PayrollPage({ searchParams }: { searchParams: Prom
           {manage && review && <PayrollReviewControls periodId={period.id} periodLabel={period.name} status={period.status} canFinalize={review.canFinalize} hasEntries={data.entries.length > 0} />}
         </div>
         <div className="rounded-xl border p-4">
-          <h3 className="text-sm font-bold">4. Notify when payroll is finalized</h3>
+          <h3 className="text-sm font-bold">4. Notify employee after finalization</h3>
           {manage && period.status === 'FINALIZED' && notification
             ? <PayrollNotifyForm periodId={period.id} token={notification.token} recipients={notification.recipients} skipped={notification.skipped} employeeId={selectedEmployee.id} />
             : <p className="mt-2 text-sm text-slate-600">After the cutoff is finalized, this employee’s payslip appears in ESS. Then you can send their in-app notification here.</p>}
@@ -111,7 +124,7 @@ export default async function PayrollPage({ searchParams }: { searchParams: Prom
       </div> : <p className="text-sm text-slate-600">Select an employee and a payroll period to start. Payroll Settings is available for first-time salary and statutory setup.</p>}
     </section>
     <details className="rounded-2xl border bg-white p-4 sm:p-6">
-      <summary className="cursor-pointer text-sm font-bold text-[#282934]">Advanced: full-period controls and review</summary>
+      <summary className="cursor-pointer text-sm font-bold text-[#282934]">Advanced: full-period controls, payroll settings and reports</summary>
       <div className="mt-4 space-y-5">
     <section className={card} aria-labelledby="payroll-period"><h2 id="payroll-period" className="font-semibold">1. Generate Payroll</h2>
       <form method="get" className="flex flex-wrap items-end gap-3"><label className="grid flex-1 gap-1 text-xs font-semibold">Payroll period<select name="period" defaultValue={period?.id ?? ''} className="min-w-0 rounded-lg border px-3 py-2 text-sm">{!periods.length && <option value="">No periods yet</option>}{periods.map(row => <option key={row.id} value={row.id}>{row.name} · {row.status}</option>)}</select></label><button className="wp-button-secondary">Select period</button></form>

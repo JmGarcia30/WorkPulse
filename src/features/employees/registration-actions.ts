@@ -20,7 +20,7 @@ export async function registerExistingEmployeeAction(_state:Result,form:FormData
   const actor = await requireBackOfficeContext();
   if (!canManageEmployees(actor)) throw new Error('FORBIDDEN');
   try {
-    const result = await registerExistingEmployee(prisma,actor,{ ...Object.fromEntries(form),sendInvitation:form.get('sendInvitation') === 'yes',probationStandardsConfirmed:form.get('probationStandardsConfirmed') === 'yes' });
+    const result = await registerExistingEmployee(prisma,actor,{ ...Object.fromEntries(form),sendInvitation:form.get('sendInvitation') === 'yes',probationStandardsConfirmed:form.get('probationStandardsConfirmed') === 'yes',existingAccountLinkConfirmed:form.get('existingAccountLinkConfirmed') === 'yes',managementRoleConfirmed:form.get('managementRoleConfirmed') === 'yes' });
     revalidatePath('/dashboard/employees');revalidatePath(`/dashboard/employees/${result.employeeId}`);
     return { employeeId:result.employeeId,success:result.idempotent ? 'This employee registration is already saved.' : 'Employee and linked account registered.',warning:result.warning };
   } catch(error) { return failure(error); }

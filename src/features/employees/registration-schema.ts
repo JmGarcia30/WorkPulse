@@ -16,6 +16,14 @@ export const employeeRegistrationSchema = z.object({
   salary: z.string().regex(/^\d{1,10}(?:\.\d{1,2})?$/,'Enter a valid contract salary.').refine(value => Number(value) > 0,'Contract salary must be positive.'),
   payFrequency: z.nativeEnum(PayFrequency), role: z.enum(['EMPLOYEE','HR_ADMIN','FINANCE_OFFICER','ORGANIZATION_HEAD']),
   existingUserId: z.string().trim().max(200).optional(), sendInvitation: z.boolean(),
+  existingAccountLinkConfirmed: z.boolean().default(false), managementRoleConfirmed: z.boolean().default(false),
   probationEndDate: z.string().trim().max(10).optional(), probationStandardsConfirmed: z.boolean(),
   registrationReason: text(1000),
+}).superRefine((input, ctx) => {
+  if (input.existingUserId && !input.existingAccountLinkConfirmed) {
+    ctx.addIssue({ code:'custom',path:['existingAccountLinkConfirmed'],message:'Confirm that the selected existing account belongs to this employee.' });
+  }
+  if (input.role !== 'EMPLOYEE' && !input.managementRoleConfirmed) {
+    ctx.addIssue({ code:'custom',path:['managementRoleConfirmed'],message:'Confirm that this employee is authorized for the selected system access role.' });
+  }
 });

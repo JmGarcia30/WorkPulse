@@ -10,3 +10,9 @@ export function isSelfServiceOnlyRole(role: Role) {
 export const accessRoleLabels = {
   EMPLOYEE: 'Employee', HR_ADMIN: 'HR Administrator', FINANCE_OFFICER: 'Finance Officer', ORGANIZATION_HEAD: 'Organization Head',
 } as const;
+
+// Navigation convenience only. Back-office routes still require a fresh server-side
+// session/tenant role check; an employee title never grants this permission.
+export function canReturnFromEssToHr(role: Role): boolean {
+  return role === Role.HR_ADMIN;
+}

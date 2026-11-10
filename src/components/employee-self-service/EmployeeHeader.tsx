@@ -15,12 +15,14 @@ export function EmployeeHeader({
   employeeName,
   employeeNumber,
   notifications,
+  canReturnToHr = false,
 }: {
   orgName: string;
   orgSlug?: string;
   employeeName: string;
   employeeNumber: string;
   notifications: HeaderNotification[];
+  canReturnToHr?: boolean;
 }) {
   const pathname = usePathname();
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -121,7 +123,7 @@ export function EmployeeHeader({
               </button>
             </div>
             <div className="flex-1 overflow-y-auto">
-              <EmployeeNav onNavigate={() => setMobileOpen(false)} />
+              <EmployeeNav canReturnToHr={canReturnToHr} onNavigate={() => setMobileOpen(false)} />
             </div>
             <div className="border-t border-white/10 p-4">
               <div className="mb-3 flex items-center gap-3">

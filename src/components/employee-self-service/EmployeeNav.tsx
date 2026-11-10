@@ -10,6 +10,7 @@ import {
   LayoutDashboard,
   LogOut,
   UserRound,
+  ArrowLeft,
 } from 'lucide-react';
 import { isRouteActive, resolveTenantHref } from '@/lib/tenant/navigation';
 
@@ -29,7 +30,7 @@ export const employeeNavLinks: EmployeeNavItem[] = [
   { href: '/employee/profile', label: 'Profile', icon: UserRound },
 ];
 
-export function EmployeeNav({ onNavigate }: { onNavigate?: () => void }) {
+export function EmployeeNav({ onNavigate, canReturnToHr = false }: { onNavigate?: () => void; canReturnToHr?: boolean }) {
   const pathname = usePathname();
 
   return (
@@ -76,6 +77,21 @@ export function EmployeeNav({ onNavigate }: { onNavigate?: () => void }) {
           </Link>
         );
       })}
+      {canReturnToHr && (
+        <>
+          <div className="wp-sidebar-divider -ml-[2px] mr-3 my-3" aria-hidden="true" />
+          <Link
+            href={resolveTenantHref('/dashboard', pathname)}
+            onClick={onNavigate}
+            className="group relative flex min-h-10 items-center gap-3.5 rounded-lg px-1.5 py-1 text-[13px] font-medium text-white hover:text-[#C7A759]"
+          >
+            <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-[8px] bg-transparent group-hover:bg-white/[0.06]">
+              <ArrowLeft className="h-[17px] w-[17px] text-[#B4B5C0] group-hover:text-white" aria-hidden="true" />
+            </span>
+            <span>Back to HR Dashboard</span>
+          </Link>
+        </>
+      )}
     </nav>
   );
 }
