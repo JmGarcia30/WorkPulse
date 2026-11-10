@@ -37,11 +37,11 @@ export async function generateMetadata({
       },
     },
     include: {
-      organization: { select: { name: true } },
+      organization: { select: { name: true, timeZone: true } },
     },
   });
 
-  if (!job || isJobDeadlinePassed(job.closingDate, (job.organization as { timeZone?: string }).timeZone || 'UTC')) {
+  if (!job || isJobDeadlinePassed(job.closingDate, job.organization.timeZone)) {
     return { title: 'Position Not Found | WorkPulse Careers' };
   }
 
