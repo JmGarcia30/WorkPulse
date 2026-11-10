@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useMemo } from 'react';
+import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { ACTIVE_PIPELINE_STAGES, TERMINAL_STAGES } from '@/features/hiring/pipeline';
 import { ApplicationPipelineColumn } from '@/components/hiring/ApplicationPipelineColumn';
@@ -19,6 +20,7 @@ interface ApplicationPipelineProps {
   applications: SerializedApplication[];
   selectedJobId?: string;
   canEditStatus: boolean;
+  canArchive: boolean;
 }
 
 export function ApplicationPipeline({
@@ -26,6 +28,7 @@ export function ApplicationPipeline({
   applications,
   selectedJobId,
   canEditStatus,
+  canArchive,
 }: ApplicationPipelineProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -201,6 +204,7 @@ export function ApplicationPipeline({
                   status={status}
                   applications={applicationsByStatus[status] || []}
                   canEditStatus={canEditStatus}
+                  canArchive={canArchive}
                 />
               ))}
             </div>
@@ -211,11 +215,9 @@ export function ApplicationPipeline({
         <div className="rounded-2xl border border-slate-200/80 bg-slate-50/50 p-4 shadow-2xs space-y-3">
           <div className="flex items-center justify-between pb-1">
             <h3 className="text-xs font-bold uppercase tracking-wider text-slate-500">
-              Terminal Applications Archive
+              Rejected and Withdrawn
             </h3>
-            <p className="text-xs text-slate-400">
-              Candidates who have been rejected or withdrawn from active recruitment
-            </p>
+            <Link href="/dashboard/hiring/applicants?status=ARCHIVED" className="text-xs font-semibold text-[#282934] underline">View Archived Applicants</Link>
           </div>
 
           <div className="overflow-x-auto pb-2">
