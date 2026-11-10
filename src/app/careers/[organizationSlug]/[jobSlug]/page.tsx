@@ -4,6 +4,7 @@ import { headers } from 'next/headers';
 import Link from 'next/link';
 import { prisma } from '@/lib/db/prisma';
 import { JobStatus } from '@prisma/client';
+import { isJobDeadlinePassed } from '@/features/hiring/job-deadline';
 import {
   MapPin,
   Briefcase,
@@ -40,7 +41,7 @@ export async function generateMetadata({
     },
   });
 
-  if (!job) {
+  if (!job || isJobDeadlinePassed(job.closingDate, (job.organization as { timeZone?: string }).timeZone || 'UTC')) {
     return { title: 'Position Not Found | WorkPulse Careers' };
   }
 
@@ -75,7 +76,7 @@ export default async function JobOpeningPage({ params }: JobOpeningPageProps) {
     },
   });
 
-  if (!job) {
+  if (!job || isJobDeadlinePassed(job.closingDate, org.timeZone)) {
     notFound();
   }
 
