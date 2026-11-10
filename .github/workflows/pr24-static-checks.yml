@@ -1,0 +1,35 @@
+name: PR24 static release checks
+on:
+  push:
+    branches:
+      - feature/applicant-archive-hr-my-ess-20261111
+  pull_request:
+    paths:
+      - 'src/**'
+      - 'prisma/**'
+      - 'scripts/test-emergency-metadata.ts'
+      - '.github/workflows/pr24-static-checks.yml'
+permissions:
+  contents: read
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      DATABASE_URL: postgresql://ci:ci@localhost:5432/workpulse_ci?sslmode=require
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - run: npm ci
+      - name: Prisma schema validation
+        run: npx prisma validate
+      - name: TypeScript validation
+        run: npx tsc --noEmit --incremental false
+      - name: Focused lint
+        run: |
+          npx eslint src/features/attendance/emergency-recovery.ts src/features/attendance/service.ts src/features/attendance/actions.ts src/components/attendance/EmergencyAttendanceRecoveryForm.tsx "src/app/(dashboard)/dashboard/attendance/emergency/page.tsx" src/features/hiring/application-archive-actions.ts src/components/hiring/ApplicationArchiveControl.tsx
+      - name: Metadata idempotency regression
+        run: npx tsx scripts/test-emergency-metadata.ts
