@@ -8,7 +8,7 @@ import { getPayrollReadiness } from '@/features/payroll/readiness';
 import { earningsVersion } from '@/features/payroll/earnings';
 import { parseStatutoryInput } from '@/features/payroll/statutory-inputs';
 import { previewPayrollNotifications } from '@/features/payroll/notifications';
-import { formatPayrollDate } from '@/features/payroll/formatters';
+import { formatPayrollDate, formatCurrency } from '@/features/payroll/formatters';
 import { PayrollPeriodForm, PayrollGenerationForm, PayrollReviewControls } from '@/components/payroll/PayrollSetupForms';
 import { PayrollReadinessTable } from '@/components/payroll/PayrollReadinessTable';
 import { PayrollReuseSetup } from '@/components/payroll/PayrollReuseSetup';
@@ -84,7 +84,7 @@ export default async function PayrollPage({ searchParams }: { searchParams: Prom
         <div className="rounded-xl bg-[#FAF8F6] p-4">
           <h3 className="text-sm font-bold">1. Employee salary and payroll dates</h3>
           <p className="mt-1 text-sm">{selectedEmployee.firstName} {selectedEmployee.lastName} · {period.name}</p>
-          <p className="mt-2 text-sm">Monthly base salary: {applicableCompensation.length === 1 ? `PHP ${applicableCompensation[0].baseRate.toFixed(2)} · ${applicableCompensation[0].payFrequency.replaceAll('_', ' ').toLowerCase()}` : 'Payroll setup required — verify the salary for this cutoff.'}</p>
+          <p className="mt-2 text-sm">Saved base salary: {applicableCompensation.length === 1 ? `PHP ${applicableCompensation[0].baseRate.toFixed(2)} · ${applicableCompensation[0].payFrequency.replaceAll('_', ' ').toLowerCase()}` : 'Payroll setup required — verify the salary for this cutoff.'}</p>
           <p className="mt-1 text-sm">Cutoff: {formatPayrollDate(period.periodStart)} to {formatPayrollDate(period.periodEnd)} · Pay date: {formatPayrollDate(period.payDate)}</p>
           <p className="mt-1 text-sm">Cutoff base pay: {selectedEntry?.baseAmountFormatted ?? 'Calculated after draft generation'}</p>
           <p className="mt-1 text-xs text-slate-600">{selectedReadiness ? `${selectedReadiness.status}: ${selectedReadiness.action}` : period.status === 'FINALIZED' ? 'This period has been finalized.' : 'Set up a payroll period before calculation.'}</p>
@@ -92,6 +92,7 @@ export default async function PayrollPage({ searchParams }: { searchParams: Prom
         </div>
         {editable && <div>
           <h3 className="text-sm font-bold">2. Attendance adjustments and additional pay</h3>
+          <TenantLink className="mt-2 inline-block text-xs font-semibold underline" href={`/dashboard/attendance/${selectedEmployee.id}`}>View employee attendance report and original records</TenantLink>
           <p className="mt-1 text-xs text-slate-600">Calculated peso deductions are taken from the saved attendance/payroll record. Overtime and incentives must be approved and classified before calculation.</p>
           {selectedEntry ? <div className="mt-3"><PayrollAttendanceBreakdown rows={selectedEntry.attendanceMoney ?? []} currency={selectedEntry.currency}/></div> : <p className="mt-2 text-sm text-slate-600">Attendance adjustment amounts will appear after generating the first draft. Verify complete attendance records before calculation.</p>}
           {selectedEarnings.length > 0 && manage && <div className="mt-4 space-y-2"><h4 className="text-sm font-bold">Incentives / Additional Pay</h4><PayrollIncentiveForm key={`${selectedEarnings[0].id}-${selectedEarnings[0].version}`} employee={selectedEarnings[0]} periodId={period.id}/><PayrollEarningsForm employees={selectedEarnings} periodId={period.id} /></div>}
@@ -106,7 +107,7 @@ export default async function PayrollPage({ searchParams }: { searchParams: Prom
               {([['Basic pay', selectedEntry.baseAmountFormatted], ['Gross earnings', selectedEntry.grossAmountFormatted], ['Total deductions', selectedEntry.totalDeductionsFormatted], ['Net pay', selectedEntry.netAmountFormatted]] as const).map(([label, value]) => <div key={label}><dt className="text-xs text-slate-500">{label}</dt><dd className="font-bold">{value}</dd></div>)}
             </dl>
             {selectedEntry.attendanceSummary && <p className="text-xs text-slate-600">Attendance snapshot: {selectedEntry.attendanceSummary.presentDays ?? 0} present · {selectedEntry.attendanceSummary.lateOccurrences ?? 0} late · {selectedEntry.attendanceSummary.absentDays ?? 0} absent. See the recorded undertime deduction below.</p>}
-            {selectedEntry.additionalEarnings && <section className="rounded-lg bg-[#faf8f6] p-3"><h4 className="text-xs font-bold">Approved additions</h4>{selectedEntry.additionalEarnings.length ? <dl className="mt-2 space-y-1">{selectedEntry.additionalEarnings.map(item => <div className="flex items-center justify-between gap-2 text-xs" key={item.id}><dt>{item.description}</dt><dd className="font-bold tabular-nums">+ PHP {item.amount}</dd></div>)}</dl> : <p className="mt-1 text-xs text-slate-600">No additional earnings recorded.</p>}</section>}
+            {selectedEntry.additionalEarnings && <section className="rounded-lg bg-[#faf8f6] p-3"><h4 className="text-xs font-bold">Approved additions</h4>{selectedEntry.additionalEarnings.length ? <dl className="mt-2 space-y-1">{selectedEntry.additionalEarnings.map(item => <div className="flex items-center justify-between gap-2 text-xs" key={item.id}><dt>{item.description}</dt><dd className="font-bold tabular-nums">+ {formatCurrency(item.amount, selectedEntry.currency)}</dd></div>)}</dl> : <p className="mt-1 text-xs text-slate-600">No additional earnings recorded.</p>}</section>}
             {selectedEntry.breakdown && <details className="rounded-lg border p-3"><summary className="cursor-pointer text-xs font-bold">View statutory deduction calculation and employer contributions</summary><p className="mt-2 text-xs text-slate-600">Employee deductions use verified SSS, PhilHealth, Pag-IBIG and BIR schedules, allocated across cutoffs. Employer shares are not deducted from employee pay.</p><div className="mt-3"><PayrollDeductionBreakdown breakdown={selectedEntry.breakdown} currency={selectedEntry.currency} status={period.status} /></div></details>}
             {selectedEntry.issueMessage && <p role="alert" className="text-sm text-amber-900">{selectedEntry.issueMessage}</p>}
             {selectedEntry.canViewPayslip && <TenantLink className="inline-block text-sm font-semibold underline" href={`/dashboard/payroll/payslips/${selectedEntry.id}`}>View / Print Finalized Payslip</TenantLink>}
