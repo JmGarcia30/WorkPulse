@@ -12,6 +12,7 @@ import { TenantLink } from '@/components/ui/TenantLink';
 import { EmployeeHeader } from '@/components/employee-self-service/EmployeeHeader';
 import { TenantLogo } from '@/components/layout/TenantLogo';
 import { ScrollableMainContent } from '@/components/layout/ScrollableMainContent';
+import { listEmployeeHeaderNotifications } from '@/features/employee-self-service/notification-popover-read';
 
 export default async function EmployeeLayout({ children }: { children: React.ReactNode }) {
   let context;
@@ -26,6 +27,7 @@ export default async function EmployeeLayout({ children }: { children: React.Rea
 
   const brand = await getRequestOrganizationBranding(context.organization.id);
   if (!brand) redirect('/login');
+  const employeeNotifications = await listEmployeeHeaderNotifications();
 
   const fullName = `${context.employee.firstName} ${context.employee.lastName}`.trim();
   const initials = [context.employee.firstName?.[0], context.employee.lastName?.[0]]
@@ -101,6 +103,7 @@ export default async function EmployeeLayout({ children }: { children: React.Rea
               orgSlug={brand.slug}
               employeeName={fullName}
               employeeNumber={context.employee.employeeNumber}
+              notifications={employeeNotifications}
             />
 
             {/* Inset horizontal divider (16px on mobile, 24px on desktop) */}
