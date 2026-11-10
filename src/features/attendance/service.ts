@@ -392,7 +392,7 @@ export function createManualSubmissionToken(): string {
   return randomUUID();
 }
 
-export // PostgreSQL JSONB does not retain client object key order. A stable structural
+// PostgreSQL JSONB does not retain client object key order. A stable structural
 // comparison keeps idempotent manual/RFID retries from failing on reordered metadata.
 export function stableAttendanceMetadata(value: unknown): string {
   const canonical = (item: unknown): unknown => {
@@ -409,7 +409,7 @@ export function stableAttendanceMetadata(value: unknown): string {
   return JSON.stringify(canonical(value ?? null));
 }
 
-type AttendanceEventInput = {
+export type AttendanceEventInput = {
   organizationId: string; actorUserId?: string; employeeId: string; occurredAt: Date;
   direction?: AttendanceDirection | null; source: AttendanceSource; sourceReference: string; metadata?: Prisma.InputJsonValue;
 };
