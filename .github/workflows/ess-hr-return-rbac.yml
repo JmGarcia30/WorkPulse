@@ -8,6 +8,8 @@ on:
       - 'src/app/(employee)/**'
       - 'src/lib/auth/access-roles.ts'
       - 'scripts/test-ess-return-rbac.ts'
+      - 'scripts/test-employee-registration-access.ts'
+      - 'src/features/employees/**'
       - '.github/workflows/ess-hr-return-rbac.yml'
 permissions:
   contents: read
@@ -26,5 +28,6 @@ jobs:
       - run: npm ci
       - run: npx prisma validate
       - run: npx tsc --noEmit --incremental false
-      - run: npx eslint src/lib/auth/access-roles.ts src/components/employee-self-service/EmployeeNav.tsx src/components/employee-self-service/EmployeeHeader.tsx "src/app/(employee)/employee/layout.tsx"
+      - run: npx eslint src/lib/auth/access-roles.ts src/components/employee-self-service/EmployeeNav.tsx src/components/employee-self-service/EmployeeHeader.tsx "src/app/(employee)/employee/layout.tsx" src/features/employees/registration-form.tsx src/features/employees/registration-schema.ts src/features/employees/registration-actions.ts
       - run: npx tsx scripts/test-ess-return-rbac.ts
+      - run: npx tsx scripts/test-employee-registration-access.ts
