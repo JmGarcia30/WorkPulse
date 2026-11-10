@@ -14,9 +14,23 @@ permissions:
 jobs:
   validate:
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 25
+    services:
+      postgres:
+        image: postgres:17
+        env:
+          POSTGRES_USER: workpulse_ci
+          POSTGRES_PASSWORD: workpulse_ci
+          POSTGRES_DB: workpulse_ci
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U workpulse_ci -d workpulse_ci"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 15
     env:
-      DATABASE_URL: postgresql://ci:ci@localhost:5432/workpulse_ci?sslmode=require
+      DATABASE_URL: postgresql://workpulse_ci:workpulse_ci@localhost:5432/workpulse_ci?sslmode=disable
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -26,6 +40,29 @@ jobs:
       - run: npm ci
       - name: Prisma schema validation
         run: npx prisma validate
+      - name: Rehearse every Prisma migration on disposable PostgreSQL
+        run: npx prisma migrate deploy
+      - name: Validate archive schema and migration history
+        run: |
+          node - <<'NODE'
+          const assert = require('node:assert/strict');
+          const { PrismaClient } = require('@prisma/client');
+          const prisma = new PrismaClient();
+          (async () => {
+            const [columns, events, audit, migrations] = await Promise.all([
+              prisma.$queryRawUnsafe(`SELECT COUNT(*)::int AS count FROM information_schema.columns WHERE table_name='Application' AND column_name='archivedAt'`),
+              prisma.$queryRawUnsafe(`SELECT pg_get_constraintdef(oid) AS definition FROM pg_constraint WHERE conname='AccountSecurityEvent_action_check'`),
+              prisma.$queryRawUnsafe(`SELECT tgenabled FROM pg_trigger WHERE tgname='ApplicationArchiveEvent_immutable'`),
+              prisma.$queryRawUnsafe(`SELECT migration_name FROM "_prisma_migrations" WHERE finished_at IS NOT NULL AND migration_name LIKE '20261111%'`)
+            ]);
+            assert.equal(columns[0]?.count, 1);
+            assert.match(events[0]?.definition || '', /JOB_ARCHIVED/);
+            assert.match(events[0]?.definition || '', /JOB_REUSED/);
+            assert.equal(audit[0]?.tgenabled, 'O');
+            assert.equal(migrations.length, 2);
+            console.log('PASS: applicant archive schema, audit constraints and both November 11 migrations.');
+          })().catch(error => { console.error(error); process.exitCode = 1; }).finally(() => prisma.$disconnect());
+          NODE
       - name: TypeScript validation
         run: npx tsc --noEmit --incremental false
       - name: Focused lint
