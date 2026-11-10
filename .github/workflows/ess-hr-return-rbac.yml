@@ -1,0 +1,30 @@
+name: ESS HR return RBAC checks
+on:
+  push:
+    branches: [fix/ess-hr-return-rbac-20261111]
+  pull_request:
+    paths:
+      - 'src/components/employee-self-service/**'
+      - 'src/app/(employee)/**'
+      - 'src/lib/auth/access-roles.ts'
+      - 'scripts/test-ess-return-rbac.ts'
+      - '.github/workflows/ess-hr-return-rbac.yml'
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      DATABASE_URL: postgresql://ci:ci@localhost:5432/workpulse_ci?sslmode=require
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - run: npm ci
+      - run: npx prisma validate
+      - run: npx tsc --noEmit --incremental false
+      - run: npx eslint src/lib/auth/access-roles.ts src/components/employee-self-service/EmployeeNav.tsx src/components/employee-self-service/EmployeeHeader.tsx "src/app/(employee)/employee/layout.tsx"
+      - run: npx tsx scripts/test-ess-return-rbac.ts
