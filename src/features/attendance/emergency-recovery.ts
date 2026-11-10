@@ -164,5 +164,5 @@ export async function recoverEmergencyAttendance(input: EmergencyAttendanceInput
       throw error;
     }
   }
-  throw new AttendanceError('UNAVAILABLE', 'Attendance recovery could not be saved.');
+  throw new AttendanceError('CONCURRENT_UPDATE', 'Attendance recovery could not be saved. Please retry.');
 }
