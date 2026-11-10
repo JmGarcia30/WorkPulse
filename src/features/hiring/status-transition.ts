@@ -33,6 +33,7 @@ export async function transitionApplicationStatus(input: {
         include: transitionInclude,
       });
       if (!application) return { error: 'Application not found or access denied.' };
+      if (application.archivedAt) return { error: 'Archived applications are read-only. Restore this application before changing its status.' };
       if (input.target === ApplicationStatus.HIRED) return { error: 'Use the Hiring Readiness conversion action to create the Employee record atomically.' };
       if (application.status === input.target) return { success: true };
       const blockers = getStageTransitionBlockers(transitionSource(application), input.target);
