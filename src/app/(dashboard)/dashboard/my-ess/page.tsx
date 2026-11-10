@@ -3,6 +3,7 @@ import { Role } from '@prisma/client';
 import { requireBackOfficeContext } from '@/lib/auth/guards';
 import { prisma } from '@/lib/db/prisma';
 import { TenantLink } from '@/components/ui/TenantLink';
+import { requestWorkspacePath } from '@/lib/tenant/server';
 
 /**
  * HR keeps their existing WorkPulse login and role; personal ESS is resolved
@@ -19,7 +20,7 @@ export default async function MyEssPage() {
   });
 
   if (account?.status === 'ACTIVE' && account.employee.employeeStatus === 'ACTIVE') {
-    redirect('/employee');
+    redirect(await requestWorkspacePath('/employee'));
   }
 
   const message = !account
