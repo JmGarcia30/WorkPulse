@@ -3,7 +3,7 @@ import 'server-only';
 import { AttendanceDirection, AttendanceSource, Prisma, Role } from '@prisma/client';
 import { prisma } from '@/lib/db/prisma';
 import { attendanceDateForInstant, attendanceDateToDb, instantForLocalDateTime, instantForLocalSecond } from './domain';
-import { AttendanceError, lockAttendanceEmployee, writeAttendanceEvent } from './service';
+import { AttendanceError, lockAttendanceEmployee, stableAttendanceMetadata, writeAttendanceEvent } from './service';
 
 export const emergencyAttendanceReasons = [
   'POWER_OUTAGE', 'INTERNET_OUTAGE', 'RFID_DEVICE_FAILURE', 'OTHER',
@@ -94,9 +94,10 @@ export async function recoverEmergencyAttendance(input: EmergencyAttendanceInput
         await lockAttendanceEmployee(tx, input.organizationId, input.employeeId);
         const employee = await tx.employee.findFirst({
           where: { id: input.employeeId, organizationId: input.organizationId },
-          select: { id: true },
+          select: { id: true, employeeStatus: true },
         });
         if (!employee) throw new AttendanceError('NOT_FOUND', 'Employee not found in your organization.');
+        if (employee.employeeStatus !== 'ACTIVE') throw new AttendanceError('INVALID_INPUT', 'Inactive employees cannot be entered through emergency recovery.');
 
         // Replay of the same saved request is safe, even after a lost response.
         const previous = await tx.attendanceEvent.findMany({
@@ -111,7 +112,7 @@ export async function recoverEmergencyAttendance(input: EmergencyAttendanceInput
             previous.some(event => event.sourceReference === value.reference &&
               event.employeeId === input.employeeId && event.direction === value.direction &&
               event.occurredAt.getTime() === value.at.getTime() &&
-              JSON.stringify(event.metadata) === JSON.stringify(metadata)),
+              stableAttendanceMetadata(event.metadata) === stableAttendanceMetadata(metadata)),
           );
           if (!matches) throw new AttendanceError('IDEMPOTENCY_CONFLICT', 'This request token was already used with different details.');
           return { idempotent: true as const };
