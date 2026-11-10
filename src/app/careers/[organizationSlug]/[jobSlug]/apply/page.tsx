@@ -57,7 +57,7 @@ export default async function ApplyPage({ params, searchParams }: ApplyPageProps
   // Strict Multi-Tenant Security Check
   const org = await prisma.organization.findUnique({
     where: { slug: databaseSlugForTenant(organizationSlug) },
-    select: { id: true, name: true, slug: true, careersEnabled: true },
+    select: { id: true, name: true, slug: true, careersEnabled: true, timeZone: true },
   });
 
   if (!org || !org.careersEnabled) {
