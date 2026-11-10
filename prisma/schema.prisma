@@ -733,6 +733,7 @@ model OrganizationSlugAlias {
 model Organization {
   accountSecurityEvents AccountSecurityEvent[]
   hrNotificationReads HrNotificationRead[]
+  applicationArchiveEvents ApplicationArchiveEvent[]
   staffSessions StaffSession[]
   rfidCards RfidCard[]
   rfidKiosks RfidKioskSession[]
@@ -811,6 +812,7 @@ model User {
   finalPayPayments EmployeeFinalPayPayment[]
   hrEmailDeliveries HrEmailDelivery[]
   hrNotificationReads HrNotificationRead[]
+  applicationArchiveEvents ApplicationArchiveEvent[]
   id             String   @id @default(cuid())
   organizationId String
   name           String
@@ -1033,12 +1035,14 @@ model Applicant {
 
 model Application {
   hrEmailDeliveries HrEmailDelivery[]
+  archiveEvents ApplicationArchiveEvent[]
   id          String            @id @default(cuid())
   jobId       String
   applicantId String
   status      ApplicationStatus @default(APPLIED)
   coverLetter String            @db.Text
   appliedAt   DateTime          @default(now())
+  archivedAt DateTime?
   updatedAt   DateTime          @updatedAt
 
   job                  Job                        @relation(fields: [jobId], references: [id], onDelete: Cascade)
@@ -1058,6 +1062,23 @@ model Application {
   @@index([applicantId])
   @@index([status])
   @@index([appliedAt])
+  @@index([archivedAt])
+}
+
+model ApplicationArchiveEvent {
+  id             String   @id @default(cuid())
+  organizationId String
+  applicationId  String
+  actorUserId    String
+  action         String
+  createdAt      DateTime @default(now())
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Restrict)
+  application  Application  @relation(fields: [applicationId], references: [id], onDelete: Restrict)
+  actor        User         @relation(fields: [actorUserId, organizationId], references: [id, organizationId], onDelete: Restrict)
+
+  @@index([organizationId, createdAt])
+  @@index([applicationId, createdAt])
 }
 
 // One durable delivery slot per HR workflow event; never stores OAuth secrets or message bodies.
