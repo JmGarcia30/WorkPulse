@@ -102,7 +102,7 @@ export default async function JobDetailPage({ params, searchParams }: JobDetailP
                 className="inline-flex items-center gap-1.5 rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50"
               >
                 <Edit className="h-3.5 w-3.5" /> Edit Job
-              </Link>}}
+              </Link>}
 
               {job.status === JobStatus.DRAFT && (
                 <form action={handlePublish}>
