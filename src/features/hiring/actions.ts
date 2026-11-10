@@ -18,6 +18,7 @@ import { z } from 'zod';
 import { auditedJobMutation } from '@/features/account-security/job-audit';
 import { ActiveJobLimitError } from '@/features/subscriptions/job-limit';
 import { archiveClosedJob, reuseArchivedJob, JobLifecycleError } from './job-archive-reuse';
+import { enforceJobMutationBudget, JobRateLimitError } from './job-rate-budget';
 
 function slugify(text: string): string {
   return text
@@ -265,6 +266,7 @@ export async function closeJobAction(jobId: string): Promise<{success?: boolean;
   if (!user || !canManageJobs(user)) return { error: 'You are not authorized to close this posting.' };
 
   try {
+    await enforceJobMutationBudget(prisma, user);
     await auditedJobMutation(prisma, user, 'JOB_CLOSED', async tx => {
       const changed = await tx.job.updateMany({
         where: { id: jobId, organizationId: user.organizationId, status: JobStatus.PUBLISHED },
@@ -276,7 +278,7 @@ export async function closeJobAction(jobId: string): Promise<{success?: boolean;
       return tx.job.findFirstOrThrow({ where: { id: jobId, organizationId: user.organizationId }, select: { id: true } });
     });
   } catch (error) {
-    return { error: error instanceof JobLifecycleError ? error.message : 'Unable to close posting. Try again or contact your administrator.' };
+    return { error: error instanceof JobRateLimitError ? error.message : error instanceof JobLifecycleError ? error.message : 'Unable to close posting. Try again or contact your administrator.' };
   }
   revalidatePath('/dashboard/hiring/jobs');
   revalidatePath(`/dashboard/hiring/jobs/${jobId}`);
@@ -288,9 +290,10 @@ export async function archiveJobAction(jobId: string): Promise<{success?: boolea
   const user = await getSession();
   if (!user || !canManageJobs(user)) return { error: 'You are not authorized to archive this posting.' };
   try {
+    await enforceJobMutationBudget(prisma, user);
     await archiveClosedJob(prisma, user, jobId);
   } catch (error) {
-    return { error: error instanceof JobLifecycleError ? error.message : 'Unable to archive posting. Try again or contact your administrator.' };
+    return { error: error instanceof JobRateLimitError ? error.message : error instanceof JobLifecycleError ? error.message : 'Unable to archive posting. Try again or contact your administrator.' };
   }
   revalidatePath('/dashboard/hiring/jobs');
   revalidatePath(`/dashboard/hiring/jobs/${jobId}`);
@@ -302,12 +305,13 @@ export async function reuseJobAction(jobId: string): Promise<{jobId?: string; er
   const user = await getSession();
   if (!user || !canManageJobs(user)) return { error: 'You are not authorized to reuse this posting.' };
   try {
+    await enforceJobMutationBudget(prisma, user);
     const copy = await reuseArchivedJob(prisma, user, jobId);
     revalidatePath('/dashboard/hiring/jobs');
     revalidatePath(`/dashboard/hiring/jobs/${jobId}`);
     return { jobId: copy.id };
   } catch (error) {
-    return { error: error instanceof JobLifecycleError ? error.message : 'Unable to create a new draft from this posting. Please try again.' };
+    return { error: error instanceof JobRateLimitError ? error.message : error instanceof JobLifecycleError ? error.message : 'Unable to create a new draft from this posting. Please try again.' };
   }
 }
 
