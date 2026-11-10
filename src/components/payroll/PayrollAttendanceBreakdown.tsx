@@ -4,6 +4,9 @@ const pesos = (amount: string | null, currency: string) =>
   amount === null ? 'Not recorded' :
     new Intl.NumberFormat('en-PH', { style: 'currency', currency, minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(Number(amount));
 
+const ratePesos = (amount: string, currency: string) =>
+  new Intl.NumberFormat('en-PH', { style: 'currency', currency, minimumFractionDigits: 2, maximumFractionDigits: 6 }).format(Number(amount));
+
 export function PayrollAttendanceBreakdown({ rows, currency = 'PHP' }: { rows: PayrollAttendanceMoneyRow[]; currency?: string }) {
   return <div className="overflow-x-auto rounded-xl border border-[#e8e7e6]">
     <table className="min-w-full text-left text-xs sm:text-sm">
@@ -14,7 +17,7 @@ export function PayrollAttendanceBreakdown({ rows, currency = 'PHP' }: { rows: P
         {rows.map(row => <tr key={row.label}>
           <th scope="row" className="p-3 font-medium text-[#282934]">{row.label}</th>
           <td className="p-3">{row.quantity === null ? 'Not recorded' : `${row.quantity} ${row.unit}`}</td>
-          <td className="p-3">{row.rate === null ? row.method : `${pesos(row.rate, currency)} ${row.rateUnit ?? ''}`}</td>
+          <td className="p-3">{row.rate === null ? row.method : `${ratePesos(row.rate, currency)} ${row.rateUnit ?? ''}`}</td>
           <td className="p-3 text-right font-semibold tabular-nums">{row.amount === null ? 'Not recorded' : `−${pesos(row.amount, currency)}`}</td>
         </tr>)}
       </tbody>
