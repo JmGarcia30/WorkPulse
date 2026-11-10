@@ -11,6 +11,7 @@ import { getBackOfficeReadContext } from '@/lib/auth/guards';
 import { getRequestOrganizationBranding } from '@/lib/tenant/server';
 import { TenantTheme } from '@/components/layout/TenantTheme';
 import { DashboardSidebarNav } from '@/components/layout/DashboardSidebarNav';
+import { DashboardProfileLink } from '@/components/layout/DashboardProfileLink';
 import { DashboardHeader } from '@/components/layout/DashboardHeader';
 import { TenantLogo } from '@/components/layout/TenantLogo';
 import { ScrollableMainContent } from '@/components/layout/ScrollableMainContent';
@@ -27,9 +28,9 @@ export default async function DashboardLayout({ children }: { children: React.Re
   if (isSelfServiceOnlyRole(user.role)) redirect('/employee');
   const brand = await getRequestOrganizationBranding(user.organizationId);
   if (!brand) redirect('/login');
-  const hrUnreadNotifications = (user.role === Role.HR_ADMIN || user.role === Role.ORGANIZATION_ADMIN)
-    ? (await listHrNotifications(user)).filter(item => !item.read).length
-    : 0;
+  const hrNotifications = (user.role === Role.HR_ADMIN || user.role === Role.ORGANIZATION_ADMIN)
+    ? await listHrNotifications(user)
+    : [];
   const personalAccount = user.role === Role.HR_ADMIN ? await prisma.employeeAccount.findFirst({ where:{ organizationId:user.organizationId,userId:user.userId,status:'ACTIVE',employee:{ employeeStatus:'ACTIVE' } },select:{ id:true } }) : null;
   const initials = user.name
     .split(' ')
@@ -71,6 +72,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
             <DashboardSidebarNav orgSlug={brand.slug} role={user.role} />
             {personalAccount && <TenantLink href="/employee" className="mx-6 my-3 block text-sm text-white underline">My Employee Self-Service</TenantLink>}
           </div>
+          <div className="pl-[26px] pr-3 pt-2 pb-2 border-t border-white/10"><DashboardProfileLink /></div>
           <div className="pl-[26px] pr-3 pb-7">
             <div className="flex items-center gap-2.5">
               <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[var(--tenant-tint-strong)] text-xs font-bold text-[var(--tenant-primary)]">
@@ -101,7 +103,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
           {/* One unified rounded rectangular container enclosing header and content */}
           <div className="flex-1 min-h-0 flex flex-col rounded-xl lg:rounded-2xl border border-[var(--wp-border)] wp-content-canvas shadow-2xs overflow-hidden">
             {/* Header Bar (fixed within container) */}
-            <DashboardHeader orgName={brand.displayName} orgSlug={brand.slug} role={user.role} hrUnreadNotifications={hrUnreadNotifications} />
+            <DashboardHeader orgName={brand.displayName} orgSlug={brand.slug} role={user.role} hrNotifications={hrNotifications} />
 
             {/* Inset horizontal divider (16px on mobile, 24px on desktop) */}
             <div className="shrink-0 mx-4 sm:mx-6 h-[1px] bg-[var(--wp-border)]" aria-hidden="true" />

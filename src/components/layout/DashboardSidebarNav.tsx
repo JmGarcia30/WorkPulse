@@ -5,8 +5,6 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import {
   Banknote,
-  Bell,
-  CreditCard,
   BriefcaseBusiness,
   Building2,
   CalendarDays,
@@ -50,8 +48,6 @@ export function DashboardSidebarNav({
   const sections = useMemo<SectionItem[]>(
     () => [
       { href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
-      ...(hrAccess ? [{ href: '/dashboard/notifications', label: 'Notifications', icon: Bell }] : []),
-      ...(hrAccess ? [{ href: '/dashboard/profile', label: 'My Profile', icon: Users }] : []),
       {
         href: '/dashboard/hiring/pipeline',
         sectionPrefix: '/dashboard/hiring',
@@ -104,7 +100,6 @@ export function DashboardSidebarNav({
           { href: '/dashboard/analytics', label: 'Analytics', icon: ChartNoAxesCombined },
         ]
         : []),
-      ...(hrAccess ? [{ href: '/dashboard/subscription', label: 'Subscription & Billing', icon: CreditCard }] : []),
       ...(hrAccess ? [{
         href: '/dashboard/organization', label: 'Settings', icon: Settings, sectionPrefix: '/dashboard/settings', children: [
           { href: '/dashboard/organization', label: 'Organization Settings' },

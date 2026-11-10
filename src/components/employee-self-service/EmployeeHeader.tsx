@@ -6,6 +6,8 @@ import { usePathname } from 'next/navigation';
 import { ChevronRight, Menu, X, LogOut, User } from 'lucide-react';
 import { EmployeeNav } from './EmployeeNav';
 import { DialogFrame } from '@/components/ui/DialogFrame';
+import { NotificationPopover, type NotificationPopoverItem } from '@/components/ui/NotificationPopover';
+import { markEmployeeNotificationRead } from '@/features/employee-self-service/notification-actions';
 import { logoutAction } from '@/lib/auth/actions';
 import { resolveTenantHref, stripTenantPrefix } from '@/lib/tenant/navigation';
 
@@ -13,11 +15,13 @@ export function EmployeeHeader({
   orgName,
   employeeName,
   employeeNumber,
+  employeeNotifications = [],
 }: {
   orgName: string;
   orgSlug?: string;
   employeeName: string;
   employeeNumber: string;
+  employeeNotifications?: NotificationPopoverItem[];
 }) {
   const pathname = usePathname();
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -86,6 +90,7 @@ export function EmployeeHeader({
           </nav>
         </div>
         <div className="flex items-center gap-3 sm:gap-3.5">
+          <NotificationPopover label="Employee notifications" initialItems={employeeNotifications} markRead={markEmployeeNotificationRead}/>
           <span className="hidden text-xs font-semibold uppercase tracking-wider text-[var(--tenant-accent)] sm:inline">
             ESS Portal
           </span>
