@@ -12,7 +12,7 @@ import { JobActionNotice } from '@/components/hiring/JobActionNotice';
 
 interface EditJobPageProps {
   params: Promise<{ jobId: string }>;
-  searchParams: Promise<{ notice?: string }>;
+  searchParams: Promise<{ notice?: string; error?: string }>;
 }
 
 export default async function EditJobPage({ params, searchParams }: EditJobPageProps) {
@@ -35,12 +35,13 @@ export default async function EditJobPage({ params, searchParams }: EditJobPageP
   if (job.status === JobStatus.ARCHIVED) {
     redirect(`/dashboard/hiring/jobs/${jobId}?error=Archived%20postings%20are%20read-only.%20Use%20Reuse%20Posting.`);
   }
-  const { notice } = await searchParams;
+  const { notice, error } = await searchParams;
   const updateJobWithId = updateJobAction.bind(null, jobId);
 
   return (
     <div className="min-w-0 max-w-4xl mx-auto space-y-6 [overflow-wrap:anywhere]">
       <JobActionNotice notice={notice} />
+      {error && <p role="alert" className="wp-alert-danger">{error === 'invalid_deadline' ? 'Choose a valid closing date that is not in the past.' : 'Review the form and try again.'}</p>}
       {/* Top Header with Breadcrumb and Title */}
       <HiringPageHeader
         breadcrumbs={[
