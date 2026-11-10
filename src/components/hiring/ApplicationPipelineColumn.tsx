@@ -9,12 +9,14 @@ interface ApplicationPipelineColumnProps {
   status: ApplicationStatus;
   applications: SerializedApplication[];
   canEditStatus: boolean;
+  canArchive: boolean;
 }
 
 export function ApplicationPipelineColumn({
   status,
   applications,
   canEditStatus,
+  canArchive,
 }: ApplicationPipelineColumnProps) {
   const config = STAGE_CONFIG[status] || {
     label: status,
@@ -75,6 +77,7 @@ export function ApplicationPipelineColumn({
               key={app.id}
               application={app}
               canEditStatus={canEditStatus}
+              canArchive={canArchive}
             />
           ))
         )}
