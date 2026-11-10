@@ -48,7 +48,6 @@ export async function closeExpiredJobs(
             subjectIdentifier: job.id,
             action: 'JOB_AUTO_CLOSED',
             success: true,
-            operationKey: `job-auto-closed:${job.id}`,
           },
         });
         return true;
