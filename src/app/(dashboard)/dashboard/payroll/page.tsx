@@ -75,6 +75,11 @@ export default async function PayrollPage({ searchParams }: { searchParams: Prom
         </label>
         <button className="wp-button-secondary" disabled={!periods.length || !employees.length}>Select Employee</button>
       </form>
+      {manage && <details className="rounded-xl border border-[#e8e7e6] p-3 sm:p-4">
+        <summary className="cursor-pointer text-xs font-semibold">Create a new payroll cutoff (start date, end date and pay date)</summary>
+        <p className="mt-2 text-xs text-slate-600">Use the approved payroll dates. Existing cutoff dates cannot be changed once entries are generated. WorkPulse validates allowed monthly and semi-monthly periods.</p>
+        <PayrollPeriodForm />
+      </details>}
       {selectedEmployee && period ? <div className="space-y-4">
         <div className="rounded-xl bg-[#FAF8F6] p-4">
           <h3 className="text-sm font-bold">1. Employee salary and payroll dates</h3>
