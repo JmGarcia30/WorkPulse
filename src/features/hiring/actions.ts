@@ -185,7 +185,7 @@ export async function updateJobAction(jobId: string, formData: FormData): Promis
   const categoryRaw = (formData.get('category') as string)?.trim();
 
   await auditedJobMutation(prisma, user, 'JOB_UPDATED', tx => tx.job.update({
-    where: { id: jobId, organizationId: user.organizationId },
+    where: { id: jobId, organizationId: user.organizationId, status: { not: JobStatus.ARCHIVED } },
     data: {
       title,
       department,
@@ -244,14 +244,14 @@ export async function publishJobAction(jobId: string) {
     return { error: 'This job is already published.' };
   }
   try { await auditedJobMutation(prisma, user, 'JOB_PUBLISHED', tx => tx.job.update({
-    where: { id: jobId, organizationId: user.organizationId },
+    where: { id: jobId, organizationId: user.organizationId, status: { in: [JobStatus.DRAFT, JobStatus.CLOSED] } },
     data: {
       status: JobStatus.PUBLISHED,
       publishedAt: new Date(),
     },
   })); } catch(error) {
     if(error instanceof ActiveJobLimitError)return {error:error.message};
-    throw error;
+    return {error:'Posting status may have changed. Refresh and try again.'};
   }
 
   revalidatePath('/dashboard/hiring/jobs');
