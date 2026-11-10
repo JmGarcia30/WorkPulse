@@ -5,6 +5,7 @@ import { ApplicationStatus, Prisma } from '@prisma/client';
 import { getSession } from '@/lib/auth/session';
 import { prisma } from '@/lib/db/prisma';
 import { canManageJobs } from '@/lib/permissions/rbac';
+import { consumeAuthenticationAttempt } from '@/features/platform-admin/service';
 
 /**
  * Archiving is a visibility change, never an application status transition.
@@ -24,6 +25,18 @@ export async function setApplicationArchivedAction(
     return { error: 'Invalid application request.' };
   }
   try {
+    // Persist an independently committed 15-minute budget, including rejected requests.
+    const allowed = await prisma.$transaction(async tx => {
+      const actorAllowed = await consumeAuthenticationAttempt(
+        tx, `applicant-archive:actor:${actor.organizationId}:${actor.userId}`, 30,
+      );
+      const tenantAllowed = await consumeAuthenticationAttempt(
+        tx, `applicant-archive:tenant:${actor.organizationId}`, 300,
+      );
+      return actorAllowed && tenantAllowed;
+    }, { maxWait: 10000, timeout: 20000 });
+    if (!allowed) return { error: 'Too many applicant archive changes. Try again in 15 minutes.' };
+
     const result = await prisma.$transaction(async tx => {
       const account = await tx.user.findFirst({
         where: { id: actor.userId, organizationId: actor.organizationId, role: { in: ['HR_ADMIN', 'ORGANIZATION_ADMIN'] } },
