@@ -739,7 +739,6 @@ model Organization {
   rfidAudits RfidAudit[]
   rfidBudgets RfidRequestBudget[]
   hrEmailDeliveries HrEmailDelivery[]
-  hrNotificationReads HrNotificationRead[]
   id                   String   @id @default(cuid())
   name                 String
   slug                 String   @unique
@@ -811,6 +810,7 @@ model User {
   finalPaysApproved EmployeeFinalPay[] @relation("FinalPayApprover")
   finalPayPayments EmployeeFinalPayPayment[]
   hrEmailDeliveries HrEmailDelivery[]
+  hrNotificationReads HrNotificationRead[]
   id             String   @id @default(cuid())
   organizationId String
   name           String
