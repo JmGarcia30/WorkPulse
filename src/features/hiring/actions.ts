@@ -301,12 +301,12 @@ export async function archiveJobAction(jobId: string): Promise<{success?: boolea
   return { success: true };
 }
 
-export async function reuseJobAction(jobId: string): Promise<{jobId?: string; error?: string}> {
+export async function reuseJobAction(jobId: string, requestId: string): Promise<{jobId?: string; error?: string}> {
   const user = await getSession();
   if (!user || !canManageJobs(user)) return { error: 'You are not authorized to reuse this posting.' };
   try {
     await enforceJobMutationBudget(prisma, user);
-    const copy = await reuseArchivedJob(prisma, user, jobId);
+    const copy = await reuseArchivedJob(prisma, user, jobId, requestId);
     revalidatePath('/dashboard/hiring/jobs');
     revalidatePath(`/dashboard/hiring/jobs/${jobId}`);
     return { jobId: copy.id };
