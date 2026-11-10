@@ -41,7 +41,7 @@ export async function archiveClosedJob(db: PrismaClient, actor: JobActor, jobId:
  */
 export async function reuseArchivedJob(db: PrismaClient, actor: JobActor, jobId: string, requestId: string) {
   if (!/^[a-f0-9-]{36}$/i.test(requestId)) throw new JobLifecycleError('Invalid request. Refresh the page and try again.');
-  const operationKey = `job-reuse-request:${actor.organizationId}:${actor.userId}:${requestId}`;
+  const operationKey = `job-reuse-request:${actor.organizationId}:${actor.userId}:${jobId}:${requestId}`;
   return auditedJobMutation(db, actor, 'JOB_REUSED', async tx => {
     // The organization's advisory lock serializes identical retries and
     // distinct reuse requests; one request key creates at most one new draft.
