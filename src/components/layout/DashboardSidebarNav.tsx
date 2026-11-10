@@ -6,12 +6,11 @@ import { usePathname } from 'next/navigation';
 import {
   Banknote,
   BriefcaseBusiness,
-  Building2,
+  UserRound,
   CalendarDays,
   ChartNoAxesCombined,
   ChevronDown,
   Clock3,
-  ExternalLink,
   LayoutDashboard,
   Settings,
   Users,
@@ -34,12 +33,11 @@ type SectionItem = {
 };
 
 export function DashboardSidebarNav({
-  orgSlug,
   role,
   onNavigate,
 }: {
-  orgSlug?: string;
   role: Role;
+  orgSlug?: string;
   onNavigate?: () => void;
 }) {
   const pathname = usePathname();
@@ -270,33 +268,21 @@ export function DashboardSidebarNav({
         );
       })}
 
-      {orgSlug ? (
+      {role === Role.HR_ADMIN && (
         <div className="pt-1">
           <div className="wp-sidebar-divider -ml-[2px] mr-3 my-3" aria-hidden="true" />
           <Link
-            href={`/careers/${orgSlug}`}
-            target="_blank"
+            href={resolveTenantHref('/dashboard/my-ess', pathname)}
             onClick={onNavigate}
-            className="group relative flex min-h-10 items-center gap-3.5 rounded-lg px-1.5 py-1 text-[13px] font-medium leading-normal text-white transition-colors duration-150"
+            className="group relative flex min-h-10 items-center gap-3.5 rounded-lg px-1.5 py-1 text-[13px] font-medium text-white hover:text-[#C7A759]"
           >
-            <span
-              className="pointer-events-none absolute left-1 md:-left-[26px] top-1/2 h-5 w-[3px] -translate-y-1/2 rounded-full md:rounded-r-full bg-white opacity-0 group-hover:opacity-100 transition-opacity duration-150"
-              aria-hidden="true"
-            />
-            <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-[8px] bg-transparent group-hover:bg-white/[0.06] transition-colors duration-150">
-              <Building2
-                className="h-[17px] w-[17px] shrink-0 text-[#B4B5C0] group-hover:text-white transition-colors duration-150"
-                aria-hidden="true"
-              />
+            <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-[8px] bg-transparent group-hover:bg-white/[0.06]">
+              <UserRound className="h-[17px] w-[17px] text-[#B4B5C0] group-hover:text-white" aria-hidden="true" />
             </span>
-            <span className="truncate">Public Career Site</span>
-            <ExternalLink
-              className="ml-auto mr-1.5 h-3.5 w-3.5 shrink-0 text-[#B4B5C0] group-hover:text-white transition-colors duration-150"
-              aria-hidden="true"
-            />
+            <span>My ESS</span>
           </Link>
         </div>
-      ) : null}
+      )}
     </nav>
   );
 }
