@@ -995,6 +995,7 @@ model Job {
 
   @@unique([organizationId, slug])
   @@index([organizationId])
+  @@index([organizationId, status, closingDate])
   @@index([status])
   @@index([category])
   @@index([publishedAt])
