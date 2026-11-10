@@ -2,7 +2,8 @@ import { formatStatusLabel } from '@/lib/ui/format-status';
 import Link from 'next/link';
 import { requireBackOfficeContext } from '@/lib/auth/guards';
 import { prisma } from '@/lib/db/prisma';
-import { ApplicationStatus } from '@prisma/client';
+import { ApplicationStatus, type Prisma } from '@prisma/client';
+import { canManageJobs } from '@/lib/permissions/rbac';
 import { Users } from 'lucide-react';
 import { HiringPageHeader } from '@/components/hiring/HiringPageHeader';
 import { HiringFilterToolbar, FilterPill } from '@/components/hiring/HiringFilterToolbar';
@@ -26,6 +27,8 @@ export default async function ApplicantsPage({ searchParams }: ApplicantsPagePro
 
   const params = await searchParams;
   const statusFilter = params.status;
+  const showingArchived = statusFilter === 'ARCHIVED';
+  const validStatus = Object.values(ApplicationStatus).includes(statusFilter as ApplicationStatus) ? statusFilter as ApplicationStatus : undefined;
   const jobIdFilter = params.jobId;
   const searchQuery = params.search?.trim();
   const sort = params.sort || 'newest';
@@ -45,13 +48,13 @@ export default async function ApplicantsPage({ searchParams }: ApplicantsPagePro
   }
 
   // Common where filter for isolation & search
-  const whereClause = {
+  const whereClause: Prisma.ApplicationWhereInput = {
     job: {
       organizationId: user.organizationId,
       id: jobIdFilter || undefined,
     },
-    status:
-      statusFilter && statusFilter !== 'ALL' ? (statusFilter as ApplicationStatus) : undefined,
+    archivedAt: showingArchived ? { not: null } : null,
+    status: validStatus,
     OR: searchQuery
       ? [
         { applicant: { firstName: { contains: searchQuery, mode: 'insensitive' as const } } },
@@ -84,11 +87,14 @@ export default async function ApplicantsPage({ searchParams }: ApplicantsPagePro
     }),
     prisma.application.groupBy({
       by: ['status'],
-      where: { job: { organizationId: user.organizationId } },
+      where: { job: { organizationId: user.organizationId }, archivedAt: null },
       _count: { _all: true },
     }),
   ]);
 
+  const [archivedCount] = await Promise.all([
+    prisma.application.count({ where: { job: { organizationId: user.organizationId }, archivedAt: { not: null } } }),
+  ]);
   const totalPages = Math.ceil(totalCount / PAGE_SIZE) || 1;
 
   // Build metric pills at top of toolbar
@@ -112,6 +118,13 @@ export default async function ApplicantsPage({ searchParams }: ApplicantsPagePro
       value: 'ALL',
       isActive: !statusFilter || statusFilter === 'ALL',
       href: `/dashboard/hiring/applicants?${new URLSearchParams({ ...baseParams, status: 'ALL' }).toString()}`,
+    },
+    {
+      label: 'Archived',
+      count: archivedCount,
+      value: 'ARCHIVED',
+      isActive: showingArchived,
+      href: `/dashboard/hiring/applicants?${new URLSearchParams({ ...baseParams, status: 'ARCHIVED' }).toString()}`,
     },
     {
       label: 'Screening',
@@ -177,6 +190,8 @@ export default async function ApplicantsPage({ searchParams }: ApplicantsPagePro
         year: 'numeric',
       }),
       status: app.status,
+      archived: Boolean(app.archivedAt),
+      canArchive: canManageJobs(user),
       statusLabel: formatStatusLabel(app.status),
       avatarInitials: initials,
       coverLetter: app.coverLetter || undefined,
@@ -231,6 +246,7 @@ export default async function ApplicantsPage({ searchParams }: ApplicantsPagePro
         jobs={organizationJobs}
         statuses={[
           { value: 'ALL', label: 'All Statuses' },
+          { value: 'ARCHIVED', label: 'Archived' },
           ...Object.values(ApplicationStatus).map((st) => ({
             value: st,
             label: formatStatusLabel(st),
@@ -245,7 +261,7 @@ export default async function ApplicantsPage({ searchParams }: ApplicantsPagePro
       <HiringCardWorkspace
         candidates={candidateItems}
         showDivider
-        emptyMessage="No candidate applicants found matching your search and filter criteria."
+        emptyMessage={showingArchived ? 'No archived applicants found.' : 'No candidate applicants found matching your search and filter criteria.'}
         pagination={
           <HiringPagination
             currentPage={currentPage}
