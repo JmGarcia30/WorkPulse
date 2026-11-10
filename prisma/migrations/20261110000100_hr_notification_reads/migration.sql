@@ -16,3 +16,6 @@ ALTER TABLE "HrNotificationRead" ADD CONSTRAINT "HrNotificationRead_organization
   FOREIGN KEY ("organizationId") REFERENCES "Organization"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 ALTER TABLE "HrNotificationRead" ADD CONSTRAINT "HrNotificationRead_userId_organizationId_fkey"
   FOREIGN KEY ("userId", "organizationId") REFERENCES "User"("id", "organizationId") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- Closeout query is tenant and status filtered, then date ordered.
+CREATE INDEX "Job_organizationId_status_closingDate_idx" ON "Job"("organizationId", "status", "closingDate");
