@@ -10,6 +10,10 @@ on:
       - 'scripts/test-ess-return-rbac.ts'
       - 'scripts/test-employee-registration-access.ts'
       - 'src/features/employees/**'
+      - 'src/features/payroll/**'
+      - 'src/components/payroll/**'
+      - 'src/app/(dashboard)/dashboard/payroll/**'
+      - 'scripts/test-payroll-transparency.ts'
       - '.github/workflows/ess-hr-return-rbac.yml'
 permissions:
   contents: read
@@ -31,3 +35,6 @@ jobs:
       - run: npx eslint src/lib/auth/access-roles.ts src/components/employee-self-service/EmployeeNav.tsx src/components/employee-self-service/EmployeeHeader.tsx "src/app/(employee)/employee/layout.tsx" src/features/employees/registration-form.tsx src/features/employees/registration-schema.ts src/features/employees/registration-actions.ts
       - run: npx tsx scripts/test-ess-return-rbac.ts
       - run: npx tsx scripts/test-employee-registration-access.ts
+      - run: npx eslint src/components/payroll/PayrollAttendanceBreakdown.tsx src/components/payroll/PayrollEarningsForm.tsx "src/app/(dashboard)/dashboard/payroll/page.tsx" src/features/payroll/attendance-money.ts src/features/payroll/queries.ts src/features/payroll/service.ts src/features/payroll/payslip.ts src/components/payroll/PayslipView.tsx
+      - run: npx tsx scripts/test-payroll-transparency.ts
+      - run: npm run build
