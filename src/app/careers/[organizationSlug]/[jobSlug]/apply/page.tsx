@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { prisma } from '@/lib/db/prisma';
 import { submitApplicationAction } from '@/features/careers/actions';
 import { JobStatus } from '@prisma/client';
+import { isJobDeadlinePassed } from '@/features/hiring/job-deadline';
 import { ArrowLeft, CheckCircle2, ArrowRight } from 'lucide-react';
 import { ApplicationForm } from '@/components/careers/ApplicationForm';
 import styles from '@/components/careers/ApplicationForm.module.css';
@@ -71,7 +72,7 @@ export default async function ApplyPage({ params, searchParams }: ApplyPageProps
     },
   });
 
-  if (!job) {
+  if (!job || isJobDeadlinePassed(job.closingDate, org.timeZone)) {
     notFound();
   }
 
