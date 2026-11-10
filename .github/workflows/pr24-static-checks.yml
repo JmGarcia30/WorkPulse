@@ -33,3 +33,5 @@ jobs:
           npx eslint src/features/attendance/emergency-recovery.ts src/features/attendance/service.ts src/features/attendance/actions.ts src/components/attendance/EmergencyAttendanceRecoveryForm.tsx "src/app/(dashboard)/dashboard/attendance/emergency/page.tsx" src/features/hiring/application-archive-actions.ts src/components/hiring/ApplicationArchiveControl.tsx
       - name: Metadata idempotency regression
         run: npx tsx scripts/test-emergency-metadata.ts
+      - name: Production-style Next.js build (without Vercel environment)
+        run: npm run build
