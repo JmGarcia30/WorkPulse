@@ -4,6 +4,7 @@ import { assessPayrollPeriodFromReadInputs, payrollReviewEntryInclude } from './
 import { formatCurrency, formatPayrollDate, formatPayrollPeriodRange } from './formatters';
 import { payrollSnapshotBreakdown, type PayrollSnapshotBreakdown } from './snapshot-breakdown';
 import { payrollEarningsBreakdown } from './earnings-breakdown';
+import { payrollAttendanceMoney, type PayrollAttendanceMoneyRow } from './attendance-money';
 
 type PayrollDb = Prisma.TransactionClient | typeof prisma;
 
@@ -71,6 +72,7 @@ export interface PayrollDashboardEntryItem {
   canViewPayslip: boolean;
   breakdown?: PayrollSnapshotBreakdown;
   additionalEarnings?: ReturnType<typeof payrollEarningsBreakdown>;
+  attendanceMoney: PayrollAttendanceMoneyRow[];
 }
 
 export interface PayrollDashboardSummaryKPIs {
@@ -254,6 +256,7 @@ export async function getPayrollDashboardData(
       id: entry.id,
       breakdown: payrollSnapshotBreakdown(entry.calculationSnapshot),
       additionalEarnings: payrollEarningsBreakdown(entry.calculationSnapshot),
+      attendanceMoney: payrollAttendanceMoney(entry.calculationSnapshot),
       employeeId: entry.employeeId,
       employeeNumber: entry.employee.employeeNumber,
       firstName: entry.employee.firstName,
