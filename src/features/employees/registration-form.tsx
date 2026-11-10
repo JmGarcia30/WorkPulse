@@ -53,7 +53,7 @@ export function EmployeeRegistrationForm({ registrationKey,managementRoles,exist
         <div className="space-y-1">
           <h2 className="font-semibold">Employee WorkPulse access</h2>
           <p className="text-sm text-[var(--wp-text-muted)]">
-            Choose the employee's account permissions separately from their job title. Being assigned to the HR department does not automatically grant HR system access.
+            Choose the employee&apos;s account permissions separately from their job title. Being assigned to the HR department does not automatically grant HR system access.
           </p>
         </div>
         <label className="wp-label block">
@@ -95,7 +95,7 @@ export function EmployeeRegistrationForm({ registrationKey,managementRoles,exist
         {managementAccess && (
           <label className="flex items-start gap-2 text-sm">
             <input type="checkbox" name="managementRoleConfirmed" value="yes" required/>
-            I confirm this employee's elevated access role is authorized by the organization. Access changes are audited.
+            I confirm this employee&apos;s elevated access role is authorized by the organization. Access changes are audited.
           </label>
         )}
         <label className="flex items-start gap-2 text-sm">
