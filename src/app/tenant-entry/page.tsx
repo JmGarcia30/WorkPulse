@@ -97,10 +97,10 @@ export default async function TenantEntryPage() {
           closingDate: true,
         },
         orderBy: { publishedAt: 'desc' },
-        take: 4,
+        take: 30,
       })
     : [];
-  const availableJobs = jobs.filter(job => !isJobDeadlinePassed(job.closingDate, tenant.timeZone));
+  const availableJobs = jobs.filter(job => !isJobDeadlinePassed(job.closingDate, tenant.timeZone)).slice(0, 4);
 
   const announcements = content.announcements.map((announcement) => ({
     ...announcement,
