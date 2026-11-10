@@ -352,6 +352,7 @@ export async function getApplicationTransitionOptionsAction(applicationId: strin
     include: transitionInclude,
   });
   if (!application) return { error: 'Application not found or access denied.' };
+  if (application.archivedAt) return { error: 'Archived applications are read-only. Restore the application first.' };
   const source = transitionSource(application);
   return { status: application.status, options: getAvailableNextStatuses(application.status)
     .filter(status => status !== ApplicationStatus.HIRED)
