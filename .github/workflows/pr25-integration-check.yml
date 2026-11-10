@@ -1,0 +1,41 @@
+name: PR25 payroll transaction integration
+on:
+  push:
+    branches: [fix/ess-hr-return-rbac-20261111]
+  pull_request:
+    paths:
+      - 'src/features/payroll/**'
+      - 'scripts/test-pr25-db-integration.ts'
+      - '.github/workflows/pr25-integration-check.yml'
+permissions:
+  contents: read
+jobs:
+  integration:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    services:
+      postgres:
+        image: postgres:17
+        env:
+          POSTGRES_USER: workpulse_ci
+          POSTGRES_PASSWORD: workpulse_ci
+          POSTGRES_DB: workpulse_ci
+        ports: ['5432:5432']
+        options: >-
+          --health-cmd "pg_isready -U workpulse_ci -d workpulse_ci"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 15
+    env:
+      DATABASE_URL: postgresql://workpulse_ci:workpulse_ci@localhost:5432/workpulse_ci?sslmode=disable
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - run: npm ci
+      - name: Apply complete release migration history on disposable PostgreSQL
+        run: npx prisma migrate deploy
+      - name: Full incentive payroll transaction and finalized-payslip regression
+        run: npx tsx scripts/test-pr25-db-integration.ts
