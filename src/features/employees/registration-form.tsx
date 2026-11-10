@@ -24,6 +24,9 @@ export function EmployeeRegistrationForm({ registrationKey,managementRoles,exist
     if (account) {
       setEmail(account.email);
       setSelectedRole(account.role as keyof typeof accessRoleLabels);
+    } else {
+      setEmail('');
+      setSelectedRole('EMPLOYEE');
     }
   }
   return <form action={action} className="wp-card space-y-6 p-5 sm:p-6" aria-busy={pending}>
