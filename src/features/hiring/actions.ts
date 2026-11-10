@@ -19,6 +19,7 @@ import { auditedJobMutation } from '@/features/account-security/job-audit';
 import { ActiveJobLimitError } from '@/features/subscriptions/job-limit';
 import { archiveClosedJob, reuseArchivedJob, JobLifecycleError } from './job-archive-reuse';
 import { enforceJobMutationBudget, JobRateLimitError } from './job-rate-budget';
+import { validateJobClosingDate, isJobDeadlinePassed } from './job-deadline';
 
 function slugify(text: string): string {
   return text
@@ -86,7 +87,11 @@ export async function createJobAction(formData: FormData): Promise<void> {
 
   const status = statusRaw === 'PUBLISHED' ? JobStatus.PUBLISHED : JobStatus.DRAFT;
   const publishedAt = status === JobStatus.PUBLISHED ? new Date() : null;
-  const closingDate = closingDateRaw ? new Date(closingDateRaw) : null;
+  const org = await prisma.organization.findUnique({ where: { id: user.organizationId }, select: { timeZone: true } });
+  if (!org) redirect('/dashboard/hiring/jobs?error=unauthorized');
+  let closingDate: Date | null;
+  try { closingDate = validateJobClosingDate(closingDateRaw, org.timeZone); }
+  catch { redirect('/dashboard/hiring/jobs/new?error=invalid_deadline'); }
 
   const categoryRaw = (formData.get('category') as string)?.trim();
   const category =
@@ -160,11 +165,11 @@ export async function updateJobAction(jobId: string, formData: FormData): Promis
     redirect(`/dashboard/hiring/jobs/${jobId}/edit?error=missing_fields`);
   }
 
-  const closingDate = closingDateRaw ? new Date(closingDateRaw) : null;
-  if (closingDate && (!/^\d{4}-\d{2}-\d{2}$/.test(closingDateRaw)
-    || Number.isNaN(closingDate.getTime()) || closingDate.toISOString().slice(0, 10) !== closingDateRaw)) {
-    redirect(`/dashboard/hiring/jobs/${jobId}/edit?error=invalid_fields`);
-  }
+  const org = await prisma.organization.findUnique({ where: { id: user.organizationId }, select: { timeZone: true } });
+  if (!org) redirect('/dashboard/hiring/jobs?error=unauthorized');
+  let closingDate: Date | null;
+  try { closingDate = validateJobClosingDate(closingDateRaw, org.timeZone); }
+  catch { redirect(`/dashboard/hiring/jobs/${jobId}/edit?error=invalid_deadline`); }
 
   let rawRequirements: unknown = [];
   try {
@@ -243,6 +248,10 @@ export async function publishJobAction(jobId: string) {
   }
   if (existingJob.status === JobStatus.PUBLISHED) {
     return { error: 'This job is already published.' };
+  }
+  const org = await prisma.organization.findUnique({ where: { id: user.organizationId }, select: { timeZone: true } });
+  if (!org || isJobDeadlinePassed(existingJob.closingDate, org.timeZone)) {
+    return { error: 'The closing date has passed. Edit the deadline before publishing.' };
   }
   try { await auditedJobMutation(prisma, user, 'JOB_PUBLISHED', tx => tx.job.update({
     where: { id: jobId, organizationId: user.organizationId, status: { in: [JobStatus.DRAFT, JobStatus.CLOSED] } },
