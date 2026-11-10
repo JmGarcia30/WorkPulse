@@ -10,6 +10,11 @@ export const productionDatabase: DatabaseIdentity = {
 
 // Dedicated synthetic-data Preview target for the payroll quick-flow review.
 // No Production environment can select this target.
+export const applicantArchivePreviewDatabase: DatabaseIdentity = {
+  project: 'purple-tree-62095489', branch: 'br-long-snow-azqbcnv1',
+  endpoint: 'ep-ancient-firefly-azxmrphp', database: 'workpulse_preview',
+};
+
 export const payrollQuickflowPreviewDatabase: DatabaseIdentity = {
   project: 'purple-tree-62095489', branch: 'br-broad-recipe-az027wby',
   endpoint: 'ep-shiny-boat-azdvf3sd', database: 'workpulse_preview',
@@ -38,9 +43,10 @@ export function databaseTarget(env: Environment = process.env): DatabaseIdentity
     project: env.WORKPULSE_DB_PROJECT_ID || '', branch: env.WORKPULSE_DB_BRANCH_ID || '',
     endpoint: env.WORKPULSE_DB_ENDPOINT_ID || '', database: env.WORKPULSE_DB_DATABASE || '',
   };
+  const previewTargets = [payrollQuickflowPreviewDatabase, applicantArchivePreviewDatabase];
   const approvedSyntheticPreview = env.VERCEL_ENV === 'preview' &&
-    Object.keys(payrollQuickflowPreviewDatabase).every(key =>
-      target[key as keyof DatabaseIdentity] === payrollQuickflowPreviewDatabase[key as keyof DatabaseIdentity]);
+    previewTargets.some(approved => Object.keys(approved).every(key =>
+      target[key as keyof DatabaseIdentity] === approved[key as keyof DatabaseIdentity]));
   if ((target.project !== productionDatabase.project && !approvedSyntheticPreview) ||
       !/^br-[a-z0-9-]+$/.test(target.branch) ||
       !/^ep-[a-z0-9-]+$/.test(target.endpoint) || !/^[a-zA-Z0-9_]+$/.test(target.database)) reject();
