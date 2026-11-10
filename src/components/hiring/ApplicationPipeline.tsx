@@ -2,7 +2,8 @@
 
 import { useState, useMemo } from 'react';
 import Link from 'next/link';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
+import { resolveTenantHref } from '@/lib/tenant/navigation';
 import { ACTIVE_PIPELINE_STAGES, TERMINAL_STAGES } from '@/features/hiring/pipeline';
 import { ApplicationPipelineColumn } from '@/components/hiring/ApplicationPipelineColumn';
 import { SerializedApplication } from '@/components/hiring/ApplicationCard';
@@ -31,6 +32,7 @@ export function ApplicationPipeline({
   canArchive,
 }: ApplicationPipelineProps) {
   const router = useRouter();
+  const pathname = usePathname();
   const searchParams = useSearchParams();
   const [activeTab, setActiveTab] = useState<'ACTIVE' | 'TERMINAL'>('ACTIVE');
   const [searchQuery, setSearchQuery] = useState('');
@@ -217,7 +219,7 @@ export function ApplicationPipeline({
             <h3 className="text-xs font-bold uppercase tracking-wider text-slate-500">
               Rejected and Withdrawn
             </h3>
-            <Link href="/dashboard/hiring/applicants?status=ARCHIVED" className="text-xs font-semibold text-[#282934] underline">View Archived Applicants</Link>
+            <Link href={resolveTenantHref("/dashboard/hiring/applicants?status=ARCHIVED", pathname)} className="text-xs font-semibold text-[#282934] underline">View Archived Applicants</Link>
           </div>
 
           <div className="overflow-x-auto pb-2">
