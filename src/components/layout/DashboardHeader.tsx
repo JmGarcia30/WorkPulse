@@ -7,11 +7,12 @@ import { ChevronRight, Menu, X, LogOut } from 'lucide-react';
 import { Role } from '@prisma/client';
 import { DashboardSidebarNav } from './DashboardSidebarNav';
 import { DialogFrame } from '@/components/ui/DialogFrame';
-import { HrNotificationBell } from '@/components/hr/HrNotificationCenter';
+import { HeaderNotificationPopover, type HeaderNotification } from './HeaderNotificationPopover';
+import { DashboardProfileLink } from './DashboardProfileLink';
 import { logoutAction } from '@/lib/auth/actions';
 import { resolveTenantHref, stripTenantPrefix } from '@/lib/tenant/navigation';
 
-export function DashboardHeader({ orgName, orgSlug, role, hrUnreadNotifications = 0 }: { orgName: string; orgSlug?: string; role: Role; hrUnreadNotifications?: number }) {
+export function DashboardHeader({ orgName, orgSlug, role, hrNotifications = [] }: { orgName: string; orgSlug?: string; role: Role; hrNotifications?: HeaderNotification[] }) {
   const pathname = usePathname();
   const [mobileOpen, setMobileOpen] = useState(false);
   const labelMap: Record<string, string> = {
@@ -90,7 +91,7 @@ export function DashboardHeader({ orgName, orgSlug, role, hrUnreadNotifications 
           </nav>
         </div>
         <div className="flex items-center gap-3">
-          {(role === Role.HR_ADMIN || role === Role.ORGANIZATION_ADMIN) && <HrNotificationBell unread={hrUnreadNotifications}/>}
+          {(role === Role.HR_ADMIN || role === Role.ORGANIZATION_ADMIN) && <HeaderNotificationPopover audience="hr" notifications={hrNotifications} />}
           <span className="max-w-36 truncate text-sm text-[var(--wp-text-muted)] sm:max-w-64">{orgName}</span>
         </div>
       </header>
@@ -114,6 +115,11 @@ export function DashboardHeader({ orgName, orgSlug, role, hrUnreadNotifications 
             <div className="flex-1 overflow-y-auto">
               <DashboardSidebarNav orgSlug={orgSlug} role={role} onNavigate={() => setMobileOpen(false)} />
             </div>
+            {(role === Role.HR_ADMIN || role === Role.ORGANIZATION_ADMIN) && (
+              <div className="border-t border-white/10 px-4 py-2">
+                <DashboardProfileLink onNavigate={() => setMobileOpen(false)} />
+              </div>
+            )}
             <form action={logoutAction} className="border-t border-white/10 p-4">
               <button type="submit" className="wp-button-secondary w-full border-white/20 bg-transparent text-[#B4B5C0] hover:text-white hover:bg-white/10">
                 <LogOut className="h-4 w-4" />
