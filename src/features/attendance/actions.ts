@@ -12,6 +12,7 @@ import {
 } from '@/lib/permissions/rbac';
 import { prisma } from '@/lib/db/prisma';
 import { instantForLocalDateTime } from './domain';
+import { recoverEmergencyAttendance, type EmergencyAttendanceInput } from './emergency-recovery';
 import {
   archiveScheduleGroup,
   assignSchedule,
@@ -111,6 +112,25 @@ export async function recordManualAttendanceEventAction(input: {
     revalidatePath(`/dashboard/attendance/${input.employeeId}`);
     return { success: true, ...result };
   } catch (error) { return failure(error); }
+}
+
+export async function recoverEmergencyAttendanceAction(
+  input: Omit<EmergencyAttendanceInput, 'organizationId' | 'actorUserId'>,
+): Promise<ActionResult> {
+  const user = await getSession();
+  if (!user || !canRecordAttendance(user)) return { error: 'Only authorized HR staff may recover outage attendance.' };
+  try {
+    const result = await recoverEmergencyAttendance({
+      ...input,
+      organizationId: user.organizationId,
+      actorUserId: user.userId,
+    });
+    revalidatePath('/dashboard/attendance');
+    revalidatePath(`/dashboard/attendance/${input.employeeId}`);
+    return { success: true, ...result };
+  } catch (error) {
+    return failure(error);
+  }
 }
 
 export async function correctAttendanceAction(input: {
