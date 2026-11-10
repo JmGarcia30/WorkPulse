@@ -4,6 +4,7 @@ import { prisma } from '@/lib/db/prisma';
 import { PayrollError } from './domain';
 import { payrollSnapshotBreakdown } from './snapshot-breakdown';
 import { payrollEarningsBreakdown } from './earnings-breakdown';
+import { payrollAttendanceMoney } from './attendance-money';
 
 type PayrollDb = Prisma.TransactionClient | typeof prisma;
 
@@ -70,6 +71,7 @@ function toPayslip(entry: FinalizedEntry) {
   return {
     entryId: entry.id,
     breakdown: payrollSnapshotBreakdown(entry.calculationSnapshot),
+    attendanceMoney: payrollAttendanceMoney(entry.calculationSnapshot),
     employee: {
       name: snapshot.employee?.name ?? `${entry.employee.firstName} ${entry.employee.lastName}`.trim(),
       employeeNumber: snapshot.employee?.employeeNumber ?? entry.employee.employeeNumber,
