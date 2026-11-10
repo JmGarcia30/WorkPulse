@@ -145,7 +145,7 @@ export function HiringCardWorkspace({
             <CandidateDetailPanel
               candidate={selectedCandidate}
               onClose={() => setMobileDrawerOpen(false)}
-              actionSlot={renderPanelAction ? renderPanelAction(selectedCandidate) : undefined}
+              actionSlot={renderPanelAction ? renderPanelAction(selectedCandidate) : selectedCandidate.canArchive ? <ApplicationArchiveControl applicationId={selectedCandidate.applicationId} name={selectedCandidate.name} status={selectedCandidate.status} archived={Boolean(selectedCandidate.archived)} /> : undefined}
             />
           </div>
         </div>
