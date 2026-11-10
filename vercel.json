@@ -3,5 +3,11 @@
   "git": {
     "deploymentEnabled": true
   },
-  "buildCommand": "npm run build"
+  "buildCommand": "npm run build",
+  "crons": [
+    {
+      "path": "/api/cron/close-jobs",
+      "schedule": "0 0 * * *"
+    }
+  ]
 }
