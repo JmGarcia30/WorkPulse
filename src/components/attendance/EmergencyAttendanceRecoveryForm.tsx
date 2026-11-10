@@ -99,7 +99,7 @@ export function EmergencyAttendanceRecoveryForm({
           Incident notes
           <textarea className="wp-input mt-1 min-h-24" required minLength={3} maxLength={800} value={notes} onChange={event => setNotes(event.target.value)} placeholder="Explain why the regular RFID attendance could not be recorded and how the paper times were verified." />
         </label>
-        <p className="text-xs text-[var(--wp-text-muted)]">Manual entries are attributed to your HR account, not to the RFID reader. The original evidence should be retained under your organization's policy.</p>
+        <p className="text-xs text-[var(--wp-text-muted)]">Manual entries are attributed to your HR account, not to the RFID reader. The original evidence should be retained under your organization&apos;s policy.</p>
         {error && <p role="alert" className="text-sm text-red-700">{error}</p>}
         {success && <p role="status" className="text-sm text-emerald-700">{success}</p>}
         <button type="submit" className="wp-button-primary" disabled={pending || !employees.length}>
