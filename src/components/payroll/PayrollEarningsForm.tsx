@@ -59,9 +59,9 @@ export function PayrollIncentiveForm({ employee, periodId }: { employee: Earning
         <input name="supportingReference" value={reference} onChange={event => setReference(event.target.value)} placeholder="Signed approval reference" className={fieldClass} maxLength={300} required/>
       </label>
     </div>
-    <details className="rounded-lg bg-[#faf8f6] p-3">
+    <details open className="rounded-lg bg-[#faf8f6] p-3">
       <summary className="cursor-pointer text-xs font-semibold">Review statutory contribution bases</summary>
-      <p className="mt-2 text-xs text-[#636471]">This incentive uses the taxable bonus classification. Review the employee's SSS remuneration and Pag-IBIG fund salary including applicable incentive amounts before saving. Do not assume the existing bases remain correct.</p>
+      <p className="mt-2 text-xs text-[#636471]">This incentive uses the taxable bonus classification. Review the employee&apos;s SSS remuneration and Pag-IBIG fund salary including applicable incentive amounts before saving. Do not assume the existing bases remain correct.</p>
       <div className="mt-3 grid gap-3 sm:grid-cols-2">
         <label className="grid gap-1 text-xs font-semibold">Reviewed monthly SSS remuneration
           <input name="monthlySssRemuneration" type="number" min="0.01" step="0.01" defaultValue={employee.input.monthlySssRemuneration} required className={fieldClass}/>
