@@ -36,7 +36,7 @@ export function PayrollIncentiveForm({ employee, periodId }: { employee: Earning
   const [state, action, pending] = useActionState(changePayrollEarningAction, {});
   const [reference, setReference] = useState('');
   if (!employee) return <div className="rounded-xl bg-[#faf8f6] p-4 text-sm text-[#636471]">
-    Verify the employee's statutory setup in Payroll Settings to add approved incentives.
+    Verify the employee&apos;s statutory setup in Payroll Settings to add approved incentives.
   </div>;
   return <form action={action} aria-busy={pending} className="space-y-3 rounded-xl border border-[#e8e7e6] bg-white p-4">
     <input type="hidden" name="employeeId" value={employee.id}/>
