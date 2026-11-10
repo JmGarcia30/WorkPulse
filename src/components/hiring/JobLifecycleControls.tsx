@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useTransition } from 'react';
+import { useRef, useState, useTransition } from 'react';
 import { useRouter } from 'next/navigation';
 import { Archive, LockKeyhole, RotateCcw } from 'lucide-react';
 import type { JobStatus } from '@prisma/client';
@@ -50,6 +50,7 @@ export function JobLifecycleControls({ jobId, title, status, compact = false }: 
   const [active, setActive] = useState<LifecycleAction | null>(null);
   const [pending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
+  const reuseRequestId = useRef<string | null>(null);
 
   const action: LifecycleAction | null = status === 'PUBLISHED' ? 'close'
     : status === 'CLOSED' ? 'archive'
@@ -66,7 +67,7 @@ export function JobLifecycleControls({ jobId, title, status, compact = false }: 
     startTransition(async () => {
       try {
         if (active === 'reuse') {
-          const result = await reuseJobAction(jobId);
+          const result = await reuseJobAction(jobId, reuseRequestId.current || '');
           if (result.error || !result.jobId) {
             setError(result.error || 'A new draft could not be created.');
             return;
@@ -96,7 +97,7 @@ export function JobLifecycleControls({ jobId, title, status, compact = false }: 
         type="button"
         title={option.label}
         aria-label={`${option.label}: ${title}`}
-        onClick={() => { setActive(action); setError(null); }}
+        onClick={() => { if (action === 'reuse') reuseRequestId.current = window.crypto.randomUUID(); setActive(action); setError(null); }}
         className={compact
           ? 'inline-flex items-center gap-1.5 rounded-md border border-[var(--wp-border)] bg-[var(--wp-surface-subtle)] px-3 py-2 text-xs font-semibold text-[var(--wp-text)] hover:bg-slate-100'
           : 'inline-flex items-center gap-1.5 rounded-lg border border-slate-300 bg-white px-3.5 py-2 text-sm font-semibold text-[#282934] hover:bg-slate-50'}
