@@ -17,7 +17,7 @@ type Context = { organizationId: string; userId: string; role: Role };
 export async function listHrNotifications(actor: Context, now: Date = new Date()): Promise<HrNotification[]> {
   if (actor.role !== Role.HR_ADMIN && actor.role !== Role.ORGANIZATION_ADMIN) return [];
   const since = new Date(now.getTime() - 14 * 86400000);
-  const [organization, applications, leaves, jobs, payroll, closeEvents, readReceipts] = await Promise.all([
+  const [organization, applications, leaves, jobs, payroll, closeEvents] = await Promise.all([
     prisma.organization.findUnique({ where: { id: actor.organizationId }, select: { timeZone: true } }),
     prisma.application.findMany({
       where: { job: { organizationId: actor.organizationId }, appliedAt: { gte: since } },
@@ -41,13 +41,8 @@ export async function listHrNotifications(actor: Context, now: Date = new Date()
       where: { organizationId: actor.organizationId, action: 'JOB_AUTO_CLOSED', createdAt: { gte: since } },
       select: { id: true, createdAt: true, subjectIdentifier: true }, orderBy: { createdAt: 'desc' }, take: 20,
     }),
-    prisma.hrNotificationRead.findMany({
-      where: { organizationId: actor.organizationId, userId: actor.userId },
-      select: { notificationKey: true }, take: 1000,
-    }),
   ]);
   if (!organization) return [];
-  const readKeys = new Set(readReceipts.map(x => x.notificationKey));
   const items: Omit<HrNotification, 'read'>[] = [];
   for (const app of applications) {
     items.push({ key: `application:${app.id}`, category: 'application', title: 'New job application',
@@ -80,7 +75,17 @@ export async function listHrNotifications(actor: Context, now: Date = new Date()
       title: 'Job automatically closed', description: 'A posting reached its closing deadline.',
       href: `/dashboard/hiring/jobs/${event.subjectIdentifier}`, createdAt: event.createdAt.toISOString() });
   }
-  // Deadline reminders sort above historical activity when both were generated now.
+  // Fetch only receipt keys for visible source records; old receipts cannot
+  // crowd out current unread state as an organization grows.
+  const readReceipts = items.length ? await prisma.hrNotificationRead.findMany({
+    where: {
+      organizationId: actor.organizationId,
+      userId: actor.userId,
+      notificationKey: { in: items.map(item => item.key) },
+    },
+    select: { notificationKey: true },
+  }) : [];
+  const readKeys = new Set(readReceipts.map(row => row.notificationKey));
   return items.map(item => ({ ...item, read: readKeys.has(item.key) }))
     .sort((a, b) => Number(a.read) - Number(b.read) || b.createdAt.localeCompare(a.createdAt))
     .slice(0, 80);
