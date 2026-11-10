@@ -3,10 +3,13 @@
 import React, { useState } from 'react';
 import { Users } from 'lucide-react';
 import { CandidateCard } from './CandidateCard';
+import { ApplicationArchiveControl } from './ApplicationArchiveControl';
 import { CandidateDetailPanel, CandidateDetailPanelData } from './CandidateDetailPanel';
 
 export interface WorkspaceCandidateItem extends CandidateDetailPanelData {
   workflowInfo?: string;
+  archived?: boolean;
+  canArchive?: boolean;
   workflowIcon?: 'document' | 'calendar' | 'checklist' | 'award';
 }
 
@@ -92,6 +95,7 @@ export function HiringCardWorkspace({
                 isSelected={c.id === selectedId}
                 onSelect={() => handleSelectCandidate(c.id)}
                 profileHref={`/dashboard/hiring/applicants/${c.applicationId}`}
+                archived={c.archived}
               />
             ))}
           </div>
@@ -119,7 +123,7 @@ export function HiringCardWorkspace({
               <CandidateDetailPanel
                 candidate={selectedCandidate}
                 onClose={handleClosePanel}
-                actionSlot={renderPanelAction ? renderPanelAction(selectedCandidate) : undefined}
+                actionSlot={renderPanelAction ? renderPanelAction(selectedCandidate) : selectedCandidate.canArchive ? <ApplicationArchiveControl applicationId={selectedCandidate.applicationId} name={selectedCandidate.name} status={selectedCandidate.status} archived={Boolean(selectedCandidate.archived)} /> : undefined}
               />
             </div>
           </div>
