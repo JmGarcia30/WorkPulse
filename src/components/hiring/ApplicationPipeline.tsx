@@ -228,6 +228,7 @@ export function ApplicationPipeline({
                   status={status}
                   applications={applicationsByStatus[status] || []}
                   canEditStatus={canEditStatus}
+                  canArchive={canArchive}
                 />
               ))}
             </div>
