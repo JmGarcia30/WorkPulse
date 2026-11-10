@@ -2,7 +2,6 @@ import { TenantLink as Link } from '@/components/ui/TenantLink';
 import { Banknote, ChevronRight, ReceiptText } from 'lucide-react';
 import { requireEmployeeSelfContext } from '@/features/employee-self-service/context';
 import { listFinalizedPayslipsForEmployee } from '@/features/payroll/payslip';
-import { listPayrollNotifications } from '@/features/payroll/notifications';
 import { PayrollError } from '@/features/payroll/domain';
 
 const formatDateLabel = (value: string) => {
@@ -35,7 +34,6 @@ export default async function MyPayslipsPage() {
   }
 
   const latestPayslip = payslips[0];
-  const notifications = await listPayrollNotifications({ organizationId: context.organization.id, userId: context.user.id });
 
   return (
     <div className="space-y-6">
@@ -48,7 +46,6 @@ export default async function MyPayslipsPage() {
           Review your finalized earnings, deductions, attendance, and net pay. Finalization does not confirm payment.
         </p>
       </header>
-      {notifications.length > 0 && <section aria-label="Payroll notifications" className="rounded-2xl border bg-white p-4"><h2 className="text-sm font-semibold">Payslip notifications</h2><ul className="mt-2 space-y-2 text-sm">{notifications.map(row => <li key={row.id}><Link className="underline" href={`/employee/payroll/${row.payrollEntryId}`}>{row.message}</Link><p className="text-xs text-slate-500">{row.createdAt.toLocaleString('en-PH', { timeZone: context.organization.timeZone ?? 'Asia/Manila' })}</p></li>)}</ul></section>}
 
       {/* Top Highlights if payslips exist */}
       {latestPayslip && (
