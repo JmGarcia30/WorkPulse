@@ -23,7 +23,8 @@ export async function closeExpiredJobs(
   let closed = 0;
   let moreDue = false;
 
-  for (const org of orgs) {
+  for (const [orgIndex, org] of orgs.entries()) {
+    if (examined >= limit) { moreDue = true; break; }
     const today = attendanceDateForInstant(now, org.timeZone);
     const boundary = new Date(today + 'T00:00:00.000Z');
     const rows = await db.job.findMany({
@@ -32,8 +33,9 @@ export async function closeExpiredJobs(
       orderBy: { id: 'asc' },
       take: Math.max(1, limit - examined) + 1,
     });
-    if (rows.length > Math.max(0, limit - examined)) moreDue = true;
-    for (const job of rows.slice(0, Math.max(0, limit - examined))) {
+    const room = limit - examined;
+    if (rows.length > room) moreDue = true;
+    for (const job of rows.slice(0, room)) {
       const didClose = await db.$transaction(async tx => {
         await tx.$queryRaw`SELECT pg_advisory_xact_lock(hashtextextended(${`subscription:${org.id}`},0))::text`;
         const changed = await tx.job.updateMany({
@@ -55,7 +57,10 @@ export async function closeExpiredJobs(
       examined++;
       if (didClose) closed++;
     }
-    if (examined >= limit) { moreDue ||= rows.length > examined; break; }
+    if (examined >= limit) {
+      moreDue ||= rows.length > room || orgIndex < orgs.length - 1;
+      break;
+    }
   }
   return { examined, closed, moreDue };
 }
