@@ -5,7 +5,7 @@
 1. Applications with status `REJECTED` or `WITHDRAWN` can be archived or restored by HR/Organization Admin.
 2. Archive is **not** a new application decision; the status and all documents, applications, recruitment stage history, interviews, offers, email deliveries and candidate-access records remain unchanged. No record is deleted.
 3. Archived applications disappear from the ordinary Applicants list and Hiring Pipeline. They appear under the dedicated **Archived** filter, retain their original terminal status, and can be viewed and restored.
-4. Successful archive/restore writes a separate append-only `ApplicationArchiveEvent` tied to the actor and organization in the same transaction. Unauthorized, cross-tenant, non-terminal or concurrent changes are rejected.
+4. The mutation has separate persistent 15-minute budgets (30 requests per actor, 300 per tenant), including rejected requests. Successful archive/restore writes a separate append-only `ApplicationArchiveEvent` tied to the actor and organization in the same transaction. Unauthorized, cross-tenant, non-terminal or concurrent changes are rejected.
 5. The HR sidebar's **Public Career Site** entry is replaced by **My ESS** on desktop and mobile. The actual public careers URL remains available to applicants; no public career functionality is disabled.
 6. HR uses their **existing user login and HR_ADMIN role** for both workspaces. My ESS sends an already-linked, active employee account to `/employee`; otherwise, it shows setup instructions. Existing `Employee Registration → Link existing account` already supports Organization Admin linking to an eligible HR employee. We do not silently create employee records or copy login credentials.
 
