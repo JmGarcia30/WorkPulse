@@ -11,6 +11,7 @@ import {
   Briefcase,
 } from 'lucide-react';
 import { HiringPageHeader } from '@/components/hiring/HiringPageHeader';
+import { JobLifecycleControls } from '@/components/hiring/JobLifecycleControls';
 
 interface JobsPageProps {
   searchParams: Promise<{
@@ -117,7 +118,8 @@ export default async function JobsPage({ searchParams }: JobsPageProps) {
           </dl>
           <div className="flex flex-wrap gap-2">
             <Link href={`/dashboard/hiring/jobs/${job.id}`} className="inline-flex items-center gap-2 rounded-md border border-[var(--wp-border)] bg-[var(--wp-surface-subtle)] px-3 py-2 text-xs font-semibold"><Eye className="h-4 w-4" aria-hidden="true" />View Details</Link>
-            {canEdit && <Link href={`/dashboard/hiring/jobs/${job.id}/edit`} className="inline-flex items-center gap-2 rounded-md border border-[var(--wp-border)] bg-[var(--wp-surface-subtle)] px-3 py-2 text-xs font-semibold"><Edit className="h-4 w-4" aria-hidden="true" />Edit Job</Link>}
+            {canEdit && job.status !== JobStatus.ARCHIVED && <Link href={`/dashboard/hiring/jobs/${job.id}/edit`} className="inline-flex items-center gap-2 rounded-md border border-[var(--wp-border)] bg-[var(--wp-surface-subtle)] px-3 py-2 text-xs font-semibold"><Edit className="h-4 w-4" aria-hidden="true" />Edit Job</Link>}
+            {canEdit && <JobLifecycleControls jobId={job.id} title={job.title} status={job.status} compact />}
           </div>
         </article>)}
       </div>
@@ -194,7 +196,7 @@ export default async function JobsPage({ searchParams }: JobsPageProps) {
                           <Eye className="h-4 w-4" />
                         </Link>
 
-                        {canEdit && (
+                        {canEdit && job.status !== JobStatus.ARCHIVED && (
                           <Link
                             href={`/dashboard/hiring/jobs/${job.id}/edit`}
                             className="rounded-md border border-[var(--wp-border)] bg-[var(--wp-surface-subtle)] p-2 text-[var(--wp-text)] hover:bg-[var(--tenant-primary)] hover:text-[var(--tenant-primary-foreground)] transition"
@@ -203,6 +205,7 @@ export default async function JobsPage({ searchParams }: JobsPageProps) {
                             <Edit className="h-4 w-4" />
                           </Link>
                         )}
+                        {canEdit && <JobLifecycleControls jobId={job.id} title={job.title} status={job.status} compact />}
                       </div>
                     </td>
                   </tr>

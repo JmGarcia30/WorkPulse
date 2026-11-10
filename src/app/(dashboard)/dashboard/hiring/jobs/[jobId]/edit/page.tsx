@@ -1,18 +1,21 @@
 import { redirect, notFound } from 'next/navigation';
 import Link from 'next/link';
 import { getSession } from '@/lib/auth/session';
+import { JobStatus } from '@prisma/client';
 import { prisma } from '@/lib/db/prisma';
 import { canManageJobs } from '@/lib/permissions/rbac';
 import { updateJobAction } from '@/features/hiring/actions';
 import { RequirementsBuilder } from '@/components/hiring/RequirementsBuilder';
 import { ArrowLeft, Save } from 'lucide-react';
 import { HiringPageHeader } from '@/components/hiring/HiringPageHeader';
+import { JobActionNotice } from '@/components/hiring/JobActionNotice';
 
 interface EditJobPageProps {
   params: Promise<{ jobId: string }>;
+  searchParams: Promise<{ notice?: string }>;
 }
 
-export default async function EditJobPage({ params }: EditJobPageProps) {
+export default async function EditJobPage({ params, searchParams }: EditJobPageProps) {
   const user = await getSession();
   if (!user || !canManageJobs(user)) {
     redirect('/dashboard/hiring/jobs');
@@ -29,11 +32,15 @@ export default async function EditJobPage({ params }: EditJobPageProps) {
   if (!job) {
     notFound();
   }
-
+  if (job.status === JobStatus.ARCHIVED) {
+    redirect(`/dashboard/hiring/jobs/${jobId}?error=Archived%20postings%20are%20read-only.%20Use%20Reuse%20Posting.`);
+  }
+  const { notice } = await searchParams;
   const updateJobWithId = updateJobAction.bind(null, jobId);
 
   return (
     <div className="min-w-0 max-w-4xl mx-auto space-y-6 [overflow-wrap:anywhere]">
+      <JobActionNotice notice={notice} />
       {/* Top Header with Breadcrumb and Title */}
       <HiringPageHeader
         breadcrumbs={[

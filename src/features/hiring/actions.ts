@@ -17,6 +17,8 @@ import { getStageTransitionBlockers } from './stage-prerequisites';
 import { z } from 'zod';
 import { auditedJobMutation } from '@/features/account-security/job-audit';
 import { ActiveJobLimitError } from '@/features/subscriptions/job-limit';
+import { archiveClosedJob, reuseArchivedJob, JobLifecycleError } from './job-archive-reuse';
+import { enforceJobMutationBudget, JobRateLimitError } from './job-rate-budget';
 
 function slugify(text: string): string {
   return text
@@ -140,6 +142,9 @@ export async function updateJobAction(jobId: string, formData: FormData): Promis
   if (!existingJob) {
     redirect('/dashboard/hiring/jobs?error=not_found');
   }
+  if (existingJob.status === JobStatus.ARCHIVED) {
+    redirect(`/dashboard/hiring/jobs/${jobId}?error=Archived%20postings%20are%20read-only.%20Choose%20Reuse%20Posting%20to%20start%20a%20new%20cycle.`);
+  }
 
   const title = (formData.get('title') as string)?.trim();
   const department = (formData.get('department') as string)?.trim();
@@ -181,7 +186,7 @@ export async function updateJobAction(jobId: string, formData: FormData): Promis
   const categoryRaw = (formData.get('category') as string)?.trim();
 
   await auditedJobMutation(prisma, user, 'JOB_UPDATED', tx => tx.job.update({
-    where: { id: jobId, organizationId: user.organizationId },
+    where: { id: jobId, organizationId: user.organizationId, status: { not: JobStatus.ARCHIVED } },
     data: {
       title,
       department,
@@ -232,15 +237,22 @@ export async function publishJobAction(jobId: string) {
     return { error: 'Job posting not found.' };
   }
 
+  // Archived postings are immutable historical cycles; reuse creates a NEW draft.
+  if (existingJob.status === JobStatus.ARCHIVED) {
+    return { error: 'Archived postings cannot be published again. Choose Reuse Posting to make a new draft.' };
+  }
+  if (existingJob.status === JobStatus.PUBLISHED) {
+    return { error: 'This job is already published.' };
+  }
   try { await auditedJobMutation(prisma, user, 'JOB_PUBLISHED', tx => tx.job.update({
-    where: { id: jobId, organizationId: user.organizationId },
+    where: { id: jobId, organizationId: user.organizationId, status: { in: [JobStatus.DRAFT, JobStatus.CLOSED] } },
     data: {
       status: JobStatus.PUBLISHED,
       publishedAt: new Date(),
     },
   })); } catch(error) {
     if(error instanceof ActiveJobLimitError)return {error:error.message};
-    throw error;
+    return {error:'Posting status may have changed. Refresh and try again.'};
   }
 
   revalidatePath('/dashboard/hiring/jobs');
@@ -249,31 +261,58 @@ export async function publishJobAction(jobId: string) {
   return { success: true };
 }
 
-export async function closeJobAction(jobId: string) {
+export async function closeJobAction(jobId: string): Promise<{success?: boolean; error?: string}> {
   const user = await getSession();
-  if (!user || !canManageJobs(user)) {
-    return { error: 'Unauthorized to close jobs.' };
+  if (!user || !canManageJobs(user)) return { error: 'You are not authorized to close this posting.' };
+
+  try {
+    await enforceJobMutationBudget(prisma, user);
+    await auditedJobMutation(prisma, user, 'JOB_CLOSED', async tx => {
+      const changed = await tx.job.updateMany({
+        where: { id: jobId, organizationId: user.organizationId, status: JobStatus.PUBLISHED },
+        data: { status: JobStatus.CLOSED },
+      });
+      if (changed.count !== 1) {
+        throw new JobLifecycleError('Only a published posting can be closed. Refresh the page if its status changed.');
+      }
+      return tx.job.findFirstOrThrow({ where: { id: jobId, organizationId: user.organizationId }, select: { id: true } });
+    });
+  } catch (error) {
+    return { error: error instanceof JobRateLimitError ? error.message : error instanceof JobLifecycleError ? error.message : 'Unable to close posting. Try again or contact your administrator.' };
   }
-
-  const existingJob = await prisma.job.findFirst({
-    where: { id: jobId, organizationId: user.organizationId },
-  });
-
-  if (!existingJob) {
-    return { error: 'Job posting not found.' };
-  }
-
-  await auditedJobMutation(prisma, user, 'JOB_CLOSED', tx => tx.job.update({
-    where: { id: jobId, organizationId: user.organizationId },
-    data: {
-      status: JobStatus.CLOSED,
-    },
-  }));
-
   revalidatePath('/dashboard/hiring/jobs');
   revalidatePath(`/dashboard/hiring/jobs/${jobId}`);
   revalidatePath('/careers');
   return { success: true };
+}
+
+export async function archiveJobAction(jobId: string): Promise<{success?: boolean; error?: string}> {
+  const user = await getSession();
+  if (!user || !canManageJobs(user)) return { error: 'You are not authorized to archive this posting.' };
+  try {
+    await enforceJobMutationBudget(prisma, user);
+    await archiveClosedJob(prisma, user, jobId);
+  } catch (error) {
+    return { error: error instanceof JobRateLimitError ? error.message : error instanceof JobLifecycleError ? error.message : 'Unable to archive posting. Try again or contact your administrator.' };
+  }
+  revalidatePath('/dashboard/hiring/jobs');
+  revalidatePath(`/dashboard/hiring/jobs/${jobId}`);
+  revalidatePath('/careers');
+  return { success: true };
+}
+
+export async function reuseJobAction(jobId: string, requestId: string): Promise<{jobId?: string; error?: string}> {
+  const user = await getSession();
+  if (!user || !canManageJobs(user)) return { error: 'You are not authorized to reuse this posting.' };
+  try {
+    await enforceJobMutationBudget(prisma, user);
+    const copy = await reuseArchivedJob(prisma, user, jobId, requestId);
+    revalidatePath('/dashboard/hiring/jobs');
+    revalidatePath(`/dashboard/hiring/jobs/${jobId}`);
+    return { jobId: copy.id };
+  } catch (error) {
+    return { error: error instanceof JobRateLimitError ? error.message : error instanceof JobLifecycleError ? error.message : 'Unable to create a new draft from this posting. Please try again.' };
+  }
 }
 
 export async function updateApplicationStatusAction(
