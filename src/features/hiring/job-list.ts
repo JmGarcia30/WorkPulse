@@ -11,7 +11,7 @@ export async function getJobList(organizationId: string, params: JobListParams, 
   const search = typeof params.search === 'string' ? params.search.trim() : '';
   const requestedPage = typeof params.page === 'string' && /^[1-9]\d{0,8}$/.test(params.page) ? Number(params.page) : 1;
   const where: Prisma.JobWhereInput = {
-    organizationId, ...(status ? { status } : {}),
+    organizationId, ...(status ? { status } : { status: { not: JobStatus.ARCHIVED } }),
     ...(search ? { OR: [{ title: { contains: search, mode: 'insensitive' as const } }, { department: { contains: search, mode: 'insensitive' as const } }] } : {}),
   };
   const totalCount = await db.job.count({ where });
