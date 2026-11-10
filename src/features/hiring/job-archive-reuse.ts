@@ -39,8 +39,26 @@ export async function archiveClosedJob(db: PrismaClient, actor: JobActor, jobId:
  * cycle. Old applicants remain attached to the archived source posting.
  * Requirements are copied as new rows; no candidate records are copied.
  */
-export async function reuseArchivedJob(db: PrismaClient, actor: JobActor, jobId: string) {
+export async function reuseArchivedJob(db: PrismaClient, actor: JobActor, jobId: string, requestId: string) {
+  if (!/^[a-f0-9-]{36}$/i.test(requestId)) throw new JobLifecycleError('Invalid request. Refresh the page and try again.');
+  const operationKey = `job-reuse-request:${actor.organizationId}:${actor.userId}:${requestId}`;
   return auditedJobMutation(db, actor, 'JOB_REUSED', async tx => {
+    // The organization's advisory lock serializes identical retries and
+    // distinct reuse requests; one request key creates at most one new draft.
+    const previous = await tx.accountSecurityEvent.findUnique({
+      where: { operationKey },
+      select: { subjectIdentifier: true, action: true },
+    });
+    if (previous) {
+      const existing = await tx.job.findFirst({
+        where: { id: previous.subjectIdentifier, organizationId: actor.organizationId, status: JobStatus.DRAFT },
+        select: { id: true, status: true, slug: true },
+      });
+      if (!existing || previous.action !== 'JOB_REUSE_REQUEST') {
+        throw new JobLifecycleError('This reuse request was already processed. Check your drafts.');
+      }
+      return existing;
+    }
     const source = await tx.job.findFirst({
       where: { id: jobId, organizationId: actor.organizationId, status: JobStatus.ARCHIVED },
       include: { structuredReqs: true },
@@ -97,10 +115,10 @@ export async function reuseArchivedJob(db: PrismaClient, actor: JobActor, jobId:
       data: {
         organizationId: actor.organizationId,
         actorIdentifier: actor.userId,
-        subjectIdentifier: source.id,
-        action: 'JOB_REUSED_AS_NEW_DRAFT',
+        subjectIdentifier: copy.id,
+        action: 'JOB_REUSE_REQUEST',
         success: true,
-        operationKey: `job-reuse:${copy.id}`,
+        operationKey,
       },
     });
 
