@@ -8,6 +8,7 @@ import { ensureRecruitmentDocumentsExist } from '@/features/hiring/document-requ
 import { issueCandidateLink } from './candidate-access';
 import { candidatePortalMatchesRequestTenant } from '@/features/hiring/document-access';
 import { databaseSlugForTenant } from '@/lib/tenant/host';
+import { isJobDeadlinePassed } from '@/features/hiring/job-deadline';
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -25,7 +26,7 @@ export async function submitApplicationAction(formData: FormData): Promise<void>
   const job = await prisma.job.findUnique({
     where: { id: jobId },
     include: {
-      organization: { select: { slug: true, careersEnabled: true, name: true } },
+      organization: { select: { slug: true, careersEnabled: true, name: true, timeZone: true } },
     },
   });
 
@@ -51,7 +52,7 @@ export async function submitApplicationAction(formData: FormData): Promise<void>
 
   const normalizedEmail = emailRaw.toLowerCase();
 
-  if (job.closingDate && new Date() > new Date(job.closingDate)) {
+  if (isJobDeadlinePassed(job.closingDate, job.organization.timeZone)) {
     redirect(`${applyPath}?error=${encodeURIComponent('The application deadline for this position has passed.')}`);
   }
 
@@ -148,6 +149,16 @@ export async function submitApplicationAction(formData: FormData): Promise<void>
       });
     } // Existing shared identity is immutable through public submissions.
 
+    // Recheck deadline immediately before write; a queued upload must not
+    // submit into a position that has since expired or been closed.
+    const current = await prisma.job.findFirst({
+      where: { id: job.id, organizationId: job.organizationId },
+      select: { status: true, closingDate: true },
+    });
+    if (!current || current.status !== JobStatus.PUBLISHED ||
+      isJobDeadlinePassed(current.closingDate, job.organization.timeZone)) {
+      redirect(`${applyPath}?error=${encodeURIComponent('The application deadline has passed or this job is closed.')}`);
+    }
     // 6. Create Application record
     application = await prisma.application.create({
       data: {

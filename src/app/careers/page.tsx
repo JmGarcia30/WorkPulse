@@ -2,6 +2,7 @@ import { Metadata } from 'next';
 import Link from 'next/link';
 import { prisma } from '@/lib/db/prisma';
 import { Building2, ArrowRight, Briefcase } from 'lucide-react';
+import { isJobDeadlinePassed } from '@/features/hiring/job-deadline';
 
 // The directory is database-backed and must never make deployment builds depend on Neon availability.
 export const dynamic = 'force-dynamic';
@@ -21,13 +22,8 @@ export default async function CareersDirectoryPage() {
       slug: true,
       description: true,
       logoUrl: true,
-      _count: {
-        select: {
-          jobs: {
-            where: { status: 'PUBLISHED' },
-          },
-        },
-      },
+      timeZone: true,
+      jobs: { where: { status: 'PUBLISHED' }, select: { closingDate: true } },
     },
     orderBy: { name: 'asc' },
   });
@@ -74,7 +70,7 @@ export default async function CareersDirectoryPage() {
             <div className="mt-6 pt-4 border-t border-[var(--wp-border)] flex items-center justify-between">
               <div className="flex items-center gap-1.5 text-xs text-slate-500 font-medium">
                 <Briefcase className="h-3.5 w-3.5 text-[var(--tenant-primary)]" />
-                <span>{org._count.jobs} Open Positions</span>
+                <span>{org.jobs.filter(job => !isJobDeadlinePassed(job.closingDate, org.timeZone)).length} Open Positions</span>
               </div>
               <span className="inline-flex items-center gap-1 text-xs font-semibold text-[var(--tenant-primary)]">
                 Explore <ArrowRight className="h-3.5 w-3.5" />

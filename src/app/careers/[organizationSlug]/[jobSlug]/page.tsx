@@ -4,6 +4,7 @@ import { headers } from 'next/headers';
 import Link from 'next/link';
 import { prisma } from '@/lib/db/prisma';
 import { JobStatus } from '@prisma/client';
+import { isJobDeadlinePassed } from '@/features/hiring/job-deadline';
 import {
   MapPin,
   Briefcase,
@@ -36,11 +37,11 @@ export async function generateMetadata({
       },
     },
     include: {
-      organization: { select: { name: true } },
+      organization: { select: { name: true, timeZone: true } },
     },
   });
 
-  if (!job) {
+  if (!job || isJobDeadlinePassed(job.closingDate, job.organization.timeZone)) {
     return { title: 'Position Not Found | WorkPulse Careers' };
   }
 
@@ -57,7 +58,7 @@ export default async function JobOpeningPage({ params }: JobOpeningPageProps) {
   // Strict Multi-Tenant Security Check: Verify Organization & Job Ownership
   const org = await prisma.organization.findUnique({
     where: { slug: databaseSlugForTenant(organizationSlug) },
-    select: { id: true, name: true, slug: true, careersEnabled: true },
+    select: { id: true, name: true, slug: true, careersEnabled: true, timeZone: true },
   });
 
   if (!org || !org.careersEnabled) {
@@ -75,7 +76,7 @@ export default async function JobOpeningPage({ params }: JobOpeningPageProps) {
     },
   });
 
-  if (!job) {
+  if (!job || isJobDeadlinePassed(job.closingDate, org.timeZone)) {
     notFound();
   }
 

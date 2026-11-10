@@ -582,6 +582,22 @@ model AccountSecurityEvent {
   @@index([createdAt, id])
 }
 
+// Per-user read receipts for the HR live notification feed. Source records remain
+// in their original tenant-scoped tables; no duplicative sensitive message storage.
+model HrNotificationRead {
+  id              String   @id @default(cuid())
+  organizationId  String
+  userId          String
+  notificationKey String
+  readAt          DateTime @default(now())
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Restrict)
+  user         User         @relation(fields: [userId, organizationId], references: [id, organizationId], onDelete: Cascade)
+
+  @@unique([organizationId, userId, notificationKey])
+  @@index([organizationId, userId, readAt])
+}
+
 model StaffPasswordReset {
   tokenHash       String @id
   userId          String
@@ -716,6 +732,7 @@ model OrganizationSlugAlias {
 
 model Organization {
   accountSecurityEvents AccountSecurityEvent[]
+  hrNotificationReads HrNotificationRead[]
   staffSessions StaffSession[]
   rfidCards RfidCard[]
   rfidKiosks RfidKioskSession[]
@@ -793,6 +810,7 @@ model User {
   finalPaysApproved EmployeeFinalPay[] @relation("FinalPayApprover")
   finalPayPayments EmployeeFinalPayPayment[]
   hrEmailDeliveries HrEmailDelivery[]
+  hrNotificationReads HrNotificationRead[]
   id             String   @id @default(cuid())
   organizationId String
   name           String
@@ -977,6 +995,7 @@ model Job {
 
   @@unique([organizationId, slug])
   @@index([organizationId])
+  @@index([organizationId, status, closingDate])
   @@index([status])
   @@index([category])
   @@index([publishedAt])

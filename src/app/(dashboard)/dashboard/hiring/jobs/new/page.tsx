@@ -40,6 +40,7 @@ export default async function NewJobPage({searchParams}:{searchParams:Promise<{e
       />
 
       {(await searchParams).error==='active_job_limit'&&<p role="alert" className="wp-alert-danger">Basic allows five published job postings. Close an existing posting or request Pro. You can still save a draft.</p>}
+      {(await searchParams).error==='invalid_deadline' && <p role="alert" className="wp-alert-danger">Enter a valid closing date that is not in the past for your organization.</p>}
       <form action={createJobAction} className="space-y-6">
         {/* Basic Information */}
         <div className="rounded-md border border-slate-200 bg-white p-6 space-y-4">

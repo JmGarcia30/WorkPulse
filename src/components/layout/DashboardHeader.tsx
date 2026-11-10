@@ -7,10 +7,11 @@ import { ChevronRight, Menu, X, LogOut } from 'lucide-react';
 import { Role } from '@prisma/client';
 import { DashboardSidebarNav } from './DashboardSidebarNav';
 import { DialogFrame } from '@/components/ui/DialogFrame';
+import { HrNotificationBell } from '@/components/hr/HrNotificationCenter';
 import { logoutAction } from '@/lib/auth/actions';
 import { resolveTenantHref, stripTenantPrefix } from '@/lib/tenant/navigation';
 
-export function DashboardHeader({ orgName, orgSlug, role }: { orgName: string; orgSlug?: string; role: Role }) {
+export function DashboardHeader({ orgName, orgSlug, role, hrUnreadNotifications = 0 }: { orgName: string; orgSlug?: string; role: Role; hrUnreadNotifications?: number }) {
   const pathname = usePathname();
   const [mobileOpen, setMobileOpen] = useState(false);
   const labelMap: Record<string, string> = {
@@ -88,7 +89,10 @@ export function DashboardHeader({ orgName, orgSlug, role }: { orgName: string; o
             </ol>
           </nav>
         </div>
-        <span className="max-w-36 truncate text-sm text-[var(--wp-text-muted)] sm:max-w-64">{orgName}</span>
+        <div className="flex items-center gap-3">
+          {(role === Role.HR_ADMIN || role === Role.ORGANIZATION_ADMIN) && <HrNotificationBell unread={hrUnreadNotifications}/>}
+          <span className="max-w-36 truncate text-sm text-[var(--wp-text-muted)] sm:max-w-64">{orgName}</span>
+        </div>
       </header>
       {mobileOpen ? (
         <DialogFrame label="WorkPulse navigation" onClose={() => setMobileOpen(false)} className="wp-mobile-nav">

@@ -15,6 +15,7 @@ import { DashboardHeader } from '@/components/layout/DashboardHeader';
 import { TenantLogo } from '@/components/layout/TenantLogo';
 import { ScrollableMainContent } from '@/components/layout/ScrollableMainContent';
 import { formatStatusLabel } from '@/lib/ui/format-status';
+import { listHrNotifications } from '@/features/hr-notifications/read-model';
 
 export default async function DashboardLayout({ children }: { children: React.ReactNode }) {
   let user;
@@ -26,6 +27,9 @@ export default async function DashboardLayout({ children }: { children: React.Re
   if (isSelfServiceOnlyRole(user.role)) redirect('/employee');
   const brand = await getRequestOrganizationBranding(user.organizationId);
   if (!brand) redirect('/login');
+  const hrUnreadNotifications = (user.role === Role.HR_ADMIN || user.role === Role.ORGANIZATION_ADMIN)
+    ? (await listHrNotifications(user)).filter(item => !item.read).length
+    : 0;
   const personalAccount = user.role === Role.HR_ADMIN ? await prisma.employeeAccount.findFirst({ where:{ organizationId:user.organizationId,userId:user.userId,status:'ACTIVE',employee:{ employeeStatus:'ACTIVE' } },select:{ id:true } }) : null;
   const initials = user.name
     .split(' ')
@@ -97,7 +101,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
           {/* One unified rounded rectangular container enclosing header and content */}
           <div className="flex-1 min-h-0 flex flex-col rounded-xl lg:rounded-2xl border border-[var(--wp-border)] wp-content-canvas shadow-2xs overflow-hidden">
             {/* Header Bar (fixed within container) */}
-            <DashboardHeader orgName={brand.displayName} orgSlug={brand.slug} role={user.role} />
+            <DashboardHeader orgName={brand.displayName} orgSlug={brand.slug} role={user.role} hrUnreadNotifications={hrUnreadNotifications} />
 
             {/* Inset horizontal divider (16px on mobile, 24px on desktop) */}
             <div className="shrink-0 mx-4 sm:mx-6 h-[1px] bg-[var(--wp-border)]" aria-hidden="true" />

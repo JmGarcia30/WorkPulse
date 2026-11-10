@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { existsSync } from 'node:fs';
 import { join } from 'node:path';
 import { JobStatus } from '@prisma/client';
+import { isJobDeadlinePassed } from '@/features/hiring/job-deadline';
 import { redirect } from 'next/navigation';
 import { ArrowRight } from 'lucide-react';
 import { getSession } from '@/lib/auth/session';
@@ -93,11 +94,13 @@ export default async function TenantEntryPage() {
           employmentType: true,
           location: true,
           category: true,
+          closingDate: true,
         },
         orderBy: { publishedAt: 'desc' },
-        take: 4,
+        take: 30,
       })
     : [];
+  const availableJobs = jobs.filter(job => !isJobDeadlinePassed(job.closingDate, tenant.timeZone)).slice(0, 4);
 
   const announcements = content.announcements.map((announcement) => ({
     ...announcement,
@@ -380,14 +383,14 @@ export default async function TenantEntryPage() {
                     </p>
                   </div>
                   <Link href="/careers" className={styles.careersViewAll}>
-                    <span>View All Openings ({jobs.length})</span>
+                    <span>View All Openings ({availableJobs.length})</span>
                     <ArrowRight size={14} />
                   </Link>
                 </div>
 
                 <div className={styles.jobList}>
-                  {jobs.length > 0 ? (
-                    jobs.map((job) => {
+                  {availableJobs.length > 0 ? (
+                    availableJobs.map((job) => {
                       const isTeaching = job.category === 'TEACHING';
                       return (
                         <article className={styles.jobRow} key={job.id}>
