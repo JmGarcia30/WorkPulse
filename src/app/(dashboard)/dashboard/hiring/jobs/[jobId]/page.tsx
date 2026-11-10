@@ -8,25 +8,26 @@ import {
   ArrowLeft,
   Edit,
   CheckCircle,
-  XCircle,
   Users,
   Clock,
   ExternalLink,
 } from 'lucide-react';
-import { publishJobAction, closeJobAction } from '@/features/hiring/actions';
+import { publishJobAction } from '@/features/hiring/actions';
+import { JobLifecycleControls } from '@/components/hiring/JobLifecycleControls';
+import { JobActionNotice } from '@/components/hiring/JobActionNotice';
 import { HiringPageHeader } from '@/components/hiring/HiringPageHeader';
 import { DraftJobDeleteForm } from '@/features/account-security/draft-job-form';
 
 interface JobDetailPageProps {
   params: Promise<{ jobId: string }>;
-  searchParams: Promise<{ error?: string }>;
+  searchParams: Promise<{ error?: string; notice?: string }>;
 }
 
 export default async function JobDetailPage({ params, searchParams }: JobDetailPageProps) {
   const user = await requireBackOfficeContext();
 
   const { jobId } = await params;
-  const { error } = await searchParams;
+  const { error, notice } = await searchParams;
 
   // Multi-tenant check: Verify job belongs to user's Organization
   const job = await prisma.job.findFirst({
@@ -55,14 +56,10 @@ export default async function JobDetailPage({ params, searchParams }: JobDetailP
     redirect(`/dashboard/hiring/jobs/${jobId}`);
   }
 
-  async function handleClose() {
-    'use server';
-    await closeJobAction(jobId);
-  }
-
   return (
     <div className="min-w-0 max-w-4xl mx-auto space-y-6 [overflow-wrap:anywhere]">
       {error && <p role="alert" className="wp-alert-danger">{error.slice(0, 400)}</p>}
+      <JobActionNotice notice={notice} />
       {/* Header Bar with Breadcrumb and Title */}
       <HiringPageHeader
         breadcrumbs={[
@@ -100,12 +97,12 @@ export default async function JobDetailPage({ params, searchParams }: JobDetailP
         actions={
           canEdit ? (
             <div className="flex flex-wrap items-center gap-2">
-              <Link
+              {job.status !== JobStatus.ARCHIVED && <Link
                 href={`/dashboard/hiring/jobs/${job.id}/edit`}
                 className="inline-flex items-center gap-1.5 rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50"
               >
                 <Edit className="h-3.5 w-3.5" /> Edit Job
-              </Link>
+              </Link>}
 
               {job.status === JobStatus.DRAFT && (
                 <form action={handlePublish}>
@@ -118,16 +115,7 @@ export default async function JobDetailPage({ params, searchParams }: JobDetailP
                 </form>
               )}
 
-              {job.status === JobStatus.PUBLISHED && (
-                <form action={handleClose}>
-                  <button
-                    type="submit"
-                    className="inline-flex items-center gap-1.5 rounded-lg border border-rose-200 bg-rose-50 px-3.5 py-2 text-sm font-semibold text-rose-700 hover:bg-rose-100"
-                  >
-                    <XCircle className="h-3.5 w-3.5" /> Close Posting
-                  </button>
-                </form>
-              )}
+              <JobLifecycleControls jobId={job.id} title={job.title} status={job.status} />
             </div>
           ) : undefined
         }
