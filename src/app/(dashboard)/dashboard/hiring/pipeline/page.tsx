@@ -47,11 +47,13 @@ export default async function PipelinePage({ searchParams }: PipelinePageProps) 
         organizationId: user.organizationId,
         id: validJobId,
       },
+      archivedAt: null,
     },
     orderBy: { appliedAt: 'desc' },
     select: {
       id: true,
       status: true,
+      archivedAt: true,
       appliedAt: true,
       applicant: {
         select: {
