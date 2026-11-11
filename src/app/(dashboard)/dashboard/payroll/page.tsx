@@ -253,7 +253,7 @@ export default async function PayrollPage({ searchParams }: { searchParams: Prom
           </> : <div className="mt-5 rounded-xl bg-[#faf8f6] p-5 text-sm text-[#636471]">
             Generate the first payroll draft to preview gross earnings, deductions and net pay. No sample amounts are displayed.
           </div>}
-          <TenantLink className="mt-4 flex items-center justify-between gap-2 rounded-xl border border-[#e8e7e6] bg-white px-4 py-3 text-xs font-semibold hover:bg-[#faf8f6]" href={`/dashboard/attendance/${selectedEmployee.id}`}>
+          <TenantLink className="mt-4 flex items-center justify-between gap-2 rounded-xl border border-[#e8e7e6] bg-white px-4 py-3 text-xs font-semibold hover:bg-[#faf8f6]" href={`/dashboard/payroll/reports/employee?period=${period.id}&employee=${selectedEmployee.id}`}>
             <span className="inline-flex items-center gap-2"><FileText className="h-4 w-4" aria-hidden="true" />View Attendance &amp; Calculation Report</span>
             <ChevronRight className="h-4 w-4" aria-hidden="true" />
           </TenantLink>
