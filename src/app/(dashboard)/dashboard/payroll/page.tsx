@@ -14,6 +14,7 @@ import { PayrollPeriodForm, PayrollGenerationForm, PayrollReviewControls } from 
 import { PayrollReadinessTable } from '@/components/payroll/PayrollReadinessTable';
 import { PayrollReuseSetup } from '@/components/payroll/PayrollReuseSetup';
 import { PayrollConfigurationTab } from '@/components/payroll/PayrollConfigurationTab';
+import { PayrollSimpleConfiguration } from '@/components/payroll/PayrollSimpleConfiguration';
 import { PayrollReviewTable } from '@/components/payroll/PayrollReviewTable';
 import { PayrollEarningsForm, PayrollRecalculateForm, PayrollIncentiveForm } from '@/components/payroll/PayrollEarningsForm';
 import { PayrollAttendanceBreakdown } from '@/components/payroll/PayrollAttendanceBreakdown';
@@ -47,7 +48,7 @@ export default async function PayrollPage({ searchParams }: { searchParams: Prom
   const notification = manage && period?.status === 'FINALIZED' ? await previewPayrollNotifications(scope) : null;
   const configurationCompensations = compensations.map(record => ({ ...record, baseRate: record.baseRate.toFixed(2) }));
   const configurationPolicies = policies.map(policy => ({ id: policy.id, version: policy.version, effectiveFrom: policy.effectiveFrom, effectiveTo: policy.effectiveTo, status: policy.status, dailyPayBasis: policy.dailyPayBasis, lateDeductionRule: policy.lateDeductionRule, absenceDeductionRule: policy.absenceDeductionRule, undertimeDeductionRule: policy.undertimeDeductionRule, roundingRule: policy.roundingRule, createdBy: policy.createdBy }));
-  const settings = params.tab === 'configuration';
+  const settings = params.tab === 'configuration' || params.tab === 'advanced';
   const setupRows = params.employee ? readiness?.setup.filter(row => row.id === params.employee) ?? [] : readiness?.setup ?? [];
   const card = 'rounded-2xl border bg-white p-4 sm:p-6 space-y-4';
   const statutoryRows = selectedEntry?.breakdown ? [
@@ -58,7 +59,43 @@ export default async function PayrollPage({ searchParams }: { searchParams: Prom
   ] : [];
   if (settings) {
     if (!manage) notFound();
-    return <div className="space-y-5"><header><h1 className="text-2xl font-bold">Payroll Settings</h1><p className="mt-2 text-sm text-slate-600">Follow employee setup in order. Existing verified records are shown; missing history and legal declarations require HR review.</p><TenantLink className="mt-3 inline-block underline" href={`/dashboard/payroll?period=${period?.id ?? ''}`}>Back to payroll</TenantLink></header><PayrollConfigurationTab employees={params.employee ? employees.filter(row => row.id === params.employee) : employees} compensations={params.employee ? configurationCompensations.filter(row => row.employeeId === params.employee) : configurationCompensations} policies={configurationPolicies} currentPolicy={configurationPolicies.find(row => row.id === currentPolicy?.id) ?? null} leaveTypes={leaveTypes} statutorySetup={setupRows} selectedPeriod={period} /></div>;
+    if (params.tab === 'advanced') {
+      return <div className="space-y-5"><header><h1 className="text-2xl font-bold">Advanced Payroll Setup</h1><p className="mt-2 text-sm text-slate-600">Use only for statutory exceptions and historical verification. These controls are not part of the simple payroll configuration screen.</p><TenantLink className="mt-3 inline-block underline" href={`/dashboard/payroll/settings?period=${period?.id ?? ''}&employee=${params.employee ?? ''}`}>Back to Payroll Configuration</TenantLink></header><PayrollConfigurationTab employees={params.employee ? employees.filter(row => row.id === params.employee) : employees} compensations={params.employee ? configurationCompensations.filter(row => row.employeeId === params.employee) : configurationCompensations} policies={configurationPolicies} currentPolicy={configurationPolicies.find(row => row.id === currentPolicy?.id) ?? null} leaveTypes={leaveTypes} statutorySetup={setupRows} selectedPeriod={period} /></div>;
+    }
+    const simpleCompensations = compensations.map(record => ({
+      id: record.id,
+      employeeId: record.employeeId,
+      baseRate: record.baseRate.toFixed(2),
+      currency: record.currency,
+      compensationType: record.compensationType,
+      payFrequency: record.payFrequency,
+      status: record.status,
+      effectiveFrom: record.effectiveFrom.toISOString().slice(0, 10),
+      effectiveTo: record.effectiveTo?.toISOString().slice(0, 10) ?? null,
+      overtimePayPerHour: record.overtimePayPerHour?.toFixed(2) ?? null,
+      undertimeDeductionPerHour: record.undertimeDeductionPerHour?.toFixed(2) ?? null,
+      lateDeductionPerMinute: record.lateDeductionPerMinute?.toFixed(2) ?? null,
+      absenceDeductionPerDay: record.absenceDeductionPerDay?.toFixed(2) ?? null,
+      notifyOnPayslipReady: record.notifyOnPayslipReady,
+    }));
+    const simplePeriods = periods.map(row => ({
+      id: row.id,
+      name: row.name,
+      periodStart: row.periodStart.toISOString().slice(0, 10),
+      periodEnd: row.periodEnd.toISOString().slice(0, 10),
+      status: row.status,
+    }));
+    const coverage = (readiness?.setup ?? []).map(row => ({
+      employeeId: row.id, periodId: period?.id ?? '',
+      sss: row.input?.coverage.SSS.status === 'MANDATORY' || row.input?.coverage.SSS.status === 'EXEMPT',
+      philHealth: row.input?.coverage.PHILHEALTH.status === 'MANDATORY' || row.input?.coverage.PHILHEALTH.status === 'EXEMPT',
+      pagIbig: row.input?.coverage.PAGIBIG.status === 'MANDATORY' || row.input?.coverage.PAGIBIG.status === 'EXEMPT',
+      bir: !!row.input?.profile,
+    }));
+    return <div className="space-y-4 bg-[#FAF8F6] text-[#282934]">
+      <TenantLink className="inline-flex text-xs font-semibold underline underline-offset-2" href={`/dashboard/payroll?period=${period?.id ?? ''}`}>Back to Run Payroll</TenantLink>
+      <PayrollSimpleConfiguration employees={employees} periods={simplePeriods} compensations={simpleCompensations} coverage={coverage} initialEmployeeId={params.employee} initialPeriodId={period?.id} />
+    </div>;
   }
 
   return <div className="space-y-5 bg-[#FAF8F6] text-[#282934]">
