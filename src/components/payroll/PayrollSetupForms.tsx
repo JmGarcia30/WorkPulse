@@ -11,13 +11,13 @@ export function StatusMessage({ state }: { state: PayrollActionState }) {
   return <p role={state.error ? 'alert' : 'status'} className={`rounded-xl px-3 py-2 text-xs ${state.error ? 'bg-red-50 text-red-800' : 'bg-emerald-50 text-emerald-800'}`}>{state.error ?? state.success}</p>;
 }
 
-export function CompensationForm({ employees, profiles = [] }: { profiles?: PayrollStatutorySetupRow[]; employees: Array<{ id: string; employeeNumber: string; firstName: string; lastName: string }> }) {
+export function CompensationForm({ employees, profiles = [], selectedEmployeeId }: { profiles?: PayrollStatutorySetupRow[]; employees: Array<{ id: string; employeeNumber: string; firstName: string; lastName: string }>; selectedEmployeeId?: string }) {
   const [state, action, pending] = useActionState(createCompensationAction, initialState);
-  const [employeeId, setEmployeeId] = useState('');
+  const [employeeId, setEmployeeId] = useState(selectedEmployeeId ?? employees[0]?.id ?? '');
   const [payType, setPayType] = useState('MONTHLY');
   const profile = profiles.find(row => row.id === employeeId);
   const verified = profile?.input ?? profile?.reusable?.payload;
-  return <form action={action} className={`${compact ? 'mt-3 grid gap-3 rounded-xl bg-slate-50 p-3 sm:grid-cols-2' : 'mt-5 grid gap-3 rounded-2xl bg-slate-50 p-4 md:grid-cols-2 xl:grid-cols-3'}`}>
+  return <form action={action} className="mt-3 grid gap-3 rounded-xl bg-slate-50 p-3 sm:grid-cols-2">
     <div className="md:col-span-2 xl:col-span-3"><StatusMessage state={state} /></div>
     <label className="grid gap-1 text-xs font-semibold">Employee<select name="employeeId" value={employeeId} onChange={event => setEmployeeId(event.target.value)} required className="rounded-xl border bg-white px-3 py-2.5 font-normal"><option value="">Select an employee</option>{employees.map(employee => <option key={employee.id} value={employee.id}>{employee.employeeNumber} — {employee.firstName} {employee.lastName}</option>)}</select></label>
     <label className="grid gap-1 text-xs font-semibold">Compensation type<select name="compensationType" value={payType} onChange={event => setPayType(event.target.value)} className="rounded-xl border bg-white px-3 py-2.5 font-normal"><option value="MONTHLY">Monthly</option><option value="DAILY">Daily</option></select></label>
@@ -77,7 +77,7 @@ export function PayrollPolicyForm({ leaveTypes, compact = false }: { leaveTypes:
   const [absenceRule, setAbsenceRule] = useState('NONE');
   const [undertimeRule, setUndertimeRule] = useState('NONE');
   const selectClass = 'rounded-xl border bg-white px-3 py-2.5 font-normal';
-  return <form action={action} className="mt-5 grid gap-3 rounded-2xl bg-slate-50 p-4 md:grid-cols-2 xl:grid-cols-3">
+  return <form action={action} className={compact ? 'mt-3 grid gap-3 rounded-xl bg-slate-50 p-3 sm:grid-cols-2' : 'mt-5 grid gap-3 rounded-2xl bg-slate-50 p-4 md:grid-cols-2 xl:grid-cols-3'}>
     <div className="md:col-span-2 xl:col-span-3"><StatusMessage state={state} /></div>
     <label className="grid gap-1 text-xs font-semibold">Effective from<input name="effectiveFrom" type="date" required className={selectClass} /></label>
     <label className="grid gap-1 text-xs font-semibold">Effective to (optional)<input name="effectiveTo" type="date" className={selectClass} /></label>
