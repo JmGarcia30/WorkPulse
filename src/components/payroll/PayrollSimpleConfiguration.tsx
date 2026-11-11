@@ -4,6 +4,7 @@ import { useActionState, useEffect, useMemo, useState } from 'react';
 import { Bell, CalendarDays, Calculator, Check, Clock3, Coins, FileText, ShieldCheck, UserRound } from 'lucide-react';
 import { saveEmployeePayrollConfigurationAction } from '@/features/payroll/actions';
 import { StatusMessage } from './PayrollSetupForms';
+import { TenantLink } from '@/components/ui/TenantLink';
 
 type Employee = { id: string; employeeNumber: string; firstName: string; lastName: string };
 type Period = { id: string; name: string; periodStart: string; periodEnd: string; status: string };
@@ -196,8 +197,8 @@ export function PayrollSimpleConfiguration({ employees, periods, compensations, 
         </dl>
         <button type="submit" disabled={pending || !period || period.status === 'FINALIZED' || !employeeId || !employees.length} className="mt-5 w-full rounded-lg bg-[#282934] px-4 py-3 text-sm font-semibold text-white transition hover:bg-[#41434f] disabled:cursor-not-allowed disabled:opacity-50">{pending ? 'Saving…' : 'Save Configuration'}</button>
         <div className="mt-3 hidden xl:block"><StatusMessage state={state} /></div>
-        {period && employee && <a className="mt-3 block text-center text-xs font-semibold text-[#282934] underline underline-offset-2" href={'/dashboard/payroll?period=' + encodeURIComponent(period.id) + '&employee=' + encodeURIComponent(employee.id)}>View employee calculation report</a>}
-        {!allVerified && <a className="mt-2 block text-center text-[11px] text-[#6d7382] underline" href={'/dashboard/payroll/settings?tab=advanced&period=' + encodeURIComponent(period?.id ?? '') + '&employee=' + encodeURIComponent(employeeId)}>Review statutory exceptions</a>}
+        {period && employee && <TenantLink className="mt-3 block text-center text-xs font-semibold text-[#282934] underline underline-offset-2" href={'/dashboard/payroll/reports/employee?period=' + encodeURIComponent(period.id) + '&employee=' + encodeURIComponent(employee.id)}>View employee calculation report</TenantLink>}
+        {!allVerified && <TenantLink className="mt-2 block text-center text-[11px] text-[#6d7382] underline" href={'/dashboard/payroll/settings?tab=advanced&period=' + encodeURIComponent(period?.id ?? '') + '&employee=' + encodeURIComponent(employeeId)}>Review statutory exceptions</TenantLink>}
       </aside>
     </form>
   </div>;
