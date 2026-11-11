@@ -163,7 +163,7 @@ export default async function PayrollPage({ searchParams }: { searchParams: Prom
       {period.status === 'FINALIZED' && <p className="rounded-xl bg-emerald-50 p-3 text-xs font-semibold text-emerald-800">Payroll finalized. Payslips are available in ESS for employees with active ESS accounts.</p>}
       {period.status === 'FINALIZED' && notification && <div className="payroll-notify-action">
         <PayrollNotifyForm periodId={period.id} token={notification.token} recipients={notification.recipients} skipped={notification.skipped} />
-        {notification.skipped > 0 && <p className="mt-2 text-xs text-amber-800">{notification.skipped} finalized employee record(s) have no active ESS account and cannot receive an in-app notification. Their account link must be corrected before they can sign in to ESS.</p>}
+        {notification.skipped > 0 && <p className="mt-2 text-xs text-amber-800">{notification.skipped} finalized employee record(s) have no eligible ESS notification recipient (inactive account or notification preference disabled). Review employee configuration or account access if needed.</p>}
       </div>}
       {review && review.issues.length > 0 && period.status !== 'FINALIZED' && <details className="rounded-xl border border-amber-200 bg-amber-50 p-3 text-xs text-amber-900">
         <summary className="cursor-pointer font-bold">{review.issues.length} payroll review item(s) require attention</summary>
