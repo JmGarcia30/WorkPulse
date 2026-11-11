@@ -5,7 +5,7 @@ import type { PayrollStatutorySetupRow } from '@/features/payroll/setup-queries'
 import { PayrollStatutorySetupPanel, TaxOpening } from './PayrollStatutorySetupPanel';
 import { PayrollReuseSetup } from './PayrollReuseSetup';
 import { StandardPayrollProfile } from './StandardPayrollProfile';
-import { CompensationForm, PayrollPeriodForm, PayrollPolicyForm } from './PayrollSetupForms';
+import { CompensationForm, CompensationUpdateForm, PayrollPeriodForm, PayrollPolicyForm } from './PayrollSetupForms';
 import { formatPayrollDate } from '@/features/payroll/formatters';
 import { CalendarDays, UserRound, Wallet, ShieldCheck, Clock3, Bell, FileText } from 'lucide-react';
 
@@ -17,7 +17,7 @@ interface CompensationItem {
 }
 interface PolicyItem {
   id: string; version: number; effectiveFrom: Date; effectiveTo: Date | null; status: string;
-  dailyPayBasis: string; lateDeductionRule: string; absenceDeductionRule: string;
+  dailyPayBasis: string; lateDeductionRule: string; absenceDeductionRule: string; notifyEmployeesOnFinalization?: boolean;
   undertimeDeductionRule: string; roundingRule: string; createdBy: { name: string };
 }
 interface LeaveTypeItem { id: string; code: string; name: string; isPaid: boolean; }
@@ -55,7 +55,7 @@ export function PayrollConfigurationTab({ employees, compensations, policies, cu
       <section className={card}>
         <div className="mb-3 flex items-center gap-3"><span className="rounded-xl bg-amber-50 p-3 text-amber-600"><Wallet className="h-5 w-5"/></span><div><h2 className="font-bold">Base Salary</h2><p className="text-xs text-slate-500">Monthly salary of the selected employee.</p></div></div>
         {compensation ? <div className="mb-3 rounded-xl bg-slate-50 p-3 text-sm"><span className="text-xs text-slate-500">Current monthly base salary</span><p className="text-xl font-bold">{money(compensation.baseRate)}</p><p className="text-xs text-slate-500">Effective {formatPayrollDate(compensation.effectiveFrom)}{compensation.effectiveTo ? ' to '+formatPayrollDate(compensation.effectiveTo) : ' onward'}</p></div> : <p className="mb-3 text-xs text-amber-800">No active salary record covers this employee yet.</p>}
-        {selected && <CompensationForm employees={[selected]} profiles={setup ? [setup] : []}/>}
+        {selected && !compensation && <CompensationForm employees={[selected]} profiles={setup ? [setup] : []} selectedEmployeeId={selected.id}/>}{selected && compensation && <CompensationUpdateForm employeeId={selected.id} compensation={compensation}/>}
       </section>
 
       <section className={card}>
@@ -67,7 +67,7 @@ export function PayrollConfigurationTab({ employees, compensations, policies, cu
 
       <section className={card}>
         <div className="mb-3 flex items-center gap-3"><span className="rounded-xl bg-blue-50 p-3 text-blue-700"><Clock3 className="h-5 w-5"/></span><div><h2 className="font-bold">Attendance Rules</h2><p className="text-xs text-slate-500">Set monetary values in Philippine pesos, not percentages.</p></div></div>
-        <PayrollPolicyForm leaveTypes={leaveTypes} compact/>
+        {currentPolicy && <div className="mb-3 rounded-xl bg-slate-50 p-3 text-xs"><p className="font-semibold">Active policy · Version {currentPolicy.version}</p><p className="mt-1 text-slate-500">Effective {formatPayrollDate(currentPolicy.effectiveFrom)}{currentPolicy.effectiveTo ? ' – '+formatPayrollDate(currentPolicy.effectiveTo) : ' onward'} · Notifications {('notifyEmployeesOnFinalization' in currentPolicy && currentPolicy.notifyEmployeesOnFinalization) ? 'on' : 'off'}</p></div>}<PayrollPolicyForm leaveTypes={leaveTypes} compact/>
         <p className="mt-3 text-xs text-slate-500">Late and undertime amounts are configured per minute; absence is configured per day or per occurrence. Overtime is currently recorded as an approved earning in the payroll period, not as an automatic hourly-rate policy. I have not displayed a non-functional overtime-rate control.</p>
       </section>
 
