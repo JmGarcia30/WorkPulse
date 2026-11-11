@@ -7,6 +7,7 @@ import { lockPayrollEmployee, lockPayrollPeriod, payrollTransaction } from './tr
 import { calculateIntegratedPayroll, persistIntegratedPayroll, STATUTORY_SNAPSHOT_VERSION } from './statutory-integration';
 import { attendanceReadinessIssue, payrollAttendanceEvidence } from './attendance-evidence';
 import { payrollLeaveEvidence } from './leave-evidence';
+import { calculateAttendanceAdjustments, validateEmployeeAttendanceRates } from './attendance-rates';
 
 type PayrollDb = Prisma.TransactionClient | typeof prisma;
 
@@ -186,7 +187,18 @@ async function generateInTransaction(input: GeneratePayrollInput, db: Prisma.Tra
 
     const compensation = compensations[0];
     const expectedDays = inclusiveCalendarDays(period.periodStart, period.periodEnd);
+    const personalRateFields = [
+      compensation.overtimePayPerHour, compensation.undertimeDeductionPerHour,
+      compensation.lateDeductionPerMinute, compensation.absenceDeductionPerDay,
+    ];
+    const personalRatesPresent = personalRateFields.some(value => value !== null);
+    const personalRatesComplete = personalRateFields.every(value => value !== null);
+    if (personalRatesPresent && !personalRatesComplete) {
+      setupError('The employee has incomplete peso-based attendance configuration. Complete all four rates in Payroll Configuration.');
+      continue;
+    }
     const attendanceRequired = compensation.compensationType === CompensationType.DAILY
+      || personalRatesPresent
       || policy.lateDeductionRule !== LateDeductionRule.NONE
       || policy.absenceDeductionRule !== AbsenceDeductionRule.NONE
       || policy.undertimeDeductionRule !== UndertimeDeductionRule.NONE;
@@ -243,6 +255,8 @@ async function generateInTransaction(input: GeneratePayrollInput, db: Prisma.Tra
       approvedLeaveDays: attendance.filter((day) => day.disposition === AttendanceDisposition.APPROVED_LEAVE).length,
       lateOccurrences: attendance.filter((day) => (day.lateSeconds ?? 0) > 0).length,
       lateSeconds: attendance.reduce((sum, day) => sum + (day.lateSeconds ?? 0), 0),
+      overtimeSeconds: attendance.reduce((sum, day) => sum + (day.overtimeSeconds ?? 0), 0),
+      overtimeOccurrences: attendance.filter(day => (day.overtimeSeconds ?? 0) > 0).length,
       undertimeSeconds: attendance.reduce((sum, day) => sum + (day.undertimeSeconds ?? 0), 0),
       undertimeOccurrences: attendance.filter(day => (day.undertimeSeconds ?? 0) > 0).length,
       statusCounts: Object.fromEntries(Object.values(AttendanceStatus).map((status) => [status, attendance.filter((day) => day.attendanceStatus === status).length])),
@@ -260,8 +274,33 @@ async function generateInTransaction(input: GeneratePayrollInput, db: Prisma.Tra
         payrollTreatment: day.payrollTreatment,
       }])).values()],
     };
+    const personalRates = personalRatesComplete ? {
+      overtimePayPerHour: compensation.overtimePayPerHour!,
+      undertimeDeductionPerHour: compensation.undertimeDeductionPerHour!,
+      lateDeductionPerMinute: compensation.lateDeductionPerMinute!,
+      absenceDeductionPerDay: compensation.absenceDeductionPerDay!,
+    } : null;
+    if (attendanceSummary.overtimeSeconds > 0 && !personalRates) {
+      setupError('Recorded overtime requires an approved employee overtime rate in Payroll Configuration.');
+      continue;
+    }
+    if (attendance.some(day => (day.overtimeSeconds ?? 0) > 0 && day.attendanceStatus === AttendanceStatus.REST_DAY)) {
+      setupError('Rest-day overtime requires separate statutory classification; the standard hourly overtime rate cannot be used.');
+      continue;
+    }
+    if (personalRates) {
+      try { validateEmployeeAttendanceRates(compensation.baseRate, personalRates); }
+      catch (error) { setupError(error instanceof Error ? error.message : 'Employee attendance rates require review.'); continue; }
+    }
+    const personalAmounts = personalRates ? calculateAttendanceAdjustments({
+      overtimeSeconds: attendanceSummary.overtimeSeconds,
+      undertimeSeconds: attendanceSummary.undertimeSeconds,
+      lateSeconds: attendanceSummary.lateSeconds,
+      absentDays: attendanceSummary.absentDays,
+      rates: personalRates,
+    }) : null;
     const absenceDays = attendanceSummary.absentDays;
-    const lateDeduction = policy.lateDeductionRule === LateDeductionRule.NONE ? new Prisma.Decimal(0)
+    const lateDeduction = personalAmounts ? personalAmounts.lateDeduction : policy.lateDeductionRule === LateDeductionRule.NONE ? new Prisma.Decimal(0)
       : policy.lateDeductionRule === LateDeductionRule.PER_MINUTE
         ? new Prisma.Decimal(attendanceSummary.lateSeconds).div(60).mul(policy.lateDeductionParameter!)
         : new Prisma.Decimal(attendanceSummary.lateOccurrences).mul(policy.lateDeductionParameter!);
@@ -272,13 +311,13 @@ async function generateInTransaction(input: GeneratePayrollInput, db: Prisma.Tra
       setupError('A daily rate cannot be derived because the period has no scheduled payable days.');
       continue;
     }
-    const absenceDeduction = policy.absenceDeductionRule === AbsenceDeductionRule.NONE ? new Prisma.Decimal(0)
+    const absenceDeduction = personalAmounts ? personalAmounts.absenceDeduction : policy.absenceDeductionRule === AbsenceDeductionRule.NONE ? new Prisma.Decimal(0)
       : policy.absenceDeductionRule === AbsenceDeductionRule.DAILY_RATE_PER_ABSENT_DAY
         ? dailyRate!.mul(absenceDays)
         : new Prisma.Decimal(absenceDays).mul(policy.absenceDeductionParameter!);
     const undertimeSeconds = attendance.reduce((sum, day) => sum + (day.undertimeSeconds ?? 0), 0);
     const undertimeOccurrences = attendance.filter(day => (day.undertimeSeconds ?? 0) > 0).length;
-    const undertimeDeduction = policy.undertimeDeductionRule === UndertimeDeductionRule.NONE ? new Prisma.Decimal(0)
+    const undertimeDeduction = personalAmounts ? personalAmounts.undertimeDeduction : policy.undertimeDeductionRule === UndertimeDeductionRule.NONE ? new Prisma.Decimal(0)
       : policy.undertimeDeductionRule === UndertimeDeductionRule.PER_MINUTE
         ? new Prisma.Decimal(undertimeSeconds).div(60).mul(policy.undertimeDeductionParameter!)
         : new Prisma.Decimal(undertimeOccurrences).mul(policy.undertimeDeductionParameter!);
@@ -297,7 +336,7 @@ async function generateInTransaction(input: GeneratePayrollInput, db: Prisma.Tra
     try {
       integrated = await calculateIntegratedPayroll(db, {
         organizationId: input.organizationId, employeeId: employee.id, period, compensation, baseAmount,
-        companyDeductions,
+        companyDeductions, overtimePay: personalAmounts?.overtimePay ?? new Prisma.Decimal(0),
       });
     } catch (error) {
       if (error instanceof PayrollError && error.code === 'SETUP_REQUIRED') { setupError(error.message); continue; }
@@ -313,9 +352,9 @@ async function generateInTransaction(input: GeneratePayrollInput, db: Prisma.Tra
       dailyPayBasis: policy.dailyPayBasis,
       roundingRule: policy.roundingRule,
       deductionRules: {
-        late: { rule: policy.lateDeductionRule, parameter: policy.lateDeductionParameter?.toFixed(4) ?? null, amount: companyDeductions.late.toFixed(2) },
-        absence: { rule: policy.absenceDeductionRule, parameter: policy.absenceDeductionParameter?.toFixed(4) ?? null, amount: companyDeductions.absence.toFixed(2) },
-        undertime: { rule: policy.undertimeDeductionRule, parameter: policy.undertimeDeductionParameter?.toFixed(4) ?? null, amount: companyDeductions.undertime.toFixed(2) },
+        late: { rule: personalRates ? 'PER_MINUTE' : policy.lateDeductionRule, parameter: personalRates ? personalRates.lateDeductionPerMinute.toFixed(2) : policy.lateDeductionParameter?.toFixed(4) ?? null, amount: companyDeductions.late.toFixed(2) },
+        absence: { rule: personalRates ? 'FIXED_PER_ABSENCE' : policy.absenceDeductionRule, parameter: personalRates ? personalRates.absenceDeductionPerDay.toFixed(2) : policy.absenceDeductionParameter?.toFixed(4) ?? null, amount: companyDeductions.absence.toFixed(2) },
+        undertime: { rule: personalRates ? 'PER_HOUR' : policy.undertimeDeductionRule, parameter: personalRates ? personalRates.undertimeDeductionPerHour.toFixed(2) : policy.undertimeDeductionParameter?.toFixed(4) ?? null, amount: companyDeductions.undertime.toFixed(2) },
       },
       leaveTreatmentsApplied: leaveSummary.requests,
     };
@@ -326,11 +365,11 @@ async function generateInTransaction(input: GeneratePayrollInput, db: Prisma.Tra
       employee: { id: employee.id, employeeNumber: employee.employeeNumber, name: employeeName },
       compensation: { id: compensation.id, type: compensation.compensationType, rate: compensation.baseRate.toFixed(2), payFrequency: compensation.payFrequency, currency: compensation.currency },
       policy: policySnapshot,
-      calculation: { baseAmount: amount, payableWorkdays, grossAmount: grossAmount.toFixed(2), totalDeductions: totalDeductions.toFixed(2), netAmount: netAmount.toFixed(2), attendanceAffectsPay: attendanceRequired && !policy.isDefault, leaveAffectsPay: policy.dailyPayBasis === DailyPayBasis.PRESENT_PLUS_PAID_LEAVE },
+      calculation: { baseAmount: amount, payableWorkdays, grossAmount: grossAmount.toFixed(2), totalDeductions: totalDeductions.toFixed(2), netAmount: netAmount.toFixed(2), attendanceAffectsPay: attendanceRequired && (personalRatesPresent || !policy.isDefault), leaveAffectsPay: policy.dailyPayBasis === DailyPayBasis.PRESENT_PLUS_PAID_LEAVE },
       statutory: integrated.snapshot,
       attendanceSummary,
       // Additional display evidence: actual payroll monetary amounts remain authoritative.
-      attendanceRateBasis: { absenceDailyRate: dailyRate?.toFixed(6) ?? null },
+      attendanceRateBasis: { absenceDailyRate: dailyRate?.toFixed(6) ?? null, overtimeHourlyRate: personalRates?.overtimePayPerHour.toFixed(2) ?? null, overtimeAmount: personalAmounts?.overtimePay.toFixed(2) ?? null },
       attendanceEvidence: attendanceRequired ? payrollAttendanceEvidence(attendance) : null,
       leaveSummary,
       leaveEvidence: payrollLeaveEvidence(leaveDays),
