@@ -20,6 +20,7 @@ interface PolicyItem {
   id: string; version: number; effectiveFrom: Date; effectiveTo: Date | null; status: string;
   dailyPayBasis: string; lateDeductionRule: string; absenceDeductionRule: string; notifyEmployeesOnFinalization?: boolean;
   undertimeDeductionRule: string; roundingRule: string; createdBy: { name: string };
+  leaveTreatments: Array<{ leaveTypeId: string; treatment: string }>; 
 }
 interface LeaveTypeItem { id: string; code: string; name: string; isPaid: boolean; }
 interface Props {
@@ -70,7 +71,7 @@ export function PayrollConfigurationTab({ employees, compensations, policies, cu
 
       <section className={card}>
         <div className="mb-3 flex items-center gap-3"><span className="rounded-xl bg-blue-50 p-3 text-blue-700"><Clock3 className="h-5 w-5"/></span><div><h2 className="font-bold">Attendance Rules</h2><p className="text-xs text-slate-500">Set monetary values in Philippine pesos, not percentages.</p></div></div>
-        {currentPolicy && <div className="mb-3 rounded-xl bg-slate-50 p-3 text-xs"><p className="font-semibold">Active policy · Version {currentPolicy.version}</p><p className="mt-1 text-slate-500">Effective {formatPayrollDate(currentPolicy.effectiveFrom)}{currentPolicy.effectiveTo ? ' – '+formatPayrollDate(currentPolicy.effectiveTo) : ' onward'} · Notifications {('notifyEmployeesOnFinalization' in currentPolicy && currentPolicy.notifyEmployeesOnFinalization) ? 'on' : 'off'}</p></div>}<PayrollPolicyForm leaveTypes={leaveTypes} compact/>
+        {currentPolicy && <div className="mb-3 rounded-xl bg-slate-50 p-3 text-xs"><p className="font-semibold">Active policy · Version {currentPolicy.version}</p><p className="mt-1 text-slate-500">Effective {formatPayrollDate(currentPolicy.effectiveFrom)}{currentPolicy.effectiveTo ? ' – '+formatPayrollDate(currentPolicy.effectiveTo) : ' onward'} · Notifications {('notifyEmployeesOnFinalization' in currentPolicy && currentPolicy.notifyEmployeesOnFinalization) ? 'on' : 'off'}</p></div>}<PayrollPolicyForm leaveTypes={leaveTypes} compact currentTreatments={currentPolicy?.leaveTreatments ?? []} defaultNotifyEmployees={currentPolicy?.notifyEmployeesOnFinalization ?? false}/>
         <p className="mt-3 text-xs text-slate-500">Late and undertime amounts are configured per minute; absence is configured per day or per occurrence. Overtime is added only when HR records an approved amount and supporting evidence.</p>
         {setup?.input && selectedPeriod && <details className="mt-3 border-t pt-3"><summary className="cursor-pointer text-sm font-semibold">Add approved overtime</summary><PayrollOvertimeApprovalForm employeeId={employeeId} periodId={selectedPeriod.id} expectedVersion={setup.inputVersion} input={{monthlySssRemuneration: setup.input.monthlySssRemuneration, monthlyPagIbigFundSalary: setup.input.monthlyPagIbigFundSalary}} hasEntry={payrollEntryExists}/></details>}
       </section>
