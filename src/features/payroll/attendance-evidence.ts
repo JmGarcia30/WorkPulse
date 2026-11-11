@@ -21,9 +21,10 @@ export function attendanceReadinessIssue(days: PayrollAttendanceFact[], expected
 }
 
 /** Hash only calculation inputs, not recalculation timestamps or display data. */
-export function payrollAttendanceEvidence(days: PayrollAttendanceFact[]): string {
+export function payrollAttendanceEvidence(days: PayrollAttendanceFact[], version: 'v1' | 'v2' = 'v1'): string {
   const facts = [...days].sort((a, b) => a.attendanceDate.getTime() - b.attendanceDate.getTime()).map(day => [
-    day.attendanceDate.toISOString().slice(0, 10), day.attendanceStatus, day.disposition, day.lateSeconds, day.undertimeSeconds, day.overtimeSeconds ?? null,
+    day.attendanceDate.toISOString().slice(0, 10), day.attendanceStatus, day.disposition, day.lateSeconds, day.undertimeSeconds,
+    ...(version === 'v2' ? [day.overtimeSeconds ?? null] : []),
   ]);
-  return 'attendance-v1:' + createHash('sha256').update(JSON.stringify(facts)).digest('hex');
+  return 'attendance-' + version + ':' + createHash('sha256').update(JSON.stringify(facts)).digest('hex');
 }
