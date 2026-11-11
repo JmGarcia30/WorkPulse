@@ -74,8 +74,8 @@ export default async function PayrollPage({ searchParams }: { searchParams: Prom
       <form method="get" aria-label="Select employee and payroll period" className="grid min-w-0 gap-3 sm:grid-cols-2">
         <label className="flex min-w-0 flex-col justify-between gap-2 rounded-2xl border border-[#e8e7e6] bg-white p-4 text-sm font-semibold shadow-sm">
           <span className="flex items-center gap-2"><UserRound className="h-4 w-4 text-[#282934]" aria-hidden="true" />Select Employee</span>
-          <select className="wp-input min-w-0 w-full" name="employee" defaultValue={selectedEmployee?.id ?? ''} required>
-            <option value="">Choose an employee</option>
+          <select className="wp-input min-w-0 w-full" name="employee" defaultValue={selectedEmployee?.id ?? ''}>
+            <option value="">All employees — period workflow</option>
             {employees.map(row => <option key={row.id} value={row.id}>{row.employeeNumber} — {row.firstName} {row.lastName}</option>)}
           </select>
         </label>
@@ -112,6 +112,28 @@ export default async function PayrollPage({ searchParams }: { searchParams: Prom
       <PayrollPeriodForm />
     </details>}
 
+    {period && manage && <section className="space-y-4 rounded-2xl border border-[#e8e7e6] bg-white p-4 shadow-sm sm:p-5" aria-labelledby="payroll-period-workflow">
+      <div>
+        <h2 id="payroll-period-workflow" className="text-lg font-bold">Payroll Processing</h2>
+        <p className="mt-1 text-xs italic text-[#636471]">Process the selected cutoff for all eligible active employees. After finalization, each employee with an active ESS account can view their payslip in My Payroll without waiting for a notification.</p>
+      </div>
+      {editable && <div className="payroll-primary-action">
+        <PayrollGenerationForm periods={[period]} selectedPeriodId={period.id} />
+      </div>}
+      {review && period.status !== 'FINALIZED' && <div className="payroll-review-action">
+        <PayrollReviewControls periodId={period.id} periodLabel={period.name} status={period.status} canFinalize={review.canFinalize} hasEntries={data.entries.length > 0} />
+      </div>}
+      {period.status === 'FINALIZED' && <p className="rounded-xl bg-emerald-50 p-3 text-xs font-semibold text-emerald-800">Payroll finalized. Payslips are available in ESS for employees with active ESS accounts.</p>}
+      {period.status === 'FINALIZED' && notification && <div className="payroll-notify-action">
+        <PayrollNotifyForm periodId={period.id} token={notification.token} recipients={notification.recipients} skipped={notification.skipped} />
+        {notification.skipped > 0 && <p className="mt-2 text-xs text-amber-800">{notification.skipped} finalized employee record(s) have no active ESS account and cannot receive an in-app notification. Their account link must be corrected before they can sign in to ESS.</p>}
+      </div>}
+      {review && review.issues.length > 0 && period.status !== 'FINALIZED' && <details className="rounded-xl border border-amber-200 bg-amber-50 p-3 text-xs text-amber-900">
+        <summary className="cursor-pointer font-bold">{review.issues.length} payroll review item(s) require attention</summary>
+        <ul className="mt-2 list-disc space-y-1 pl-4">{review.issues.map((issue, index) => <li key={index}>{issue.employeeName ? issue.employeeName + ': ' : ''}{issue.message}</li>)}</ul>
+      </details>}
+      <p className="text-xs text-[#636471]">Generation, review, and finalization apply to the entire payroll period. Select an employee below only to inspect or adjust an individual draft.</p>
+    </section>}
     {selectedEmployee && period ? <>
       <div className="flex flex-wrap items-center justify-between gap-2 rounded-xl bg-white px-4 py-3 text-xs shadow-sm">
         <p><span className="font-bold">{selectedEmployee.firstName} {selectedEmployee.lastName}</span> · {period.name} · <span className="font-semibold">{period.status}</span></p>
@@ -199,19 +221,6 @@ export default async function PayrollPage({ searchParams }: { searchParams: Prom
             <ChevronRight className="h-4 w-4" aria-hidden="true" />
           </TenantLink>
           {selectedEntry?.canViewPayslip && <TenantLink className="mt-3 inline-flex text-xs font-semibold underline underline-offset-2" href={`/dashboard/payroll/payslips/${selectedEntry.id}`}>View / Print Finalized Payslip</TenantLink>}
-          <div className="mt-6 space-y-3 border-t border-[#ece9e6] pt-5" aria-label="Payroll actions">
-            {editable && manage && <div className="payroll-primary-action"><PayrollGenerationForm periods={[period]} selectedPeriodId={period.id} employeeId={selectedEmployee.id} /></div>}
-            {manage && review && period.status !== 'FINALIZED' && <div className="payroll-review-action"><PayrollReviewControls periodId={period.id} periodLabel={period.name} status={period.status} canFinalize={review.canFinalize} hasEntries={data.entries.length > 0} /></div>}
-            {period.status === 'FINALIZED' && <p className="rounded-xl bg-emerald-50 p-3 text-xs font-semibold text-emerald-800">Payroll finalized. The official payslip is now available in ESS.</p>}
-            {manage && period.status === 'FINALIZED' && notification
-              ? <div className="payroll-notify-action"><PayrollNotifyForm periodId={period.id} token={notification.token} recipients={notification.recipients} skipped={notification.skipped} employeeId={selectedEmployee.id} /></div>
-              : <div className="rounded-xl bg-[#faf8f6] px-4 py-3 text-xs text-[#636471]">Notify Employee is available after the entire payroll period has been finalized.</div>}
-            {review && review.issues.length > 0 && period.status !== 'FINALIZED' && <details className="rounded-xl border border-amber-200 bg-amber-50 p-3 text-xs text-amber-900">
-              <summary className="cursor-pointer font-bold">{review.issues.length} payroll review item(s) require attention</summary>
-              <ul className="mt-2 list-disc space-y-1 pl-4">{review.issues.map((issue, index) => <li key={index}>{issue.employeeName ? issue.employeeName + ': ' : ''}{issue.message}</li>)}</ul>
-            </details>}
-            <p className="text-xs text-[#636471]">Finalization validates the complete cutoff, not only this employee. Existing payroll protections and confirmations remain active.</p>
-          </div>
         </section>
       </div>
     </> : <div className="rounded-2xl border border-[#e8e7e6] bg-white p-8 text-center">
