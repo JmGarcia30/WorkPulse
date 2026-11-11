@@ -167,7 +167,11 @@ export default async function PayrollPage({ searchParams }: { searchParams: Prom
           {focusedEntry?.canViewPayslip && <TenantLink className="underline underline-offset-2" href={`/dashboard/payroll/payslips/${focusedEntry.id}`}>View finalized payslip</TenantLink>}
         </div>}
       </section>}
-      {!period && <div className="rounded-xl border bg-white p-4"><p className="text-sm">No payroll period exists. Choose or create a cutoff before calculating payroll.</p><PayrollPeriodForm /></div>}
+      <details className="rounded-2xl border border-[#e6e5e4] bg-white p-4">
+        <summary className="cursor-pointer text-xs font-semibold text-[#282934]">Create a new payroll cutoff (only when dates are not yet available)</summary>
+        <p className="mt-3 text-xs text-[#656574]">Define the start, end and pay date. Future cutoffs can reuse saved employee payroll configuration.</p>
+        <PayrollPeriodForm />
+      </details>
     </div>;
   }
 
