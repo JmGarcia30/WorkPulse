@@ -13,9 +13,10 @@ export async function previewPayrollNotifications(input: { organizationId: strin
   await requireActor(db, input.organizationId, input.actorUserId);
   const period = await db.payrollPeriod.findFirst({ where: { id: input.payrollPeriodId, organizationId: input.organizationId, status: 'FINALIZED', finalizedAt: { not: null } } });
   if (!period) throw new PayrollError('NOT_FINALIZED', 'Finalize this payroll period before notifying employees.');
-  const entries = await db.payrollEntry.findMany({ where: { organizationId: input.organizationId, payrollPeriodId: period.id, status: 'FINALIZED' }, include: { employee: { select: { firstName: true, lastName: true } }, notification: true }, orderBy: { id: 'asc' } });
+  const entries = await db.payrollEntry.findMany({ where: { organizationId: input.organizationId, payrollPeriodId: period.id, status: 'FINALIZED' }, include: { employee: { select: { firstName: true, lastName: true } }, employeeCompensation: { select: { notifyOnPayslipReady: true } }, notification: true }, orderBy: { id: 'asc' } });
   const accounts = await db.employeeAccount.findMany({ where: { organizationId: input.organizationId, employeeId: { in: entries.map(entry => entry.employeeId) }, status: 'ACTIVE', employee: { organizationId: input.organizationId, employeeStatus: 'ACTIVE' }, user: { organizationId: input.organizationId, role: { in: employeeAccessRoles } } }, select: { employeeId: true, userId: true } });
   const recipients = entries.flatMap(entry => {
+    if (!entry.employeeCompensation.notifyOnPayslipReady) return [];
     const account = accounts.find(item => item.employeeId === entry.employeeId);
     return account ? [{ entryId: entry.id, employeeId: entry.employeeId, userId: account.userId, name: `${entry.employee.firstName} ${entry.employee.lastName}`, createdAt: entry.notification?.createdAt.toISOString() ?? null }] : [];
   });
