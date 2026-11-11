@@ -10,6 +10,7 @@ import {
 } from '@prisma/client';
 import { prisma } from '@/lib/db/prisma';
 import { PayrollError, parsePayrollDate } from './domain';
+import { payrollTransaction } from './transactions';
 
 type PayrollDb = Prisma.TransactionClient | typeof prisma;
 
@@ -70,7 +71,8 @@ export interface CreatePayrollPolicyInput {
 }
 
 export async function createPayrollPolicy(input: CreatePayrollPolicyInput, db: PayrollDb = prisma) {
-  await requirePolicyAdmin(db, input.organizationId, input.actorUserId);
+  return payrollTransaction(db, async tx => {
+  await requirePolicyAdmin(tx, input.organizationId, input.actorUserId);
   const effectiveFrom = parsePayrollDate(input.effectiveFrom, 'Effective from');
   const effectiveTo = input.effectiveTo ? parsePayrollDate(input.effectiveTo, 'Effective to') : null;
   if (effectiveTo && effectiveTo < effectiveFrom) throw new PayrollError('INVALID_DATE_RANGE', 'Effective to cannot be before effective from.');
@@ -83,7 +85,7 @@ export async function createPayrollPolicy(input: CreatePayrollPolicyInput, db: P
   const absenceDeductionParameter = parseParameter(input.absenceDeductionParameter, absenceDeductionRule === AbsenceDeductionRule.FIXED_PER_ABSENCE, 'Absence deduction parameter');
   const undertimeDeductionParameter = parseParameter(input.undertimeDeductionParameter, undertimeDeductionRule !== UndertimeDeductionRule.NONE, 'Undertime deduction parameter');
 
-  const activePolicies = await db.organizationPayrollPolicy.findMany({
+  const activePolicies = await tx.organizationPayrollPolicy.findMany({
     where: { organizationId: input.organizationId, status: PayrollPolicyStatus.ACTIVE },
     orderBy: { effectiveFrom: 'desc' },
   });
@@ -91,12 +93,12 @@ export async function createPayrollPolicy(input: CreatePayrollPolicyInput, db: P
   const futureConflict = activePolicies.find(item => item.effectiveFrom >= effectiveFrom && (!effectiveTo || item.effectiveFrom <= effectiveTo));
   if (futureConflict) throw new PayrollError('OVERLAPPING_POLICY', 'The new policy overlaps a policy version that already starts on or after this date.');
   if (priorPolicy) {
-    const dependentEntry = await db.payrollEntry.findFirst({
+    const dependentEntry = await tx.payrollEntry.findFirst({
       where: { organizationId: input.organizationId, payrollPeriod: { periodEnd: { gte: effectiveFrom } } },
       select: { id: true },
     });
     if (dependentEntry) throw new PayrollError('DEPENDENT_PAYROLL', 'A payroll entry already exists on or after this policy change date. Resolve that payroll before changing policy coverage.');
-    await db.organizationPayrollPolicy.update({ where: { id: priorPolicy.id }, data: { effectiveTo: new Date(effectiveFrom.getTime() - 86_400_000) } });
+    await tx.organizationPayrollPolicy.update({ where: { id: priorPolicy.id }, data: { effectiveTo: new Date(effectiveFrom.getTime() - 86_400_000) } });
   } else if (activePolicies.some(item => item.effectiveFrom >= effectiveFrom && (!item.effectiveTo || item.effectiveTo >= effectiveFrom))) {
     throw new PayrollError('OVERLAPPING_POLICY', 'The new policy period overlaps an existing active policy.');
   }
@@ -108,7 +110,7 @@ export async function createPayrollPolicy(input: CreatePayrollPolicyInput, db: P
   if (new Set(requestedTreatments.map(item => item.leaveTypeId)).size !== requestedTreatments.length) {
     throw new PayrollError('INVALID_POLICY', 'A leave type can only have one payroll treatment per policy.');
   }
-  const leaveTypes = await db.leaveType.findMany({
+  const leaveTypes = await tx.leaveType.findMany({
     where: { organizationId: input.organizationId }, select: { id: true, code: true },
   });
   const leaveTypeById = new Map(leaveTypes.map(item => [item.id, item]));
@@ -123,8 +125,8 @@ export async function createPayrollPolicy(input: CreatePayrollPolicyInput, db: P
     }
     if (!configured) treatments.push({ leaveTypeId: study.id, treatment: LeavePayrollTreatment.UNPAID });
   }
-  const latest = await db.organizationPayrollPolicy.findFirst({ where: { organizationId: input.organizationId }, orderBy: { version: 'desc' }, select: { version: true } });
-  return db.organizationPayrollPolicy.create({
+  const latest = await tx.organizationPayrollPolicy.findFirst({ where: { organizationId: input.organizationId }, orderBy: { version: 'desc' }, select: { version: true } });
+  return tx.organizationPayrollPolicy.create({
     data: {
       organizationId: input.organizationId, version: (latest?.version ?? 0) + 1, effectiveFrom, effectiveTo,
       dailyPayBasis, lateDeductionRule, lateDeductionParameter, absenceDeductionRule, absenceDeductionParameter,
@@ -132,8 +134,8 @@ export async function createPayrollPolicy(input: CreatePayrollPolicyInput, db: P
       leaveTreatments: { create: treatments.map(item => ({ organizationId: input.organizationId, ...item })) },
     }, include: { leaveTreatments: { include: { leaveType: true } }, createdBy: { select: { name: true } } },
   });
+  });
 }
-
 export async function getPayrollPolicyById(organizationId: string, policyId: string, db: PayrollDb = prisma) {
   const policy = await db.organizationPayrollPolicy.findFirst({
     where: { id: policyId, organizationId }, include: { leaveTreatments: { include: { leaveType: true } }, createdBy: { select: { name: true } } },
