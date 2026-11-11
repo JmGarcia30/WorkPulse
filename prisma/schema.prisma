@@ -1403,10 +1403,15 @@ model EmployeeCompensation {
   organizationId   String
   employeeId       String
   compensationType CompensationType
-  baseRate         Decimal            @db.Decimal(12, 2)
-  payFrequency     PayFrequency
-  currency         String             @default("PHP") @db.VarChar(3)
-  effectiveFrom    DateTime           @db.Date
+  baseRate                    Decimal            @db.Decimal(12, 2)
+  payFrequency                PayFrequency
+  currency                    String             @default("PHP") @db.VarChar(3)
+  overtimePayPerHour          Decimal?           @db.Decimal(12, 2)
+  undertimeDeductionPerHour   Decimal?           @db.Decimal(12, 2)
+  lateDeductionPerMinute      Decimal?           @db.Decimal(12, 2)
+  absenceDeductionPerDay      Decimal?           @db.Decimal(12, 2)
+  notifyOnPayslipReady        Boolean            @default(true)
+  effectiveFrom               DateTime           @db.Date
   effectiveTo      DateTime?          @db.Date
   status           CompensationStatus @default(ACTIVE)
   createdAt        DateTime           @default(now())
