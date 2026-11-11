@@ -1,278 +1,95 @@
 'use client';
 
-import React from 'react';
+import { useState } from 'react';
 import type { PayrollStatutorySetupRow } from '@/features/payroll/setup-queries';
 import { PayrollStatutorySetupPanel, TaxOpening } from './PayrollStatutorySetupPanel';
 import { PayrollReuseSetup } from './PayrollReuseSetup';
 import { StandardPayrollProfile } from './StandardPayrollProfile';
-import {
-  CompensationForm,
-  PayrollPolicyForm,
-} from './PayrollSetupForms';
-import { formatStatusLabel } from '@/lib/ui/format-status';
+import { CompensationForm, PayrollPeriodForm, PayrollPolicyForm } from './PayrollSetupForms';
 import { formatPayrollDate } from '@/features/payroll/formatters';
-import { Settings, ShieldCheck, DollarSign, History } from 'lucide-react';
+import { CalendarDays, UserRound, Wallet, ShieldCheck, Clock3, Bell, FileText } from 'lucide-react';
 
-interface EmployeeItem {
-  id: string;
-  employeeNumber: string;
-  firstName: string;
-  lastName: string;
-}
-
+interface EmployeeItem { id: string; employeeNumber: string; firstName: string; lastName: string; }
 interface CompensationItem {
-  id: string;
-  compensationType: string;
-  baseRate: string;
-  currency: string;
-  payFrequency: string;
-  effectiveFrom: Date;
-  effectiveTo: Date | null;
-  status: string;
-  employee: {
-    employeeNumber: string;
-    firstName: string;
-    lastName: string;
-  };
+  id: string; employeeId: string; compensationType: string; baseRate: string; currency: string;
+  payFrequency: string; effectiveFrom: Date; effectiveTo: Date | null; status: string;
+  employee: { employeeNumber: string; firstName: string; lastName: string };
 }
-
 interface PolicyItem {
-  id: string;
-  version: number;
-  effectiveFrom: Date;
-  effectiveTo: Date | null;
-  status: string;
-  dailyPayBasis: string;
-  lateDeductionRule: string;
-  absenceDeductionRule: string;
-  undertimeDeductionRule: string;
-  roundingRule: string;
-  createdBy: {
-    name: string;
-  };
+  id: string; version: number; effectiveFrom: Date; effectiveTo: Date | null; status: string;
+  dailyPayBasis: string; lateDeductionRule: string; absenceDeductionRule: string;
+  undertimeDeductionRule: string; roundingRule: string; createdBy: { name: string };
 }
-
-interface LeaveTypeItem {
-  id: string;
-  code: string;
-  name: string;
-  isPaid: boolean;
-}
-
-interface PayrollConfigurationTabProps {
-  employees: EmployeeItem[];
-  compensations: CompensationItem[];
-  policies: PolicyItem[];
-  currentPolicy: PolicyItem | null;
-  leaveTypes: LeaveTypeItem[];
+interface LeaveTypeItem { id: string; code: string; name: string; isPaid: boolean; }
+interface Props {
+  employees: EmployeeItem[]; compensations: CompensationItem[]; policies: PolicyItem[];
+  currentPolicy: PolicyItem | null; leaveTypes: LeaveTypeItem[];
   statutorySetup?: PayrollStatutorySetupRow[] | null;
-  selectedPeriod?: { id: string; name: string; payDate: Date } | null;
+  selectedPeriod?: { id: string; name: string; payDate: Date; periodStart?: Date; periodEnd?: Date } | null;
+  selectedEmployeeId?: string;
 }
 
-export function PayrollConfigurationTab({
-  employees,
-  compensations,
-  policies,
-  currentPolicy,
-  leaveTypes,
-  statutorySetup,
-  selectedPeriod,
-}: PayrollConfigurationTabProps) {
-  return (
-    <div className="space-y-6">
-      {/* 1. Employee Pay Setup */}
-      <div className="rounded-xl border border-slate-200/80 bg-white p-5 sm:p-6 shadow-2xs space-y-4">
-        <div className="border-b border-slate-100 pb-3">
-          <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-[var(--tenant-primary,#0f766e)]">
-            <DollarSign className="h-4 w-4" />
-            <span>Employee Pay Setup</span>
-          </div>
-          <h2 className="text-base font-bold text-slate-900 mt-1">
-            1. Employee salary and pay frequency
-          </h2>
-          <p className="text-xs text-slate-500 mt-0.5">
-            Configure monthly or daily base compensation rates and effective appointment dates.
-          </p>
-        </div>
+const card = 'rounded-2xl border border-[#e7e5e2] bg-white p-5 shadow-sm';
+const label = 'mb-1 block text-xs font-semibold text-[#424452]';
+const input = 'w-full rounded-xl border border-[#deddd9] bg-white px-3 py-2.5 text-sm text-[#282934] outline-none focus:border-[#282934]';
 
-        <details open={!compensations.length}><summary className="cursor-pointer text-sm font-semibold">Add or update salary</summary><CompensationForm employees={employees} profiles={statutorySetup ?? []} /></details>
+export function PayrollConfigurationTab({ employees, compensations, policies, currentPolicy, leaveTypes, statutorySetup, selectedPeriod, selectedEmployeeId }: Props) {
+  const [employeeId, setEmployeeId] = useState(selectedEmployeeId ?? employees[0]?.id ?? '');
+  const selected = employees.find(row => row.id === employeeId);
+  const compensation = compensations.find(row => row.employeeId === employeeId && row.status === 'ACTIVE');
+  const setup = statutorySetup?.find(row => row.id === employeeId);
+  const money = (value?: string | null) => value ? new Intl.NumberFormat('en-PH', { style: 'currency', currency: 'PHP' }).format(Number(value)) : 'Not configured';
+  return <div className="grid items-start gap-5 xl:grid-cols-[minmax(0,1.65fr)_minmax(340px,0.9fr)] text-[#282934]">
+    <div className="space-y-4">
+      <section className={card}>
+        <div className="mb-4 flex items-center gap-3"><span className="rounded-xl bg-amber-50 p-3 text-amber-600"><CalendarDays className="h-5 w-5"/></span><div><h2 className="font-bold">Payroll Coverage</h2><p className="text-xs text-slate-500">Set the start and end dates for this payroll computation.</p></div></div>
+        {selectedPeriod ? <div className="grid gap-3 sm:grid-cols-2"><div><span className={label}>Start Date</span><div className={input}>{formatPayrollDate(selectedPeriod.periodStart)}</div></div><div><span className={label}>End Date</span><div className={input}>{formatPayrollDate(selectedPeriod.periodEnd)}</div></div><p className="text-xs text-slate-500 sm:col-span-2">Selected cutoff: {selectedPeriod.name}. Pay date: {formatPayrollDate(selectedPeriod.payDate)}.</p></div> : <p className="text-sm text-amber-800">Create a payroll period to set its coverage dates.</p>}
+        <details className="mt-4 border-t pt-3"><summary className="cursor-pointer text-sm font-semibold">Create a payroll cutoff</summary><PayrollPeriodForm/></details>
+      </section>
 
-        {/* Existing Compensations Table */}
-        <div className="mt-4 pt-4 border-t border-slate-100">
-          <h3 className="text-xs font-bold text-slate-700 mb-2">
-            Active Compensation Records ({compensations.length})
-          </h3>
-          <div className="overflow-x-auto">
-            {compensations.length === 0 ? (
-              <p className="py-6 text-center text-xs text-slate-400">
-                No employee compensation records configured yet.
-              </p>
-            ) : (
-              <table className="w-full text-left text-xs border-collapse">
-                <thead>
-                  <tr className="border-b border-slate-100 bg-slate-50/75 text-[11px] font-bold uppercase tracking-wider text-slate-500">
-                    <th className="px-3.5 py-2.5">Employee</th>
-                    <th className="px-3 py-2.5">Pay Type</th>
-                    <th className="px-3 py-2.5">Base Rate</th>
-                    <th className="px-3 py-2.5">Frequency</th>
-                    <th className="px-3 py-2.5">Effective Period</th>
-                    <th className="px-3.5 py-2.5 text-center">Status</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-slate-100">
-                  {compensations.map((record) => {
-                    const rateFormatted = record.baseRate;
+      <section className={card}>
+        <div className="mb-4 flex items-center gap-3"><span className="rounded-xl bg-blue-50 p-3 text-blue-700"><UserRound className="h-5 w-5"/></span><div><h2 className="font-bold">Employee</h2><p className="text-xs text-slate-500">Select the employee whose salary and payroll settings you are configuring.</p></div></div>
+        <form action="/dashboard/payroll/settings" method="get" className="flex flex-col gap-2 sm:flex-row"><input type="hidden" name="tab" value="configuration"/>{selectedPeriod && <input type="hidden" name="period" value={selectedPeriod.id}/>}<select name="employee" value={employeeId} onChange={e=>setEmployeeId(e.target.value)} className={input}>{employees.map(person=><option key={person.id} value={person.id}>{person.employeeNumber} — {person.firstName} {person.lastName}</option>)}</select><button className="shrink-0 rounded-xl bg-[#282934] px-4 py-2.5 text-sm font-semibold text-white">Load Employee</button></form>
+      </section>
 
-                    return (
-                      <tr key={record.id} className="hover:bg-slate-50/60 transition">
-                        <td className="px-3.5 py-2.5 font-semibold text-slate-900 whitespace-nowrap">
-                          {record.employee.firstName} {record.employee.lastName}
-                          <span className="block font-mono text-[10px] text-slate-400 font-normal">
-                            {record.employee.employeeNumber}
-                          </span>
-                        </td>
-                        <td className="px-3 py-2.5 text-slate-700 whitespace-nowrap">
-                          {formatStatusLabel(record.compensationType)}
-                        </td>
-                        <td className="px-3 py-2.5 font-bold text-slate-900 whitespace-nowrap">
-                          {record.currency} {rateFormatted}
-                        </td>
-                        <td className="px-3 py-2.5 text-slate-600 whitespace-nowrap">
-                          {formatStatusLabel(record.payFrequency)}
-                        </td>
-                        <td className="px-3 py-2.5 text-slate-600 whitespace-nowrap">
-                          {formatPayrollDate(record.effectiveFrom)}
-                          {record.effectiveTo
-                            ? ` – ${formatPayrollDate(record.effectiveTo)}`
-                            : ' onward'}
-                        </td>
-                        <td className="px-3.5 py-2.5 text-center whitespace-nowrap">
-                          <span className={`inline-flex rounded-full px-2 py-0.5 text-[10px] font-bold ${record.status === 'ACTIVE'
-                              ? 'bg-emerald-50 text-emerald-700 border border-emerald-200'
-                              : 'bg-slate-100 text-slate-600'
-                            }`}>
-                            {formatStatusLabel(record.status)}
-                          </span>
-                        </td>
-                      </tr>
-                    );
-                  })}
-                </tbody>
-              </table>
-            )}
-          </div>
-        </div>
-      </div>
+      <section className={card}>
+        <div className="mb-3 flex items-center gap-3"><span className="rounded-xl bg-amber-50 p-3 text-amber-600"><Wallet className="h-5 w-5"/></span><div><h2 className="font-bold">Base Salary</h2><p className="text-xs text-slate-500">Monthly salary of the selected employee.</p></div></div>
+        {compensation ? <div className="mb-3 rounded-xl bg-slate-50 p-3 text-sm"><span className="text-xs text-slate-500">Current monthly base salary</span><p className="text-xl font-bold">{money(compensation.baseRate)}</p><p className="text-xs text-slate-500">Effective {formatPayrollDate(compensation.effectiveFrom)}{compensation.effectiveTo ? ' to '+formatPayrollDate(compensation.effectiveTo) : ' onward'}</p></div> : <p className="mb-3 text-xs text-amber-800">No active salary record covers this employee yet.</p>}
+        {selected && <CompensationForm employees={[selected]} profiles={setup ? [setup] : []}/>}
+      </section>
 
-      {statutorySetup && selectedPeriod && <StandardPayrollProfile rows={statutorySetup} periodId={selectedPeriod.id} />}
-      <section className="space-y-3 rounded-xl border bg-white p-5"><h2 className="font-bold">4. Verified tax and contribution history</h2><p className="text-sm text-slate-600">Existing verified balances remain available across eligible periods. Enter zero only when supported by reviewed records; earlier cutoff contributions must be in the ledger.</p>{statutorySetup && selectedPeriod ? statutorySetup.map(row => <details key={row.id} open={statutorySetup.length === 1}><summary className="cursor-pointer text-sm font-semibold">{row.firstName} {row.lastName} - {row.opening ? 'Verified history saved' : 'History required'}</summary><TaxOpening row={row} payDate={selectedPeriod.payDate.toISOString().slice(0, 10)} /></details>) : <p>Select a payroll period first.</p>}</section>
-      <section className="space-y-3 rounded-xl border bg-white p-5"><h2 className="font-bold">5. Review and confirmation</h2><p className="text-sm text-slate-600">Confirm the saved employee setup, then return to payroll to check readiness and generate. Saving setup does not finalize payroll.</p>{statutorySetup?.map(row => <div key={row.id} className="rounded-lg border p-3 text-sm"><strong>{row.firstName} {row.lastName}</strong><p>Salary: {row.compensation ? row.compensation.currency + ' ' + row.compensation.baseRate + ' / month' : 'Salary setup required'}</p><p>Government coverage: {row.input ? 'Reviewed period inputs saved' : row.reusable ? 'Prior verified setup available for review below' : 'Review required in section 2'}</p><p>Attendance treatment: {row.input ? Object.entries(row.input.companyDeductionTreatment).map(([key, value]) => key + ': ' + value.replaceAll('_', ' ').toLowerCase()).join('; ') : 'Review required in section 3'}</p><p>History: {row.opening ? 'Verified opening history saved for ' + row.opening.payDate : 'Verified history required in section 4'}</p></div>)}{statutorySetup && selectedPeriod && <PayrollReuseSetup rows={statutorySetup} periodId={selectedPeriod.id} />}</section>
-      <details id="advanced-payroll" className="space-y-4 scroll-mt-6">
-        <summary className="cursor-pointer text-lg font-bold text-slate-900">Advanced Payroll Setup</summary>
-        <p className="text-sm text-slate-600">Set up verified opening history and agency bases once, then reuse unchanged information in Run Payroll. Review exceptions, contribution eligibility, earnings, tax adjustments and evidence here. Unsupported tax methods remain blocked.</p>
-        {statutorySetup && selectedPeriod ? <PayrollStatutorySetupPanel key={selectedPeriod.id} rows={statutorySetup} periodId={selectedPeriod.id} periodName={selectedPeriod.name} payDate={selectedPeriod.payDate.toISOString().slice(0, 10)} /> : <p className="text-sm text-slate-600">Select a draft payroll period in Run Payroll to review government coverage and opening history.</p>}
-      </details>
-      {/* 2. Payroll Policy Configuration */}
-      <div className="rounded-xl border border-slate-200/80 bg-white p-5 sm:p-6 shadow-2xs space-y-4">
-        <div className="border-b border-slate-100 pb-3">
-          <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-[var(--tenant-primary,#0f766e)]">
-            <Settings className="h-4 w-4" />
-            <span>Calculation Rules</span>
-          </div>
-          <h2 className="text-base font-bold text-slate-900 mt-1">
-            Payroll Policy Configuration
-          </h2>
-          <p className="text-xs text-slate-500 mt-0.5">
-            Institutional daily pay basis, tardiness deductions, absence rules, and leave treatments.
-          </p>
-        </div>
+      <section className={card}>
+        <div className="mb-3 flex items-center gap-3"><span className="rounded-xl bg-violet-50 p-3 text-violet-700"><ShieldCheck className="h-5 w-5"/></span><div><h2 className="font-bold">PH Statutory Deductions</h2><p className="text-xs text-slate-500">Mandatory deductions are calculated using verified employee details and current statutory rules.</p></div></div>
+        <div className="grid gap-2 sm:grid-cols-2">{['SSS','PhilHealth','Pag-IBIG','BIR Withholding Tax'].map(name=><div key={name} className="flex items-center gap-2 rounded-xl bg-slate-50 px-3 py-2.5 text-sm"><ShieldCheck className="h-4 w-4 text-emerald-600"/><span>{name}</span><span className="ml-auto text-xs text-slate-500">Automatic</span></div>)}</div>
+        <p className="mt-3 text-xs text-slate-500">HR reviews employee coverage and supporting information. Do not switch off a legally required contribution to bypass payroll validation.</p>
+        {statutorySetup && selectedPeriod && <details className="mt-3 border-t pt-3"><summary className="cursor-pointer text-sm font-semibold">Review employee statutory information</summary><div className="mt-3">{setup ? <StandardPayrollProfile rows={[setup]} periodId={selectedPeriod.id}/> : <p className="text-xs text-slate-500">Select a payroll cutoff to review this employee.</p>}</div></details>}
+      </section>
 
-        {/* Current Active Policy Notice */}
-        <div className="rounded-xl bg-slate-50/80 border border-slate-200/70 p-4 text-xs space-y-1">
-          <div className="flex items-center gap-2 font-bold text-slate-900">
-            <ShieldCheck className="h-4 w-4 text-[var(--tenant-primary,#0f766e)]" />
-            <span>
-              Active Policy: {currentPolicy ? `Version ${currentPolicy.version}` : 'Standard Default Policy'}
-            </span>
-          </div>
-          <p className="text-slate-500 text-[11px] pl-6">
-            {currentPolicy
-              ? `${formatStatusLabel(currentPolicy.dailyPayBasis)} · Late: ${formatStatusLabel(
-                currentPolicy.lateDeductionRule
-              )} · Absence: ${formatStatusLabel(
-                currentPolicy.absenceDeductionRule
-              )} · Undertime: ${formatStatusLabel(
-                currentPolicy.undertimeDeductionRule
-              )} · Rounding: ${formatStatusLabel(currentPolicy.roundingRule)}`
-              : 'Scheduled payable days · No tardiness, absence, or undertime deductions · Standard two-decimal rounding'}
-          </p>
-        </div>
+      <section className={card}>
+        <div className="mb-3 flex items-center gap-3"><span className="rounded-xl bg-blue-50 p-3 text-blue-700"><Clock3 className="h-5 w-5"/></span><div><h2 className="font-bold">Attendance Rules</h2><p className="text-xs text-slate-500">Set monetary values in Philippine pesos, not percentages.</p></div></div>
+        <PayrollPolicyForm leaveTypes={leaveTypes} compact/>
+        <p className="mt-3 text-xs text-slate-500">Late and undertime amounts are configured per minute; absence is configured per day or per occurrence. Overtime is currently recorded as an approved earning in the payroll period, not as an automatic hourly-rate policy. I have not displayed a non-functional overtime-rate control.</p>
+      </section>
 
-        <PayrollPolicyForm leaveTypes={leaveTypes} />
-
-        {/* Policy Version History Table */}
-        <div className="mt-4 pt-4 border-t border-slate-100">
-          <h3 className="text-xs font-bold text-slate-700 mb-2 flex items-center gap-1.5">
-            <History className="h-3.5 w-3.5 text-slate-400" />
-            <span>Policy Version History ({policies.length})</span>
-          </h3>
-          <div className="overflow-x-auto">
-            {policies.length === 0 ? (
-              <p className="py-6 text-center text-xs text-slate-400">
-                The standard default payroll policy is active. Create a custom version only when specific deduction rules are needed.
-              </p>
-            ) : (
-              <table className="w-full text-left text-xs border-collapse">
-                <thead>
-                  <tr className="border-b border-slate-100 bg-slate-50/75 text-[11px] font-bold uppercase tracking-wider text-slate-500">
-                    <th className="px-3.5 py-2.5">Version</th>
-                    <th className="px-3 py-2.5">Effective Period</th>
-                    <th className="px-3 py-2.5">Daily Pay Basis</th>
-                    <th className="px-3 py-2.5">Late Rule</th>
-                    <th className="px-3 py-2.5">Absence Rule</th>
-                    <th className="px-3 py-2.5">Undertime Rule</th>
-                    <th className="px-3 py-2.5">Rounding</th>
-                    <th className="px-3.5 py-2.5">Created By</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-slate-100">
-                  {policies.map((policy) => (
-                    <tr key={policy.id} className="hover:bg-slate-50/60 transition">
-                      <td className="px-3.5 py-2.5 font-bold text-slate-900">
-                        v{policy.version}
-                      </td>
-                      <td className="px-3 py-2.5 text-slate-600 whitespace-nowrap">
-                        {formatPayrollDate(policy.effectiveFrom)}
-                        {policy.effectiveTo
-                          ? ` – ${formatPayrollDate(policy.effectiveTo)}`
-                          : ' onward'}
-                      </td>
-                      <td className="px-3 py-2.5 text-slate-700">
-                        {formatStatusLabel(policy.dailyPayBasis)}
-                      </td>
-                      <td className="px-3 py-2.5 text-slate-600">
-                        {formatStatusLabel(policy.lateDeductionRule)}
-                      </td>
-                      <td className="px-3 py-2.5 text-slate-600">
-                        {formatStatusLabel(policy.absenceDeductionRule)}
-                      </td>
-                      <td className="px-3 py-2.5 text-slate-600">
-                        {formatStatusLabel(policy.undertimeDeductionRule)}
-                      </td>
-                      <td className="px-3 py-2.5 text-slate-600">
-                        {formatStatusLabel(policy.roundingRule)}
-                      </td>
-                      <td className="px-3.5 py-2.5 text-slate-600">
-                        {policy.createdBy.name}
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            )}
-          </div>
-        </div>
-      </div>
+      <section className={card}>
+        <div className="flex items-center gap-3"><span className="rounded-xl bg-emerald-50 p-3 text-emerald-700"><Bell className="h-5 w-5"/></span><div><h2 className="font-bold">Employee Notification</h2><p className="text-xs text-slate-500">After payroll is finalized, HR can notify the employee that their payslip is available in My Payroll (ESS).</p></div><span className="ml-auto rounded-full bg-emerald-50 px-3 py-1 text-xs font-semibold text-emerald-700">Available after finalization</span></div>
+      </section>
+      <details className="rounded-2xl border border-slate-200 bg-white p-4"><summary className="cursor-pointer text-sm font-semibold">Advanced payroll records and statutory history</summary><div className="mt-4 space-y-4">{statutorySetup && selectedPeriod ? <><PayrollReuseSetup rows={setup ? [setup] : []} periodId={selectedPeriod.id}/><PayrollStatutorySetupPanel rows={setup ? [setup] : []} periodId={selectedPeriod.id} periodName={selectedPeriod.name} payDate={selectedPeriod.payDate.toISOString().slice(0,10)}/>{setup && <TaxOpening row={setup} payDate={selectedPeriod.payDate.toISOString().slice(0,10)}/>}</> : <p className="text-xs text-slate-500">Select a payroll period first.</p>}</div></details>
     </div>
-  );
+    <aside className="xl:sticky xl:top-5">
+      <section className={card}>
+        <div className="mb-5 flex h-40 items-center justify-center rounded-2xl bg-[#fff7e5]"><div className="text-center"><FileText className="mx-auto h-16 w-16 text-amber-600"/><p className="mt-2 text-sm font-bold tracking-wide">PAYSLIP</p><p className="text-xs text-slate-500">WorkPulse Payroll</p></div></div>
+        <h2 className="mb-4 text-lg font-bold">Configuration Summary</h2>
+        <dl className="divide-y divide-slate-100 text-sm">
+          <div className="flex justify-between gap-3 py-3"><dt className="text-slate-500">Employee</dt><dd className="text-right font-semibold">{selected ? selected.firstName+' '+selected.lastName : 'Not selected'}</dd></div>
+          <div className="flex justify-between gap-3 py-3"><dt className="text-slate-500">Payroll Period</dt><dd className="text-right font-semibold">{selectedPeriod ? selectedPeriod.name : 'Not selected'}</dd></div>
+          <div className="flex justify-between gap-3 py-3"><dt className="text-slate-500">Base Salary</dt><dd className="text-right font-semibold">{money(compensation?.baseRate)}</dd></div>
+          <div className="flex justify-between gap-3 py-3"><dt className="text-slate-500">Statutory</dt><dd className="text-right font-semibold">SSS, PhilHealth, Pag-IBIG, BIR</dd></div>
+          <div className="flex justify-between gap-3 py-3"><dt className="text-slate-500">Attendance</dt><dd className="text-right font-semibold">{currentPolicy ? 'Configured' : 'Needs setup'}</dd></div>
+          <div className="flex justify-between gap-3 py-3"><dt className="text-slate-500">Notification</dt><dd className="text-right font-semibold">After finalization</dd></div>
+        </dl>
+        <p className="mt-4 rounded-xl bg-slate-50 p-3 text-xs text-slate-600">Saving salary and attendance rules updates the configuration used by payroll calculations. Finalized payroll records remain unchanged.</p>
+      </section>
+    </aside>
+  </div>;
 }
