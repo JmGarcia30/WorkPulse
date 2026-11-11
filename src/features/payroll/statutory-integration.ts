@@ -21,8 +21,10 @@ export async function calculateIntegratedPayroll(db: Prisma.TransactionClient, c
   compensation: Pick<EmployeeCompensation, 'id' | 'compensationType' | 'payFrequency' | 'baseRate' | 'currency'>;
   baseAmount: Prisma.Decimal;
   companyDeductions: { late: Prisma.Decimal; absence: Prisma.Decimal; undertime: Prisma.Decimal };
+  overtimePay?: Prisma.Decimal;
 }) {
   const { organizationId, employeeId, period, compensation, baseAmount, companyDeductions } = context;
+  const overtimePay = context.overtimePay ?? new Prisma.Decimal(0);
   const fail = (message: string): never => { throw new PayrollError('SETUP_REQUIRED', message); };
   try {
     if (compensation.compensationType !== CompensationType.MONTHLY || !['MONTHLY', 'SEMI_MONTHLY'].includes(compensation.payFrequency)) fail('Statutory integration requires fixed monthly basic salary with monthly or semi-monthly payment; daily/partial/special arrangements require review.');
@@ -81,7 +83,13 @@ export async function calculateIntegratedPayroll(db: Prisma.TransactionClient, c
     const salaryReduction = Object.entries(companyDeductions).reduce((sum, [key, value]) => input.companyDeductionTreatment[key as keyof typeof companyDeductions] === 'SALARY_REDUCTION' ? sum.add(value) : sum, zero());
     const companyTotal = Object.values(companyDeductions).reduce((sum, value) => sum.add(value), zero());
     if (salaryReduction.gt(baseAmount)) fail('Company salary reductions exceed basic earnings.');
-    const earnings = [{ id: 'BASIC_SALARY', kind: 'BASIC_SALARY' as const, amount: baseAmount.sub(salaryReduction).toFixed(2) }, ...input.additionalEarnings];
+    if (overtimePay.gt(0) && input.additionalEarnings.some(row => row.kind === 'OVERTIME')) {
+      fail('Recorded overtime and manually entered overtime cannot be combined without reconciliation. Remove duplicate manual overtime before generation.');
+    }
+    const automaticOvertime = overtimePay.gt(0)
+      ? [{ id: 'AUTO_ATTENDANCE_OVERTIME', kind: 'OVERTIME' as const, amount: overtimePay.toFixed(2), description: 'Overtime from attendance records' }]
+      : [];
+    const earnings = [{ id: 'BASIC_SALARY', kind: 'BASIC_SALARY' as const, amount: baseAmount.sub(salaryReduction).toFixed(2) }, ...input.additionalEarnings, ...automaticOvertime];
     const bir = calculateBirWithholding({
       organizationId, employeeId, periodId: period.id, currency: 'PHP', frequency,
       periodStart: day(period.periodStart), periodEnd: day(period.periodEnd), payDate,
@@ -103,7 +111,7 @@ export async function calculateIntegratedPayroll(db: Prisma.TransactionClient, c
       openingId: opening.id, contributionMonth, frequency, slot, monthlyLiabilities: liabilities, allocations,
       grossCompensation: grossAmount.toFixed(2), taxableCompensation: bir.taxableCompensation.toFixed(2),
       employeeStatutoryDeductions: Object.fromEntries(allocations.map(item => [item.agency, item.employee.toFixed(2)])),
-      birWithholding: bir.withholdingTax.toFixed(2), companyPolicyDeductions: jsonValue(companyDeductions), companyPolicyTotal: companyTotal.toFixed(2), salaryReduction: salaryReduction.toFixed(2),
+      birWithholding: bir.withholdingTax.toFixed(2), companyPolicyDeductions: jsonValue(companyDeductions), companyPolicyTotal: companyTotal.toFixed(2), salaryReduction: salaryReduction.toFixed(2), attendanceOvertime: overtimePay.toFixed(2),
       employerContributions: Object.fromEntries(allocations.map(item => [item.agency, { counterpart: item.employer.toFixed(2), employerOnly: item.employerOnly.toFixed(2), total: item.employerTotal.toFixed(2) }])),
       totalDeductions: totalDeductions.toFixed(2), netPay: bir.netPay.toFixed(2), bir,
       yearToDateBefore: { taxableCompensation: taxableYtd.toFixed(2), withholdingTax: taxYtd.toFixed(2) },
