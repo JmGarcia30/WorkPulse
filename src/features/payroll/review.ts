@@ -139,7 +139,7 @@ async function assessPeriod(organizationId: string, payrollPeriodId: string, db:
         orderBy: { attendanceDate: 'asc' },
       });
       const issue = attendanceReadinessIssue(attendance, inclusiveCalendarDays(period.periodStart, period.periodEnd));
-      if (issue || snapshot.attendanceEvidence !== payrollAttendanceEvidence(attendance)) {
+      if (issue || snapshot.attendanceEvidence !== payrollAttendanceEvidence(attendance, snapshot.attendanceEvidence?.startsWith('attendance-v2:') ? 'v2' : 'v1')) {
         issues.push({ ...identity, kind: 'SETUP_REQUIRED', message: issue ?? 'Attendance calculation inputs changed or the snapshot lacks attendance evidence. Review and explicitly recalculate payroll before finalization.' });
       }
     }
