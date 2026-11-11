@@ -40,6 +40,17 @@ export async function notifyPayrollEmployees(input: { organizationId: string; ac
   });
 }
 
+/** Apply the effective payroll policy after finalization; notification failures never roll back payslips. */
+export async function notifyPayrollEmployeesIfConfigured(input: { organizationId: string; actorUserId: string; payrollPeriodId: string }, db: PayrollDb = prisma) {
+  const period = await db.payrollPeriod.findFirst({ where: { id: input.payrollPeriodId, organizationId: input.organizationId, status: 'FINALIZED', finalizedAt: { not: null } } });
+  if (!period) return { enabled: false, created: 0 };
+  const policies = await db.organizationPayrollPolicy.findMany({ where: { organizationId: input.organizationId, status: 'ACTIVE', notifyEmployeesOnFinalization: true, effectiveFrom: { lte: period.periodStart }, OR: [{ effectiveTo: null }, { effectiveTo: { gte: period.periodEnd } }] }, select: { id: true } });
+  if (policies.length !== 1) return { enabled: false, created: 0 };
+  const preview = await previewPayrollNotifications({ ...input }, db);
+  const result = await notifyPayrollEmployees({ ...input, confirmation: 'NOTIFY', recipientToken: preview.token }, db);
+  return { enabled: true, ...result };
+}
+
 export async function listPayrollNotifications(input: { organizationId: string; userId: string }, db: PayrollDb = prisma) {
   const account = await db.employeeAccount.findFirst({ where: { organizationId: input.organizationId, userId: input.userId, status: 'ACTIVE', employee: { organizationId: input.organizationId, employeeStatus: 'ACTIVE' }, user: { role: { in: employeeAccessRoles }, organizationId: input.organizationId } }, select: { employeeId: true } });
   if (!account) throw new PayrollError('FORBIDDEN', 'Employee payroll access is unavailable.');

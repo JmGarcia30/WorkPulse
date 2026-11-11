@@ -8,6 +8,7 @@ import { getPayrollDashboardData } from '@/features/payroll/queries';
 import { getPayrollReadiness } from '@/features/payroll/readiness';
 import { earningsVersion } from '@/features/payroll/earnings';
 import { parseStatutoryInput } from '@/features/payroll/statutory-inputs';
+import { getPayrollStatutorySetup } from '@/features/payroll/setup-queries';
 import { previewPayrollNotifications } from '@/features/payroll/notifications';
 import { formatPayrollDate, formatCurrency } from '@/features/payroll/formatters';
 import { PayrollPeriodForm, PayrollGenerationForm, PayrollReviewControls } from '@/components/payroll/PayrollSetupForms';
@@ -45,10 +46,12 @@ export default async function PayrollPage({ searchParams }: { searchParams: Prom
         && row.effectiveFrom <= period.periodStart && (!row.effectiveTo || row.effectiveTo >= period.periodEnd))
     : [];
   const notification = manage && period?.status === 'FINALIZED' ? await previewPayrollNotifications(scope) : null;
+  const statutorySetupRows = manage && period && params.tab === 'configuration' ? await getPayrollStatutorySetup(scope) : [];
+  const compensationRevisions = manage && params.tab === 'configuration' && params.employee ? await prisma.payrollCompensationRevision.findMany({ where: { organizationId: user.organizationId, employeeId: params.employee }, include: { actor: { select: { name: true } } }, orderBy: { createdAt: 'desc' }, take: 10 }) : [];
   const configurationCompensations = compensations.map(record => ({ ...record, baseRate: record.baseRate.toFixed(2) }));
-  const configurationPolicies = policies.map(policy => ({ id: policy.id, version: policy.version, effectiveFrom: policy.effectiveFrom, effectiveTo: policy.effectiveTo, status: policy.status, dailyPayBasis: policy.dailyPayBasis, lateDeductionRule: policy.lateDeductionRule, absenceDeductionRule: policy.absenceDeductionRule, undertimeDeductionRule: policy.undertimeDeductionRule, roundingRule: policy.roundingRule, createdBy: policy.createdBy }));
+  const configurationPolicies = policies.map(policy => ({ id: policy.id, version: policy.version, effectiveFrom: policy.effectiveFrom, effectiveTo: policy.effectiveTo, status: policy.status, dailyPayBasis: policy.dailyPayBasis, lateDeductionRule: policy.lateDeductionRule, absenceDeductionRule: policy.absenceDeductionRule, undertimeDeductionRule: policy.undertimeDeductionRule, roundingRule: policy.roundingRule, notifyEmployeesOnFinalization: policy.notifyEmployeesOnFinalization, leaveTreatments: policy.leaveTreatments.map(item => ({ leaveTypeId: item.leaveTypeId, treatment: item.treatment })), createdBy: policy.createdBy }));
   const settings = params.tab === 'configuration';
-  const setupRows = params.employee ? readiness?.setup.filter(row => row.id === params.employee) ?? [] : readiness?.setup ?? [];
+  const setupRows = params.employee ? statutorySetupRows.filter(row => row.id === params.employee) : statutorySetupRows;
   const card = 'rounded-2xl border bg-white p-4 sm:p-6 space-y-4';
   const statutoryRows = selectedEntry?.breakdown ? [
     { label: 'SSS', amount: selectedEntry.breakdown.employee.sss },
@@ -58,7 +61,7 @@ export default async function PayrollPage({ searchParams }: { searchParams: Prom
   ] : [];
   if (settings) {
     if (!manage) notFound();
-    return <div className="space-y-5"><header><h1 className="text-2xl font-bold">Payroll Settings</h1><p className="mt-2 text-sm text-slate-600">Follow employee setup in order. Existing verified records are shown; missing history and legal declarations require HR review.</p><TenantLink className="mt-3 inline-block underline" href={`/dashboard/payroll?period=${period?.id ?? ''}`}>Back to payroll</TenantLink></header><PayrollConfigurationTab employees={params.employee ? employees.filter(row => row.id === params.employee) : employees} compensations={params.employee ? configurationCompensations.filter(row => row.employeeId === params.employee) : configurationCompensations} policies={configurationPolicies} currentPolicy={configurationPolicies.find(row => row.id === currentPolicy?.id) ?? null} leaveTypes={leaveTypes} statutorySetup={setupRows} selectedPeriod={period} /></div>;
+    return <div className="space-y-5"><header><h1 className="text-2xl font-bold">Payroll Settings</h1><p className="mt-2 text-sm text-slate-600">Follow employee setup in order. Existing verified records are shown; missing history and legal declarations require HR review.</p><TenantLink className="mt-3 inline-block underline" href={`/dashboard/payroll?period=${period?.id ?? ''}`}>Back to payroll</TenantLink></header><PayrollConfigurationTab employees={params.employee ? employees.filter(row => row.id === params.employee) : employees} compensations={params.employee ? configurationCompensations.filter(row => row.employeeId === params.employee) : configurationCompensations} policies={configurationPolicies} currentPolicy={configurationPolicies.find(row => row.id === currentPolicy?.id) ?? null} leaveTypes={leaveTypes} statutorySetup={setupRows} selectedPeriod={period} selectedEmployeeId={params.employee} payrollEntryExists={params.employee ? data.entries.some(row => row.employeeId === params.employee) : false} compensationRevisions={compensationRevisions} /></div>;
   }
 
   return <div className="space-y-5 bg-[#FAF8F6] text-[#282934]">

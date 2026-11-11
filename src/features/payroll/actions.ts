@@ -4,7 +4,7 @@ import { revalidatePath } from 'next/cache';
 import { requireBackOfficeContext } from '@/lib/auth/guards';
 import { canManagePayroll } from '@/lib/permissions/rbac';
 import { PayrollError } from './domain';
-import { createEmployeeCompensation, createPayrollPeriod, generatePayroll, deletePayrollPeriod } from './service';
+import { createEmployeeCompensation, updateEmployeeCompensation, createPayrollPeriod, generatePayroll, deletePayrollPeriod } from './service';
 import { createPayrollPolicy } from './policy';
 import { finalizePayrollPeriod, movePayrollPeriodToReview } from './review';
 import { savePayrollStatutoryInput, savePayrollTaxOpening } from './statutory-inputs';
@@ -12,7 +12,7 @@ import { statutoryPayloadFromForm, openingBalancesFromForm } from './setup-form'
 import { reusePayrollSetup } from './reuse';
 import { saveStandardPayrollProfile } from './standard-profile';
 import { changePayrollEarning } from './earnings';
-import { notifyPayrollEmployees } from './notifications';
+import { notifyPayrollEmployees, notifyPayrollEmployeesIfConfigured } from './notifications';
 
 export async function changePayrollEarningAction(_state: PayrollActionState, form: FormData): Promise<PayrollActionState> {
   const user = await requireBackOfficeContext();
@@ -98,6 +98,17 @@ export async function createCompensationAction(_state: PayrollActionState, formD
   } catch (error) { return failure(error); }
 }
 
+export async function updateCompensationAction(_state: PayrollActionState, formData: FormData): Promise<PayrollActionState> {
+  const user = await requireBackOfficeContext();
+  if (!canManagePayroll(user)) return { error: 'Unauthorized to manage payroll.' };
+  try {
+    await updateEmployeeCompensation({ organizationId: user.organizationId, actorUserId: user.userId, employeeId: String(formData.get('employeeId') ?? ''), compensationId: String(formData.get('compensationId') ?? ''), compensationType: String(formData.get('compensationType') ?? ''), baseRate: String(formData.get('baseRate') ?? ''), payFrequency: String(formData.get('payFrequency') ?? ''), currency: 'PHP', effectiveFrom: String(formData.get('effectiveFrom') ?? ''), reason: String(formData.get('reason') ?? '') });
+    revalidatePath('/dashboard/payroll');
+    revalidatePath('/dashboard/payroll/settings');
+    return { success: 'A new effective-dated compensation version was saved. Previous payroll history remains unchanged.' };
+  } catch (error) { return failure(error); }
+}
+
 export async function createPayrollPeriodAction(_state: PayrollActionState, formData: FormData): Promise<PayrollActionState> {
   const user = await requireBackOfficeContext();
   if (!canManagePayroll(user)) return { error: 'Unauthorized to manage payroll.' };
@@ -143,7 +154,7 @@ export async function createPayrollPolicyAction(_state: PayrollActionState, form
       lateDeductionRule: String(formData.get('lateDeductionRule') ?? ''), lateDeductionParameter: String(formData.get('lateDeductionParameter') ?? ''),
       absenceDeductionRule: String(formData.get('absenceDeductionRule') ?? ''), absenceDeductionParameter: String(formData.get('absenceDeductionParameter') ?? ''),
       undertimeDeductionRule: String(formData.get('undertimeDeductionRule') ?? ''), undertimeDeductionParameter: String(formData.get('undertimeDeductionParameter') ?? ''),
-      roundingRule: String(formData.get('roundingRule') ?? ''), leaveTreatments,
+      roundingRule: String(formData.get('roundingRule') ?? ''), leaveTreatments, notifyEmployeesOnFinalization: formData.get('notifyEmployeesOnFinalization') === 'true',
     });
     revalidatePath('/dashboard/payroll');
     revalidatePath('/dashboard/payroll/settings');
@@ -166,14 +177,22 @@ export async function finalizePayrollAction(_state: PayrollActionState, formData
   const user = await requireBackOfficeContext();
   if (!canManagePayroll(user)) return { error: 'Unauthorized to finalize payroll.' };
   try {
+    const payrollPeriodId = String(formData.get('payrollPeriodId') ?? '');
     await finalizePayrollPeriod({
       organizationId: user.organizationId, actorUserId: user.userId,
-      payrollPeriodId: String(formData.get('payrollPeriodId') ?? ''), confirmation: String(formData.get('confirmation') ?? ''),
+      payrollPeriodId, confirmation: String(formData.get('confirmation') ?? ''),
     });
+    let notificationNote = '';
+    try {
+      const result = await notifyPayrollEmployeesIfConfigured({ organizationId: user.organizationId, actorUserId: user.userId, payrollPeriodId });
+      if (result.enabled) notificationNote = ` ${result.created} employee notification(s) created automatically.`;
+    } catch {
+      notificationNote = ' Payslips were finalized; automatic notification needs HR attention.';
+    }
     revalidatePath('/dashboard/payroll');
     revalidatePath('/dashboard/payroll/settings');
     revalidatePath('/employee/payroll');
-    return { success: 'Payroll finalized and locked.' };
+    return { success: 'Payroll finalized and locked.' + notificationNote };
   } catch (error) { return failure(error); }
 }
 

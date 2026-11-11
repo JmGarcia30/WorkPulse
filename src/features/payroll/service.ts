@@ -69,6 +69,30 @@ export async function createEmployeeCompensation(input: CreateCompensationInput,
   });
 }
 
+export async function updateEmployeeCompensation(input: CreateCompensationInput & { compensationId: string; reason: string }, db: PayrollDb = prisma) {
+  return payrollTransaction(db, async tx => {
+    await requirePayrollAdmin(tx, input.organizationId, input.actorUserId);
+    await lockPayrollEmployee(tx, input.organizationId, input.employeeId);
+    const current = await tx.employeeCompensation.findFirst({ where: { id: input.compensationId, organizationId: input.organizationId, employeeId: input.employeeId, status: CompensationStatus.ACTIVE } });
+    if (!current) throw new PayrollError('NOT_FOUND', 'Active compensation record not found.');
+    if (!input.reason.trim() || input.reason.trim().length < 5) throw new PayrollError('REFERENCE_REQUIRED', 'Provide a reason for the salary change.');
+    const effectiveFrom = parsePayrollDate(input.effectiveFrom, 'New salary effective date');
+    if (effectiveFrom <= current.effectiveFrom) throw new PayrollError('INVALID_DATE_RANGE', 'A salary change must start after the current record begins. Use a future effective date to preserve previous payroll history.');
+    const conflict = await tx.payrollEntry.findFirst({ where: { organizationId: input.organizationId, employeeId: input.employeeId, employeeCompensationId: current.id, payrollPeriod: { periodEnd: { gte: effectiveFrom } } }, select: { id: true } });
+    if (conflict) throw new PayrollError('DEPENDENT_PAYROLL', 'A payroll entry already uses this salary on or after the requested date. Resolve the affected payroll before changing compensation.');
+    let baseRate: Prisma.Decimal;
+    try { baseRate = new Prisma.Decimal(input.baseRate); } catch { throw new PayrollError('INVALID_RATE', 'Base rate must be a valid amount.'); }
+    if (!baseRate.isFinite() || baseRate.lte(0) || baseRate.decimalPlaces() > 2) throw new PayrollError('INVALID_RATE', 'Base rate must be greater than zero with at most two decimal places.');
+    const compensationType = parseCompensationType(input.compensationType), payFrequency = parsePayFrequency(input.payFrequency), currency = validateCurrency(input.currency);
+    const previousState = { id: current.id, compensationType: current.compensationType, baseRate: current.baseRate.toFixed(2), payFrequency: current.payFrequency, currency: current.currency, effectiveFrom: dateKey(current.effectiveFrom), effectiveTo: current.effectiveTo ? dateKey(current.effectiveTo) : null };
+    const dayBefore = new Date(effectiveFrom.getTime() - 86_400_000);
+    await tx.employeeCompensation.update({ where: { id: current.id }, data: { effectiveTo: dayBefore } });
+    const next = await tx.employeeCompensation.create({ data: { organizationId: input.organizationId, employeeId: input.employeeId, compensationType, baseRate, payFrequency, currency, effectiveFrom, effectiveTo: null, status: CompensationStatus.ACTIVE } });
+    await tx.payrollCompensationRevision.create({ data: { organizationId: input.organizationId, employeeId: input.employeeId, actorUserId: input.actorUserId, reason: input.reason.trim(), previousState, newState: { id: next.id, compensationType, baseRate: baseRate.toFixed(2), payFrequency, currency, effectiveFrom: dateKey(effectiveFrom), effectiveTo: null } } });
+    return next;
+  });
+}
+
 export interface CreatePayrollPeriodInput {
   organizationId: string;
   actorUserId: string;
