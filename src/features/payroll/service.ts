@@ -368,6 +368,13 @@ async function generateInTransaction(input: GeneratePayrollInput, db: Prisma.Tra
       calculation: { baseAmount: amount, payableWorkdays, grossAmount: grossAmount.toFixed(2), totalDeductions: totalDeductions.toFixed(2), netAmount: netAmount.toFixed(2), attendanceAffectsPay: attendanceRequired && (personalRatesPresent || !policy.isDefault), leaveAffectsPay: policy.dailyPayBasis === DailyPayBasis.PRESENT_PLUS_PAID_LEAVE },
       statutory: integrated.snapshot,
       attendanceSummary,
+      // Snapshot the actual attendance facts used by this calculation. Do not
+      // derive an official historical report from later-edited live attendance.
+      attendanceDailyRecords: attendance.map(day => ({
+        date: dateKey(day.attendanceDate), status: day.attendanceStatus,
+        disposition: day.disposition, lateSeconds: day.lateSeconds ?? 0,
+        undertimeSeconds: day.undertimeSeconds ?? 0, overtimeSeconds: day.overtimeSeconds ?? 0,
+      })),
       // Additional display evidence: actual payroll monetary amounts remain authoritative.
       attendanceRateBasis: { absenceDailyRate: dailyRate?.toFixed(6) ?? null, overtimeHourlyRate: personalRates?.overtimePayPerHour.toFixed(2) ?? null, overtimeAmount: personalAmounts?.overtimePay.toFixed(2) ?? null },
       attendanceEvidence: attendanceRequired ? payrollAttendanceEvidence(attendance, personalRates ? 'v2' : 'v1') : null,
