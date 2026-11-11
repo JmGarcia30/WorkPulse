@@ -66,6 +66,7 @@ export interface CreatePayrollPolicyInput {
   undertimeDeductionParameter?: string | number | null;
   roundingRule: string;
   leaveTreatments?: Array<{ leaveTypeId: string; treatment: string }>;
+  notifyEmployeesOnFinalization?: boolean;
 }
 
 export async function createPayrollPolicy(input: CreatePayrollPolicyInput, db: PayrollDb = prisma) {
@@ -115,7 +116,7 @@ export async function createPayrollPolicy(input: CreatePayrollPolicyInput, db: P
     data: {
       organizationId: input.organizationId, version: (latest?.version ?? 0) + 1, effectiveFrom, effectiveTo,
       dailyPayBasis, lateDeductionRule, lateDeductionParameter, absenceDeductionRule, absenceDeductionParameter,
-      undertimeDeductionRule, undertimeDeductionParameter, roundingRule, createdById: input.actorUserId,
+      undertimeDeductionRule, undertimeDeductionParameter, roundingRule, notifyEmployeesOnFinalization: input.notifyEmployeesOnFinalization === true, createdById: input.actorUserId,
       leaveTreatments: { create: treatments.map(item => ({ organizationId: input.organizationId, ...item })) },
     }, include: { leaveTreatments: { include: { leaveType: true } }, createdBy: { select: { name: true } } },
   });
