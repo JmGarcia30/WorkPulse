@@ -13,6 +13,7 @@ import { reusePayrollSetup } from './reuse';
 import { saveStandardPayrollProfile } from './standard-profile';
 import { changePayrollEarning } from './earnings';
 import { notifyPayrollEmployees } from './notifications';
+import { saveEmployeePayrollConfiguration } from './employee-configuration';
 
 export async function changePayrollEarningAction(_state: PayrollActionState, form: FormData): Promise<PayrollActionState> {
   const user = await requireBackOfficeContext();
@@ -84,6 +85,31 @@ export async function saveTaxOpeningAction(_state: PayrollActionState, form: For
     revalidatePath('/dashboard/payroll');
     revalidatePath('/dashboard/payroll/settings');
     return { success: 'Verified opening history saved. Later payments will use persisted payroll history.' };
+  } catch (error) { return failure(error); }
+}
+
+export async function saveEmployeePayrollConfigurationAction(_state: PayrollActionState, form: FormData): Promise<PayrollActionState> {
+  const user = await requireBackOfficeContext();
+  if (!canManagePayroll(user)) return { error: 'Unauthorized to configure employee payroll.' };
+  const field = (name: string) => String(form.get(name) ?? '').trim();
+  try {
+    const result = await saveEmployeePayrollConfiguration({
+      organizationId: user.organizationId,
+      actorUserId: user.userId,
+      employeeId: field('employeeId'),
+      payrollPeriodId: field('payrollPeriodId'),
+      monthlyBaseSalary: field('monthlyBaseSalary'),
+      overtimePayPerHour: field('overtimePayPerHour'),
+      undertimeDeductionPerHour: field('undertimeDeductionPerHour'),
+      lateDeductionPerMinute: field('lateDeductionPerMinute'),
+      absenceDeductionPerDay: field('absenceDeductionPerDay'),
+      notifyOnPayslipReady: form.get('notifyOnPayslipReady') === 'on',
+    });
+    revalidatePath('/dashboard/payroll');
+    revalidatePath('/dashboard/payroll/settings');
+    return { success: result.saved
+      ? 'Payroll configuration saved. Your employee salary and attendance rates will be reused in eligible future cutoffs.'
+      : 'Payroll configuration is already saved. No changes were needed.' };
   } catch (error) { return failure(error); }
 }
 
