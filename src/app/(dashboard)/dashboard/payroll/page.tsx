@@ -48,7 +48,7 @@ export default async function PayrollPage({ searchParams }: { searchParams: Prom
   const notification = manage && period?.status === 'FINALIZED' ? await previewPayrollNotifications(scope) : null;
   const statutorySetupRows = manage && period && params.tab === 'configuration' ? await getPayrollStatutorySetup(scope) : [];
   const configurationCompensations = compensations.map(record => ({ ...record, baseRate: record.baseRate.toFixed(2) }));
-  const configurationPolicies = policies.map(policy => ({ id: policy.id, version: policy.version, effectiveFrom: policy.effectiveFrom, effectiveTo: policy.effectiveTo, status: policy.status, dailyPayBasis: policy.dailyPayBasis, lateDeductionRule: policy.lateDeductionRule, absenceDeductionRule: policy.absenceDeductionRule, undertimeDeductionRule: policy.undertimeDeductionRule, roundingRule: policy.roundingRule, createdBy: policy.createdBy }));
+  const configurationPolicies = policies.map(policy => ({ id: policy.id, version: policy.version, effectiveFrom: policy.effectiveFrom, effectiveTo: policy.effectiveTo, status: policy.status, dailyPayBasis: policy.dailyPayBasis, lateDeductionRule: policy.lateDeductionRule, absenceDeductionRule: policy.absenceDeductionRule, undertimeDeductionRule: policy.undertimeDeductionRule, roundingRule: policy.roundingRule, notifyEmployeesOnFinalization: policy.notifyEmployeesOnFinalization, createdBy: policy.createdBy }));
   const settings = params.tab === 'configuration';
   const setupRows = params.employee ? statutorySetupRows.filter(row => row.id === params.employee) : statutorySetupRows;
   const card = 'rounded-2xl border bg-white p-4 sm:p-6 space-y-4';
