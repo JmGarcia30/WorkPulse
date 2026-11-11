@@ -791,7 +791,6 @@ model Organization {
   payrollEntries          PayrollEntry[]
   payrollPolicies         OrganizationPayrollPolicy[]
   payrollLeaveTreatments  PayrollPolicyLeaveTreatment[]
-  payrollOvertimeApprovals PayrollOvertimeApproval[]
   payrollCompensationRevisions PayrollCompensationRevision[]
   branding                OrganizationBranding?
   brandingAudits          OrganizationBrandingAudit[]
@@ -859,7 +858,6 @@ model User {
   payrollNotificationsCreated PayrollNotification[] @relation("PayrollNotificationActor")
   payrollNotificationsReceived PayrollNotification[] @relation("PayrollNotificationRecipient")
   payrollInputRevisions PayrollInputRevision[]
-  payrollOvertimeApprovalsApproved PayrollOvertimeApproval[] @relation("PayrollOvertimeApprovalActor")
   payrollCompensationRevisions PayrollCompensationRevision[]
   separationCasesInitiated    EmployeeSeparationCase[]      @relation("SeparationInitiator")
   separationCasesCancelled    EmployeeSeparationCase[]      @relation("SeparationCanceller")
@@ -1428,7 +1426,6 @@ model EmployeeCompensation {
 
 model PayrollPeriod {
   inputRevisions PayrollInputRevision[]
-  overtimeApprovals PayrollOvertimeApproval[]
   statutoryInputs PayrollStatutoryInput[]
   id             String              @id @default(cuid())
   organizationId String
@@ -1518,26 +1515,6 @@ model PayrollInputRevision {
 }
 
 // Reviewed inputs are explicit; historical earnings/coverage are never guessed.
-model PayrollOvertimeApproval {
-  id String @id @default(cuid())
-  organizationId String
-  employeeId String
-  payrollPeriodId String
-  approvedHours Decimal @db.Decimal(8, 2)
-  hourlyRate Decimal @db.Decimal(12, 2)
-  approvalReference String @db.VarChar(300)
-  approvedById String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Restrict)
-  employee Employee @relation(fields: [employeeId, organizationId], references: [id, organizationId], onDelete: Restrict)
-  period PayrollPeriod @relation(fields: [payrollPeriodId, organizationId], references: [id, organizationId], onDelete: Restrict)
-  approvedBy User @relation("PayrollOvertimeApprovalActor", fields: [approvedById, organizationId], references: [id, organizationId], onDelete: Restrict)
-  @@unique([organizationId, employeeId, payrollPeriodId])
-  @@index([organizationId, payrollPeriodId])
-  @@index([approvedById, organizationId])
-}
-
 model PayrollCompensationRevision {
   id String @id @default(cuid())
   organizationId String
