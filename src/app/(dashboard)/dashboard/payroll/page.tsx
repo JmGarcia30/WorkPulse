@@ -48,7 +48,8 @@ export default async function PayrollPage({ searchParams }: { searchParams: Prom
   const notification = manage && period?.status === 'FINALIZED' ? await previewPayrollNotifications(scope) : null;
   const configurationCompensations = compensations.map(record => ({ ...record, baseRate: record.baseRate.toFixed(2) }));
   const configurationPolicies = policies.map(policy => ({ id: policy.id, version: policy.version, effectiveFrom: policy.effectiveFrom, effectiveTo: policy.effectiveTo, status: policy.status, dailyPayBasis: policy.dailyPayBasis, lateDeductionRule: policy.lateDeductionRule, absenceDeductionRule: policy.absenceDeductionRule, undertimeDeductionRule: policy.undertimeDeductionRule, roundingRule: policy.roundingRule, createdBy: policy.createdBy }));
-  const settings = params.tab === 'configuration' || params.tab === 'advanced';
+  const settings = params.tab === 'configuration' || params.tab === 'advanced'
+    || (manage && !params.tab && !params.period && !params.employee);
   const setupRows = params.employee ? readiness?.setup.filter(row => row.id === params.employee) ?? [] : readiness?.setup ?? [];
   const card = 'rounded-2xl border bg-white p-4 sm:p-6 space-y-4';
   const statutoryRows = selectedEntry?.breakdown ? [
@@ -93,7 +94,9 @@ export default async function PayrollPage({ searchParams }: { searchParams: Prom
       bir: !!row.input?.profile,
     }));
     return <div className="space-y-4 bg-[#FAF8F6] text-[#282934]">
-      <TenantLink className="inline-flex text-xs font-semibold underline underline-offset-2" href={`/dashboard/payroll?period=${period?.id ?? ''}`}>Back to Run Payroll</TenantLink>
+      <div className="flex items-center justify-end">
+        <TenantLink className="inline-flex items-center justify-center rounded-xl bg-[#282934] px-4 py-2.5 text-sm font-semibold text-white hover:bg-[#42444f]" href={`/dashboard/payroll?tab=run&period=${period?.id ?? ''}`}>Calculate Payroll <ChevronRight className="ml-2 h-4 w-4" aria-hidden="true" /></TenantLink>
+      </div>
       <PayrollSimpleConfiguration employees={employees} periods={simplePeriods} compensations={simpleCompensations} coverage={coverage} initialEmployeeId={params.employee} initialPeriodId={period?.id} />
     </div>;
   }
