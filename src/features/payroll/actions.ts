@@ -4,7 +4,7 @@ import { revalidatePath } from 'next/cache';
 import { requireBackOfficeContext } from '@/lib/auth/guards';
 import { canManagePayroll } from '@/lib/permissions/rbac';
 import { PayrollError } from './domain';
-import { createEmployeeCompensation, createPayrollPeriod, generatePayroll, deletePayrollPeriod } from './service';
+import { createEmployeeCompensation, updateEmployeeCompensation, createPayrollPeriod, generatePayroll, deletePayrollPeriod } from './service';
 import { createPayrollPolicy } from './policy';
 import { finalizePayrollPeriod, movePayrollPeriodToReview } from './review';
 import { savePayrollStatutoryInput, savePayrollTaxOpening } from './statutory-inputs';
@@ -98,6 +98,17 @@ export async function createCompensationAction(_state: PayrollActionState, formD
   } catch (error) { return failure(error); }
 }
 
+export async function updateCompensationAction(_state: PayrollActionState, formData: FormData): Promise<PayrollActionState> {
+  const user = await requireBackOfficeContext();
+  if (!canManagePayroll(user)) return { error: 'Unauthorized to manage payroll.' };
+  try {
+    await updateEmployeeCompensation({ organizationId: user.organizationId, actorUserId: user.userId, employeeId: String(formData.get('employeeId') ?? ''), compensationId: String(formData.get('compensationId') ?? ''), compensationType: String(formData.get('compensationType') ?? ''), baseRate: String(formData.get('baseRate') ?? ''), payFrequency: String(formData.get('payFrequency') ?? ''), currency: 'PHP', effectiveFrom: String(formData.get('effectiveFrom') ?? ''), reason: String(formData.get('reason') ?? '') });
+    revalidatePath('/dashboard/payroll');
+    revalidatePath('/dashboard/payroll/settings');
+    return { success: 'A new effective-dated compensation version was saved. Previous payroll history remains unchanged.' };
+  } catch (error) { return failure(error); }
+}
+
 export async function createPayrollPeriodAction(_state: PayrollActionState, formData: FormData): Promise<PayrollActionState> {
   const user = await requireBackOfficeContext();
   if (!canManagePayroll(user)) return { error: 'Unauthorized to manage payroll.' };
@@ -143,7 +154,7 @@ export async function createPayrollPolicyAction(_state: PayrollActionState, form
       lateDeductionRule: String(formData.get('lateDeductionRule') ?? ''), lateDeductionParameter: String(formData.get('lateDeductionParameter') ?? ''),
       absenceDeductionRule: String(formData.get('absenceDeductionRule') ?? ''), absenceDeductionParameter: String(formData.get('absenceDeductionParameter') ?? ''),
       undertimeDeductionRule: String(formData.get('undertimeDeductionRule') ?? ''), undertimeDeductionParameter: String(formData.get('undertimeDeductionParameter') ?? ''),
-      roundingRule: String(formData.get('roundingRule') ?? ''), leaveTreatments,
+      roundingRule: String(formData.get('roundingRule') ?? ''), leaveTreatments, notifyEmployeesOnFinalization: formData.get('notifyEmployeesOnFinalization') === 'true',
     });
     revalidatePath('/dashboard/payroll');
     revalidatePath('/dashboard/payroll/settings');
