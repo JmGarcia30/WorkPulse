@@ -59,8 +59,10 @@ jobs:
             assert.match(events[0]?.definition || '', /JOB_ARCHIVED/);
             assert.match(events[0]?.definition || '', /JOB_REUSED/);
             assert.equal(audit[0]?.tgenabled, 'O');
-            assert.equal(migrations.length, 2);
-            console.log('PASS: applicant archive schema, audit constraints and both November 11 migrations.');
+            const applied = new Set(migrations.map(row => row.migration_name));
+            assert(applied.has('20261111000100_job_lifecycle_audit_actions'));
+            assert(applied.has('20261111000200_application_soft_archive'));
+            console.log('PASS: applicant archive schema, audit constraints and required November 11 archive migrations.');
           })().catch(error => { console.error(error); process.exitCode = 1; }).finally(() => prisma.$disconnect());
           NODE
       - name: TypeScript validation
