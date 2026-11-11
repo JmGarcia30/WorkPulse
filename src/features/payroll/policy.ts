@@ -83,14 +83,27 @@ export async function createPayrollPolicy(input: CreatePayrollPolicyInput, db: P
   const absenceDeductionParameter = parseParameter(input.absenceDeductionParameter, absenceDeductionRule === AbsenceDeductionRule.FIXED_PER_ABSENCE, 'Absence deduction parameter');
   const undertimeDeductionParameter = parseParameter(input.undertimeDeductionParameter, undertimeDeductionRule !== UndertimeDeductionRule.NONE, 'Undertime deduction parameter');
 
-  const overlap = await db.organizationPayrollPolicy.findFirst({
-    where: {
-      organizationId: input.organizationId, status: PayrollPolicyStatus.ACTIVE,
-      effectiveFrom: { lte: effectiveTo ?? new Date('9999-12-31T00:00:00.000Z') },
-      OR: [{ effectiveTo: null }, { effectiveTo: { gte: effectiveFrom } }],
-    }, select: { id: true },
+  const nextDay = new Date(effectiveFrom.getTime() + 86_400_000);
+  const activePolicies = await db.organizationPayrollPolicy.findMany({
+    where: { organizationId: input.organizationId, status: PayrollPolicyStatus.ACTIVE },
+    orderBy: { effectiveFrom: 'desc' },
   });
-  if (overlap) throw new PayrollError('OVERLAPPING_POLICY', 'This policy period overlaps an active payroll policy version.');
+  const priorPolicy = activePolicies.find(item => item.effectiveFrom < effectiveFrom && (!item.effectiveTo || item.effectiveTo >= effectiveFrom));
+  const futureConflict = activePolicies.find(item => item.effectiveFrom >= effectiveFrom && (!effectiveTo || item.effectiveFrom <= effectiveTo));
+  if (futureConflict) throw new PayrollError('OVERLAPPING_POLICY', 'The new policy overlaps a policy version that already starts on or after this date.');
+  if (priorPolicy) {
+    const dependentEntry = await db.payrollEntry.findFirst({
+      where: { organizationId: input.organizationId, payrollPeriod: { periodEnd: { gte: effectiveFrom } } },
+      select: { id: true },
+    });
+    if (dependentEntry) throw new PayrollError('DEPENDENT_PAYROLL', 'A payroll entry already exists on or after this policy change date. Resolve that payroll before changing policy coverage.');
+    await db.organizationPayrollPolicy.update({ where: { id: priorPolicy.id }, data: { effectiveTo: new Date(effectiveFrom.getTime() - 86_400_000) } });
+  } else if (activePolicies.some(item => item.effectiveFrom >= effectiveFrom && (!item.effectiveTo || item.effectiveTo >= effectiveFrom))) {
+    throw new PayrollError('OVERLAPPING_POLICY', 'The new policy period overlaps an existing active policy.');
+  }
+  if (effectiveTo && activePolicies.some(item => item.effectiveFrom > effectiveFrom && item.effectiveFrom <= effectiveTo)) {
+    throw new PayrollError('OVERLAPPING_POLICY', 'The new policy end date overlaps a later active policy version.');
+  }
 
   const requestedTreatments = input.leaveTreatments ?? [];
   if (new Set(requestedTreatments.map(item => item.leaveTypeId)).size !== requestedTreatments.length) {
