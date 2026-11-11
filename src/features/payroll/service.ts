@@ -370,7 +370,7 @@ async function generateInTransaction(input: GeneratePayrollInput, db: Prisma.Tra
       attendanceSummary,
       // Additional display evidence: actual payroll monetary amounts remain authoritative.
       attendanceRateBasis: { absenceDailyRate: dailyRate?.toFixed(6) ?? null, overtimeHourlyRate: personalRates?.overtimePayPerHour.toFixed(2) ?? null, overtimeAmount: personalAmounts?.overtimePay.toFixed(2) ?? null },
-      attendanceEvidence: attendanceRequired ? payrollAttendanceEvidence(attendance) : null,
+      attendanceEvidence: attendanceRequired ? payrollAttendanceEvidence(attendance, personalRates ? 'v2' : 'v1') : null,
       leaveSummary,
       leaveEvidence: payrollLeaveEvidence(leaveDays),
     } satisfies Prisma.InputJsonObject;
