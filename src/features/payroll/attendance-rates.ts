@@ -17,6 +17,9 @@ export type AttendanceAdjustmentAmounts = {
 
 /**
  * Validates flat PHP attendance rates for monthly-paid employees.
+ * Reference: DOLE-NWPC Handbook on Workers Statutory Monetary Benefits (2024),
+ * ordinary-day overtime 125%; this assumes the 365-day monthly-paid basis.
+ * Other paid-day divisors and holiday premiums require separate HR review.
  * The statutory reference is the monthly-paid daily equivalent (12/365),
  * divided by eight hours; ordinary-workday overtime must be at least 125%.
  * Rest-day/holiday overtime is not covered by a single flat rate and must be
