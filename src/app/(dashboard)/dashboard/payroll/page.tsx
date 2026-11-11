@@ -114,7 +114,7 @@ export default async function PayrollPage({ searchParams }: { searchParams: Prom
         { label: 'BIR Withholding Tax', amount: focusedEntry.breakdown?.employee.bir ?? null },
       ],
       attendance: (focusedEntry.attendanceMoney ?? []).map(row => ({ ...row, kind: row.kind ?? 'deduction' })),
-      incentives: (focusedEntry.additionalEarnings ?? []).filter(row => row.kind !== 'OVERTIME').map(row => ({ label: row.description, amount: row.amount })),
+      incentives: (focusedEntry.additionalEarnings ?? []).filter(row => row.id !== 'AUTO_ATTENDANCE_OVERTIME').map(row => ({ label: row.description, amount: row.amount })),
     } : null;
     return <div className="space-y-4 bg-[#FAF8F6] text-[#282934]">
       <PayrollSimpleConfiguration
