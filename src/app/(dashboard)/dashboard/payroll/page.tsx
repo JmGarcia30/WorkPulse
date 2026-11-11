@@ -133,17 +133,17 @@ export default async function PayrollPage({ searchParams }: { searchParams: Prom
           <p className="mt-2 text-xs font-semibold text-[#494958]">{period.name} · {period.status} · {data.entries.length} calculated of {employees.length} eligible employees</p>
         </div>
         {period.status !== 'FINALIZED' && <div className="space-y-3">
+          {focusedEmployee && <details className="rounded-xl bg-[#faf8f6] p-4">
+            <summary className="cursor-pointer text-sm font-bold">1. Optional approved incentives for {focusedEmployee.firstName} {focusedEmployee.lastName}</summary>
+            <p className="mt-2 text-xs text-[#626271]">Add approved incentives before calculating. Existing tax classification and contribution validation remain enforced.</p>
+            <div className="mt-3">{focusedEarnings ? <PayrollIncentiveForm key={focusedEarnings.id + focusedEarnings.version} employee={focusedEarnings} periodId={period.id} /> :
+              <p className="text-xs text-amber-800">Incentives require verified employee statutory information. No incentive will be estimated or silently paid.</p>}</div>
+          </details>}
           <div className="rounded-xl bg-[#faf8f6] p-4">
-            <h3 className="text-sm font-bold">1. Calculate payroll</h3>
-            <p className="mt-1 text-xs text-[#626271]">Uses recorded attendance and saved statutory information. Calculating a cutoff is not finalization or payment.</p>
-            <PayrollGenerationForm periods={[period]} selectedPeriodId={period.id} employeeId={undefined} />
+            <h3 className="text-sm font-bold">2. Calculate payroll</h3>
+            <p className="mt-1 text-xs text-[#626271]">Uses recorded attendance and verified statutory information. Calculating a cutoff is not finalization or payment.</p>
+            <PayrollGenerationForm periods={[period]} selectedPeriodId={period.id} />
           </div>
-          {focusedEmployee && <div className="rounded-xl bg-[#faf8f6] p-4">
-            <h3 className="text-sm font-bold">2. Incentives for {focusedEmployee.firstName} {focusedEmployee.lastName}</h3>
-            <p className="mt-1 text-xs text-[#626271]">Optional. Add approved incentives before calculation. Existing incentive and contribution verification is preserved.</p>
-            {focusedEarnings ? <PayrollIncentiveForm key={focusedEarnings.id + focusedEarnings.version} employee={focusedEarnings} periodId={period.id} /> :
-              <p className="mt-3 text-xs text-amber-800">Incentives require verified employee statutory information. No incentive will be estimated or silently paid.</p>}
-          </div>}
           {review && <div className="rounded-xl bg-[#faf8f6] p-4">
             <h3 className="text-sm font-bold">3. Review &amp; Finalize</h3>
             <p className="mt-1 text-xs text-[#626271]">Finalization publishes employee payslips in ESS / My Payroll. It applies to the entire cutoff, not just the selected employee.</p>
