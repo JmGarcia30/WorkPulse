@@ -12,7 +12,7 @@ import { statutoryPayloadFromForm, openingBalancesFromForm } from './setup-form'
 import { reusePayrollSetup } from './reuse';
 import { saveStandardPayrollProfile } from './standard-profile';
 import { changePayrollEarning } from './earnings';
-import { notifyPayrollEmployees } from './notifications';
+import { notifyPayrollEmployees, notifyPayrollEmployeesIfConfigured } from './notifications';
 
 export async function changePayrollEarningAction(_state: PayrollActionState, form: FormData): Promise<PayrollActionState> {
   const user = await requireBackOfficeContext();
@@ -177,14 +177,22 @@ export async function finalizePayrollAction(_state: PayrollActionState, formData
   const user = await requireBackOfficeContext();
   if (!canManagePayroll(user)) return { error: 'Unauthorized to finalize payroll.' };
   try {
+    const payrollPeriodId = String(formData.get('payrollPeriodId') ?? '');
     await finalizePayrollPeriod({
       organizationId: user.organizationId, actorUserId: user.userId,
-      payrollPeriodId: String(formData.get('payrollPeriodId') ?? ''), confirmation: String(formData.get('confirmation') ?? ''),
+      payrollPeriodId, confirmation: String(formData.get('confirmation') ?? ''),
     });
+    let notificationNote = '';
+    try {
+      const result = await notifyPayrollEmployeesIfConfigured({ organizationId: user.organizationId, actorUserId: user.userId, payrollPeriodId });
+      if (result.enabled) notificationNote = ` ${result.created} employee notification(s) created automatically.`;
+    } catch {
+      notificationNote = ' Payslips were finalized; automatic notification needs HR attention.';
+    }
     revalidatePath('/dashboard/payroll');
     revalidatePath('/dashboard/payroll/settings');
     revalidatePath('/employee/payroll');
-    return { success: 'Payroll finalized and locked.' };
+    return { success: 'Payroll finalized and locked.' + notificationNote };
   } catch (error) { return failure(error); }
 }
 
