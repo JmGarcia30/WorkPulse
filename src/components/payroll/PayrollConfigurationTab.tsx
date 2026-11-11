@@ -5,6 +5,7 @@ import type { PayrollStatutorySetupRow } from '@/features/payroll/setup-queries'
 import { PayrollStatutorySetupPanel, TaxOpening } from './PayrollStatutorySetupPanel';
 import { PayrollReuseSetup } from './PayrollReuseSetup';
 import { StandardPayrollProfile } from './StandardPayrollProfile';
+import { PayrollOvertimeApprovalForm } from './PayrollOvertimeApprovalForm';
 import { CompensationForm, CompensationUpdateForm, PayrollPeriodForm, PayrollPolicyForm } from './PayrollSetupForms';
 import { formatPayrollDate } from '@/features/payroll/formatters';
 import { CalendarDays, UserRound, Wallet, ShieldCheck, Clock3, Bell, FileText } from 'lucide-react';
@@ -26,6 +27,7 @@ interface Props {
   currentPolicy: PolicyItem | null; leaveTypes: LeaveTypeItem[];
   statutorySetup?: PayrollStatutorySetupRow[] | null;
   selectedPeriod?: { id: string; name: string; payDate: Date; periodStart?: Date; periodEnd?: Date } | null;
+  payrollEntryExists?: boolean;
   selectedEmployeeId?: string;
 }
 
@@ -33,7 +35,7 @@ const card = 'rounded-2xl border border-[#e7e5e2] bg-white p-5 shadow-sm';
 const label = 'mb-1 block text-xs font-semibold text-[#424452]';
 const input = 'w-full rounded-xl border border-[#deddd9] bg-white px-3 py-2.5 text-sm text-[#282934] outline-none focus:border-[#282934]';
 
-export function PayrollConfigurationTab({ employees, compensations, policies, currentPolicy, leaveTypes, statutorySetup, selectedPeriod, selectedEmployeeId }: Props) {
+export function PayrollConfigurationTab({ employees, compensations, policies, currentPolicy, leaveTypes, statutorySetup, selectedPeriod, selectedEmployeeId, payrollEntryExists = false }: Props) {
   const [employeeId, setEmployeeId] = useState(selectedEmployeeId ?? employees[0]?.id ?? '');
   const selected = employees.find(row => row.id === employeeId);
   const compensation = compensations.find(row => row.employeeId === employeeId && row.status === 'ACTIVE');
@@ -68,7 +70,8 @@ export function PayrollConfigurationTab({ employees, compensations, policies, cu
       <section className={card}>
         <div className="mb-3 flex items-center gap-3"><span className="rounded-xl bg-blue-50 p-3 text-blue-700"><Clock3 className="h-5 w-5"/></span><div><h2 className="font-bold">Attendance Rules</h2><p className="text-xs text-slate-500">Set monetary values in Philippine pesos, not percentages.</p></div></div>
         {currentPolicy && <div className="mb-3 rounded-xl bg-slate-50 p-3 text-xs"><p className="font-semibold">Active policy · Version {currentPolicy.version}</p><p className="mt-1 text-slate-500">Effective {formatPayrollDate(currentPolicy.effectiveFrom)}{currentPolicy.effectiveTo ? ' – '+formatPayrollDate(currentPolicy.effectiveTo) : ' onward'} · Notifications {('notifyEmployeesOnFinalization' in currentPolicy && currentPolicy.notifyEmployeesOnFinalization) ? 'on' : 'off'}</p></div>}<PayrollPolicyForm leaveTypes={leaveTypes} compact/>
-        <p className="mt-3 text-xs text-slate-500">Late and undertime amounts are configured per minute; absence is configured per day or per occurrence. Overtime is currently recorded as an approved earning in the payroll period, not as an automatic hourly-rate policy. I have not displayed a non-functional overtime-rate control.</p>
+        <p className="mt-3 text-xs text-slate-500">Late and undertime amounts are configured per minute; absence is configured per day or per occurrence. Overtime is added only when HR records an approved amount and supporting evidence.</p>
+        {setup?.input && selectedPeriod && <details className="mt-3 border-t pt-3"><summary className="cursor-pointer text-sm font-semibold">Add approved overtime</summary><PayrollOvertimeApprovalForm employeeId={employeeId} periodId={selectedPeriod.id} expectedVersion={setup.input ? setup.inputVersion ?? '' : ''} input={{monthlySssRemuneration: setup.input.monthlySssRemuneration, monthlyPagIbigFundSalary: setup.input.monthlyPagIbigFundSalary}} hasEntry={payrollEntryExists}/></details>}
       </section>
 
       <section className={card}>
