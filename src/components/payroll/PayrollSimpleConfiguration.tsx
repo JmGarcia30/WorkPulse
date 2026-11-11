@@ -171,7 +171,11 @@ export function PayrollSimpleConfiguration({ employees, periods, compensations, 
   const savedCalculation = isFocused ? calculation : null;
   const rate = (value: string, unit: TimeUnit) => peso(value) + (unit === 'hour' ? '/hr' : '/min');
   const moneyRows = savedCalculation?.attendance ?? [];
-  const money = (value: string | null) => value ? peso(value) : '—';
+  const money = (value: string | null) => {
+    if (!value) return '—';
+    if (/^₱\s*[\d,]+\.\d{2}$/.test(value)) return value;
+    return peso(value);
+  };
 
   return <div className="space-y-5 text-[#282934]">
     <header><h1 className="text-2xl font-bold tracking-tight sm:text-3xl">Payroll Configuration</h1><p className="mt-1 text-sm text-[#626271]">Set up the payroll details, salary, deductions, and attendance rules.</p></header>
