@@ -28,6 +28,7 @@ interface Props {
   statutorySetup?: Array<PayrollStatutorySetupRow & { inputVersion: string }> | null;
   selectedPeriod?: { id: string; name: string; payDate: Date; periodStart?: Date; periodEnd?: Date } | null;
   payrollEntryExists?: boolean;
+  compensationRevisions?: Array<{ id: string; reason: string; createdAt: Date; actor: { name: string } }>;
   selectedEmployeeId?: string;
 }
 
@@ -35,7 +36,7 @@ const card = 'rounded-2xl border border-[#e7e5e2] bg-white p-5 shadow-sm';
 const label = 'mb-1 block text-xs font-semibold text-[#424452]';
 const input = 'w-full rounded-xl border border-[#deddd9] bg-white px-3 py-2.5 text-sm text-[#282934] outline-none focus:border-[#282934]';
 
-export function PayrollConfigurationTab({ employees, compensations, policies, currentPolicy, leaveTypes, statutorySetup, selectedPeriod, selectedEmployeeId, payrollEntryExists = false }: Props) {
+export function PayrollConfigurationTab({ employees, compensations, policies, currentPolicy, leaveTypes, statutorySetup, selectedPeriod, selectedEmployeeId, payrollEntryExists = false, compensationRevisions = [] }: Props) {
   const [employeeId, setEmployeeId] = useState(selectedEmployeeId ?? employees[0]?.id ?? '');
   const selected = employees.find(row => row.id === employeeId);
   const compensation = compensations.find(row => row.employeeId === employeeId && row.status === 'ACTIVE');
@@ -58,7 +59,7 @@ export function PayrollConfigurationTab({ employees, compensations, policies, cu
         <div className="mb-3 flex items-center gap-3"><span className="rounded-xl bg-amber-50 p-3 text-amber-600"><Wallet className="h-5 w-5"/></span><div><h2 className="font-bold">Base Salary</h2><p className="text-xs text-slate-500">Monthly salary of the selected employee.</p></div></div>
         {compensation ? <div className="mb-3 rounded-xl bg-slate-50 p-3 text-sm"><span className="text-xs text-slate-500">Current monthly base salary</span><p className="text-xl font-bold">{money(compensation.baseRate)}</p><p className="text-xs text-slate-500">Effective {formatPayrollDate(compensation.effectiveFrom)}{compensation.effectiveTo ? ' to '+formatPayrollDate(compensation.effectiveTo) : ' onward'}</p></div> : <p className="mb-3 text-xs text-amber-800">No active salary record covers this employee yet.</p>}
         {selected && !compensation && <CompensationForm employees={[selected]} profiles={setup ? [setup] : []} selectedEmployeeId={selected.id}/>}{selected && compensation && <CompensationUpdateForm employeeId={selected.id} compensation={compensation}/>}
-      </section>
+      {compensationRevisions.length > 0 && <details className="mt-3 rounded-xl border bg-white p-3"><summary className="cursor-pointer text-xs font-semibold">Salary change history ({compensationRevisions.length})</summary><ul className="mt-3 space-y-2">{compensationRevisions.map(item => <li key={item.id} className="border-t pt-2 text-xs"><p className="font-semibold">{item.reason}</p><p className="mt-1 text-slate-500">{item.actor.name} · {formatPayrollDate(item.createdAt)}</p></li>)}</ul></details>}</section>
 
       <section className={card}>
         <div className="mb-3 flex items-center gap-3"><span className="rounded-xl bg-violet-50 p-3 text-violet-700"><ShieldCheck className="h-5 w-5"/></span><div><h2 className="font-bold">PH Statutory Deductions</h2><p className="text-xs text-slate-500">Mandatory deductions are calculated using verified employee details and current statutory rules.</p></div></div>
