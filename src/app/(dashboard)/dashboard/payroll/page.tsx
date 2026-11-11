@@ -93,11 +93,81 @@ export default async function PayrollPage({ searchParams }: { searchParams: Prom
       pagIbig: row.input?.coverage.PAGIBIG.status === 'MANDATORY' || row.input?.coverage.PAGIBIG.status === 'EXEMPT',
       bir: !!row.input?.profile,
     }));
+    const focusedEmployee = employees.find(row => row.id === params.employee) ?? employees[0] ?? null;
+    const focusedEntry = focusedEmployee ? data.entries.find(row => row.employeeId === focusedEmployee.id) ?? null : null;
+    const focusedEarnings = focusedEmployee ? earningsEmployees.find(row => row.id === focusedEmployee.id) ?? null : null;
+    const recordedDays = focusedEmployee && period ? await prisma.dailyAttendanceRecord.findMany({
+      where: { organizationId: user.organizationId, employeeId: focusedEmployee.id, attendanceDate: { gte: period.periodStart, lte: period.periodEnd } },
+      select: { attendanceDate: true, attendanceStatus: true, disposition: true, lateSeconds: true, undertimeSeconds: true, overtimeSeconds: true },
+      orderBy: { attendanceDate: 'asc' },
+    }) : [];
+    const calculation = focusedEntry ? {
+      status: focusedEntry.status,
+      base: focusedEntry.baseAmountFormatted,
+      gross: focusedEntry.grossAmountFormatted,
+      totalDeductions: focusedEntry.totalDeductionsFormatted,
+      net: focusedEntry.netAmountFormatted,
+      statutory: [
+        { label: 'SSS', amount: focusedEntry.breakdown?.employee.sss ?? null },
+        { label: 'PhilHealth', amount: focusedEntry.breakdown?.employee.philHealth ?? null },
+        { label: 'Pag-IBIG', amount: focusedEntry.breakdown?.employee.pagIbig ?? null },
+        { label: 'BIR Withholding Tax', amount: focusedEntry.breakdown?.employee.bir ?? null },
+      ],
+      attendance: (focusedEntry.attendanceMoney ?? []).map(row => ({ ...row, kind: row.kind ?? 'deduction' })),
+      incentives: (focusedEntry.additionalEarnings ?? []).filter(row => row.kind !== 'OVERTIME').map(row => ({ label: row.description, amount: row.amount })),
+    } : null;
     return <div className="space-y-4 bg-[#FAF8F6] text-[#282934]">
-      <div className="flex items-center justify-end">
-        <TenantLink className="inline-flex items-center justify-center rounded-xl bg-[#282934] px-4 py-2.5 text-sm font-semibold text-white hover:bg-[#42444f]" href={`/dashboard/payroll?tab=run&period=${period?.id ?? ''}`}>Calculate Payroll <ChevronRight className="ml-2 h-4 w-4" aria-hidden="true" /></TenantLink>
-      </div>
-      <PayrollSimpleConfiguration employees={employees} periods={simplePeriods} compensations={simpleCompensations} coverage={coverage} initialEmployeeId={params.employee} initialPeriodId={period?.id} />
+      <PayrollSimpleConfiguration
+        employees={employees} periods={simplePeriods} compensations={simpleCompensations} coverage={coverage}
+        initialEmployeeId={focusedEmployee?.id} initialPeriodId={period?.id} calculation={calculation}
+        attendanceDays={recordedDays.map(day => ({
+          date: day.attendanceDate.toISOString().slice(0, 10),
+          status: day.attendanceStatus, disposition: day.disposition,
+          lateSeconds: day.lateSeconds ?? 0, undertimeSeconds: day.undertimeSeconds ?? 0, overtimeSeconds: day.overtimeSeconds ?? 0,
+        }))}
+      />
+      {period && <section className="space-y-4 rounded-2xl border border-[#e6e5e4] bg-white p-4 sm:p-5" aria-labelledby="complete-payroll">
+        <div>
+          <h2 id="complete-payroll" className="text-lg font-bold">Calculate &amp; Send Payroll</h2>
+          <p className="mt-1 text-xs text-[#626271]">Everything stays on this screen. Save employee rates above, calculate this cutoff, check the exact breakdown, finalize the period, and notify the employee.</p>
+          <p className="mt-2 text-xs font-semibold text-[#494958]">{period.name} · {period.status} · {data.entries.length} calculated of {employees.length} eligible employees</p>
+        </div>
+        {period.status !== 'FINALIZED' && <div className="space-y-3">
+          <div className="rounded-xl bg-[#faf8f6] p-4">
+            <h3 className="text-sm font-bold">1. Calculate payroll</h3>
+            <p className="mt-1 text-xs text-[#626271]">Uses recorded attendance and saved statutory information. Calculating a cutoff is not finalization or payment.</p>
+            <PayrollGenerationForm periods={[period]} selectedPeriodId={period.id} employeeId={undefined} />
+          </div>
+          {focusedEmployee && <div className="rounded-xl bg-[#faf8f6] p-4">
+            <h3 className="text-sm font-bold">2. Incentives for {focusedEmployee.firstName} {focusedEmployee.lastName}</h3>
+            <p className="mt-1 text-xs text-[#626271]">Optional. Add approved incentives before calculation. Existing incentive and contribution verification is preserved.</p>
+            {focusedEarnings ? <PayrollIncentiveForm key={focusedEarnings.id + focusedEarnings.version} employee={focusedEarnings} periodId={period.id} /> :
+              <p className="mt-3 text-xs text-amber-800">Incentives require verified employee statutory information. No incentive will be estimated or silently paid.</p>}
+          </div>}
+          {review && <div className="rounded-xl bg-[#faf8f6] p-4">
+            <h3 className="text-sm font-bold">3. Review &amp; Finalize</h3>
+            <p className="mt-1 text-xs text-[#626271]">Finalization publishes employee payslips in ESS / My Payroll. It applies to the entire cutoff, not just the selected employee.</p>
+            {review.issues.length > 0 && <div role="alert" className="mt-3 rounded-lg bg-amber-50 p-3 text-xs text-amber-900">
+              <p className="font-bold">{review.issues.length} item(s) need attention before finalization.</p>
+              <ul className="mt-2 list-disc pl-4">{review.issues.slice(0, 10).map((issue, i) => <li key={i}>{issue.employeeName ? issue.employeeName + ': ' : ''}{issue.message}</li>)}</ul>
+            </div>}
+            <PayrollReviewControls periodId={period.id} periodLabel={period.name} status={period.status} canFinalize={review.canFinalize} hasEntries={data.entries.length > 0} />
+          </div>}
+        </div>}
+        {period.status === 'FINALIZED' && <div className="space-y-3 rounded-xl bg-[#eefaf1] p-4">
+          <h3 className="text-sm font-bold text-emerald-900">Finalized Payslips Are Available in ESS</h3>
+          <p className="text-xs text-emerald-900">Each employee with access can open ESS → My Payroll, regardless of whether a notification is sent.</p>
+          {notification && <div className="rounded-xl bg-white p-4">
+            <h3 className="mb-2 text-sm font-bold">4. Send Payslip Notification</h3>
+            <PayrollNotifyForm periodId={period.id} token={notification.token} recipients={notification.recipients} skipped={notification.skipped} employeeId={focusedEmployee?.id} />
+          </div>}
+        </div>}
+        {focusedEmployee && <div className="flex flex-wrap gap-3 text-xs font-semibold">
+          <TenantLink className="underline underline-offset-2" href={`/dashboard/payroll/reports/employee?period=${period.id}&employee=${focusedEmployee.id}`}>View employee calculation report</TenantLink>
+          {focusedEntry?.canViewPayslip && <TenantLink className="underline underline-offset-2" href={`/dashboard/payroll/payslips/${focusedEntry.id}`}>View finalized payslip</TenantLink>}
+        </div>}
+      </section>}
+      {!period && <div className="rounded-xl border bg-white p-4"><p className="text-sm">No payroll period exists. Choose or create a cutoff before calculating payroll.</p><PayrollPeriodForm /></div>}
     </div>;
   }
 
