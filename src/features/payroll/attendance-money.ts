@@ -11,7 +11,8 @@ const seconds = (value: unknown): number | null =>
   typeof value === 'number' && Number.isFinite(value) && value >= 0 ? value : null;
 
 export type PayrollAttendanceMoneyRow = {
-  label: 'Late' | 'Undertime' | 'Unpaid absence';
+  label: 'Overtime' | 'Late' | 'Undertime' | 'Unpaid absence';
+  kind?: 'earning' | 'deduction';
   quantity: string | null;
   unit: string;
   rate: string | null;
@@ -32,15 +33,16 @@ export function payrollAttendanceMoney(value: unknown): PayrollAttendanceMoneyRo
   const minuteQuantity = (n: number | null) => n === null ? null : (n / 60).toFixed(2).replace(/\.00$/, '');
   const ruleRow = (label: PayrollAttendanceMoneyRow['label'], rule: string, saved: Shape, occurrence: number | null, duration: number | null): PayrollAttendanceMoneyRow => {
     const perMinute = rule === 'PER_MINUTE';
+    const perHour = rule === 'PER_HOUR';
     const fixed = rule === 'FIXED_PER_OCCURRENCE';
     return {
       label,
-      quantity: perMinute ? minuteQuantity(duration) : fixed ? (occurrence === null ? null : String(occurrence)) : null,
-      unit: perMinute ? 'minutes' : fixed ? 'occurrences' : '',
-      rate: perMinute || fixed ? money(saved.parameter) : null,
-      rateUnit: perMinute ? 'per minute' : fixed ? 'per occurrence' : null,
+      quantity: perMinute ? minuteQuantity(duration) : perHour ? (duration === null ? null : (duration / 3600).toFixed(2)) : fixed ? (occurrence === null ? null : String(occurrence)) : null,
+      unit: perMinute ? 'minutes' : perHour ? 'hours' : fixed ? 'occurrences' : '',
+      rate: perMinute || perHour || fixed ? money(saved.parameter) : null,
+      rateUnit: perMinute ? 'per minute' : perHour ? 'per hour' : fixed ? 'per occurrence' : null,
       amount: money(saved.amount),
-      method: rule === 'NONE' ? 'Not deducted under policy' : perMinute ? 'Time recorded by attendance' : fixed ? 'Policy amount per occurrence' : 'Details not recorded',
+      method: rule === 'NONE' ? 'Not deducted under policy' : perMinute || perHour ? 'Time recorded by attendance' : fixed ? 'Policy amount per occurrence' : 'Details not recorded',
     };
   };
   const lateRow = ruleRow('Late', lateRule, late, count(attendance.lateOccurrences), seconds(attendance.lateSeconds));
@@ -59,5 +61,17 @@ export function payrollAttendanceMoney(value: unknown): PayrollAttendanceMoneyRo
       : absenceRule === 'DAILY_RATE_PER_ABSENT_DAY' ? 'Verified daily pay basis'
         : absenceRule === 'FIXED_PER_ABSENCE' ? 'Policy amount per absence' : 'Details not recorded',
   };
-  return [lateRow, undertimeRow, absenceRow];
+  const overtimeSeconds = seconds(attendance.overtimeSeconds);
+  const overtimeAmount = money(rates.overtimeAmount);
+  const overtimeRow: PayrollAttendanceMoneyRow = {
+    label: 'Overtime',
+    kind: 'earning',
+    quantity: overtimeSeconds === null ? null : (overtimeSeconds / 3600).toFixed(2),
+    unit: 'hours',
+    rate: money(rates.overtimeHourlyRate),
+    rateUnit: 'per hour',
+    amount: overtimeAmount,
+    method: 'Overtime from verified attendance records',
+  };
+  return overtimeAmount !== null ? [overtimeRow, lateRow, undertimeRow, absenceRow] : [lateRow, undertimeRow, absenceRow];
 }
