@@ -2,7 +2,7 @@
 
 import { useActionState, useState } from 'react';
 import type { PayrollStatutorySetupRow } from '@/features/payroll/setup-queries';
-import { createCompensationAction, createPayrollPeriodAction, createPayrollPolicyAction, finalizePayrollAction, generatePayrollAction, movePayrollToReviewAction, type PayrollActionState } from '@/features/payroll/actions';
+import { createCompensationAction, updateCompensationAction, createPayrollPeriodAction, createPayrollPolicyAction, finalizePayrollAction, generatePayrollAction, movePayrollToReviewAction, type PayrollActionState } from '@/features/payroll/actions';
 
 const initialState: PayrollActionState = {};
 
@@ -32,6 +32,21 @@ export function CompensationForm({ employees, profiles = [], selectedEmployeeId 
       <a href="#advanced-payroll" className="font-semibold underline">Review coverage, classification and evidence</a>
     </div>
     <button disabled={pending || employees.length === 0} className="self-end rounded-xl bg-slate-900 px-4 py-2.5 text-xs font-bold text-white disabled:opacity-50">{pending ? 'Saving…' : 'Save compensation profile'}</button>
+  </form>;
+}
+
+export function CompensationUpdateForm({ employeeId, compensation }: { employeeId: string; compensation: { id: string; compensationType: string; baseRate: string; payFrequency: string } }) {
+  const [state, action, pending] = useActionState(updateCompensationAction, initialState);
+  return <form action={action} className="mt-3 grid gap-3 rounded-xl border border-slate-200 bg-white p-3 sm:grid-cols-2">
+    <input type="hidden" name="employeeId" value={employeeId}/><input type="hidden" name="compensationId" value={compensation.id}/>
+    <p className="text-xs font-semibold sm:col-span-2">Change salary (creates a new effective-dated version)</p>
+    <label className="grid gap-1 text-xs font-semibold">Compensation type<select name="compensationType" defaultValue={compensation.compensationType} className="rounded-xl border px-3 py-2.5"><option value="MONTHLY">Monthly</option><option value="DAILY">Daily</option></select></label>
+    <label className="grid gap-1 text-xs font-semibold">New base rate (₱)<input name="baseRate" type="number" min="0.01" step="0.01" defaultValue={compensation.baseRate} required className="rounded-xl border px-3 py-2.5"/></label>
+    <label className="grid gap-1 text-xs font-semibold">Pay frequency<select name="payFrequency" defaultValue={compensation.payFrequency} className="rounded-xl border px-3 py-2.5"><option value="MONTHLY">Monthly</option><option value="SEMI_MONTHLY">Semi-monthly</option><option value="BIWEEKLY">Biweekly</option><option value="WEEKLY">Weekly</option><option value="ANNUAL">Annual</option></select></label>
+    <label className="grid gap-1 text-xs font-semibold">Effective from<input name="effectiveFrom" type="date" required className="rounded-xl border px-3 py-2.5"/></label>
+    <label className="grid gap-1 text-xs font-semibold sm:col-span-2">Reason for salary change<input name="reason" minLength={5} maxLength={500} required placeholder="Approved salary adjustment / promotion" className="rounded-xl border px-3 py-2.5"/></label>
+    <div className="sm:col-span-2"><StatusMessage state={state}/></div>
+    <button disabled={pending} className="rounded-xl bg-[#282934] px-4 py-2.5 text-xs font-bold text-white sm:col-span-2">{pending ? 'Saving…' : 'Save Salary Change'}</button>
   </form>;
 }
 
@@ -89,6 +104,7 @@ export function PayrollPolicyForm({ leaveTypes, compact = false }: { leaveTypes:
     <label className="grid gap-1 text-xs font-semibold">Undertime deduction<select name="undertimeDeductionRule" value={undertimeRule} onChange={event => setUndertimeRule(event.target.value)} className={selectClass}><option value="NONE">None</option><option value="PER_MINUTE">Per minute</option><option value="FIXED_PER_OCCURRENCE">Fixed per occurrence</option></select></label>
     <label className="grid gap-1 text-xs font-semibold">Undertime deduction (₱ per minute)<input name="undertimeDeductionParameter" type="number" min="0.0001" step="0.0001" required={undertimeRule !== 'NONE'} disabled={undertimeRule === 'NONE'} className={selectClass} /></label>
     <label className="grid gap-1 text-xs font-semibold">Rounding<select name="roundingRule" className={selectClass}><option value="STANDARD_2_DECIMAL">Standard 2 decimal</option></select></label>
+    <label className="flex items-start gap-2 rounded-xl border bg-white p-3 text-xs md:col-span-2 xl:col-span-3"><input type="checkbox" name="notifyEmployeesOnFinalization" value="true" className="mt-0.5"/><span><strong>Automatically notify employees after payroll finalization</strong><span className="mt-1 block font-normal text-slate-500">Creates an in-app ESS notification after the payslip is finalized. The payslip is available in ESS even if this is off.</span></span></label>
     {leaveTypes.length && !compact ? <fieldset className="grid gap-3 rounded-xl border bg-white p-3 md:col-span-2 xl:col-span-3"><legend className="px-1 text-xs font-bold">Leave payroll treatment</legend><div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">{leaveTypes.map(type => <label key={type.id} className="grid gap-1 text-xs font-semibold">{type.name} <span className="font-normal text-slate-500">({type.code})</span><select name={`leaveTreatment:${type.id}`} defaultValue={type.code.toUpperCase() === 'STUDY' ? 'UNPAID' : type.isPaid ? 'PAID' : 'UNPAID'} className={selectClass} disabled={type.code.toUpperCase() === 'STUDY'}><option value="PAID">Paid</option><option value="UNPAID">Unpaid</option><option value="NO_PAYROLL_EFFECT">No payroll effect</option></select>{type.code.toUpperCase() === 'STUDY' ? <input type="hidden" name={`leaveTreatment:${type.id}`} value="UNPAID" /> : null}</label>)}</div></fieldset> : null}
     <button disabled={pending} className="rounded-xl bg-slate-900 px-4 py-2.5 text-xs font-bold text-white md:col-span-2 xl:col-span-3">{pending ? 'Saving…' : compact ? 'Save Attendance Rules' : 'Create Policy Version'}</button>
   </form>;
