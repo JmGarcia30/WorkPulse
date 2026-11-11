@@ -135,7 +135,7 @@ async function assessPeriod(organizationId: string, payrollPeriodId: string, db:
     if (period.status !== PayrollPeriodStatus.FINALIZED && snapshot.calculation?.attendanceAffectsPay) {
       const attendance = await db.dailyAttendanceRecord.findMany({
         where: { organizationId, employeeId: employee.id, attendanceDate: { gte: period.periodStart, lte: period.periodEnd } },
-        select: { attendanceDate: true, attendanceStatus: true, disposition: true, lateSeconds: true, undertimeSeconds: true },
+        select: { attendanceDate: true, attendanceStatus: true, disposition: true, lateSeconds: true, undertimeSeconds: true, overtimeSeconds: true },
         orderBy: { attendanceDate: 'asc' },
       });
       const issue = attendanceReadinessIssue(attendance, inclusiveCalendarDays(period.periodStart, period.periodEnd));
