@@ -83,7 +83,6 @@ export async function createPayrollPolicy(input: CreatePayrollPolicyInput, db: P
   const absenceDeductionParameter = parseParameter(input.absenceDeductionParameter, absenceDeductionRule === AbsenceDeductionRule.FIXED_PER_ABSENCE, 'Absence deduction parameter');
   const undertimeDeductionParameter = parseParameter(input.undertimeDeductionParameter, undertimeDeductionRule !== UndertimeDeductionRule.NONE, 'Undertime deduction parameter');
 
-  const nextDay = new Date(effectiveFrom.getTime() + 86_400_000);
   const activePolicies = await db.organizationPayrollPolicy.findMany({
     where: { organizationId: input.organizationId, status: PayrollPolicyStatus.ACTIVE },
     orderBy: { effectiveFrom: 'desc' },
