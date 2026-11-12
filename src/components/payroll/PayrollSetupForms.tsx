@@ -24,9 +24,17 @@ export function usePayrollFormConfirmation() {
   const confirm = () => {
     const form = formRef.current;
     if (!form) return;
+
+    // requestSubmit() dispatches the submit event synchronously when native
+    // validation passes. Always clear the bypass flag afterward: if browser
+    // validation blocks submission, no submit event runs to clear it.
     confirmedRef.current = true;
-    setIsOpen(false);
-    form.requestSubmit();
+    try {
+      form.requestSubmit();
+    } finally {
+      confirmedRef.current = false;
+      setIsOpen(false);
+    }
   };
 
   return {
