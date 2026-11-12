@@ -1,10 +1,11 @@
 'use client';
 
 import { useActionState, useState } from 'react';
+import { ConfirmationDialog } from '@/components/ui/ConfirmationDialog';
 import { saveStatutorySetupAction, saveTaxOpeningAction } from '@/features/payroll/actions';
 import type { PayrollStatutorySetupRow } from '@/features/payroll/setup-queries';
 import type { StatutoryPayrollInput } from '@/features/payroll/statutory-inputs';
-import { StatusMessage } from './PayrollSetupForms';
+import { StatusMessage, usePayrollFormConfirmation } from './PayrollSetupForms';
 
 const inputClass = 'min-w-0 w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-xs font-normal';
 const buttonClass = 'rounded-xl bg-slate-900 px-4 py-2.5 text-xs font-bold text-white disabled:opacity-50';
@@ -23,6 +24,7 @@ function CoverageField({ agency, saved }: { agency: 'SSS' | 'PHILHEALTH' | 'PAGI
 
 function PeriodInputs({ row, periodId }: { row: PayrollStatutorySetupRow; periodId: string }) {
   const [state, action, pending] = useActionState(saveStatutorySetupAction, {});
+  const confirmation = usePayrollFormConfirmation();
   const values = row.input ?? row.reusable?.payload;
   const [earnings, setEarnings] = useState<StatutoryPayrollInput['additionalEarnings']>(values?.additionalEarnings ?? []);
   const [deductions, setDeductions] = useState<StatutoryPayrollInput['otherNetDeductions']>(values?.otherNetDeductions ?? []);
@@ -33,7 +35,8 @@ function PeriodInputs({ row, periodId }: { row: PayrollStatutorySetupRow; period
   });
   const edit = (key: keyof typeof fields, value: string) => setFields(current => ({ ...current, [key]: value }));
   // A validation response must not reset the employee's reviewed input values.
-  return <form action={action} aria-busy={pending} onReset={event => event.preventDefault()} onSubmit={event => { if (!window.confirm('Save these reviewed statutory inputs for this employee and payroll period? They become locked when payroll is generated.')) event.preventDefault(); }} className="space-y-4">
+  return <>
+    <form ref={confirmation.formRef} action={action} aria-busy={pending} onReset={event => event.preventDefault()} onSubmit={confirmation.handleSubmit} className="space-y-4">
     {pending ? <p role="status" className="text-xs text-slate-600">Saving reviewed statutory inputs…</p> : <StatusMessage state={state} />}<input type="hidden" name="employeeId" value={row.id} /><input type="hidden" name="payrollPeriodId" value={periodId} />
     <input type="hidden" name="additionalEarnings" value={JSON.stringify(earnings)} /><input type="hidden" name="otherNetDeductions" value={JSON.stringify(deductions)} />
     <fieldset disabled={pending || row.inputLocked} className="min-w-0 space-y-4 disabled:opacity-70">
@@ -58,14 +61,29 @@ function PeriodInputs({ row, periodId }: { row: PayrollStatutorySetupRow; period
       ] as const).map(([name, label]) => <label key={name} className="flex items-start gap-2"><input type="checkbox" name={name} value="CONFIRMED" required className="mt-0.5 shrink-0" /><span>{label}</span></label>)}</div>
       <button disabled={pending || row.inputLocked} className={buttonClass}>{pending ? 'Saving reviewed inputs…' : 'Save reviewed period inputs'}</button>
     </fieldset>
-  </form>;
+    </form>
+    <ConfirmationDialog
+      isOpen={confirmation.isOpen}
+      onClose={confirmation.close}
+      onConfirm={confirmation.confirm}
+      busy={pending}
+      title="Save reviewed payroll inputs?"
+      description="Save the employee's reviewed statutory coverage, agency bases, earnings, and deductions for this payroll period."
+      details={[{ label: 'Employee', value: row.employeeNumber + ' · ' + row.firstName + ' ' + row.lastName }]}
+      warning="These reviewed inputs become locked when payroll is generated. Save only values supported by the employee's records."
+      confirmLabel="Save Reviewed Inputs"
+      confirmVariant="primary"
+    />
+  </>;
 }
 
 export function TaxOpening({ row, payDate }: { row: PayrollStatutorySetupRow; payDate: string }) {
   const [state, action, pending] = useActionState(saveTaxOpeningAction, {});
+  const confirmation = usePayrollFormConfirmation();
   const [fields, setFields] = useState<Record<string, string>>({ ...Object.fromEntries(openingFields.map(([key]) => [key, row.opening?.balances[key] ?? ''])), openingPayDate: row.opening?.payDate ?? payDate, evidenceReference: row.opening?.evidence ?? '' });
   const edit = (key: string, value: string) => setFields(current => ({ ...current, [key]: value }));
-  return <form action={action} aria-busy={pending} onReset={event => event.preventDefault()} onSubmit={event => { if (!window.confirm('Confirm the complete historical amounts before this opening payment date were independently reviewed. Save this opening history?')) event.preventDefault(); }} className="space-y-4 border-t pt-4">
+  return <>
+    <form ref={confirmation.formRef} action={action} aria-busy={pending} onReset={event => event.preventDefault()} onSubmit={confirmation.handleSubmit} className="space-y-4 border-t pt-4">
     {pending ? <p role="status" className="text-xs text-slate-600">Saving verified opening history…</p> : <StatusMessage state={state} />}<input type="hidden" name="employeeId" value={row.id} />
     <fieldset disabled={pending || row.openingLocked} className="space-y-3 disabled:opacity-70"><legend className="mb-3 text-sm font-bold">Verified opening history · {payDate.slice(0, 4)}</legend>
       <p className="text-xs text-slate-600">Enter complete verified history before the opening payment date. Monthly benefit usage belongs to that payment month. Amounts are never inferred from old payslips. Enter 0 only when verified.</p>
@@ -76,7 +94,23 @@ export function TaxOpening({ row, payDate }: { row: PayrollStatutorySetupRow; pa
       <label className="flex items-start gap-2 text-xs"><input type="checkbox" name="openingReviewed" value="CONFIRMED" required className="mt-0.5" /><span>I reviewed the complete history before this payment date, including all prior benefits, taxable compensation and withholding, and verified every zero balance.</span></label>
       <button disabled={pending || row.openingLocked} className={buttonClass}>{pending ? 'Saving verified history…' : 'Save verified opening history'}</button>
     </fieldset>
-  </form>;
+    </form>
+    <ConfirmationDialog
+      isOpen={confirmation.isOpen}
+      onClose={confirmation.close}
+      onConfirm={confirmation.confirm}
+      busy={pending}
+      title="Save verified opening history?"
+      description="Save the employee's verified tax and benefit balances before the opening payment date."
+      details={[
+        { label: 'Employee', value: row.employeeNumber + ' · ' + row.firstName + ' ' + row.lastName },
+        { label: 'Opening payment date', value: fields.openingPayDate },
+      ]}
+      warning="Only save amounts that were checked against complete historical payroll records. Do not estimate missing balances."
+      confirmLabel="Save Opening History"
+      confirmVariant="primary"
+    />
+  </>;
 }
 
 export function PayrollStatutorySetupPanel({ rows, periodId, periodName, payDate }: { rows: PayrollStatutorySetupRow[]; periodId: string; periodName: string; payDate: string }) {
