@@ -1,10 +1,42 @@
 'use client';
 
-import { useActionState, useState } from 'react';
+import { useActionState, useRef, useState, type FormEvent } from 'react';
 import type { PayrollStatutorySetupRow } from '@/features/payroll/setup-queries';
+import { ConfirmationDialog } from '@/components/ui/ConfirmationDialog';
 import { createCompensationAction, createPayrollPeriodAction, createPayrollPolicyAction, finalizePayrollAction, generatePayrollAction, movePayrollToReviewAction, type PayrollActionState } from '@/features/payroll/actions';
 
 const initialState: PayrollActionState = {};
+
+export function usePayrollFormConfirmation() {
+  const formRef = useRef<HTMLFormElement | null>(null);
+  const confirmedRef = useRef(false);
+  const [isOpen, setIsOpen] = useState(false);
+
+  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
+    if (confirmedRef.current) {
+      confirmedRef.current = false;
+      return;
+    }
+    event.preventDefault();
+    setIsOpen(true);
+  };
+
+  const confirm = () => {
+    const form = formRef.current;
+    if (!form) return;
+    confirmedRef.current = true;
+    setIsOpen(false);
+    form.requestSubmit();
+  };
+
+  return {
+    formRef,
+    isOpen,
+    handleSubmit,
+    confirm,
+    close: () => setIsOpen(false),
+  };
+}
 
 export function StatusMessage({ state }: { state: PayrollActionState }) {
   if (!state.error && !state.success) return null;
@@ -49,26 +81,94 @@ export function PayrollPeriodForm() {
 
 export function PayrollGenerationForm({ periods, selectedPeriodId, employeeId, disabled = false }: { periods: Array<{ id: string; name: string }>; selectedPeriodId?: string; employeeId?: string; disabled?: boolean }) {
   const [state, action, pending] = useActionState(generatePayrollAction, initialState);
-  return <form action={action} aria-busy={pending} onSubmit={event => { if (!window.confirm(employeeId ? 'Calculate the selected employee for this cutoff? Existing payroll entries remain unchanged. Finalization still requires every eligible employee to be reviewed.' : 'Generate payroll and reserve statutory contributions for the selected period? Existing entries remain unchanged.')) event.preventDefault(); }} className="mt-5 grid gap-3 rounded-2xl bg-slate-50 p-4 md:grid-cols-[minmax(0,1fr)_auto]">
-    <input type="hidden" name="employeeId" value={employeeId ?? ''} />
-    <div className="md:col-span-2">{pending ? <p role="status" className="text-xs text-slate-600">Payroll generation is in progress. Keep this page open until the result appears.</p> : <StatusMessage state={state} />}</div>
-    {!pending && state.setupErrors?.length ? <div role="alert" className="md:col-span-2 rounded-xl border border-amber-200 bg-amber-50 p-3 text-xs text-amber-950">
-      <p className="font-bold">Setup required for {state.setupErrors.length} {state.setupErrors.length === 1 ? 'employee' : 'employees'}</p>
-      <ul className="mt-2 list-disc space-y-1 pl-5">{state.setupErrors.map(item => <li key={`${item.employeeNumber}-${item.message}`}><span className="font-semibold">{item.employeeNumber} · {item.employeeName}:</span> {item.message}</li>)}</ul>
-    </div> : null}
-    <label className="grid gap-1 text-xs font-semibold" hidden={periods.length === 1 && !!selectedPeriodId}>Payroll period<select name="payrollPeriodId" disabled={pending} required defaultValue={selectedPeriodId} className="rounded-xl border bg-white px-3 py-2.5 font-normal"><option value="">Select a period</option>{periods.map(period => <option key={period.id} value={period.id}>{period.name}</option>)}</select></label>
-    <button disabled={pending || periods.length === 0 || disabled} className="self-end rounded-xl bg-emerald-700 px-5 py-2.5 text-xs font-bold text-white disabled:opacity-50">{pending ? 'Generating…' : employeeId ? 'Calculate Selected Employee' : 'Generate Payroll'}</button>
-  </form>;
+  const confirmation = usePayrollFormConfirmation();
+  const [periodId, setPeriodId] = useState(selectedPeriodId ?? '');
+  const selectedPeriod = periods.find(period => period.id === periodId);
+
+  return <>
+    <form ref={confirmation.formRef} action={action} aria-busy={pending} onSubmit={confirmation.handleSubmit} className="mt-5 grid gap-3 rounded-2xl bg-slate-50 p-4 md:grid-cols-[minmax(0,1fr)_auto]">
+      <input type="hidden" name="employeeId" value={employeeId ?? ''} />
+      <div className="md:col-span-2">{pending ? <p role="status" className="text-xs text-slate-600">Payroll generation is in progress. Keep this page open until the result appears.</p> : <StatusMessage state={state} />}</div>
+      {!pending && state.setupErrors?.length ? <div role="alert" className="md:col-span-2 rounded-xl border border-amber-200 bg-amber-50 p-3 text-xs text-amber-950">
+        <p className="font-bold">Setup required for {state.setupErrors.length} {state.setupErrors.length === 1 ? 'employee' : 'employees'}</p>
+        <ul className="mt-2 list-disc space-y-1 pl-5">{state.setupErrors.map(item => <li key={item.employeeNumber + '-' + item.message}><span className="font-semibold">{item.employeeNumber} · {item.employeeName}:</span> {item.message}</li>)}</ul>
+      </div> : null}
+      <label className="grid gap-1 text-xs font-semibold" hidden={periods.length === 1 && !!selectedPeriodId}>Payroll period<select name="payrollPeriodId" disabled={pending} required defaultValue={selectedPeriodId} onChange={event => setPeriodId(event.target.value)} className="rounded-xl border bg-white px-3 py-2.5 font-normal"><option value="">Select a period</option>{periods.map(period => <option key={period.id} value={period.id}>{period.name}</option>)}</select></label>
+      <button disabled={pending || periods.length === 0 || disabled} className="self-end rounded-xl bg-emerald-700 px-5 py-2.5 text-xs font-bold text-white disabled:opacity-50">{pending ? 'Generating…' : employeeId ? 'Calculate Selected Employee' : 'Generate Payroll'}</button>
+    </form>
+    <ConfirmationDialog
+      isOpen={confirmation.isOpen}
+      onClose={confirmation.close}
+      onConfirm={confirmation.confirm}
+      busy={pending}
+      title={employeeId ? 'Calculate employee payroll?' : 'Generate payroll?'}
+      description="WorkPulse will calculate the selected cutoff using saved compensation, recorded attendance, approved leave, and verified statutory setup."
+      details={[
+        { label: 'Payroll period', value: selectedPeriod?.name ?? 'Selected payroll period' },
+        { label: 'Scope', value: employeeId ? 'Selected employee' : 'All eligible active employees' },
+      ]}
+      warning="Existing payroll entries are not overwritten. Employees with incomplete setup will be listed for review."
+      confirmLabel={employeeId ? 'Calculate Employee' : 'Generate Payroll'}
+      confirmVariant="primary"
+    />
+  </>;
 }
 
 export function PayrollReviewControls({ periodId, periodLabel, status, canFinalize, hasEntries = false }: { periodId: string; periodLabel: string; status: string; canFinalize: boolean; hasEntries?: boolean }) {
   const [reviewState, reviewAction, reviewPending] = useActionState(movePayrollToReviewAction, initialState);
   const [finalizeState, finalizeAction, finalizePending] = useActionState(finalizePayrollAction, initialState);
+  const reviewConfirmation = usePayrollFormConfirmation();
+  const finalizeConfirmation = usePayrollFormConfirmation();
   if (status === 'FINALIZED') return null;
-  return <div className="mt-4 grid gap-3 lg:grid-cols-2">
-    {status === 'DRAFT' ? <form action={reviewAction} aria-busy={reviewPending} onSubmit={event => { if (!window.confirm('Move generated payroll entries into HR review?')) event.preventDefault(); }} className="rounded-2xl border bg-slate-50 p-4"><StatusMessage state={reviewState} /><input type="hidden" name="payrollPeriodId" value={periodId} /><p className="mb-3 text-xs text-slate-600">Generate employee entries, then review deductions. Finalization publishes payslips to each employee in ESS / My Payroll.</p><button disabled={reviewPending || !hasEntries} className="rounded-xl bg-slate-900 px-4 py-2.5 text-xs font-bold text-white disabled:opacity-50">{reviewPending ? 'Moving…' : 'Move to Review'}</button></form> : null}
-    {status === 'REVIEW' ? <form action={finalizeAction} aria-busy={finalizePending} onSubmit={event => { if (!window.confirm('Finalize payroll and permanently lock official employee payslips?')) event.preventDefault(); }} className="rounded-2xl border border-amber-200 bg-amber-50 p-4"><StatusMessage state={finalizeState} /><input type="hidden" name="payrollPeriodId" value={periodId} /><p className="text-sm font-bold">Finalize {periodLabel} payroll?</p><p className="mt-1 text-xs text-amber-900">Entries will be locked. Future policy or compensation changes will not alter this official payroll record.</p><label className="mt-3 flex items-start gap-2 text-xs font-semibold"><input type="checkbox" name="confirmation" value="FINALIZE" required className="mt-0.5" /> I understand and explicitly confirm finalization.</label><button disabled={finalizePending || !canFinalize} className="mt-3 rounded-xl bg-amber-900 px-4 py-2.5 text-xs font-bold text-white disabled:opacity-40">{finalizePending ? 'Finalizing…' : 'Finalize Payroll'}</button>{!canFinalize ? <p className="mt-2 text-xs font-semibold text-red-700">Resolve every setup and calculation issue before finalization.</p> : null}</form> : null}
-  </div>;
+
+  return <>
+    <div className="mt-4 grid gap-3 lg:grid-cols-2">
+      {status === 'DRAFT' ? (
+        <form ref={reviewConfirmation.formRef} action={reviewAction} aria-busy={reviewPending} onSubmit={reviewConfirmation.handleSubmit} className="rounded-2xl border bg-slate-50 p-4">
+          <StatusMessage state={reviewState} />
+          <input type="hidden" name="payrollPeriodId" value={periodId} />
+          <p className="mb-3 text-xs text-slate-600">Generate employee entries, then review deductions. Finalization publishes payslips to each employee in ESS / My Payroll.</p>
+          <button disabled={reviewPending || !hasEntries} className="rounded-xl bg-slate-900 px-4 py-2.5 text-xs font-bold text-white disabled:opacity-50">{reviewPending ? 'Moving…' : 'Move to Review'}</button>
+        </form>
+      ) : null}
+      {status === 'REVIEW' ? (
+        <form ref={finalizeConfirmation.formRef} action={finalizeAction} aria-busy={finalizePending} onSubmit={finalizeConfirmation.handleSubmit} className="rounded-2xl border border-amber-200 bg-amber-50 p-4">
+          <StatusMessage state={finalizeState} />
+          <input type="hidden" name="payrollPeriodId" value={periodId} />
+          <p className="text-sm font-bold">Finalize {periodLabel} payroll?</p>
+          <p className="mt-1 text-xs text-amber-900">Entries will be locked. Future policy or compensation changes will not alter this official payroll record.</p>
+          <label className="mt-3 flex items-start gap-2 text-xs font-semibold"><input type="checkbox" name="confirmation" value="FINALIZE" required className="mt-0.5" /> I understand and explicitly confirm finalization.</label>
+          <button disabled={finalizePending || !canFinalize} className="mt-3 rounded-xl bg-amber-900 px-4 py-2.5 text-xs font-bold text-white disabled:opacity-40">{finalizePending ? 'Finalizing…' : 'Finalize Payroll'}</button>
+          {!canFinalize ? <p className="mt-2 text-xs font-semibold text-red-700">Resolve every setup and calculation issue before finalization.</p> : null}
+        </form>
+      ) : null}
+    </div>
+
+    <ConfirmationDialog
+      isOpen={reviewConfirmation.isOpen}
+      onClose={reviewConfirmation.close}
+      onConfirm={reviewConfirmation.confirm}
+      busy={reviewPending}
+      title="Move payroll to review?"
+      description="The generated entries will move into HR review so you can verify every employee's earnings and deductions before finalization."
+      details={[{ label: 'Payroll period', value: periodLabel }]}
+      warning="Payslips are not published to ESS until payroll is finalized."
+      confirmLabel="Move to Review"
+      confirmVariant="primary"
+    />
+    <ConfirmationDialog
+      isOpen={finalizeConfirmation.isOpen}
+      onClose={finalizeConfirmation.close}
+      onConfirm={finalizeConfirmation.confirm}
+      busy={finalizePending}
+      title="Finalize payroll?"
+      description="Finalization locks the official payroll entries and makes the employee payslips available in ESS / My Payroll."
+      details={[{ label: 'Payroll period', value: periodLabel }]}
+      warning="This action is permanent. Check each employee's gross pay, deductions, and net pay before continuing."
+      confirmLabel="Finalize Payroll"
+      confirmVariant="warning"
+    />
+  </>;
 }
 
 export function PayrollPolicyForm({ leaveTypes }: { leaveTypes: Array<{ id: string; code: string; name: string; isPaid: boolean }> }) {
