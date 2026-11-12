@@ -17,6 +17,7 @@ export type AttendanceAdjustmentAmounts = {
 
 /**
  * Validates flat PHP attendance rates for monthly-paid employees.
+ * Verification branch: exercise new peso-rate integration and regression checks.
  * The statutory reference is the monthly-paid daily equivalent (12/365),
  * divided by eight hours; ordinary-workday overtime must be at least 125%.
  * Rest-day/holiday overtime is not covered by a single flat rate and must be
