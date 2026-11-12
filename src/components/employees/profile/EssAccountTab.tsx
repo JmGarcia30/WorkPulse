@@ -72,12 +72,13 @@ function formatAuditValue(key: string, value: unknown): string | null {
 function getAuditDetailEntries(details: unknown): Array<{ label: string; value: string }> {
   if (details == null || details === '') return [];
 
-  let value = details;
+  let value: unknown = details;
   if (typeof value === 'string') {
+    const rawValue = value;
     try {
-      value = JSON.parse(value) as unknown;
+      value = JSON.parse(rawValue) as unknown;
     } catch {
-      return [{ label: 'Details', value: value.length > 64 ? value.slice(0, 61) + '…' : value }];
+      return [{ label: 'Details', value: rawValue.length > 64 ? rawValue.slice(0, 61) + '…' : rawValue }];
     }
   }
 
